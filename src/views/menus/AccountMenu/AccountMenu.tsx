@@ -70,7 +70,6 @@ export const AccountMenu = () => {
   const { debugCompliance } = useEnvFeatures();
   const {
     sourceAccount: { walletInfo, address },
-    dydxAddress,
     hdKey,
   } = useAccounts();
   const { registerAffiliate } = useSubaccount();
@@ -135,12 +134,9 @@ export const AccountMenu = () => {
                 tw="z-[2] [--asset-icon-size:1.75rem]"
               />
               <$Column>
-                {walletInfo && walletInfo.name !== WalletType.Keplr ? (
-                  'Fuel Address'
-                ) : (
-                  <$label>"Fuel Address"</$label>
-                )}
-                <$Address>{truncateAddress(dydxAddress)}</$Address>
+                {stringGetter({
+                  key: STRING_KEYS.ACCOUNT,
+                })}
               </$Column>
               <$CopyButton buttonType="icon" value={address} shape={ButtonShape.Square} />
               <WithTooltip tooltipString={'Fuel Block Explorer'}>
@@ -372,7 +368,7 @@ export const AccountMenu = () => {
       sideOffset={16}
     >
       {walletIcon}
-      {!isTablet && <$Address>{truncateAddress(dydxAddress)}</$Address>}
+      {!isTablet && <$Address>{truncateAddress(address)}</$Address>}
     </$DropdownMenu>
   );
 };
