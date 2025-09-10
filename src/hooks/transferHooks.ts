@@ -23,11 +23,11 @@ export function useTransferForm(initialToUsdc: boolean) {
   const canViewAccount = useAppSelector(calculateCanViewAccount);
   const {
     usdcLabel,
+    chainTokenAssetId,
     chainTokenLabel,
     chainTokenDecimals,
     usdcDecimals,
     usdcAssetId,
-    chainTokenDenom,
   } = useTokenConfigs();
 
   const [feeResult, setFeeResult] = useState<TransferFeeData | undefined>(undefined);
@@ -42,9 +42,9 @@ export function useTransferForm(initialToUsdc: boolean) {
         usdcName: usdcLabel,
         usdcDecimals,
         usdcAssetId,
+        nativeAssetId: chainTokenAssetId,
         nativeName: chainTokenLabel,
         nativeDecimals: chainTokenDecimals,
-        nativeDenom: chainTokenDenom,
       },
 
       feeResult,
@@ -52,7 +52,6 @@ export function useTransferForm(initialToUsdc: boolean) {
     [
       canViewAccount,
       chainTokenDecimals,
-      chainTokenDenom,
       chainTokenLabel,
       feeResult,
       rawParentSubaccountData,

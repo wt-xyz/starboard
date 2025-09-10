@@ -23,7 +23,6 @@ export type TokenConfigsResult = {
   usdcDecimals: number;
   usdcImage: string;
   usdcLabel: string;
-  chainTokenDenom: string;
   chainTokenDecimals: number;
   chainTokenImage: string;
   chainTokenLabel: string;
@@ -40,7 +39,6 @@ const getTokenConfigsData = (selectedDydxChainId: DydxChainId): TokenConfigsResu
     usdcDecimals: tokensConfigs[DydxChainAsset.USDC].decimals,
     usdcImage: tokensConfigs[DydxChainAsset.USDC].image,
     usdcLabel: tokensConfigs[DydxChainAsset.USDC].name,
-    chainTokenDenom: tokensConfigs[DydxChainAsset.CHAINTOKEN].denom,
     chainTokenDecimals: tokensConfigs[DydxChainAsset.CHAINTOKEN].decimals,
     chainTokenImage: tokensConfigs[DydxChainAsset.CHAINTOKEN].image,
     chainTokenLabel: tokensConfigs[DydxChainAsset.CHAINTOKEN].name,

@@ -82,7 +82,6 @@ function makeCompositeClient({
           {
             USDC_DENOM: tokens.usdc.denom,
             USDC_DECIMALS: tokens.usdc.decimals,
-            USDC_GAS_DENOM: tokens.usdc.gasDenom,
             CHAINTOKEN_DENOM: tokens.chain.denom,
             CHAINTOKEN_DECIMALS: tokens.chain.decimals,
           },

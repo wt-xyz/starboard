@@ -40,8 +40,8 @@ export function calculateBalances(
     return {};
   }
   const byId = keyBy(balances, (b) => b.denom);
-  const usdcBase = byId[tokenConfig.usdcDenom];
-  const chainTokenBase = byId[tokenConfig.chainTokenDenom];
+  const usdcBase = byId[tokenConfig.usdcAssetId];
+  const chainTokenBase = byId[tokenConfig.chainTokenAssetId];
 
   return {
     usdcAmount: convertAmount(usdcBase?.amount, tokenConfig.usdcDecimals),

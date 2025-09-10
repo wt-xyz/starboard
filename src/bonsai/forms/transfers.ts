@@ -91,7 +91,7 @@ export interface TransferFormInputData {
     usdcAssetId: string;
     nativeName: string;
     nativeDecimals: number;
-    nativeDenom: string;
+    nativeAssetId: string;
   };
 }
 
