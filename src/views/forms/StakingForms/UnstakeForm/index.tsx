@@ -56,7 +56,7 @@ export const UnstakeForm = ({
 }: ElementProps & StyleProps) => {
   const stringGetter = useStringGetter();
   const { undelegate, getUndelegateFee } = useSubaccount();
-  const { nativeTokenBalance } = useAccountBalance();
+  const { ethBalance: nativeTokenBalance } = useAccountBalance();
   const { currentDelegations } = useStakingValidator();
   const { chainTokenLabel, chainTokenDecimals } = useTokenConfigs();
 

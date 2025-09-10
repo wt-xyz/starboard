@@ -40,7 +40,7 @@ import { WithTooltip } from '@/components/WithTooltip';
 import { MobileDownloadLinks } from '@/views/MobileDownloadLinks';
 import { OnboardingTriggerButton } from '@/views/dialogs/OnboardingTriggerButton';
 
-import { getOnboardingState, getSubaccountFreeCollateral } from '@/state/accountSelectors';
+import { getOnboardingState } from '@/state/accountSelectors';
 import { useAppDispatch, useAppSelector } from '@/state/appTypes';
 import { AppTheme } from '@/state/appUiConfigs';
 import { getAppTheme } from '@/state/appUiConfigsSelectors';
@@ -60,7 +60,6 @@ export const AccountMenu = () => {
   const affiliatesEnabled = useStatsigGateValue(StatsigFlags.ffEnableAffiliates);
   const dispatch = useAppDispatch();
   const onboardingState = useAppSelector(getOnboardingState);
-  const freeCollateral = useAppSelector(getSubaccountFreeCollateral);
 
   const { ethBalance, usdcBalance } = useAccountBalance();
 
@@ -125,119 +124,114 @@ export const AccountMenu = () => {
     <$DropdownMenu
       modal={false}
       slotTopContent={
-        onboardingState === OnboardingState.AccountConnected && (
-          <div tw="flexColumn gap-1 px-1 pb-0.5 pt-1">
-            <$AddressRow>
-              <AssetIcon
-                logoUrl={'https://verified-assets.fuel.network/images/fuel.svg'}
-                symbol={chainTokenLabel}
-                tw="z-[2] [--asset-icon-size:1.75rem]"
+        <div tw="flexColumn gap-1 px-1 pb-0.5 pt-1">
+          <$AddressRow>
+            <AssetIcon
+              logoUrl={'https://verified-assets.fuel.network/images/fuel.svg'}
+              symbol={chainTokenLabel}
+              tw="z-[2] [--asset-icon-size:1.75rem]"
+            />
+            <$Column>
+              {stringGetter({
+                key: STRING_KEYS.ACCOUNT,
+              })}
+            </$Column>
+            <$CopyButton buttonType="icon" value={address} shape={ButtonShape.Square} />
+            <WithTooltip tooltipString={'Fuel Block Explorer'}>
+              <$IconButton
+                action={ButtonAction.Base}
+                href={`https://app.fuel.network/account/${address}/transactions`}
+                iconName={IconName.LinkOut}
+                shape={ButtonShape.Square}
+                type={ButtonType.Link}
               />
-              <$Column>
-                {stringGetter({
-                  key: STRING_KEYS.ACCOUNT,
-                })}
-              </$Column>
-              <$CopyButton buttonType="icon" value={address} shape={ButtonShape.Square} />
-              <WithTooltip tooltipString={'Fuel Block Explorer'}>
-                <$IconButton
-                  action={ButtonAction.Base}
-                  href={`https://app.fuel.network/account/${address}/transactions`}
-                  iconName={IconName.LinkOut}
-                  shape={ButtonShape.Square}
-                  type={ButtonType.Link}
-                />
-              </WithTooltip>
-            </$AddressRow>
-            {walletInfo &&
-              walletInfo.name !== WalletType.Privy &&
-              walletInfo.name !== WalletType.Keplr && (
-                <$AddressRow>
-                  <div tw="relative z-[1] rounded-[50%] bg-[#303045] p-0.375 text-[1rem] leading-[0]">
-                    <Icon
-                      iconName={IconName.AddressConnector}
-                      tw="absolute top-[-1.625rem] h-1.75"
-                    />
-                    <WalletIcon wallet={walletInfo} />
-                  </div>
-                  <$Column>
-                    <$label>{stringGetter({ key: STRING_KEYS.SOURCE_ADDRESS })}</$label>
-                    <$Address>{displayAddress}</$Address>
-                  </$Column>
-                </$AddressRow>
-              )}
-            <$Balances>
-              <div>
-                <div>
-                  <$label>
-                    {stringGetter({
-                      key: STRING_KEYS.WALLET_BALANCE,
-                      params: { ASSET: 'ETH' },
-                    })}
-                    <AssetIcon logoUrl={chainTokenImage} symbol="ETH" />
-                  </$label>
-                  <$BalanceOutput
-                    type={OutputType.Asset}
-                    value={ethBalance}
-                    fractionDigits={SMALL_ETH_DECIMALS}
-                  />
+            </WithTooltip>
+          </$AddressRow>
+          {walletInfo &&
+            walletInfo.name !== WalletType.Privy &&
+            walletInfo.name !== WalletType.Keplr && (
+              <$AddressRow>
+                <div tw="relative z-[1] rounded-[50%] bg-[#303045] p-0.375 text-[1rem] leading-[0]">
+                  <Icon iconName={IconName.AddressConnector} tw="absolute top-[-1.625rem] h-1.75" />
+                  <WalletIcon wallet={walletInfo} />
                 </div>
-                <WalletActions
-                  complianceState={complianceState}
-                  dispatch={dispatch}
-                  stringGetter={stringGetter}
-                />
-              </div>
-
-              <div>
-                <div>
-                  <$label>
-                    {stringGetter({
-                      key: STRING_KEYS.ASSET_BALANCE,
-                      params: { ASSET: usdcLabel },
-                    })}
-                    <AssetIcon logoUrl={usdcImage} symbol="USDC" />
-                  </$label>
-                  <$BalanceOutput
-                    type={OutputType.Asset}
-                    value={freeCollateral ?? 0}
-                    fractionDigits={USD_DECIMALS}
-                  />
-                </div>
-                <SubaccountActions
-                  asset={DydxChainAsset.USDC}
-                  complianceState={complianceState}
-                  dispatch={dispatch}
-                  hasBalance={MustBigNumber(freeCollateral).gt(0)}
-                  stringGetter={stringGetter}
-                  withOnboarding
-                />
-              </div>
-            </$Balances>
-
-            {showConfirmPendingDeposit && (
-              <$ConfirmPendingDeposit>
-                You have a pending deposit
-                <br /> for confirmation
-                <$IconButton
-                  action={ButtonAction.Base}
-                  shape={ButtonShape.Square}
-                  iconName={IconName.Send}
-                  onClick={() =>
-                    dispatch(
-                      openDialog(
-                        DialogTypes.ConfirmPendingDeposit({
-                          usdcBalance:
-                            MustBigNumber(usdcBalance).toNumber() - AMOUNT_RESERVED_FOR_GAS_USDC,
-                        })
-                      )
-                    )
-                  }
-                />
-              </$ConfirmPendingDeposit>
+                <$Column>
+                  <$label>{stringGetter({ key: STRING_KEYS.SOURCE_ADDRESS })}</$label>
+                  <$Address>{displayAddress}</$Address>
+                </$Column>
+              </$AddressRow>
             )}
-          </div>
-        )
+          <$Balances>
+            <div>
+              <div>
+                <$label>
+                  {stringGetter({
+                    key: STRING_KEYS.WALLET_BALANCE,
+                    params: { ASSET: 'ETH' },
+                  })}
+                  <AssetIcon logoUrl={chainTokenImage} symbol="ETH" />
+                </$label>
+                <$BalanceOutput
+                  type={OutputType.Asset}
+                  value={ethBalance}
+                  fractionDigits={SMALL_ETH_DECIMALS}
+                />
+              </div>
+              <WalletActions
+                complianceState={complianceState}
+                dispatch={dispatch}
+                stringGetter={stringGetter}
+              />
+            </div>
+
+            <div>
+              <div>
+                <$label>
+                  {stringGetter({
+                    key: STRING_KEYS.ASSET_BALANCE,
+                    params: { ASSET: usdcLabel },
+                  })}
+                  <AssetIcon logoUrl={usdcImage} symbol="USDC" />
+                </$label>
+                <$BalanceOutput
+                  type={OutputType.Asset}
+                  value={usdcBalance}
+                  fractionDigits={USD_DECIMALS}
+                />
+              </div>
+              <SubaccountActions
+                asset={DydxChainAsset.USDC}
+                complianceState={complianceState}
+                dispatch={dispatch}
+                hasBalance={usdcBalance > 0}
+                stringGetter={stringGetter}
+                withOnboarding
+              />
+            </div>
+          </$Balances>
+
+          {showConfirmPendingDeposit && (
+            <$ConfirmPendingDeposit>
+              You have a pending deposit
+              <br /> for confirmation
+              <$IconButton
+                action={ButtonAction.Base}
+                shape={ButtonShape.Square}
+                iconName={IconName.Send}
+                onClick={() =>
+                  dispatch(
+                    openDialog(
+                      DialogTypes.ConfirmPendingDeposit({
+                        usdcBalance:
+                          MustBigNumber(usdcBalance).toNumber() - AMOUNT_RESERVED_FOR_GAS_USDC,
+                      })
+                    )
+                  )
+                }
+              />
+            </$ConfirmPendingDeposit>
+          )}
+        </div>
       }
       items={[
         onboardingState === OnboardingState.WalletConnected && {

@@ -9,10 +9,10 @@ export interface EndpointsConfig {
     socket: string;
   }[];
   validators: string[];
+  rpcs: string[];
   skip: string;
   faucet?: string;
   stakingAPR?: string;
-  solanaRpcUrl: string;
   affiliates?: string;
 }
 
@@ -21,12 +21,13 @@ export const useEndpointsConfig = () => {
   const endpointsConfig: EndpointsConfig = ENVIRONMENT_CONFIG_MAP[selectedNetwork].endpoints;
 
   return {
+    rpcs: endpointsConfig.rpcs,
+    defaultRpc: endpointsConfig.rpcs[0]!, // assume there's always at least one RPC
     indexer: endpointsConfig.indexers[0]!, // assume there's only one option for indexer endpoints
     validators: endpointsConfig.validators,
     skip: endpointsConfig.skip,
     faucet: endpointsConfig.faucet,
     stakingAPR: endpointsConfig.stakingAPR,
-    solanaRpcUrl: endpointsConfig.solanaRpcUrl,
     affiliatesBaseUrl: endpointsConfig.affiliates,
   };
 };
