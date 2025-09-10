@@ -1,13 +1,9 @@
-import { useCallback, useMemo } from 'react';
-
-import { getLazyStargateClient } from '@/bonsai/lib/lazyDynamicLibs';
 import { BonsaiCore, BonsaiHooks } from '@/bonsai/ontology';
-import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-query';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { erc20Abi, formatUnits } from 'viem';
 import { useBalance, useReadContracts } from 'wagmi';
 
-import { SUPPORTED_COSMOS_CHAINS } from '@/constants/graz';
 import { EvmAddress, WalletNetworkType } from '@/constants/wallets';
 
 import { getSelectedDydxChainId } from '@/state/appSelectors';
@@ -20,7 +16,6 @@ import { useAccounts } from './useAccounts';
 import { useEndpointsConfig } from './useEndpointsConfig';
 import { useEnvConfig } from './useEnvConfig';
 import { useTokenConfigs } from './useTokenConfigs';
-import { useWalletConnection } from './useWalletConnection';
 
 type UseAccountBalanceProps = {
   // Token Items
@@ -28,25 +23,18 @@ type UseAccountBalanceProps = {
 
   // Chain Items
   chainId?: string | number;
-
-  isCosmosChain?: boolean;
 };
 
-export const useAccountBalance = ({
-  addressOrDenom,
-  chainId,
-  isCosmosChain,
-}: UseAccountBalanceProps = {}): {
+export const useAccountBalance = ({ addressOrDenom, chainId }: UseAccountBalanceProps = {}): {
   balance: string | undefined;
   isQueryFetching: boolean;
   nativeStakingBalance: number;
-  nativeTokenBalance: BigNumber;
+  ethBalance: BigNumber;
   queryStatus: 'success' | 'error' | 'pending';
   usdcBalance: number;
   refetchQuery: (options?: RefetchOptions) => Promise<QueryObserverResult>;
 } => {
-  const { dydxAccountGraz } = useWalletConnection();
-  const { sourceAccount, dydxAddress } = useAccounts();
+  const { sourceAccount } = useAccounts();
 
   const { chainTokenAmount: nativeTokenCoinBalance, usdcAmount: usdcCoinBalance } = useAppSelector(
     BonsaiCore.account.balances.data
@@ -94,59 +82,8 @@ export const useAccountBalance = ({
       } as const,
     ],
     query: {
-      enabled: Boolean(
-        evmAddress && !isCosmosChain && addressOrDenom?.startsWith('0x') && !isEVMnativeToken
-      ),
+      enabled: Boolean(evmAddress),
     },
-  });
-
-  const cosmosAddress = useMemo(() => {
-    if (chainId === selectedDydxChainId) {
-      return dydxAddress;
-    }
-    if (typeof chainId === 'string' && SUPPORTED_COSMOS_CHAINS.includes(chainId)) {
-      return dydxAccountGraz?.[chainId]?.bech32Address;
-    }
-    return undefined;
-  }, [chainId, dydxAccountGraz, dydxAddress, selectedDydxChainId]);
-
-  const cosmosQueryFn = useCallback(async () => {
-    if (dydxAddress && cosmosAddress && addressOrDenom) {
-      const rpc = (() => {
-        if (chainId === selectedDydxChainId) {
-          return validators[0];
-        }
-        return undefined;
-      })();
-
-      if (!rpc) return undefined;
-
-      const client = await (await getLazyStargateClient()).connect(rpc);
-      const balanceAsCoin = await client.getBalance(cosmosAddress, addressOrDenom);
-      await client.disconnect();
-
-      return formatUnits(BigInt(balanceAsCoin.amount), usdcDecimals);
-    }
-    return undefined;
-  }, [
-    dydxAddress,
-    cosmosAddress,
-    addressOrDenom,
-    usdcDecimals,
-    chainId,
-    selectedDydxChainId,
-    validators,
-  ]);
-
-  const cosmosQuery = useQuery({
-    enabled: Boolean(isCosmosChain && dydxAddress && cosmosAddress && addressOrDenom),
-    queryKey: ['accountBalances', chainId, cosmosAddress, addressOrDenom],
-    queryFn: cosmosQueryFn,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchInterval: 10_000,
-    staleTime: 10_000,
   });
 
   const { value: evmNativeBalance, decimals: evmNativeDecimals } = evmNative.data ?? {};
@@ -170,14 +107,10 @@ export const useAccountBalance = ({
 
   let queryStatus = evmNative.status;
   let isQueryFetching = evmNative.isFetching;
-  if (isCosmosChain) {
-    queryStatus = cosmosQuery.status;
-    isQueryFetching = cosmosQuery.isFetching;
-  }
 
   return {
     balance: balance?.toString(),
-    nativeTokenBalance,
+    ethBalance: nativeTokenBalance,
     nativeStakingBalance,
     usdcBalance,
     queryStatus,

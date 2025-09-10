@@ -26,7 +26,7 @@ export function useTransferForm(initialToUsdc: boolean) {
     chainTokenLabel,
     chainTokenDecimals,
     usdcDecimals,
-    usdcDenom,
+    usdcAssetId,
     chainTokenDenom,
   } = useTokenConfigs();
 
@@ -41,7 +41,7 @@ export function useTransferForm(initialToUsdc: boolean) {
       display: {
         usdcName: usdcLabel,
         usdcDecimals,
-        usdcDenom,
+        usdcAssetId,
         nativeName: chainTokenLabel,
         nativeDecimals: chainTokenDecimals,
         nativeDenom: chainTokenDenom,
@@ -58,7 +58,7 @@ export function useTransferForm(initialToUsdc: boolean) {
       rawParentSubaccountData,
       rawRelevantMarkets,
       usdcDecimals,
-      usdcDenom,
+      usdcAssetId,
       usdcLabel,
       walletBalances,
     ]

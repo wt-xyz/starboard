@@ -9,7 +9,7 @@ import { ButtonAction, ButtonShape, ButtonSize, ButtonType } from '@/constants/b
 import { DialogTypes } from '@/constants/dialogs';
 import { STRING_KEYS } from '@/constants/localization';
 import { isDev } from '@/constants/networks';
-import { SMALL_USD_DECIMALS, USD_DECIMALS } from '@/constants/numbers';
+import { SMALL_ETH_DECIMALS, USD_DECIMALS } from '@/constants/numbers';
 import { StatsigFlags } from '@/constants/statsig';
 import { DydxChainAsset, wallets, WalletType } from '@/constants/wallets';
 
@@ -23,7 +23,6 @@ import { useStatsigGateValue } from '@/hooks/useStatsig';
 import { useStringGetter } from '@/hooks/useStringGetter';
 import { useSubaccount } from '@/hooks/useSubaccount';
 import { useTokenConfigs } from '@/hooks/useTokenConfigs';
-import { useURLConfigs } from '@/hooks/useURLConfigs';
 
 import { DiscordIcon, GoogleIcon, TwitterIcon } from '@/icons';
 import { headerMixins } from '@/styles/headerMixins';
@@ -46,7 +45,6 @@ import { useAppDispatch, useAppSelector } from '@/state/appTypes';
 import { AppTheme } from '@/state/appUiConfigs';
 import { getAppTheme } from '@/state/appUiConfigsSelectors';
 import { openDialog } from '@/state/dialogs';
-import { selectIsKeplrConnected } from '@/state/walletSelectors';
 
 import { isTruthy } from '@/lib/isTruthy';
 import { MustBigNumber } from '@/lib/numbers';
@@ -57,16 +55,14 @@ import { WalletActions } from './WalletActions';
 
 export const AccountMenu = () => {
   const stringGetter = useStringGetter();
-  const { mintscanBase } = useURLConfigs();
   const { isTablet } = useBreakpoints();
   const { complianceState } = useComplianceState();
   const affiliatesEnabled = useStatsigGateValue(StatsigFlags.ffEnableAffiliates);
   const dispatch = useAppDispatch();
   const onboardingState = useAppSelector(getOnboardingState);
   const freeCollateral = useAppSelector(getSubaccountFreeCollateral);
-  const isKeplr = useAppSelector(selectIsKeplrConnected);
 
-  const { nativeTokenBalance, usdcBalance } = useAccountBalance();
+  const { ethBalance, usdcBalance } = useAccountBalance();
 
   const { usdcImage, usdcLabel, chainTokenImage, chainTokenLabel } = useTokenConfigs();
   const theme = useAppSelector(getAppTheme);
@@ -175,49 +171,28 @@ export const AccountMenu = () => {
                 </$AddressRow>
               )}
             <$Balances>
-              {/* NOTE: disabled for demo */}
-              {/* <div>
+              <div>
                 <div>
                   <$label>
                     {stringGetter({
-                      key: STRING_KEYS.ASSET_BALANCE,
-                      params: { ASSET: chainTokenLabel },
+                      key: STRING_KEYS.WALLET_BALANCE,
+                      params: { ASSET: 'ETH' },
                     })}
-                    <AssetIcon logoUrl={chainTokenImage} symbol={chainTokenLabel} />
+                    <AssetIcon logoUrl={chainTokenImage} symbol="ETH" />
                   </$label>
-                  <$BalanceOutput type={OutputType.Asset} value={nativeTokenBalance} />
-                </div>
-                <SubaccountActions
-                  asset={DydxChainAsset.CHAINTOKEN}
-                  complianceState={complianceState}
-                  dispatch={dispatch}
-                  hasBalance={nativeTokenBalance.gt(0)}
-                  stringGetter={stringGetter}
-                />
-              </div> */}
-              {(isDev || isKeplr) && (
-                <div>
-                  <div>
-                    <$label>
-                      {stringGetter({
-                        key: STRING_KEYS.WALLET_BALANCE,
-                        params: { ASSET: usdcLabel },
-                      })}
-                      <AssetIcon logoUrl={usdcImage} symbol="USDC" />
-                    </$label>
-                    <$BalanceOutput
-                      type={OutputType.Asset}
-                      value={usdcBalance}
-                      fractionDigits={SMALL_USD_DECIMALS}
-                    />
-                  </div>
-                  <WalletActions
-                    complianceState={complianceState}
-                    dispatch={dispatch}
-                    stringGetter={stringGetter}
+                  <$BalanceOutput
+                    type={OutputType.Asset}
+                    value={ethBalance}
+                    fractionDigits={SMALL_ETH_DECIMALS}
                   />
                 </div>
-              )}
+                <WalletActions
+                  complianceState={complianceState}
+                  dispatch={dispatch}
+                  stringGetter={stringGetter}
+                />
+              </div>
+
               <div>
                 <div>
                   <$label>
@@ -243,6 +218,7 @@ export const AccountMenu = () => {
                 />
               </div>
             </$Balances>
+
             {showConfirmPendingDeposit && (
               <$ConfirmPendingDeposit>
                 You have a pending deposit

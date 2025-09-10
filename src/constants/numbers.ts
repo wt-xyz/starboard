@@ -4,6 +4,7 @@ export const SMALL_USD_DECIMALS = 4;
 export const PERCENT_DECIMALS = 2;
 export const SMALL_PERCENT_DECIMALS = 4;
 export const TINY_PERCENT_DECIMALS = 6;
+export const SMALL_ETH_DECIMALS = 6;
 
 export const INTEGER_DECIMALS = 0;
 export const LEVERAGE_DECIMALS = 2;
