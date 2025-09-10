@@ -4,7 +4,6 @@ import { BonsaiCore } from '@/bonsai/ontology';
 import { usePrivy } from '@privy-io/react-auth';
 import { AES, enc } from 'crypto-js';
 import { type Subaccount } from 'starboard-client-js';
-import { zeroAddress } from 'viem';
 
 import { OnboardingGuard, OnboardingState } from '@/constants/account';
 import { LocalStorageKey } from '@/constants/localStorage';
@@ -186,7 +185,7 @@ const useAccountsContext = () => {
     // dYdX accounts
     hdKey,
 
-    dydxAddress: `dydx${zeroAddress}` as DydxAddress,
+    dydxAddress: undefined as unknown as DydxAddress, // TODO: supply real dYdX bech32 address when available
 
     // Onboarding state
     saveHasAcknowledgedTerms,

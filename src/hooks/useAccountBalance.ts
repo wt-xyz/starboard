@@ -45,7 +45,7 @@ export const useAccountBalance = (): {
     isFetching,
     refetch,
   } = useQuery({
-    queryKey: ['fuel', 'ethBalance', address, defaultRpc, chainTokenAssetId],
+    queryKey: ['fuel', 'ethBalance', address, defaultRpc, usdcAssetId, chainTokenAssetId],
     queryFn: async () => {
       if (!address) return [ZERO, ZERO];
       return await Promise.all([

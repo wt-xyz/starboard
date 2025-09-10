@@ -20,9 +20,14 @@ export const useEndpointsConfig = () => {
   const selectedNetwork = useAppSelector(getSelectedNetwork);
   const endpointsConfig: EndpointsConfig = ENVIRONMENT_CONFIG_MAP[selectedNetwork].endpoints;
 
+  const rpcs = endpointsConfig?.rpcs ?? [];
+  if (rpcs.length <= 0) {
+    throw new Error(`No RPC endpoints configured for network ${selectedNetwork}`);
+  }
+
   return {
-    rpcs: endpointsConfig.rpcs,
-    defaultRpc: endpointsConfig.rpcs[0]!, // assume there's always at least one RPC
+    rpcs,
+    defaultRpc: rpcs.at(0)!,
     indexer: endpointsConfig.indexers[0]!, // assume there's only one option for indexer endpoints
     validators: endpointsConfig.validators,
     skip: endpointsConfig.skip,

@@ -91,12 +91,7 @@ export const AccountMenu = () => {
 
   const { appleAppStoreUrl, googlePlayStoreUrl } = useMobileAppUrl();
 
-  const usedBalanceBN = MustBigNumber(usdcBalance);
-
-  const showConfirmPendingDeposit =
-    walletInfo?.name === WalletType.Keplr &&
-    usedBalanceBN.gt(AMOUNT_RESERVED_FOR_GAS_USDC) &&
-    usedBalanceBN.minus(AMOUNT_RESERVED_FOR_GAS_USDC).toFixed(2) !== '0.00';
+  const showConfirmPendingDeposit = false; // TODO: detect pending deposits
 
   let walletIcon;
   if (onboardingState === OnboardingState.WalletConnected) {

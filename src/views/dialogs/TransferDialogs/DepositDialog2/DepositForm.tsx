@@ -114,11 +114,7 @@ export const DepositForm = ({
   const { sourceAccount } = useAccounts();
 
   const signer = useMemo(() => {
-    if (sourceAccount.chain === WalletNetworkType.Evm) {
-      return walletClient;
-    }
-
-    throw new Error('wallet type not handled');
+    return sourceAccount.chain === WalletNetworkType.Evm ? walletClient : undefined;
   }, [sourceAccount.chain, walletClient]);
 
   const hasSufficientBalance = depositRoute
