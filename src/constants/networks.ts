@@ -3,8 +3,9 @@ import environments from '../../public/configs/v1/env.json';
 // Whether we are in local or dev environment
 export const isDev = process.env.NODE_ENV !== 'production';
 
-// For now we only support one environment at a time (TESTNET)
-export const AVAILABLE_ENVIRONMENTS = environments.deployments.TESTNET;
+export const AVAILABLE_ENVIRONMENTS = isDev
+  ? environments.deployments.DEV // Local Env
+  : environments.deployments.PROD; // Production Env
 export const ENVIRONMENT_CONFIG_MAP = environments.environments;
 export const TOKEN_CONFIG_MAP = environments.tokens;
 export const LINKS_CONFIG_MAP = environments.links;
