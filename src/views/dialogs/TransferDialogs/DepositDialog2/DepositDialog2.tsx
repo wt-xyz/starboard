@@ -56,7 +56,7 @@ export const DepositDialog2 = ({ setIsOpen }: DialogProps<DepositDialog2Props>) 
   const { isMobile } = useBreakpoints();
   const stringGetter = useStringGetter();
 
-  const [formState, setFormState] = useState<DepositFormState>('form');
+  const [formState, setFormState] = useState<DepositFormState>('qr-deposit');
   const tokenSelectRef = useRef<HTMLDivElement | null>(null);
 
   const dialogTitle = (
@@ -85,6 +85,8 @@ export const DepositDialog2 = ({ setIsOpen }: DialogProps<DepositDialog2Props>) 
   };
 
   const onBack = () => {
+    // Note: We'll only allow to deposit
+    // from QR code - simply show address
     if (formState === 'token-select') {
       onShowForm();
     } else {
@@ -105,7 +107,7 @@ export const DepositDialog2 = ({ setIsOpen }: DialogProps<DepositDialog2Props>) 
       withAnimation
       hasHeaderBorder
       setIsOpen={setIsOpen}
-      onBack={formState === 'form' ? undefined : onBack}
+      onBack={undefined}
       title={dialogTitle}
       placement={isMobile ? DialogPlacement.FullScreen : DialogPlacement.Default}
     >

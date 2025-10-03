@@ -61,7 +61,7 @@ export function setUpUsdcRebalanceLifecycle(store: RootStore) {
       async function rebalanceWalletFunds() {
         const { localDydxWallet, parentSubaccountInfo, sourceAccount, rebalanceAction } = data!;
 
-        if (rebalanceAction == null) return;
+        if (rebalanceAction == null || !localDydxWallet) return;
 
         if (rebalanceAction.requiredAction === 'deposit') {
           const { amountToDeposit, usdcBalance, targetAmount } = rebalanceAction;
@@ -78,7 +78,7 @@ export function setUpUsdcRebalanceLifecycle(store: RootStore) {
           );
 
           const subaccountClient = new SubaccountClient(
-            localDydxWallet!,
+            localDydxWallet,
             parentSubaccountInfo.subaccount
           );
 

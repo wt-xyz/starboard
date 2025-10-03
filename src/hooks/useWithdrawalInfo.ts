@@ -27,7 +27,7 @@ export const useWithdrawalInfo = ({
   transferType: 'withdrawal' | 'transfer';
 }) => {
   const { getWithdrawalAndTransferGatingStatus, getWithdrawalCapacityByDenom } = useDydxClient();
-  const { usdcDenom, usdcDecimals } = useTokenConfigs();
+  const { usdcAssetId, usdcDecimals } = useTokenConfigs();
   const { height } = orEmptyObj(useApiState());
   const selectedLocale = useAppSelector(getSelectedLocale);
   const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ export const useWithdrawalInfo = ({
     queryKey: ['usdcWithdrawalCapacity'],
     queryFn: wrapAndLogError(
       async () => {
-        const response = await getWithdrawalCapacityByDenom({ denom: usdcDenom });
+        const response = await getWithdrawalCapacityByDenom({ denom: usdcAssetId });
         return JSON.parse(encodeJson(response, ByteArrayEncoding.BIGINT));
       },
       'useWithdrawalInfo/getWithdrawalCapacityByDenom',

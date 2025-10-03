@@ -12,6 +12,7 @@ import {
 } from '@radix-ui/react-dropdown-menu';
 import styled from 'styled-components';
 
+import { layoutMixins } from '@/styles/layoutMixins';
 import { popoverMixins } from '@/styles/popoverMixins';
 
 import { Icon, IconName } from '@/components/Icon';
@@ -143,4 +144,5 @@ const $Content = styled(Content)`
 
   ${popoverMixins.popover}
   ${popoverMixins.popoverAnimation}
+  ${layoutMixins.withOuterBorder}
 `;

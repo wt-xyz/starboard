@@ -40,7 +40,7 @@ export const StakingPanel = ({ className }: { className?: string }) => {
   const stakingApr = useStakingAPR();
 
   const { complianceState } = useComplianceState();
-  const { nativeTokenBalance, nativeStakingBalance } = useAccountBalance();
+  const { ethBalance: nativeTokenBalance, nativeStakingBalance } = useAccountBalance();
   const { chainTokenImage, chainTokenLabel } = useTokenConfigs();
   const { protocolStaking } = useURLConfigs();
 

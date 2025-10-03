@@ -19,15 +19,14 @@ type TokenConfigs = {
 
 export type TokenConfigsResult = {
   tokensConfigs: TokenConfigs;
-  usdcDenom: string;
+  usdcAssetId: string;
   usdcDecimals: number;
-  usdcGasDenom: string;
   usdcImage: string;
   usdcLabel: string;
-  chainTokenDenom: string;
   chainTokenDecimals: number;
   chainTokenImage: string;
   chainTokenLabel: string;
+  chainTokenAssetId: string;
 };
 
 const getTokenConfigsData = (selectedDydxChainId: DydxChainId): TokenConfigsResult => {
@@ -35,12 +34,11 @@ const getTokenConfigsData = (selectedDydxChainId: DydxChainId): TokenConfigsResu
 
   return {
     tokensConfigs,
-    usdcDenom: tokensConfigs[DydxChainAsset.USDC].denom,
+    usdcAssetId: tokensConfigs[DydxChainAsset.USDC].assetId,
+    chainTokenAssetId: tokensConfigs[DydxChainAsset.CHAINTOKEN].assetId,
     usdcDecimals: tokensConfigs[DydxChainAsset.USDC].decimals,
-    usdcGasDenom: tokensConfigs[DydxChainAsset.USDC].gasDenom,
     usdcImage: tokensConfigs[DydxChainAsset.USDC].image,
     usdcLabel: tokensConfigs[DydxChainAsset.USDC].name,
-    chainTokenDenom: tokensConfigs[DydxChainAsset.CHAINTOKEN].denom,
     chainTokenDecimals: tokensConfigs[DydxChainAsset.CHAINTOKEN].decimals,
     chainTokenImage: tokensConfigs[DydxChainAsset.CHAINTOKEN].image,
     chainTokenLabel: tokensConfigs[DydxChainAsset.CHAINTOKEN].name,

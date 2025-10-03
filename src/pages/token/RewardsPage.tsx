@@ -44,23 +44,19 @@ const RewardsPage = () => {
   const { complianceState } = useComplianceState();
   const { isTablet, isNotTablet } = useBreakpoints();
 
-  const { usdcDenom } = useTokenConfigs();
+  const { usdcAssetId } = useTokenConfigs();
 
   const { totalRewards } = orEmptyObj(BonsaiHooks.useStakingRewards().data);
 
   const totalUsdcRewards = sumBy(
-    (totalRewards ?? EMPTY_ARR).filter((reward) => reward.denom === usdcDenom && reward.amount),
+    (totalRewards ?? EMPTY_ARR).filter((reward) => reward.denom === usdcAssetId && reward.amount),
     (a) => a.amount
   );
 
   const ethereumChainId = useEnvConfig('ethereumChainId');
   const chainId = Number(ethereumChainId);
   // v3 token is only on mainnet
-  const { balance: tokenBalance } = useAccountBalance({
-    addressOrDenom: chainId === 1 ? import.meta.env.VITE_V3_TOKEN_ADDRESS : undefined,
-    chainId: 1,
-    isCosmosChain: false,
-  });
+  const { balance: tokenBalance } = useAccountBalance();
 
   const showMigratePanel =
     import.meta.env.VITE_V3_TOKEN_ADDRESS && isNotTablet && MustBigNumber(tokenBalance).gt(0);

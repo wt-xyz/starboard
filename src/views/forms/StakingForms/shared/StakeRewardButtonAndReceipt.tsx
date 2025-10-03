@@ -73,7 +73,7 @@ export const StakeRewardButtonAndReceipt = ({
   const stringGetter = useStringGetter();
 
   const canAccountTrade = useAppSelector(calculateCanAccountTrade);
-  const { usdcBalance, nativeTokenBalance } = useAccountBalance();
+  const { usdcBalance, ethBalance: nativeTokenBalance } = useAccountBalance();
   const { usdcLabel, chainTokenLabel } = useTokenConfigs();
   const [errorToDisplay, setErrorToDisplay] = useState(alert);
 

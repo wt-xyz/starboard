@@ -59,7 +59,7 @@ export const useSubaccount = () => useContext(SubaccountContext);
 
 const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWallet }) => {
   const dispatch = useAppDispatch();
-  const { usdcDenom, usdcDecimals, chainTokenDecimals } = useTokenConfigs();
+  const { usdcAssetId, usdcDecimals, chainTokenDecimals } = useTokenConfigs();
   const { sourceAccount } = useAccounts();
   const { compositeClient, faucetClient } = useDydxClient();
 
@@ -223,7 +223,10 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
 
   const depositCurrentBalance = useCallback(async () => {
     const currentBalance = (
-      await compositeClient?.validatorClient.get.getAccountBalance(dydxAddress as string, usdcDenom)
+      await compositeClient?.validatorClient.get.getAccountBalance(
+        dydxAddress as string,
+        usdcAssetId
+      )
     )?.amount;
 
     if (!currentBalance) throw new Error('Failed to get current balance');
@@ -235,7 +238,7 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
     if (depositAmount > 0) {
       await deposit(depositAmount);
     }
-  }, [usdcDecimals, compositeClient, dydxAddress, usdcDenom, deposit]);
+  }, [usdcDecimals, compositeClient, dydxAddress, usdcAssetId, deposit]);
 
   const withdraw = useCallback(
     async (amount: number, fromSubaccountNumber: number) => {
