@@ -11,7 +11,6 @@ import { useAccountBalance } from '@/hooks/useAccountBalance';
 import { useAccounts } from '@/hooks/useAccounts';
 import { useStringGetter } from '@/hooks/useStringGetter';
 import { useSubaccount } from '@/hooks/useSubaccount';
-import { useTokenConfigs } from '@/hooks/useTokenConfigs';
 
 import breakpoints from '@/styles/breakpoints';
 import { layoutMixins } from '@/styles/layoutMixins';
@@ -36,13 +35,8 @@ export const ConfirmPendingDepositDialog = ({
   const stringGetter = useStringGetter();
 
   const { deposit } = useSubaccount();
-  const { usdcDenom } = useTokenConfigs();
 
-  const { refetchQuery } = useAccountBalance({
-    chainId: selectedDydxChainId,
-    isCosmosChain: true,
-    addressOrDenom: usdcDenom,
-  });
+  const { refetchQuery } = useAccountBalance();
 
   const handleDepositToSubaccount = async () => {
     setIsLoading(true);

@@ -1,3 +1,5 @@
 {
-  "FUEL_WALLET": "Fuel Wallet"
+  "FUEL_WALLET": "Fuel Wallet",
+  "COPY_FUEL_WALLET_ADDRESS": "Copy Wallet Address",
+  "ONLY_SEND_ON_FUEL": "Only send assets on Fuel to this address"
 }

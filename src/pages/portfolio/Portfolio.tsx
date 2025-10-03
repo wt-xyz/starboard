@@ -70,7 +70,7 @@ const PortfolioPage = () => {
 
   const onboardingState = useAppSelector(getOnboardingState);
   const freeCollateral = useAppSelector(getSubaccountFreeCollateral);
-  const { nativeTokenBalance } = useAccountBalance();
+  const { ethBalance: nativeTokenBalance } = useAccountBalance();
 
   const numTotalOpenOrders = useAppSelector(BonsaiCore.account.openOrders.data).length;
   const numTotalPositions = (

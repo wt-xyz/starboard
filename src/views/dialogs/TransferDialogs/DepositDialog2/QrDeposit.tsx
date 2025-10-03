@@ -40,7 +40,7 @@ export const QrDeposit = ({ disabled }: { disabled: boolean }) => {
           key: STRING_KEYS.TO_DEPOSIT_FROM_CEX,
           params: {
             ASSET: <span tw="text-color-text-1">USDC</span>,
-            NETWORK: <span tw="text-color-text-1">Noble Network</span>,
+            NETWORK: <span tw="text-color-text-1">Fuel Network</span>,
           },
         })}
       </span>
@@ -48,8 +48,8 @@ export const QrDeposit = ({ disabled }: { disabled: boolean }) => {
       <$QrContainer>
         <QrCode
           imgOverride={{
-            alt: 'Fuel Mainnet',
-            src: '/chains/noble.png',
+            alt: '',
+            src: '/fuel_network.png',
           }}
           tw="text-center"
           hasLogo
@@ -59,10 +59,10 @@ export const QrDeposit = ({ disabled }: { disabled: boolean }) => {
       </$QrContainer>
 
       <div tw="flexColumn items-center gap-0.5">
-        <span>Your Noble address</span>
+        <span>Your Fuel address</span>
 
         <$CopyAddressButton disabled={isDisabled} onClick={onCopy}>
-          <span>{truncateAddress(address, 'fuel')}</span>
+          <span>{truncateAddress(address, '', 6)}</span>
           <Icon
             css={{
               color: isCopied ? 'var(--color-success)' : 'var(--color-text-1)',
@@ -75,13 +75,13 @@ export const QrDeposit = ({ disabled }: { disabled: boolean }) => {
       <div tw="flexColumn items-center">
         <span tw="row gap-0.25 text-color-warning">
           <Icon iconName={IconName.Warning} />
-          <span>{stringGetter({ key: STRING_KEYS.ONLY_SEND_ON_NOBLE })}</span>
+          <span>{stringGetter({ key: STRING_KEYS.ONLY_SEND_ON_FUEL })}</span>
         </span>
       </div>
 
       <div tw="flexColumn mt-auto items-center">
         <Button tw="w-full" action={ButtonAction.Primary} state={{ isDisabled }} onClick={onCopy}>
-          {stringGetter({ key: STRING_KEYS.COPY_NOBLE })}
+          {stringGetter({ key: STRING_KEYS.COPY_FUEL_WALLET_ADDRESS })}
         </Button>
       </div>
     </div>

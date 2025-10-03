@@ -8,6 +8,7 @@ import { STRING_KEYS } from '@/constants/localization';
 import { AppRoute } from '@/constants/routes';
 import { ColorToken } from '@/constants/styles/base';
 
+import { useAccountBalance } from '@/hooks/useAccountBalance';
 import { useBreakpoints } from '@/hooks/useBreakpoints';
 import { useLocaleSeparators } from '@/hooks/useLocaleSeparators';
 import { useStringGetter } from '@/hooks/useStringGetter';
@@ -68,9 +69,11 @@ export const AccountOverviewSection = () => {
 
   const equity = useAppSelector(getSubaccountEquity);
   const freeCollateral = useAppSelector(getSubaccountFreeCollateral);
+  const { usdcBalance } = useAccountBalance();
 
   const { balanceUsdc: vaultBalance } = orEmptyObj(useLoadedVaultAccount().data);
-  const totalValue = mapIfPresent(equity, (e) => e + (vaultBalance ?? 0));
+  const depositVaultBalance = mapIfPresent(equity, (e) => e + (vaultBalance ?? 0));
+  const totalValue = (depositVaultBalance ?? 0) + usdcBalance;
 
   const handleViewVault = useCallback(() => {
     track(AnalyticsEvents.ClickViewVaultFromOverview());

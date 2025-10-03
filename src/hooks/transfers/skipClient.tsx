@@ -119,7 +119,7 @@ export function getSkipClient() {
 }
 
 const useSkipClientContext = () => {
-  const { validators, skip } = useEndpointsConfig();
+  const { skip } = useEndpointsConfig();
   const { compositeClient } = useCompositeClient();
   const selectedDydxChainId = useAppSelector(getSelectedDydxChainId);
   const { sourceAccount } = useAccounts();
@@ -152,8 +152,6 @@ const useSkipClientContext = () => {
       apiUrl: skip,
       endpointOptions: {
         getRpcEndpointForChain: async (chainId: string) => {
-          if (chainId === selectedDydxChainId)
-            return compositeClient?.network.validatorConfig.restEndpoint ?? validators[0]!;
           const evmRpcUrls = RPCUrlsByChainId[chainId];
           if (evmRpcUrls?.length) return evmRpcUrls[0]!;
           throw new Error(`Error: no rpc endpoint found for chainId: ${chainId}`);
@@ -165,12 +163,7 @@ const useSkipClientContext = () => {
     skipClient.setOptions(options);
     const id = crypto.randomUUID();
     setInstanceId(id);
-  }, [
-    compositeClient?.network.validatorConfig.restEndpoint,
-    selectedDydxChainId,
-    skip,
-    validators,
-  ]);
+  }, [compositeClient?.network.validatorConfig.restEndpoint, selectedDydxChainId, skip]);
 
   return { skipClient, instanceId };
 };

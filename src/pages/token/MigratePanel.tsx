@@ -6,7 +6,6 @@ import { STRING_KEYS } from '@/constants/localization';
 
 import { useAccountBalance } from '@/hooks/useAccountBalance';
 import { useBreakpoints } from '@/hooks/useBreakpoints';
-import { useEnvConfig } from '@/hooks/useEnvConfig';
 import { useStringGetter } from '@/hooks/useStringGetter';
 import { useTokenConfigs } from '@/hooks/useTokenConfigs';
 
@@ -32,16 +31,8 @@ export const MigratePanel = ({ className }: { className?: string }) => {
   const stringGetter = useStringGetter();
   const { chainTokenLabel } = useTokenConfigs();
 
-  const ethereumChainId = useEnvConfig('ethereumChainId');
-
-  const chainId = Number(ethereumChainId);
-
   // v3 token is only on mainnet
-  const { balance: tokenBalance } = useAccountBalance({
-    addressOrDenom: chainId === 1 ? import.meta.env.VITE_V3_TOKEN_ADDRESS : undefined,
-    chainId: 1,
-    isCosmosChain: false,
-  });
+  const { balance: tokenBalance } = useAccountBalance();
 
   if (MustBigNumber(tokenBalance).lte(0)) {
     return null;

@@ -1,125 +1,75 @@
-import { BonsaiCore, BonsaiHooks } from '@/bonsai/ontology';
-import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
+
+import { BonsaiHooks } from '@/bonsai/ontology';
+import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
-import { erc20Abi, formatUnits } from 'viem';
-import { useBalance, useReadContracts } from 'wagmi';
+import { BN, formatUnits, Provider } from 'fuels';
 
-import { EvmAddress, WalletNetworkType } from '@/constants/wallets';
-
-import { useAppSelector } from '@/state/appTypes';
-
-import { isNativeDenom } from '@/lib/assetUtils';
 import { MustBigNumber } from '@/lib/numbers';
 
 import { useAccounts } from './useAccounts';
-import { useEnvConfig } from './useEnvConfig';
+import { useEndpointsConfig } from './useEndpointsConfig';
 import { useTokenConfigs } from './useTokenConfigs';
 
-type UseAccountBalanceProps = {
-  // Token Items
-  addressOrDenom?: string;
-
-  // Chain Items
-  chainId?: string | number;
-
-  isCosmosChain?: boolean;
-};
-
-export const useAccountBalance = ({
-  addressOrDenom,
-  chainId,
-  isCosmosChain,
-}: UseAccountBalanceProps = {}): {
+const ZERO = new BN(0);
+export const useAccountBalance = (): {
   balance: string | undefined;
   isQueryFetching: boolean;
   nativeStakingBalance: number;
-  nativeTokenBalance: BigNumber;
+  ethBalance: BigNumber;
   queryStatus: 'success' | 'error' | 'pending';
   usdcBalance: number;
   refetchQuery: (options?: RefetchOptions) => Promise<QueryObserverResult>;
 } => {
-  const { sourceAccount } = useAccounts();
+  const { chainTokenAssetId, usdcAssetId, usdcDecimals } = useTokenConfigs();
+  const { defaultRpc } = useEndpointsConfig();
+  const { address } = useAccounts();
 
-  const { chainTokenAmount: nativeTokenCoinBalance, usdcAmount: usdcCoinBalance } = useAppSelector(
+  /**
+ * TODO: Map-out balances to user open / closed positions
+ * const { chainTokenAmount: nativeTokenCoinBalance, usdcAmount: usdcCoinBalance } = useAppSelector(
     BonsaiCore.account.balances.data
   );
+ */
 
-  const { chainTokenDenom } = useTokenConfigs();
-  const evmChainId = Number(useEnvConfig('ethereumChainId'));
   const stakingBalances = BonsaiHooks.useStakingDelegations().data?.balances;
-
-  const isSolanaChain = sourceAccount.chain === WalletNetworkType.Solana;
-
-  const evmAddress =
-    sourceAccount.chain === WalletNetworkType.Evm
-      ? (sourceAccount.address as EvmAddress)
-      : undefined;
-
-  const isEVMnativeToken = isNativeDenom(addressOrDenom);
-
-  const evmNative = useBalance({
-    address: evmAddress,
-    chainId: typeof chainId === 'number' ? chainId : Number(evmChainId),
-    query: {
-      enabled: Boolean(!isCosmosChain && !isSolanaChain && isEVMnativeToken),
-    },
-  });
-
-  const tokenContract = {
-    address: addressOrDenom as EvmAddress,
-    abi: erc20Abi,
-  } as const;
-
-  const evmToken = useReadContracts({
-    contracts: [
-      {
-        ...tokenContract,
-        functionName: 'balanceOf',
-        args: [evmAddress ?? '0x'],
-        chainId: typeof chainId === 'number' ? chainId : undefined,
-      } as const,
-      {
-        ...tokenContract,
-        functionName: 'decimals',
-        chainId: typeof chainId === 'number' ? chainId : undefined,
-      } as const,
-    ],
-    query: {
-      enabled: Boolean(
-        evmAddress && !isCosmosChain && addressOrDenom?.startsWith('0x') && !isEVMnativeToken
-      ),
-    },
-  });
-
-  const { value: evmNativeBalance, decimals: evmNativeDecimals } = evmNative.data ?? {};
-  const [evmTokenBalance, evmTokenDecimals] = evmToken.data ?? [];
-
-  const evmBalance = isEVMnativeToken
-    ? evmNativeBalance !== undefined && evmNativeDecimals !== undefined
-      ? formatUnits(evmNativeBalance, evmNativeDecimals)
-      : undefined
-    : evmTokenBalance?.result !== undefined && evmTokenDecimals?.result !== undefined
-      ? formatUnits(evmTokenBalance.result, evmTokenDecimals.result)
-      : undefined;
-
-  const balance = evmBalance;
-
-  const nativeTokenBalance = MustBigNumber(nativeTokenCoinBalance);
-  const usdcBalance = MustBigNumber(usdcCoinBalance).toNumber();
-
-  const nativeStakingCoinBalanace = stakingBalances?.[chainTokenDenom];
+  const nativeStakingCoinBalanace = stakingBalances?.[chainTokenAssetId];
   const nativeStakingBalance = MustBigNumber(nativeStakingCoinBalanace?.amount).toNumber();
 
-  const queryStatus = evmNative.status;
-  const isQueryFetching = evmNative.isFetching;
+  // Fuel ETH balance fetching
+  const fuelProvider = useMemo(() => new Provider(defaultRpc), [defaultRpc]);
+
+  const {
+    data: balances = [],
+    status,
+    isFetching,
+    refetch,
+  } = useQuery({
+    queryKey: ['fuel', 'ethBalance', address, defaultRpc, usdcAssetId, chainTokenAssetId],
+    queryFn: async () => {
+      if (!address) return [ZERO, ZERO];
+      return await Promise.all([
+        fuelProvider.getBalance(address, chainTokenAssetId),
+        fuelProvider.getBalance(address, usdcAssetId),
+      ]);
+    },
+    enabled: Boolean(address),
+    refetchInterval: 3500,
+    staleTime: 2000,
+  });
+
+  const [ethBalanceRaw = ZERO, usdcBalanceRaw = ZERO] = balances;
+
+  const balance = formatUnits(ethBalanceRaw, 9);
+  const usdcBalance = Number(formatUnits(usdcBalanceRaw, usdcDecimals));
 
   return {
-    balance: balance?.toString(),
-    nativeTokenBalance,
+    balance,
+    ethBalance: MustBigNumber(balance),
     nativeStakingBalance,
     usdcBalance,
-    queryStatus,
-    isQueryFetching,
-    refetchQuery: evmNative.refetch,
+    queryStatus: status,
+    isQueryFetching: isFetching,
+    refetchQuery: refetch,
   };
 };

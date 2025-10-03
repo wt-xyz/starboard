@@ -88,10 +88,10 @@ export interface TransferFormInputData {
   display: {
     usdcName: string;
     usdcDecimals: number;
-    usdcDenom: string;
+    usdcAssetId: string;
     nativeName: string;
     nativeDecimals: number;
-    nativeDenom: string;
+    nativeAssetId: string;
   };
 }
 
@@ -161,7 +161,7 @@ function calculateSummary(
   const feeDenom =
     inputData.feeResult?.denom == null
       ? undefined
-      : inputData.feeResult.denom === inputData.display.usdcDenom
+      : inputData.feeResult.denom === inputData.display.usdcAssetId
         ? TransferToken.USDC
         : TransferToken.NATIVE;
 

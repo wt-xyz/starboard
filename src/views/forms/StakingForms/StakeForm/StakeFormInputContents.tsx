@@ -55,7 +55,7 @@ export const StakeFormInputContents = ({
 }: ElementProps) => {
   const stringGetter = useStringGetter();
   const { chainTokenLabel } = useTokenConfigs();
-  const { nativeTokenBalance } = useAccountBalance();
+  const { ethBalance: nativeTokenBalance } = useAccountBalance();
 
   const newBalance = nativeTokenBalance.minus(stakedAmount ?? 0);
   const isBalanceEnoughForGas = nativeTokenBalance.gte(AMOUNT_RESERVED_FOR_GAS_DYDX);

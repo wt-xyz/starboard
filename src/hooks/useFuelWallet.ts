@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { FuelWalletConnector } from '@fuels/connectors';
-import { Fuel } from 'fuels';
+import { Fuel, type FuelConnector } from 'fuels';
 
 import { OnboardingState } from '@/constants/account';
 import { ConnectorType, WalletNetworkType, WalletType } from '@/constants/wallets';
@@ -30,77 +30,45 @@ export const useFuelWallet = () => {
     const fuelInstance = new Fuel({
       connectors: [new FuelWalletConnector()],
     });
+
     setFuel(fuelInstance);
-  }, []);
 
-  // Check connection status on mount and when fuel changes
-  useEffect(() => {
-    if (!fuel) return;
+    const handleConnectorChange = async (connection: FuelConnector) => {
+      const accounts = await connection.accounts();
+      const address = accounts?.[0];
 
-    const checkConnection = async () => {
-      try {
-        const connection = await fuel.currentConnector();
+      // Early exit if no address
+      if (!address) return;
 
-        if (connection) {
-          const accounts = await fuel.accounts();
+      setIsConnected(true);
+      setAddress(address);
 
-          if (accounts && accounts.length > 0) {
-            const account = accounts[0] as any; // Type assertion to handle Fuel SDK type inference
+      dispatch(
+        setSourceAddress({
+          address,
+          chain: WalletNetworkType.Evm,
+        })
+      );
 
-            // Try different ways to get the address
-            let accountAddress = '';
-            if (typeof account === 'string') {
-              accountAddress = account;
-            } else if (account && typeof account === 'object' && 'address' in account) {
-              accountAddress = String(account.address);
-            } else {
-              return;
-            }
+      dispatch(
+        setWalletInfo({
+          connectorType: ConnectorType.Injected,
+          name: WalletType.FuelWallet,
+          icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzAwRkY4OCIvPgo8cGF0aCBkPSJNOCAxMkM4IDEwLjg5NTQgOC44OTU0MyAxMCAxMCAxMEgyMkMyMy4xMDQ2IDEwIDI0IDEwLjg5NTQgMjQgMTJWMjBDMjQgMjEuMTA0NiAyMy4xMDQ2IDIyIDIyIDIySDEwQzguODk1NDMgMjIgOCAyMS4xMDQ2IDggMjBWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjQgMTZDMjQgMTQuODk1NCAyMy4xMDQ2IDE0IDIyIDE0SDI2QzI3LjEwNDYgMTQgMjggMTQuODk1NCAyOCAxNlYxNkMyOCAxNy4xMDQ2IDI3LjEwNDYgMTggMjYgMThIMjJDMjMuMTA0NiAxOCAyNCAxNy4xMDQ2IDI0IDE2WiIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMiIgZmlsbD0iIzAwRkY4OCIvPgo8L3N2Zz4K',
+          rdns: 'fuel-wallet',
+        } as FuelWalletInfo)
+      );
 
-            setIsConnected(true);
-            setAddress(accountAddress);
-
-            dispatch(
-              setSourceAddress({
-                address: accountAddress,
-                chain: WalletNetworkType.Evm,
-              })
-            );
-
-            dispatch(
-              setWalletInfo({
-                connectorType: ConnectorType.Injected,
-                name: WalletType.FuelWallet,
-                icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzAwRkY4OCIvPgo8cGF0aCBkPSJNOCAxMkM4IDEwLjg5NTQgOC44OTU0MyAxMCAxMCAxMEgyMkMyMy4xMDQ2IDEwIDI0IDEwLjg5NTQgMjQgMTJWMjBDMjQgMjEuMTA0NiAyMy4xMDQ2IDIyIDIyIDIySDEwQzguODk1NDMgMjIgOCAyMS4xMDQ2IDggMjBWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjQgMTZDMjQgMTQuODk1NCAyMy4xMDQ2IDE0IDIyIDE0SDI2QzI3LjEwNDYgMTQgMjggMTQuODk1NCAyOCAxNlYxNkMyOCAxNy4xMDQ2IDI3LjEwNDYgMTggMjYgMThIMjJDMjMuMTA0NiAxOCAyNCAxNy4xMDQ2IDI0IDE2WiIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMiIgZmlsbD0iIzAwRkY4OCIvPgo8L3N2Zz4K',
-                rdns: 'fuel-wallet',
-              } as FuelWalletInfo)
-            );
-
-            // For Fuel wallet, skip key derivation and go directly to AccountConnected
-            dispatch(setOnboardingState(OnboardingState.AccountConnected));
-          } else {
-            setIsConnected(false);
-            setAddress(undefined);
-            // Reset onboarding state when no accounts
-            dispatch(setOnboardingState(OnboardingState.Disconnected));
-          }
-        } else {
-          setIsConnected(false);
-          setAddress(undefined);
-          // Reset onboarding state when no connector
-          dispatch(setOnboardingState(OnboardingState.Disconnected));
-        }
-      } catch (err) {
-        // Error checking Fuel connection
-        setIsConnected(false);
-        setAddress(undefined);
-        // Reset onboarding state on error
-        dispatch(setOnboardingState(OnboardingState.Disconnected));
-      }
+      // For Fuel wallet, skip key derivation and go directly to AccountConnected
+      dispatch(setOnboardingState(OnboardingState.AccountConnected));
     };
 
-    checkConnection();
-  }, [fuel, dispatch]);
+    fuelInstance.on(fuelInstance.events.currentConnector, handleConnectorChange);
+
+    return () => {
+      fuelInstance.off(fuelInstance.events.currentConnector, handleConnectorChange);
+    };
+  }, []);
 
   const connect = useCallback(async () => {
     if (!fuel) {
@@ -113,51 +81,10 @@ export const useFuelWallet = () => {
       setError(undefined);
 
       // Select the Fuel Wallet connector
-      await fuel.selectConnector('Fuel Wallet');
+      await fuel.selectConnector(WalletType.FuelWallet);
+      await fuel.connect();
 
-      // Connect to the wallet
-      const connection = await fuel.connect();
-
-      if (connection) {
-        const accounts = await fuel.accounts();
-
-        if (accounts && accounts.length > 0) {
-          const account = accounts[0] as any; // Type assertion to handle Fuel SDK type inference
-
-          // Try different ways to get the address
-          let accountAddress = '';
-          if (typeof account === 'string') {
-            accountAddress = account;
-          } else if (account && typeof account === 'object' && 'address' in account) {
-            accountAddress = String(account.address);
-          } else {
-            setError('Could not get account address');
-            return;
-          }
-
-          setIsConnected(true);
-          setAddress(accountAddress);
-
-          dispatch(
-            setSourceAddress({
-              address: accountAddress,
-              chain: WalletNetworkType.Evm,
-            })
-          );
-
-          dispatch(
-            setWalletInfo({
-              connectorType: ConnectorType.Injected,
-              name: WalletType.FuelWallet,
-              icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzAwRkY4OCIvPgo8cGF0aCBkPSJNOCAxMkM4IDEwLjg5NTQgOC44OTU0MyAxMCAxMCAxMEgyMkMyMy4xMDQ2IDEwIDI0IDEwLjg5NTQgMjQgMTJWMjBDMjQgMjEuMTA0NiAyMy4xMDQ2IDIyIDIyIDIySDEwQzguODk1NDMgMjIgOCAyMS4xMDQ2IDggMjBWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjQgMTZDMjQgMTQuODk1NCAyMy4xMDQ2IDE0IDIyIDE0SDI2QzI3LjEwNDYgMTQgMjggMTQuODk1NCAyOCAxNlYxNkMyOCAxNy4xMDQ2IDI3LjEwNDYgMTggMjYgMThIMjJDMjMuMTA0NiAxOCAyNCAxNy4xMDQ2IDI0IDE2WiIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMiIgZmlsbD0iIzAwRkY4OCIvPgo8L3N2Zz4K',
-              rdns: 'fuel-wallet',
-            } as FuelWalletInfo)
-          );
-
-          // For Fuel wallet, skip key derivation and go directly to AccountConnected
-          dispatch(setOnboardingState(OnboardingState.AccountConnected));
-        }
-      }
+      fuel.emit(fuel.events.currentConnector, fuel.currentConnector());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to connect to Fuel wallet');
     } finally {
@@ -182,15 +109,16 @@ export const useFuelWallet = () => {
   }, [fuel, dispatch]);
 
   const getAccounts = useCallback(async () => {
-    if (!fuel || !isConnected) return [];
+    if (!isConnected) return [];
 
     try {
-      const accounts = await fuel.accounts();
-      return accounts || [];
+      const accounts = await fuel?.accounts();
+      return accounts ?? [];
     } catch (err) {
-      // Error getting Fuel accounts
-      return [];
+      // console.error('Error getting Fuel accounts:', err);
     }
+
+    return [];
   }, [fuel, isConnected]);
 
   return {

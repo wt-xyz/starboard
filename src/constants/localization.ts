@@ -31,6 +31,8 @@ export enum SupportedLocales {
 
 export const STARBOARD_STRING_KEYS = {
   FUEL_WALLET: 'FUEL_WALLET',
+  COPY_FUEL_WALLET_ADDRESS: 'COPY_FUEL_WALLET_ADDRESS',
+  ONLY_SEND_ON_FUEL: 'ONLY_SEND_ON_FUEL',
 } as const;
 
 export const STRING_KEYS = {
