@@ -21,6 +21,7 @@ import type { UserStats } from '@dydxprotocol/v4-proto/src/codegen/dydxprotocol/
 import { bigIntToBytes } from '../../lib/helpers';
 import { PAGE_REQUEST } from '../constants';
 import { UnexpectedClientError } from '../lib/errors';
+import { FuelGraphQLClient } from './fuel-graphql';
 import {
   AffiliateModule,
   BridgeModule,
@@ -48,15 +49,25 @@ protobuf.util.Long = Long;
 protobuf.configure();
 
 export class Get {
-  readonly tendermintClient: TendermintClient;
-  readonly stargateQueryClient: StargateQueryClient & TxExtension;
+  readonly tendermintClient?: TendermintClient;
+  readonly stargateQueryClient?: StargateQueryClient & TxExtension;
+  readonly fuelClient?: FuelGraphQLClient;
 
   constructor(
-    tendermintClient: TendermintClient,
-    stargateQueryClient: StargateQueryClient & TxExtension,
+    tendermintClient?: TendermintClient,
+    stargateQueryClient?: StargateQueryClient & TxExtension,
+    fuelClient?: FuelGraphQLClient,
   ) {
     this.tendermintClient = tendermintClient;
     this.stargateQueryClient = stargateQueryClient;
+    this.fuelClient = fuelClient;
+  }
+
+  /**
+   * @description Check if using Fuel GraphQL backend
+   */
+  private get isFuel(): boolean {
+    return this.fuelClient !== undefined;
   }
 
   /**
@@ -65,7 +76,25 @@ export class Get {
    * @returns last block structure
    */
   async latestBlock(): Promise<Block> {
-    return this.tendermintClient.getBlock();
+    if (this.isFuel && this.fuelClient) {
+      // Get latest block from Fuel GraphQL
+      const fuelBlock = await this.fuelClient.getBlock('latest');
+
+      // TODO: This keeps infinite loading state when
+      // returning the mocked block :/
+      return this.tendermintClient!.getBlock();
+
+      // Mock the Tendermint Block structure with Fuel data
+      // fuelBlock.time is already an ISO string from tai64ToDate().toISOString()
+      return {
+        header: {
+          height: fuelBlock.height,
+          time: fuelBlock.time,
+        },
+      } as Block;
+    }
+
+    return this.tendermintClient!.getBlock();
   }
 
   /**
@@ -74,6 +103,12 @@ export class Get {
    * @returns last height
    */
   async latestBlockHeight(): Promise<number> {
+    if (this.isFuel && this.fuelClient) {
+      // Use Fuel GraphQL to get block height
+      return this.fuelClient.getLatestBlockHeight();
+    }
+
+    // Use Cosmos Tendermint (existing logic)
     const block = await this.latestBlock();
     return block.header.height;
   }

@@ -20,7 +20,8 @@
     "useUnknownInCatchVariables": false,
     "noUncheckedIndexedAccess": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@/ts-sdk/*": ["./ts-sdk/src/*"]
     },
     "types": ["node", "@wdio/globals", "mocha"],
     "plugins": [

@@ -4,11 +4,12 @@ import Long from 'long';
 import protobuf from 'protobufjs';
 
 import {
-  ValidatorConfig,
   BROADCAST_POLL_INTERVAL_MS,
   BROADCAST_TIMEOUT_MS,
   SelectedGasDenom,
+  ValidatorConfig,
 } from './constants';
+import { FuelGraphQLClient } from './modules/fuel-graphql';
 import { Get } from './modules/get';
 import { Post } from './modules/post';
 import { TendermintClient } from './modules/tendermintClient';
@@ -24,6 +25,7 @@ export class ValidatorClient {
   public readonly config: ValidatorConfig;
   private _get?: Get;
   private _post?: Post;
+  private _isFuelGraphQL: boolean = false;
 
   /**
    * @description Connect to a validator client
@@ -38,6 +40,15 @@ export class ValidatorClient {
 
   private constructor(config: ValidatorConfig) {
     this.config = config;
+    // Detect if this is a Fuel GraphQL endpoint
+    this._isFuelGraphQL = config.restEndpoint.includes('/graphql');
+  }
+
+  /**
+   * @description Check if this client is using Fuel GraphQL
+   */
+  get isFuelGraphQL(): boolean {
+    return this._isFuelGraphQL;
   }
 
   /**
@@ -78,26 +89,38 @@ export class ValidatorClient {
   }
 
   private async initialize(): Promise<void> {
-    const tendermint37Client: Tendermint37Client = await Tendermint37Client.connect(
-      this.config.restEndpoint,
-    );
+    if (this._isFuelGraphQL) {
+      // Initialize Fuel GraphQL client
+      const fuelClient = new FuelGraphQLClient(this.config.restEndpoint);
 
-    const tendermintClient = new TendermintClient(tendermint37Client, {
-      broadcastPollIntervalMs: BROADCAST_POLL_INTERVAL_MS,
-      broadcastTimeoutMs: BROADCAST_TIMEOUT_MS,
-    });
-    const queryClient: QueryClient & TxExtension = QueryClient.withExtensions(
-      tendermint37Client,
-      setupTxExtension,
-    );
-    this._get = new Get(tendermintClient, queryClient);
-    this._post = new Post(
-      this._get!,
-      this.config.chainId,
-      this.config.denoms,
-      this.config.defaultClientMemo,
-      this.config.useTimestampNonce,
-      this.config.timestampNonceOffsetMs,
-    );
+      // Create Get module with Fuel client
+      this._get = new Get(undefined, undefined, fuelClient);
+
+      // Post module is not supported for Fuel GraphQL (read-only for now)
+      // this._post will remain undefined
+    } else {
+      // Initialize Cosmos Tendermint client (existing logic)
+      const tendermint37Client: Tendermint37Client = await Tendermint37Client.connect(
+        this.config.restEndpoint,
+      );
+
+      const tendermintClient = new TendermintClient(tendermint37Client, {
+        broadcastPollIntervalMs: BROADCAST_POLL_INTERVAL_MS,
+        broadcastTimeoutMs: BROADCAST_TIMEOUT_MS,
+      });
+      const queryClient: QueryClient & TxExtension = QueryClient.withExtensions(
+        tendermint37Client,
+        setupTxExtension,
+      );
+      this._get = new Get(tendermintClient, queryClient);
+      this._post = new Post(
+        this._get!,
+        this.config.chainId,
+        this.config.denoms,
+        this.config.defaultClientMemo,
+        this.config.useTimestampNonce,
+        this.config.timestampNonceOffsetMs,
+      );
+    }
   }
 }
