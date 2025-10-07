@@ -456,7 +456,8 @@ const resolvers = {
 async function startServer() {
     const server = new ApolloServer({
         typeDefs,
-        resolvers
+        resolvers,
+        csrfPrevention: false, // Disable CSRF
     });
 
     const { url } = await startStandaloneServer(server, {
