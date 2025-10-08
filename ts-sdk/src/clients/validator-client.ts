@@ -93,11 +93,12 @@ export class ValidatorClient {
       // Initialize Fuel GraphQL client
       const fuelClient = new FuelGraphQLClient(this.config.restEndpoint);
 
-      // Create Get module with Fuel client
-      this._get = new Get(undefined, undefined, fuelClient);
-
-      // Post module is not supported for Fuel GraphQL (read-only for now)
-      // this._post will remain undefined
+      // Initialize Get module with Fuel client
+      this._get = new Get(
+        undefined, // No Tendermint client
+        QueryClient as unknown as QueryClient & TxExtension,
+        fuelClient,
+      );
     } else {
       // Initialize Cosmos Tendermint client (existing logic)
       const tendermint37Client: Tendermint37Client = await Tendermint37Client.connect(
@@ -113,14 +114,15 @@ export class ValidatorClient {
         setupTxExtension,
       );
       this._get = new Get(tendermintClient, queryClient);
-      this._post = new Post(
-        this._get!,
-        this.config.chainId,
-        this.config.denoms,
-        this.config.defaultClientMemo,
-        this.config.useTimestampNonce,
-        this.config.timestampNonceOffsetMs,
-      );
     }
+
+    this._post = new Post(
+      this._get!,
+      this.config.chainId,
+      this.config.denoms,
+      this.config.defaultClientMemo,
+      this.config.useTimestampNonce,
+      this.config.timestampNonceOffsetMs,
+    );
   }
 }

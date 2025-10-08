@@ -80,13 +80,9 @@ export class Get {
       // Get latest block from Fuel GraphQL
       const fuelBlock = await this.fuelClient.getBlock('latest');
 
-      // TODO: This keeps infinite loading state when
-      // returning the mocked block :/
-      return this.tendermintClient!.getBlock();
-
       // Mock the Tendermint Block structure with Fuel data
-      // fuelBlock.time is already an ISO string from tai64ToDate().toISOString()
       return {
+        id: fuelBlock.id,
         header: {
           height: fuelBlock.height,
           time: fuelBlock.time,
