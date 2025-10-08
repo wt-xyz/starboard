@@ -3,15 +3,10 @@ import { ValidatorClient } from './clients/validator-client';
 import { encodeJson } from './lib/helpers';
 import { IndexerConfig, ValidatorConfig } from './types';
 
-class PingResponse {
-  public readonly height: number;
-  public readonly responseTime: Date;
-  public endpoint?: string;
-
-  constructor(height: number) {
-    this.height = height;
-    this.responseTime = new Date();
-  }
+interface PingResponse {
+  endpoint: string;
+  height: number;
+  time: Date;
 }
 
 export const isTruthy = <T>(n?: T | false | null | undefined | 0): n is T => Boolean(n);
@@ -67,12 +62,11 @@ export class NetworkOptimizer {
         clients
           .map(async (client) => {
             const block = await client.get.latestBlock();
-            const response = new PingResponse(block.header.height);
             return {
               endpoint: client.config.restEndpoint,
-              height: response.height,
-              time: response.responseTime.getTime(),
-            };
+              height: Number(block.header.height),
+              time: new Date(block.header.time),
+            } satisfies PingResponse;
           })
           .map((promise) => promise.catch((_) => undefined)),
       )
@@ -106,12 +100,11 @@ export class NetworkOptimizer {
         clients
           .map(async (client) => {
             const block = await client.utility.getHeight();
-            const response = new PingResponse(+block.height);
             return {
               endpoint: client.config.restEndpoint,
-              height: response.height,
-              time: response.responseTime.getTime(),
-            };
+              height: block.height,
+              time: new Date(block.time),
+            } satisfies PingResponse;
           })
           .map((promise) => promise.catch((_) => undefined)),
       )
