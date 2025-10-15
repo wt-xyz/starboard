@@ -127,6 +127,7 @@ export { default as XCircleIcon } from './x-circle.svg';
 // Wallets
 export { default as WalletIcon } from './wallet.svg';
 export { default as AppleIcon } from './wallets/apple.svg';
+export { default as BakoSafeIcon } from './wallets/bako-safe.svg';
 export { default as BitkeepIcon } from './wallets/bitkeep.svg';
 export { default as BitpieIcon } from './wallets/bitpie.svg';
 export { default as CloverWalletIcon } from './wallets/clover-wallet.svg';
@@ -135,6 +136,7 @@ export { default as CoinbaseIcon } from './wallets/coinbase-wallet.svg';
 export { default as Discord2Icon } from './wallets/discord.svg';
 export { default as EmailIcon } from './wallets/email.svg';
 export { default as FuelWalletIcon } from './wallets/fuel-wallet.svg';
+export { default as FueletWalletIcon } from './wallets/fuelet-wallet.svg';
 export { default as GenericWalletIcon } from './wallets/generic-wallet.svg';
 export { default as GoogleIcon } from './wallets/google.svg';
 export { default as HuobiIcon } from './wallets/huobi-wallet.svg';

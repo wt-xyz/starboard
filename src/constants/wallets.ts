@@ -5,8 +5,10 @@ import { type onboarding } from 'starboard-client-js';
 import { STRING_KEYS } from '@/constants/localization';
 
 import {
+  BakoSafeIcon,
   CoinbaseIcon,
   EmailIcon,
+  FueletWalletIcon,
   FuelWalletIcon,
   GenericWalletIcon,
   KeplrIcon,
@@ -55,7 +57,7 @@ export const WALLET_CONNECT_EXPLORER_RECOMMENDED_IDS = Object.values(
 
 export enum WalletType {
   CoinbaseWallet = 'COINBASE_WALLET',
-  Keplr = 'keplr',
+  Keplr = 'KEPLR',
   OkxWallet = 'OKX_WALLET',
   WalletConnect2 = 'WALLETCONNECT_2',
   TestWallet = 'TEST_WALLET',
@@ -63,7 +65,9 @@ export enum WalletType {
   Privy = 'PRIVY',
   Phantom = 'PHANTOM',
   MetaMask = 'METAMASK',
-  FuelWallet = 'Fuel Wallet',
+  FuelWallet = 'FUEL_WALLET',
+  BakoSafe = 'BAKO_SAFE',
+  Fuelet = 'FUELET',
 }
 
 export enum ConnectorType {
@@ -163,6 +167,16 @@ export const wallets = {
     type: WalletType.FuelWallet,
     stringKey: STRING_KEYS.FUEL_WALLET,
     icon: FuelWalletIcon,
+  },
+  [WalletType.BakoSafe]: {
+    type: WalletType.BakoSafe,
+    stringKey: STRING_KEYS.BAKO_SAFE,
+    icon: BakoSafeIcon,
+  },
+  [WalletType.Fuelet]: {
+    type: WalletType.Fuelet,
+    stringKey: STRING_KEYS.FUELET,
+    icon: FueletWalletIcon,
   },
 } satisfies Record<WalletInfo['name'], WalletConfig>;
 
