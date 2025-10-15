@@ -15,23 +15,23 @@ import { UnexpectedClientError } from '../lib/errors';
 import { generateRegistry } from '../lib/registry';
 import { SubaccountInfo } from '../subaccount';
 import {
-  OrderFlags,
   BroadcastMode,
-  TransactionOptions,
-  IPlaceOrder,
-  ICancelOrder,
   DenomConfig,
+  ICancelOrder,
+  IPlaceOrder,
+  OrderFlags,
+  TransactionOptions,
 } from '../types';
 import { Composer } from './composer';
 import { Get } from './get';
 import LocalWallet from './local-wallet';
 import {
+  Any,
+  MsgCancelOrder,
+  MsgPlaceOrder,
+  Order_ConditionType,
   Order_Side,
   Order_TimeInForce,
-  Any,
-  MsgPlaceOrder,
-  MsgCancelOrder,
-  Order_ConditionType,
   OrderBatch,
 } from './proto-includes';
 
@@ -612,23 +612,24 @@ export class Post {
   }
 
   async transfer(
-    subaccount: SubaccountInfo,
+    account: SubaccountInfo | LocalWallet,
     recipientAddress: string,
     recipientSubaccountNumber: number,
     assetId: number,
     amount: Long,
     broadcastMode?: BroadcastMode,
   ): Promise<BroadcastTxAsyncResponse | BroadcastTxSyncResponse | IndexedTx> {
+    const isSubAccount = account instanceof SubaccountInfo;
     const msg = await this.transferMsg(
-      subaccount.address,
-      subaccount.subaccountNumber,
+      account.address,
+      isSubAccount ? account.subaccountNumber : 0,
       recipientAddress,
       recipientSubaccountNumber,
       assetId,
       amount,
     );
     return this.send(
-      subaccount.wallet,
+      isSubAccount ? account.wallet : account,
       () => Promise.resolve([msg]),
       false,
       undefined,
@@ -659,19 +660,20 @@ export class Post {
   }
 
   async deposit(
-    subaccount: SubaccountInfo,
+    account: SubaccountInfo | LocalWallet,
     assetId: number,
     quantums: Long,
     broadcastMode?: BroadcastMode,
   ): Promise<BroadcastTxAsyncResponse | BroadcastTxSyncResponse | IndexedTx> {
+    const isSubAccount = account instanceof SubaccountInfo;
     const msg = await this.depositMsg(
-      subaccount.address,
-      subaccount.subaccountNumber,
+      account.address,
+      isSubAccount ? account.subaccountNumber : 0,
       assetId,
       quantums,
     );
     return this.send(
-      subaccount.wallet,
+      isSubAccount ? account.wallet : account,
       () => Promise.resolve([msg]),
       false,
       undefined,
@@ -698,21 +700,22 @@ export class Post {
   }
 
   async withdraw(
-    subaccount: SubaccountInfo,
+    account: SubaccountInfo | LocalWallet,
     assetId: number,
     quantums: Long,
     recipient?: string,
     broadcastMode?: BroadcastMode,
   ): Promise<BroadcastTxAsyncResponse | BroadcastTxSyncResponse | IndexedTx> {
+    const isSubAccount = account instanceof SubaccountInfo;
     const msg = await this.withdrawMsg(
-      subaccount.address,
-      subaccount.subaccountNumber,
+      account.address,
+      isSubAccount ? account.subaccountNumber : 0,
       assetId,
       quantums,
       recipient,
     );
     return this.send(
-      subaccount.wallet,
+      isSubAccount ? account.wallet : account,
       () => Promise.resolve([msg]),
       false,
       undefined,

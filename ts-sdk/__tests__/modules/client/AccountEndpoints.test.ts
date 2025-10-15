@@ -57,7 +57,10 @@ describe('IndexerClient', () => {
     });
 
     it('Transfers ParentSubaccountNumber', async () => {
-      const response = await client.account.getParentSubaccountNumberTransfers(DYDX_TEST_ADDRESS, 0);
+      const response = await client.account.getParentSubaccountNumberTransfers(
+        DYDX_TEST_ADDRESS,
+        0,
+      );
       expect(response).not.toBeNull();
       const transfers = response.transfers;
       expect(transfers).not.toBeNull();
@@ -196,7 +199,7 @@ describe('IndexerClient', () => {
 
       expect(response.pageSize).toStrictEqual(1);
       expect(response.offset).toStrictEqual(0);
-    });
+    }, 7_500); // Wait for max 7.5s
 
     it('Historical PNL', async () => {
       const response = await client.account.getSubaccountHistoricalPNLs(DYDX_TEST_ADDRESS, 0);
