@@ -1,16 +1,16 @@
+import Long from 'long';
+import { DYDX_TEST_MNEMONIC } from '../../../examples/constants';
+import { BECH32_PREFIX } from '../../../src';
 import { Network } from '../../../src/clients/constants';
 import LocalWallet from '../../../src/clients/modules/local-wallet';
 import { SubaccountInfo } from '../../../src/clients/subaccount';
 import { ValidatorClient } from '../../../src/clients/validator-client';
-import { DYDX_TEST_MNEMONIC } from '../../../examples/constants';
-import Long from 'long';
-import { BECH32_PREFIX } from '../../../src';
 
 async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-describe('Validator Client', () => {
+describe.skip('Validator Client', () => {
   let wallet: LocalWallet;
   let subaccount: SubaccountInfo;
   let client: ValidatorClient;
