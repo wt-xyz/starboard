@@ -1,8 +1,17 @@
+import markets from '../../../../public/emerging_markets.json';
 import { Network } from '../../../src/clients/constants';
 import { IndexerClient } from '../../../src/clients/indexer-client';
 
-// ------------ Markets ------------
-export const MARKET_BTC_USD: string = 'BTC-USD';
+// Get first ticker from markets.json
+const TEST_TICKER = Object.keys(markets.markets)[0]!;
+
+// Mock fetch to return the emerging markets data
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve(markets),
+  } as Response),
+);
 
 describe('IndexerClient', () => {
   const client = new IndexerClient(Network.testnet().indexerConfig);
@@ -10,27 +19,27 @@ describe('IndexerClient', () => {
   describe('Market Endpoints', () => {
     it('Markets', async () => {
       const response = await client.markets.getPerpetualMarkets();
-      const btc = response.markets[MARKET_BTC_USD];
+      const btc = response.markets[TEST_TICKER];
       const status = btc.status;
       expect(status).toBe('ACTIVE');
     });
 
-    it('BTC Market', async () => {
-      const response = await client.markets.getPerpetualMarkets(MARKET_BTC_USD);
-      const btc = response.markets[MARKET_BTC_USD];
+    it(`${TEST_TICKER} Market`, async () => {
+      const response = await client.markets.getPerpetualMarkets(TEST_TICKER);
+      const btc = response.markets[TEST_TICKER];
       const status = btc.status;
       expect(status).toBe('ACTIVE');
     });
 
-    it('BTC Trades', async () => {
-      const response = await client.markets.getPerpetualMarketTrades(MARKET_BTC_USD);
+    it(`${TEST_TICKER} Trades`, async () => {
+      const response = await client.markets.getPerpetualMarketTrades(TEST_TICKER);
       const trades = response.trades;
       expect(trades).not.toBeUndefined();
     });
 
-    it('BTC Trades Pagination', async () => {
+    it(`${TEST_TICKER} Trades Pagination`, async () => {
       const response = await client.markets.getPerpetualMarketTrades(
-        MARKET_BTC_USD,
+        TEST_TICKER,
         undefined,
         undefined,
         1,
@@ -50,22 +59,22 @@ describe('IndexerClient', () => {
       expect(response.offset).toStrictEqual(0);
     });
 
-    it('BTC Orderbook', async () => {
-      const response = await client.markets.getPerpetualMarketOrderbook(MARKET_BTC_USD);
+    it(`${TEST_TICKER} Orderbook`, async () => {
+      const response = await client.markets.getPerpetualMarketOrderbook(TEST_TICKER);
       const asks = response.asks;
       const bids = response.bids;
       expect(asks).not.toBeUndefined();
       expect(bids).not.toBeUndefined();
     });
 
-    it('BTC Candles', async () => {
-      const response = await client.markets.getPerpetualMarketCandles(MARKET_BTC_USD, '1MIN');
+    it(`${TEST_TICKER} Candles`, async () => {
+      const response = await client.markets.getPerpetualMarketCandles(TEST_TICKER, '1MIN');
       const candles = response.candles;
       expect(candles).not.toBeUndefined();
     });
 
-    it('BTC Historical Funding', async () => {
-      const response = await client.markets.getPerpetualMarketHistoricalFunding(MARKET_BTC_USD);
+    it(`${TEST_TICKER} Historical Funding`, async () => {
+      const response = await client.markets.getPerpetualMarketHistoricalFunding(TEST_TICKER);
       expect(response).not.toBeNull();
       const historicalFunding = response.historicalFunding;
       expect(historicalFunding).not.toBeNull();
@@ -77,7 +86,7 @@ describe('IndexerClient', () => {
 
     it('Sparklines', async () => {
       const response = await client.markets.getPerpetualMarketSparklines();
-      const btcSparklines = response[MARKET_BTC_USD];
+      const btcSparklines = response[TEST_TICKER];
       expect(btcSparklines).not.toBeUndefined();
     });
   });

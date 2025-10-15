@@ -1,4 +1,8 @@
-import { generateFakeHistoricalFunding } from '../../utils/fakeDataGenerators';
+import {
+  generateFakeHistoricalFunding,
+  generateFakeOrderbook,
+  generateFakeTrades,
+} from '../../utils/fakeDataGenerators';
 import { TimePeriod } from '../constants';
 import { Data } from '../types';
 import RestClient from './rest';
@@ -28,7 +32,9 @@ export default class MarketsClient extends RestClient {
 
   async getPerpetualMarketOrderbook(market: string): Promise<Data> {
     const uri = `/v4/orderbooks/perpetualMarket/${market}`;
-    return this.get(uri);
+
+    // Generate mock orderbook data
+    return generateFakeOrderbook(market);
   }
 
   async getPerpetualMarketTrades(
@@ -39,12 +45,9 @@ export default class MarketsClient extends RestClient {
     page?: number | null,
   ): Promise<Data> {
     const uri = `/v4/trades/perpetualMarket/${market}`;
-    return this.get(uri, {
-      createdBeforeOrAtHeight: startingBeforeOrAtHeight,
-      createdBeforeOrAt: startingBeforeOrAt,
-      limit,
-      page,
-    });
+
+    // Generate mock trades data with pagination support
+    return generateFakeTrades(market, limit, page);
   }
 
   async getPerpetualMarketCandles(
@@ -55,12 +58,38 @@ export default class MarketsClient extends RestClient {
     limit?: number | null,
   ): Promise<Data> {
     const uri = `/v4/candles/perpetualMarkets/${market}`;
-    return this.get(uri, {
-      resolution,
-      fromISO,
-      toISO,
-      limit,
-    });
+
+    const now = new Date();
+    const count = limit || 10;
+    const candles = [];
+
+    for (let i = count - 1; i >= 0; i--) {
+      const startedAt = new Date(now.getTime() - i * 60000); // 1 minute intervals
+      const basePrice = 100 + Math.random() * 10;
+      const open = basePrice.toFixed(2);
+      const close = (basePrice + (Math.random() - 0.5) * 2).toFixed(2);
+      const high = (Math.max(parseFloat(open), parseFloat(close)) + Math.random()).toFixed(2);
+      const low = (Math.min(parseFloat(open), parseFloat(close)) - Math.random()).toFixed(2);
+
+      candles.push({
+        startedAt: startedAt.toISOString(),
+        ticker: market,
+        resolution,
+        low,
+        high,
+        open,
+        close,
+        baseTokenVolume: (Math.random() * 1000).toFixed(2),
+        usdVolume: (Math.random() * 100000).toFixed(2),
+        trades: Math.floor(Math.random() * 100),
+        startingOpenInterest: (Math.random() * 5000000).toFixed(2),
+        orderbookMidPriceOpen: open,
+        orderbookMidPriceClose: close,
+        id: `${market}-${resolution}-${startedAt.getTime()}`,
+      });
+    }
+
+    return { candles };
   }
 
   async getPerpetualMarketHistoricalFunding(
@@ -69,17 +98,16 @@ export default class MarketsClient extends RestClient {
     effectiveBeforeOrAtHeight?: number | null,
     limit?: number | null,
   ): Promise<Data> {
-
     const { historicalFunding } = generateFakeHistoricalFunding(market, undefined);
     const cutoffTime = effectiveBeforeOrAt ? Date.parse(effectiveBeforeOrAt) : undefined;
     const cutoffHeight = effectiveBeforeOrAtHeight ?? undefined;
 
     let data = historicalFunding;
     if (cutoffTime != null) {
-      data = data.filter((d: { effectiveAt: string; }) => Date.parse(d.effectiveAt) <= cutoffTime);
+      data = data.filter((d: { effectiveAt: string }) => Date.parse(d.effectiveAt) <= cutoffTime);
     } else if (cutoffHeight != null) {
       const h = Number(cutoffHeight);
-      data = data.filter((d: { effectiveAtHeight: any; }) => Number(d.effectiveAtHeight) <= h);
+      data = data.filter((d: { effectiveAtHeight: any }) => Number(d.effectiveAtHeight) <= h);
     }
     if (limit && limit > 0) {
       data = data.slice(-limit); // most recent N
@@ -89,8 +117,14 @@ export default class MarketsClient extends RestClient {
 
   async getPerpetualMarketSparklines(period: string = TimePeriod.ONE_DAY): Promise<Data> {
     const uri = '/v4/sparklines';
-    return this.get(uri, {
-      timePeriod: period,
-    });
+
+    // SparklineResponseObject: keys are market tickers, values are arrays of price strings
+    const mockSparklines: Record<string, string[]> = {
+      'MIRG-USD': ['1.00', '1.01', '1.02', '0.99', '1.00', '1.01', '0.98', '1.00'],
+      'DELTA-USD': ['5.00', '5.02', '4.98', '5.01', '5.00', '5.03', '4.99', '5.00'],
+      'KBANK-USD': ['3.80', '3.82', '3.79', '3.81', '3.80', '3.83', '3.81', '3.80'],
+    };
+
+    return mockSparklines;
   }
 }
