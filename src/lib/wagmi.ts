@@ -179,7 +179,7 @@ export const privyConfig: PrivyClientConfig = {
     noPromptOnSignature: true,
   },
   appearance: {
-    theme: '#28283c',
+    theme: '#28282B',
   },
   defaultChain: defaultChainId === mainnet.id ? mainnet : sepolia,
 };
