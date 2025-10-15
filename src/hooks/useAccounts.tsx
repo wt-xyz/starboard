@@ -1,17 +1,23 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { BonsaiCore } from '@/bonsai/ontology';
-import { usePrivy } from '@privy-io/react-auth';
+import { useLogout, usePrivy } from '@privy-io/react-auth';
 import { type Subaccount } from 'starboard-client-js';
 
 import { OnboardingGuard, OnboardingState } from '@/constants/account';
 import { LocalStorageKey } from '@/constants/localStorage';
-import { DydxAddress, PrivateInformation } from '@/constants/wallets';
+import {
+  ConnectorType,
+  DydxAddress,
+  PrivateInformation,
+  WalletNetworkType,
+  WalletType,
+} from '@/constants/wallets';
 
 import { setOnboardingGuard, setOnboardingState } from '@/state/account';
 import { getGeo } from '@/state/accountSelectors';
-import { getSelectedDydxChainId } from '@/state/appSelectors';
 import { useAppDispatch, useAppSelector } from '@/state/appTypes';
+import { setSourceAddress, setWalletInfo } from '@/state/wallet';
 import { getSourceAccount } from '@/state/walletSelectors';
 
 import { isBlockedGeo } from '@/lib/compliance';
@@ -35,7 +41,8 @@ const useAccountsContext = () => {
   const dispatch = useAppDispatch();
   const geo = useAppSelector(getGeo);
   const { checkForGeo } = useEnvFeatures();
-  const selectedDydxChainId = useAppSelector(getSelectedDydxChainId);
+  const { authenticated, ready, user } = usePrivy();
+  const { logout: logoutPrivy } = useLogout();
 
   // Wallet connection
   const {
@@ -47,45 +54,27 @@ const useAccountsContext = () => {
     disconnect: disconnectFuel,
   } = useFuelWallet();
 
+  const isPrivyConnected = Boolean(authenticated && user);
+  const connectedWalletAddress = ready && isPrivyConnected ? user?.wallet?.address : fuelAddress;
   const hasSubAccount = useAppSelector(BonsaiCore.account.parentSubaccountSummary.data) != null;
   const sourceAccount = useAppSelector(getSourceAccount);
 
+  const isConnected = isConnectedFuel || isPrivyConnected;
   // Debug: Log current onboarding state
   const onboardingState = useAppSelector((state) => state.account.onboardingState);
 
   // Auto-set onboarding state to AccountConnected when Fuel wallet connects
   useEffect(() => {
-    if (isConnectedFuel && fuelAddress) {
-      if (
-        onboardingState === OnboardingState.WalletConnected ||
-        onboardingState === OnboardingState.Disconnected
-      ) {
-        dispatch(setOnboardingState(OnboardingState.AccountConnected));
-      }
-    } else if (!isConnectedFuel && onboardingState !== OnboardingState.Disconnected) {
-      // If Fuel wallet is disconnected but onboarding state is not Disconnected, reset it
+    if (isConnected) {
+      dispatch(setOnboardingState(OnboardingState.AccountConnected));
+    } else {
       dispatch(setOnboardingState(OnboardingState.Disconnected));
     }
-  }, [isConnectedFuel, fuelAddress, onboardingState, dispatch]);
-
-  const { ready, authenticated } = usePrivy();
+  }, [isConnected, connectedWalletAddress, onboardingState, dispatch]);
 
   const blockedGeo = useMemo(() => {
     return geo != null && isBlockedGeo(geo) && checkForGeo;
   }, [geo, checkForGeo]);
-
-  const [previousAddress, setPreviousAddress] = useState(sourceAccount.address);
-  useEffect(() => {
-    const { address } = sourceAccount;
-
-    setPreviousAddress(address);
-    // We only want to set the source wallet address if the address changes
-    // OR when our connection state changes.
-    // The address can be cached via local storage, so it won't change when we reconnect
-    // But the hasSubAccount value will become true once you reconnect
-    // This allows us to trigger a state update
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sourceAccount.address, sourceAccount.chain, hasSubAccount]);
 
   // dYdXClient Onboarding & Account Helpers
   const { indexerClient, getWalletFromSignature } = useDydxClient();
@@ -117,6 +106,24 @@ const useAccountsContext = () => {
   });
 
   useEffect(() => {
+    if (user?.wallet?.address && isConnected) {
+      dispatch(
+        setSourceAddress({
+          address: user.wallet.address,
+          chain: WalletNetworkType.Evm,
+        })
+      );
+
+      dispatch(
+        setWalletInfo({
+          connectorType: ConnectorType.Privy,
+          name: WalletType.Privy,
+        })
+      );
+    }
+  }, [user?.wallet?.address, isConnected]);
+
+  useEffect(() => {
     dispatch(
       setOnboardingGuard({
         guard: OnboardingGuard.hasAcknowledgedTerms,
@@ -145,6 +152,11 @@ const useAccountsContext = () => {
   const disconnect = async () => {
     // Disconnect local wallet
     disconnectFuel();
+
+    // Logout from Privy if connected
+    if (isPrivyConnected) {
+      await logoutPrivy();
+    }
   };
 
   return {
@@ -155,10 +167,10 @@ const useAccountsContext = () => {
     selectWallet,
     selectedWalletError,
 
-    // Wallet connection (Fuel)
+    // Wallet connection (Fuel & Privy)
     fuel,
-    isConnected: isConnectedFuel,
-    address: fuelAddress,
+    isConnected,
+    address: connectedWalletAddress,
 
     // dYdX accounts
     hdKey,

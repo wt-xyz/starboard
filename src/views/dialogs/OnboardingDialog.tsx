@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
+import { useLogin, useLogout } from '@privy-io/react-auth';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 
-import { EvmDerivedAccountStatus, OnboardingSteps } from '@/constants/account';
+import { OnboardingSteps } from '@/constants/account';
 import { DialogProps, DialogTypes, OnboardingDialogProps } from '@/constants/dialogs';
 import { STRING_KEYS } from '@/constants/localization';
 import { StatsigFlags } from '@/constants/statsig';
@@ -41,18 +42,19 @@ export const OnboardingDialog = ({
   setIsOpen: setIsOpenRaw,
 }: DialogProps<OnboardingDialogProps>) => {
   const dispatch = useAppDispatch();
-  const [derivationStatus, setDerivationStatus] = useState(EvmDerivedAccountStatus.NotDerived);
 
   const stringGetter = useStringGetter();
   const { isMobile } = useBreakpoints();
   const { walletLearnMore } = useURLConfigs();
-  const { sourceAccount, selectWallet } = useAccounts();
+  const { selectWallet, address } = useAccounts();
   const showNewDepositFlow =
     useStatsigGateValue(StatsigFlags.ffDepositRewrite) || testFlags.showNewDepositFlow;
 
   const currentOnboardingStep = useAppSelector(calculateOnboardingStep);
   const isSimpleUi = useSimpleUiEnabled();
-  const isTurnkeyEnabled = testFlags.enableTurnkey;
+
+  const { logout: logoutFromPrivy } = useLogout();
+  const { login: loginWithPrivy } = useLogin();
 
   const setIsOpen = useCallback(
     (open: boolean) => {
@@ -84,17 +86,15 @@ export const OnboardingDialog = ({
     dispatch(setDisplayChooseWallet(true));
   };
 
-  const onSignInWithSocials = () => {
-    dispatch(setDisplayChooseWallet(false));
-  };
+  const onSignInWithSocials = async () => {
+    // Ensure any existing Privy session is cleared
+    await logoutFromPrivy();
 
-  const onSignInWithPasskey = () => {
+    // Close the onboarding dialog
     setIsOpen(false);
-    dispatch(
-      openDialog(
-        DialogTypes.SetupPasskey({ onClose: () => dispatch(openDialog(DialogTypes.Onboarding())) })
-      )
-    );
+
+    // Trigger Privy login modal
+    loginWithPrivy();
   };
 
   const onSubmitEmail = () => {
@@ -142,16 +142,13 @@ export const OnboardingDialog = ({
               <$Content>
                 <SignIn
                   onDisplayChooseWallet={onDisplayChooseWallet}
-                  onSignInWithPasskey={onSignInWithPasskey}
                   onSubmitEmail={onSubmitEmail}
                 />
               </$Content>
             ),
           },
           [OnboardingSteps.ChooseWallet]: {
-            title: isTurnkeyEnabled ? (
-              stringGetter({ key: STRING_KEYS.SIGN_IN_TITLE })
-            ) : (
+            title: (
               <div tw="flex items-center gap-0.5">
                 {stringGetter({ key: STRING_KEYS.CONNECT_YOUR_WALLET })}
                 <$WithTooltip
@@ -171,20 +168,17 @@ export const OnboardingDialog = ({
                 </$WithTooltip>
               </div>
             ),
-            description: isTurnkeyEnabled
-              ? stringGetter({ key: STRING_KEYS.SIGN_IN_DESCRIPTION })
-              : stringGetter({ key: STRING_KEYS.SELECT_WALLET_FROM_OPTIONS }),
+            description: stringGetter({ key: STRING_KEYS.SELECT_WALLET_FROM_OPTIONS }),
             children: (
               <$Content>
                 <ChooseWallet
                   onChooseWallet={onChooseWallet}
                   onSignInWithSocials={onSignInWithSocials}
-                  onSignInWithPasskey={onSignInWithPasskey}
                 />
               </$Content>
             ),
             hasFooterBorder: true,
-            slotFooter: !isSimpleUi && !isTurnkeyEnabled && (
+            slotFooter: !isSimpleUi && (
               <$Footer>
                 <div tw="flex flex-col gap-0.5 text-color-text-0 font-small-medium">
                   <h3 tw="text-color-text-2 font-medium-book">

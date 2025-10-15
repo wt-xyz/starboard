@@ -21,11 +21,9 @@ import { isValidEmail } from '@/lib/emailUtils';
 
 export const SignIn = ({
   onDisplayChooseWallet,
-  onSignInWithPasskey,
   onSubmitEmail,
 }: {
   onDisplayChooseWallet: () => void;
-  onSignInWithPasskey: () => void;
   onSubmitEmail: () => void;
 }) => {
   const stringGetter = useStringGetter();
@@ -107,20 +105,6 @@ export const SignIn = ({
           <span>{stringGetter({ key: STRING_KEYS.OR })}</span>
           <HorizontalSeparatorFiller />
         </div>
-
-        <$OtherOptionButton
-          type={ButtonType.Button}
-          action={ButtonAction.Base}
-          size={ButtonSize.BasePlus}
-          onClick={onSignInWithPasskey}
-        >
-          <div tw="row gap-0.5">
-            <Icon iconName={IconName.Passkey} />
-            {stringGetter({ key: STRING_KEYS.SIGN_IN_PASSKEY })}
-          </div>
-
-          <Icon iconName={IconName.ChevronRight} />
-        </$OtherOptionButton>
 
         <$OtherOptionButton
           type={ButtonType.Button}

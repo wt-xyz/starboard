@@ -21,16 +21,12 @@ import { Link } from '@/components/Link';
 import { HorizontalSeparatorFiller } from '@/components/Separator';
 import { WalletIcon } from '@/components/WalletIcon';
 
-import { testFlags } from '@/lib/testFlags';
-
 export const ChooseWallet = ({
   onChooseWallet,
   onSignInWithSocials,
-  onSignInWithPasskey,
 }: {
   onChooseWallet: (wallet: WalletInfo) => void;
   onSignInWithSocials: () => void;
-  onSignInWithPasskey: () => void;
 }) => {
   const stringGetter = useStringGetter();
   const { walletLearnMore } = useURLConfigs();
@@ -46,20 +42,6 @@ export const ChooseWallet = ({
         <span>or</span>
         <HorizontalSeparatorFiller />
       </div>
-
-      <$OtherOptionButton
-        type={ButtonType.Button}
-        action={ButtonAction.Base}
-        size={ButtonSize.BasePlus}
-        onClick={onSignInWithPasskey}
-      >
-        <div tw="row gap-0.5">
-          <Icon iconName={IconName.Passkey} />
-          Sign in with Passkey
-        </div>
-
-        <Icon iconName={IconName.ChevronRight} />
-      </$OtherOptionButton>
 
       <$OtherOptionButton
         type={ButtonType.Button}
@@ -120,9 +102,9 @@ export const ChooseWallet = ({
         ))}
       </$Wallets>
 
-      {testFlags.enableTurnkey && alternateOptions}
+      {alternateOptions}
 
-      {!isSimpleUi && !testFlags.enableTurnkey && (
+      {!isSimpleUi && (
         <$Link href={walletLearnMore} withIcon>
           {stringGetter({ key: STRING_KEYS.LEARN_ABOUT_WALLETS })}
         </$Link>
