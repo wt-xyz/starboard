@@ -15,5 +15,11 @@ export { NobleClient } from './clients/noble-client';
 export { SocketClient } from './clients/socket-client';
 export { SubaccountInfo as SubaccountClient, SubaccountInfo } from './clients/subaccount';
 export { ValidatorClient } from './clients/validator-client';
-export { encodeJson, ByteArrayEncoding } from './lib/helpers';
+export { ByteArrayEncoding, encodeJson } from './lib/helpers';
 export { NetworkOptimizer } from './network_optimizer';
+
+// Position event processing
+export { PositionEventProcessor } from './clients/position-event-processor';
+export type { PositionEventProcessorConfig } from './clients/position-event-processor';
+export * from './clients/position-event-types';
+
