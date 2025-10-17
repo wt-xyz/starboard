@@ -111,6 +111,7 @@ export const PositionsTriggersCell = ({
       tooltipString={stringGetter({ key: STRING_KEYS.EDIT_TAKE_PROFIT_STOP_LOSS_TRIGGERS })}
     >
       <IconButton
+        tw="!text-white"
         key="edit-triggers"
         iconName={IconName.Pencil}
         shape={ButtonShape.Square}
