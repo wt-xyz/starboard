@@ -71,12 +71,12 @@ export const SharePNLAnalyticsDialog = ({
 
       triggerTwitterIntent({
         text: `${stringGetter({
-          key: STRING_KEYS.TWEET_MARKET_POSITION,
+          key: STRING_KEYS.STARBOARD_TWEET_MARKET_POSITION,
           params: {
             MARKET: symbol,
           },
-        })}\n\n#dYdX #${symbol}\n[${stringGetter({ key: STRING_KEYS.TWEET_PASTE_IMAGE_AND_DELETE_THIS })}]`,
-        related: 'dYdX',
+        })}\n\n#StarboardTrade #${symbol}\n[${stringGetter({ key: STRING_KEYS.TWEET_PASTE_IMAGE_AND_DELETE_THIS })}]`,
+        related: 'StarboardTrade',
       });
 
       dispatch(closeDialog());
@@ -126,7 +126,8 @@ export const SharePNLAnalyticsDialog = ({
             showSign={ShowSign.Both}
           />
 
-          <LogoIcon tw="mt-auto h-auto w-[5.125rem]" />
+          <div className="my-1" />
+          <LogoIcon tw="mt-auto w-[5rem]" />
         </div>
 
         <div tw="grid">
