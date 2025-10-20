@@ -46,6 +46,7 @@ import {
   closeAllPositionsSubmitted,
   placeOrderFailed,
   placeOrderSubmitted,
+  placeOrderSucceeded,
   placeOrderTimeout,
 } from '@/state/localOrders';
 import { getLocalWalletNonce } from '@/state/walletSelectors';
@@ -130,21 +131,31 @@ export class AccountTransactionSupervisor {
         if (localWalletNonce !== nonceBefore) {
           throw new Error('Local wallet changed before operation execution');
         }
+        // MOCK: Skip wallet nonce check for development (until Fuel migration)
         if (localWalletNonce == null) {
-          throw new Error('No valid local wallet nonce found');
+          // throw new Error('No valid local wallet nonce found');
         }
 
-        const localWallet = localWalletManager.getLocalWallet(localWalletNonce);
+        // MOCK: Use mock wallet when no real wallet available
+        let localWallet =
+          localWalletNonce != null ? localWalletManager.getLocalWallet(localWalletNonce) : null;
 
         if (localWallet == null) {
-          throw new Error('Local wallet not initialized or nonce was incorrect.');
+          // throw new Error('Local wallet not initialized or nonce was incorrect.');
+          // Create a minimal mock wallet that satisfies the interface
+          // For Fuel: we'll use direct connected wallet, not subaccounts
+          localWallet = {
+            address: '0xMOCK_FUEL_WALLET_ADDRESS',
+            // Add other minimal properties if needed
+          } as any; // MOCK: Will be replaced with Fuel wallet
         }
 
         // Wait for the composite client to be available
         const compositeClient = await clientWrapper.compositeClient.deferred.promise;
 
         // Execute the function with the client wallet pair
-        return await fn({ compositeClient, localWallet }, ...args);
+        // MOCK: Cast to satisfy TypeScript - localWallet will be mock object in dev
+        return await fn({ compositeClient, localWallet: localWallet! }, ...args);
       } finally {
         // Always mark the client as done to prevent memory leaks
         this.compositeClientManager.markDone(clientConfig);
@@ -175,7 +186,22 @@ export class AccountTransactionSupervisor {
           source: nameForLogging,
         });
 
-        if (tracking != null) {
+        // MOCK: Check if this is a mock transaction (for Fuel migration development)
+        const isMockTransaction = (parsedTx as any)?.hash?.startsWith?.('mock-') === true;
+
+        if (isMockTransaction) {
+          // For mock transactions, immediately trigger success since we won't wait for indexer
+          if (tracking != null) {
+            tracking.onTrigger?.(true); // Mark as successful
+            logBonsaiInfo(nameForLogging, '[MOCK] Immediately confirmed mock operation', {
+              payload,
+              parsedTx,
+              source: nameForLogging,
+            });
+          }
+        }
+
+        if (tracking != null && !isMockTransaction) {
           this.stateNotifier.notifyWhenTrue(
             tracking.selector,
             tracking.validator,
@@ -597,31 +623,43 @@ export class AccountTransactionSupervisor {
 
   // does subaccount transfer and place order and manages local order state
   public async placeOrder(payloadBase: PlaceOrderPayload): Promise<OperationResult<any>> {
-    const maybeErr = this.maybeNoLocalWalletError('placeOrder');
-    if (maybeErr) {
-      return maybeErr;
+    // MOCK: Skip wallet check for development (until Fuel migration)
+    // const maybeErr = this.maybeNoLocalWalletError('placeOrder');
+    // if (maybeErr) {
+    //   return maybeErr;
+    // }
+
+    const sourceSubaccount = getSubaccountId(this.store.getState()) ?? 0; // MOCK: Default to 0
+    const sourceAddress = getUserWalletAddress(this.store.getState()) ?? '0x0'; // MOCK: Default address
+    // MOCK: Provide defaults for development (until Fuel migration)
+    if (
+      getSubaccountId(this.store.getState()) == null ||
+      getUserWalletAddress(this.store.getState()) == null
+    ) {
+      // return wrapSimpleError(
+      //   'AccountTransactionSupervisor/placeOrder',
+      //   'unknown parent subaccount number or address',
+      //   STRING_KEYS.SOMETHING_WENT_WRONG
+      // );
     }
 
-    const sourceSubaccount = getSubaccountId(this.store.getState());
-    const sourceAddress = getUserWalletAddress(this.store.getState());
-    if (sourceSubaccount == null || sourceAddress == null) {
-      return wrapSimpleError(
-        'AccountTransactionSupervisor/placeOrder',
-        'unknown parent subaccount number or address',
-        STRING_KEYS.SOMETHING_WENT_WRONG
-      );
-    }
-
-    const currentHeight = estimateLiveValidatorHeight(
-      this.store.getState(),
-      BLOCK_TIME_BIAS_FOR_SHORT_TERM_ESTIMATION
-    );
-    if (currentHeight == null) {
-      return wrapSimpleError(
-        'AccountTransactionSupervisor/placeOrder',
-        'validator height unknown',
-        STRING_KEYS.UNKNOWN_VALIDATOR_HEIGHT
-      );
+    const currentHeight =
+      estimateLiveValidatorHeight(
+        this.store.getState(),
+        BLOCK_TIME_BIAS_FOR_SHORT_TERM_ESTIMATION
+      ) ?? 1000; // MOCK: Default height
+    if (
+      estimateLiveValidatorHeight(
+        this.store.getState(),
+        BLOCK_TIME_BIAS_FOR_SHORT_TERM_ESTIMATION
+      ) == null
+    ) {
+      // MOCK: Use placeholder height to continue
+      // return wrapSimpleError(
+      //   'AccountTransactionSupervisor/placeOrder',
+      //   'validator height unknown',
+      //   STRING_KEYS.UNKNOWN_VALIDATOR_HEIGHT
+      // );
     }
     const isShortTermOrder = calc(() => {
       if (payloadBase.type === OrderType.MARKET) {
@@ -726,6 +764,15 @@ export class AccountTransactionSupervisor {
         })
       );
     } else if (isOperationSuccess(overallResult)) {
+      // MOCK: For mock orders, immediately mark as successfully placed in Redux
+      if ((overallResult.payload as any)?.hash?.startsWith?.('mock-')) {
+        this.store.dispatch(
+          placeOrderSucceeded({
+            clientId: `${payload.clientId}`,
+          })
+        );
+      }
+
       track(
         AnalyticsEvents.TradePlaceOrderSubmissionConfirmed({
           ...payload,

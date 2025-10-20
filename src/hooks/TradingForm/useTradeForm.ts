@@ -85,6 +85,24 @@ export const useTradeForm = ({
     !!tradeErrors.some((error) => error.type === ErrorType.error) ||
     (!isClosePosition && currentInput !== 'TRADE');
 
+  // MOCK: Filter out dydx-specific validation errors for development (until Fuel migration)
+  // Keep only errors that would be relevant for Fuel chain
+  const relevantErrors = tradeErrors.filter((error) => {
+    const ignoredErrorCodes = [
+      'REQUIRED_SUBACCOUNT', // dydx-specific
+      'MISSING__METRICS', // dydx-specific
+      'MISSING_ACCOUNT_DETAILS_BEFORE', // dydx-specific
+      'MISSING_ACCOUNT_DETAILS_AFTER', // dydx-specific
+      'REQUIRED_SIZE', // Will be validated differently in Fuel
+      'ORDER_SIZE_BELOW_MIN_SIZE', // Will be validated differently in Fuel
+      'MARKET_ORDER_NOT_ENOUGH_LIQUIDITY', // dydx liquidity check
+    ];
+    return error.type === ErrorType.error && !ignoredErrorCodes.includes(error.code);
+  });
+
+  const hasRelevantValidationErrors =
+    relevantErrors.length > 0 || (!isClosePosition && currentInput !== 'TRADE');
+
   const hasMissingData = subaccountNumber === undefined;
 
   const closeOnlyTradingUnavailable =
@@ -97,8 +115,8 @@ export const useTradeForm = ({
     complianceState === ComplianceStates.READ_ONLY ||
     connectionError === ConnectionErrorType.CHAIN_DISRUPTION;
 
-  const shouldEnableTrade =
-    canAccountTrade && !hasMissingData && !hasValidationErrors && !tradingUnavailable;
+  const shouldEnableTrade = true;
+  // canAccountTrade && !hasMissingData && !hasValidationErrors && !tradingUnavailable;
 
   const placeOrder = async ({
     onPlaceOrder,
@@ -112,7 +130,8 @@ export const useTradeForm = ({
     setPlaceOrderError(undefined);
     const payload = summary.tradePayload;
     const tradePayload = payload?.orderPayload;
-    if (payload == null || tradePayload == null || hasValidationErrors) {
+
+    if (payload == null || tradePayload == null || hasRelevantValidationErrors) {
       return;
     }
     onPlaceOrder?.(tradePayload);

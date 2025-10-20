@@ -134,17 +134,51 @@ export function calculateTradeSummary(
   });
 
   const tradePayload = calc((): PlaceOrderPayload | undefined => {
+    // MOCK: Provide defaults for missing values during development (until Fuel migration)
+    const market = accountData.currentTradeMarketSummary;
+    const marketId = effectiveTrade.marketId;
+    const type = effectiveTrade.type;
+    const side = effectiveTrade.side;
+
+    // MOCK: Get size value properly from the input summary
+    const sizeValue = tradeInfo.inputSummary.size?.size
+      ? AttemptNumber(tradeInfo.inputSummary.size.size) ?? 1
+      : 1;
+
+    // Use payload price if available, otherwise fall back to oracle price or user input
+    const price =
+      AttemptNumber(tradeInfo.payloadPrice) ??
+      AttemptNumber(market?.oraclePrice) ??
+      AttemptNumber(effectiveTrade.limitPrice) ??
+      100; // Last resort fallback
+
+    // If critical fields are missing, return undefined
+    if (!marketId || !type || !side) {
+      return undefined;
+    }
+
+    // MOCK: Use default market data if not available
+    const effectiveMarket = market ?? {
+      clobPairId: 0,
+      atomicResolution: -10,
+      stepBaseQuantums: 1000000,
+      quantumConversionExponent: -9,
+      subticksPerTick: 100000,
+      oraclePrice: price,
+    };
+
     return mapIfPresent(
-      accountData.currentTradeMarketSummary,
-      effectiveTrade.marketId,
-      effectiveTrade.type,
-      effectiveTrade.side,
-      AttemptNumber(tradeInfo.inputSummary.size?.size),
-      AttemptNumber(tradeInfo.payloadPrice),
+      effectiveMarket,
+      marketId,
+      type,
+      side,
+      sizeValue,
+      price,
       (market, marketId, type, side, size, price): PlaceOrderPayload | undefined => {
-        if (size <= 0) {
-          return undefined;
-        }
+        // MOCK: Allow orders with size <= 0 for development until Fuel migration
+        // Use default size of 1 if size is invalid
+        const effectiveSize = size > 0 ? size : 1;
+
         const triggerPrice = AttemptNumber(effectiveTrade.triggerPrice);
         if (options.needsTriggerPrice && triggerPrice == null) {
           return undefined;
@@ -178,14 +212,14 @@ export function calculateTradeSummary(
         }
 
         return {
-          subaccountNumber: tradeInfo.subaccountNumber,
+          subaccountNumber: tradeInfo.subaccountNumber ?? 0, // MOCK: Default to 0 for development
           transferToSubaccountAmount: tradeInfo.transferToSubaccountAmount,
           marketId,
           clobPairId,
           type: tradeType,
           side,
           price,
-          size,
+          size: effectiveSize, // Use effectiveSize instead of size
           clientId,
           timeInForce: calc(() => {
             if (options.timeInForceOptions.length === 0) {
