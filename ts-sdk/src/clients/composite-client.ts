@@ -30,14 +30,14 @@ import {
   SelectedGasDenom,
 } from './constants';
 import {
-  calculateQuantums,
-  calculateSubticks,
-  calculateSide,
-  calculateTimeInForce,
-  calculateOrderFlags,
   calculateClientMetadata,
   calculateConditionType,
   calculateConditionalOrderTriggerSubticks,
+  calculateOrderFlags,
+  calculateQuantums,
+  calculateSide,
+  calculateSubticks,
+  calculateTimeInForce,
   calculateVaultQuantums,
 } from './helpers/chain-helpers';
 import { IndexerClient } from './indexer-client';
@@ -436,6 +436,47 @@ export class CompositeClient {
     goodTilBlock?: number,
     memo?: string,
   ): Promise<BroadcastTxAsyncResponse | BroadcastTxSyncResponse | IndexedTx> {
+    // MOCK: Temporary mock implementation until Fuel chain migration
+    // We bypass dydx's logic and store orders locally for UI development
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const mockOrders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
+      mockOrders.push({
+        orderPayload: {
+          marketId,
+          type,
+          side,
+          price,
+          size,
+          clientId,
+          timeInForce,
+          goodTilTimeInSeconds,
+          execution,
+          postOnly,
+          reduceOnly,
+          triggerPrice,
+          subaccountNumber: subaccount.subaccountNumber,
+        },
+        timestamp: Date.now(),
+      });
+
+      localStorage.setItem('mockOrders', JSON.stringify(mockOrders));
+
+      // Dispatch event to notify UI of the new order
+      window.dispatchEvent(
+        new CustomEvent('mockOrdersUpdated', {
+          detail: { orders: mockOrders },
+        }),
+      );
+
+      // Return a mock successful response
+      return Promise.resolve({
+        code: 0,
+        hash: `mock-${Date.now()}-${clientId}`,
+        height: currentHeight ?? 0,
+      } as IndexedTx);
+    }
+
+    // Original dydx implementation (will be replaced with Fuel chain logic)
     const msgs: Promise<EncodeObject[]> = new Promise((resolve) => {
       const msg = this.placeOrderMessage(
         subaccount,

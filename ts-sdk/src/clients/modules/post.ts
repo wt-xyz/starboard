@@ -15,23 +15,23 @@ import { UnexpectedClientError } from '../lib/errors';
 import { generateRegistry } from '../lib/registry';
 import { SubaccountInfo } from '../subaccount';
 import {
-  OrderFlags,
   BroadcastMode,
-  TransactionOptions,
-  IPlaceOrder,
-  ICancelOrder,
   DenomConfig,
+  ICancelOrder,
+  IPlaceOrder,
+  OrderFlags,
+  TransactionOptions,
 } from '../types';
 import { Composer } from './composer';
 import { Get } from './get';
 import LocalWallet from './local-wallet';
 import {
+  Any,
+  MsgCancelOrder,
+  MsgPlaceOrder,
+  Order_ConditionType,
   Order_Side,
   Order_TimeInForce,
-  Any,
-  MsgPlaceOrder,
-  MsgCancelOrder,
-  Order_ConditionType,
   OrderBatch,
 } from './proto-includes';
 
@@ -282,6 +282,18 @@ export class Post {
    * when timestamp nonce is supported, no need to fetch account sequence number
    */
   public async account(address: string, orderFlags?: OrderFlags): Promise<Account> {
+    // MOCK: Return mock account for development (until Fuel migration)
+    if (address === '0xMOCK_FUEL_WALLET_ADDRESS') {
+      const mockAccount: Account = {
+        address,
+        accountNumber: 0,
+        sequence: 0,
+        pubkey: null, // Mock wallets don't need pubkey for our purposes
+      };
+      this.accountNumberCache.set(address, mockAccount);
+      return mockAccount;
+    }
+
     if (orderFlags === OrderFlags.SHORT_TERM || this.useTimestampNonce) {
       if (this.accountNumberCache.has(address)) {
         // If order is SHORT_TERM or if timestamp nonce is enabled, the sequence doesn't matter
