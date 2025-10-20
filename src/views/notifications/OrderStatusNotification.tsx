@@ -6,9 +6,9 @@ import { OrderSide } from 'starboard-client-js';
 import { STRING_KEYS } from '@/constants/localization';
 import { USD_DECIMALS } from '@/constants/numbers';
 import {
-    ORDER_TYPE_STRINGS,
-    PlaceOrderStatuses,
-    type LocalPlaceOrderData,
+  ORDER_TYPE_STRINGS,
+  PlaceOrderStatuses,
+  type LocalPlaceOrderData,
 } from '@/constants/trade';
 import { IndexerOrderSide } from '@/types/indexer/indexerApiGen';
 
@@ -24,9 +24,9 @@ import { LoadingSpinner } from '@/components/Loading/LoadingSpinner';
 import { Notification, NotificationProps } from '@/components/Notification';
 
 import {
-    getAverageFillPriceForOrder,
-    getFillsForOrderId,
-    getOrderByClientId,
+  getAverageFillPriceForOrder,
+  getFillsForOrderId,
+  getOrderByClientId,
 } from '@/state/accountSelectors';
 
 import { assertNever } from '@/lib/assertNever';
@@ -58,6 +58,7 @@ export const OrderStatusNotification = ({
     order?.id ?? localOrder.orderId
   );
 
+  console.debug({ order, localOrder, fills, averageFillPrice });
   const { assetId } = orEmptyObj(marketData);
   const logoUrl = useAppSelectorWithArgs(BonsaiHelpers.assets.selectAssetLogo, assetId);
   const { equityTiersLearnMore } = useURLConfigs();
@@ -68,6 +69,10 @@ export const OrderStatusNotification = ({
   const indexedOrderStatus = order?.status ?? localOrder.cachedData.status;
   const submissionStatus = localOrder.submissionStatus;
 
+  // MOCK: For mock orders that are placed but not in indexer, treat as Open
+  const isMockOrder = !order && submissionStatus === PlaceOrderStatuses.Placed;
+  const effectiveOrderStatus = isMockOrder ? OrderStatus.Open : indexedOrderStatus;
+
   let orderStatusStringKey = STRING_KEYS.SUBMITTING;
   let orderStatusIcon = <LoadingSpinner tw="text-color-accent [--spinner-width:0.9375rem]" />;
   let customContent = null;
@@ -76,12 +81,14 @@ export const OrderStatusNotification = ({
     case PlaceOrderStatuses.Placed:
     case PlaceOrderStatuses.Filled:
     case PlaceOrderStatuses.Canceled:
-      if (indexedOrderStatus) {
+      if (effectiveOrderStatus) {
         // skip pending / best effort open state -> still show as submitted (loading)
-        if (indexedOrderStatus === OrderStatus.Pending) break;
+        if (effectiveOrderStatus === OrderStatus.Pending) break;
 
-        orderStatusStringKey = getOrderStatusStringKey(indexedOrderStatus);
-        orderStatusIcon = <OrderStatusIconNew status={indexedOrderStatus} tw="size-[0.9375rem]" />;
+        orderStatusStringKey = getOrderStatusStringKey(effectiveOrderStatus);
+        orderStatusIcon = (
+          <OrderStatusIconNew status={effectiveOrderStatus} tw="size-[0.9375rem]" />
+        );
 
         if (fills.length > 0) {
           customContent = (
@@ -95,7 +102,7 @@ export const OrderStatusNotification = ({
               tickSizeDecimals={marketData?.tickSizeDecimals ?? USD_DECIMALS}
             />
           );
-        } else if (indexedOrderStatus === OrderStatus.Canceled && order?.removalReason) {
+        } else if (effectiveOrderStatus === OrderStatus.Canceled && order?.removalReason) {
           // when there's no fill and has a cancel reason, i.e. just plain canceled
           const cancelReason = order.removalReason as keyof typeof STRING_KEYS;
           customContent = <span>{stringGetter({ key: (STRING_KEYS as any)[cancelReason] })}</span>;
