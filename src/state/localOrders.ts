@@ -7,13 +7,13 @@ import { OrderType } from 'starboard-client-js';
 
 import { DEFAULT_SOMETHING_WENT_WRONG_ERROR_PARAMS, ErrorParams } from '@/constants/errors';
 import {
-    CANCEL_ALL_ORDERS_KEY,
-    CancelOrderStatuses,
-    LocalCancelAllData,
-    LocalCancelOrderData,
-    LocalCloseAllPositionsData,
-    LocalPlaceOrderData,
-    PlaceOrderStatuses,
+  CANCEL_ALL_ORDERS_KEY,
+  CancelOrderStatuses,
+  LocalCancelAllData,
+  LocalCancelOrderData,
+  LocalCloseAllPositionsData,
+  LocalPlaceOrderData,
+  PlaceOrderStatuses,
 } from '@/constants/trade';
 
 import { autoBatchAllReducers } from './autoBatchHelpers';
@@ -139,6 +139,16 @@ export const localOrdersSlice = createSlice({
         errorParams,
       };
     },
+    placeOrderSucceeded: (state, action: PayloadAction<{ clientId: string }>) => {
+      const { clientId } = action.payload;
+      if (state.localPlaceOrders[clientId] == null) {
+        return;
+      }
+      state.localPlaceOrders[clientId] = {
+        ...state.localPlaceOrders[clientId],
+        submissionStatus: PlaceOrderStatuses.Placed,
+      };
+    },
     placeOrderTimeout: (state, action: PayloadAction<string>) => {
       const clientId = action.payload;
       if (
@@ -247,6 +257,7 @@ export const {
 
   placeOrderSubmitted,
   placeOrderFailed,
+  placeOrderSucceeded,
   placeOrderTimeout,
 
   cancelOrderSubmitted,

@@ -30,7 +30,6 @@ import { WithDetailsReceipt } from '@/components/WithDetailsReceipt';
 import { WithTooltip } from '@/components/WithTooltip';
 import { OnboardingTriggerButton } from '@/views/dialogs/OnboardingTriggerButton';
 
-import { calculateCanAccountTrade } from '@/state/accountCalculators';
 import { getSubaccountId } from '@/state/accountInfoSelectors';
 import { useAppDispatch, useAppSelector } from '@/state/appTypes';
 import { openDialog } from '@/state/dialogs';
@@ -78,7 +77,7 @@ export const PlaceOrderButtonAndReceipt = ({
   const { chainTokenImage, chainTokenLabel } = useTokenConfigs();
   const { complianceState } = useComplianceState();
 
-  const canAccountTrade = useAppSelector(calculateCanAccountTrade);
+  const canAccountTrade = true; //useAppSelector(calculateCanAccountTrade);
   const subaccountNumber = useAppSelector(getSubaccountId);
 
   const id = useAppSelector(BonsaiHelpers.currentMarket.assetId);
@@ -282,8 +281,12 @@ export const PlaceOrderButtonAndReceipt = ({
         ? STRING_KEYS.PREVIEW_ORDER
         : actionStringKey ?? STRING_KEYS.UNAVAILABLE,
       buttonAction: ButtonAction.Primary,
-      buttonState: { isDisabled: !shouldEnableTrade, isLoading: hasMissingData },
-      showValidatorError: true,
+      buttonState: {
+        isDisabled: false,
+        //!shouldEnableTrade,
+        isLoading: hasMissingData,
+      },
+      showValidatorError: !true,
     },
 
     [MobilePlaceOrderSteps.PreviewOrder]: {
@@ -328,8 +331,8 @@ export const PlaceOrderButtonAndReceipt = ({
     </Button>
   );
 
-  const showValidatorErrors =
-    hasValidationErrors && (!currentStep || buttonStatesPerStep[currentStep].showValidatorError);
+  const showValidatorErrors = false;
+  //hasValidationErrors && (!currentStep || buttonStatesPerStep[currentStep].showValidatorError);
 
   const submitButton = (
     <Button

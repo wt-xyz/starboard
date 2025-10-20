@@ -1,6 +1,5 @@
 import { forwardRef, useMemo } from 'react';
 
-import { MarginMode } from '@/bonsai/forms/trade/types';
 import { BonsaiCore } from '@/bonsai/ontology';
 import {
   PerpetualMarketSummary,
@@ -9,7 +8,7 @@ import {
 } from '@/bonsai/types/summaryTypes';
 import { Separator } from '@radix-ui/react-separator';
 import type { ColumnSize } from '@react-types/table';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -17,7 +16,7 @@ import { STRING_KEYS, StringGetterFunction } from '@/constants/localization';
 import { NumberSign, TOKEN_DECIMALS, USD_DECIMALS } from '@/constants/numbers';
 import { EMPTY_ARR } from '@/constants/objects';
 import { AppRoute } from '@/constants/routes';
-import { IndexerPerpetualPositionStatus, IndexerPositionSide } from '@/types/indexer/indexerApiGen';
+import { IndexerPositionSide } from '@/types/indexer/indexerApiGen';
 
 import { MediaQueryKeys, useBreakpoints } from '@/hooks/useBreakpoints';
 import { useEnvFeatures } from '@/hooks/useEnvFeatures';
@@ -467,14 +466,100 @@ export const PositionsTable = forwardRef(
     const openPositions =
       useAppSelector(BonsaiCore.account.parentSubaccountPositions.data) ?? EMPTY_ARR;
 
+    // MOCK: Add positions from localStorage mock orders
+    const mockPositions = useMemo(() => {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return EMPTY_ARR;
+
+      try {
+        const mockOrders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
+
+        // Aggregate orders by market
+        const positionsByMarket = mockOrders.reduce((acc: any, mockOrder: any) => {
+          const { marketId, side, size, price } = mockOrder.orderPayload;
+          const sizeNum = Number(size);
+          const priceNum = Number(price);
+          const signedSize = side === 'BUY' ? sizeNum : -sizeNum;
+
+          if (!acc[marketId]) {
+            acc[marketId] = {
+              marketId,
+              totalSignedSize: 0,
+              totalCost: 0,
+              totalAbsSize: 0,
+              timestamps: [],
+            };
+          }
+
+          acc[marketId].totalSignedSize += signedSize;
+          acc[marketId].totalCost += sizeNum * priceNum;
+          acc[marketId].totalAbsSize += sizeNum;
+          acc[marketId].timestamps.push(mockOrder.timestamp);
+
+          return acc;
+        }, {});
+
+        // Convert aggregated positions to SubaccountPosition format
+        return Object.values(positionsByMarket).map((pos: any) => {
+          const avgPrice = pos.totalCost / pos.totalAbsSize;
+          const unsignedSize = Math.abs(pos.totalSignedSize);
+
+          return {
+            // Base fields from indexer
+            market: pos.marketId,
+            status: 'OPEN',
+            entryPrice: new BigNumber(avgPrice),
+            maxSize: new BigNumber(unsignedSize),
+            realizedPnl: new BigNumber(0),
+            createdAtHeight: new BigNumber(0),
+            sumOpen: new BigNumber(unsignedSize),
+            sumClose: new BigNumber(0),
+            netFunding: new BigNumber(0),
+            unrealizedPnl: new BigNumber(0),
+            exitPrice: null,
+
+            // Derived core fields
+            uniqueId: `mock-${pos.marketId}` as any,
+            assetId: pos.marketId.split('-')[0],
+            marginMode: 'CROSS' as any,
+            signedSize: new BigNumber(pos.totalSignedSize),
+            unsignedSize: new BigNumber(unsignedSize),
+            notional: new BigNumber(unsignedSize).times(avgPrice),
+            value: new BigNumber(pos.totalSignedSize).times(avgPrice),
+            adjustedImf: new BigNumber(0),
+            adjustedMmf: new BigNumber(0),
+            initialRisk: new BigNumber(0),
+            maintenanceRisk: new BigNumber(0),
+            maxLeverage: null,
+            baseEntryPrice: new BigNumber(avgPrice),
+            baseNetFunding: new BigNumber(0),
+
+            // Derived extra fields
+            leverage: null,
+            marginValueMaintenance: new BigNumber(0),
+            marginValueInitial: new BigNumber(0),
+            liquidationPrice: null,
+            updatedUnrealizedPnl: new BigNumber(0),
+            updatedUnrealizedPnlPercent: null,
+          };
+        }) as SubaccountPosition[];
+      } catch (e) {
+        console.error('[MOCK] Error creating mock positions:', e);
+        return EMPTY_ARR;
+      }
+    }, []);
+
+    const allPositions = useMemo(() => {
+      return [...openPositions, ...mockPositions];
+    }, [openPositions, mockPositions]);
+
     const positions = useMemo(() => {
-      return openPositions.filter((position) => {
+      return allPositions.filter((position) => {
         const matchesMarket = currentMarket == null || position.market === currentMarket;
         const marginType = position.marginMode;
         const matchesType = marginModeMatchesFilter(marginType, marketTypeFilter);
         return matchesMarket && matchesType;
       });
-    }, [currentMarket, marketTypeFilter, openPositions]);
+    }, [currentMarket, marketTypeFilter, allPositions]);
 
     const tpslOrdersByPositionUniqueId = useAppSelectorWithArgs(
       getSubaccountConditionalOrders,
@@ -482,9 +567,6 @@ export const PositionsTable = forwardRef(
     );
 
     const positionsData = useMemo(() => {
-      // Mock positions for development environment
-      if (process.env.NODE_ENV !== 'production') return generateMockPositions(5);
-
       return positions.map((position: SubaccountPosition): PositionTableRow => {
         const marketSummary = marketSummaries[position.market];
         return {
@@ -615,107 +697,3 @@ const $TriggerLabel = styled(Tag)`
 const $VerticalSeparator = styled(Separator)`
   border-right: solid var(--border-width) var(--color-border);
 `;
-
-function generateMockPositions(count: number = 3): PositionTableRow[] {
-  const mockMarkets = [
-    {
-      id: 'BMA-USD',
-      assetId: 'BMA',
-      displayableAsset: 'Banco Macro',
-      displayableTicker: 'BMA-USD',
-      entryPrice: 53.47,
-      oraclePrice: 54.12,
-      logo: null,
-    },
-    {
-      id: 'HPG-USD',
-      assetId: 'HPG',
-      displayableAsset: 'Hoa Phat Group',
-      displayableTicker: 'HPG-USD',
-      entryPrice: 4.5,
-      oraclePrice: 4.65,
-      logo: null,
-    },
-    {
-      id: 'DELTA-USD',
-      assetId: 'DELTA',
-      displayableAsset: 'Delta Airlines',
-      displayableTicker: 'DELTA-USD',
-      entryPrice: 59.64,
-      oraclePrice: 58.9,
-      logo: null,
-    },
-    {
-      id: 'BYMA-USD',
-      assetId: 'BYMA',
-      displayableAsset: 'Bolsas y Mercados',
-      displayableTicker: 'BYMA-USD',
-      entryPrice: 0.08,
-      oraclePrice: 0.082,
-      logo: null,
-    },
-  ];
-
-  return Array.from({ length: count }, (_, i) => {
-    const marketIndex = i % mockMarkets.length;
-    const market = mockMarkets[marketIndex]!;
-    const side = i % 2 === 0 ? IndexerPositionSide.LONG : IndexerPositionSide.SHORT;
-    const size = BigNumber(Math.random() * 10 + 1);
-    const entryPrice = BigNumber(market.entryPrice);
-    const oraclePrice = market.oraclePrice;
-    const leverage = BigNumber(Math.floor(Math.random() * 10) + 2);
-    const notional = size.multipliedBy(oraclePrice);
-    const unrealizedPnl = size.multipliedBy(oraclePrice - market.entryPrice);
-    const marginValue = notional.dividedBy(leverage);
-
-    const stepSizeDecimals = market.assetId === 'BYMA' ? 4 : 2;
-    const tickSizeDecimals = market.assetId === 'BMA' ? 1 : 2;
-
-    return {
-      adjustedImf: BigNumber(0.05),
-      assetId: market.assetId,
-      entryPrice,
-      adjustedMmf: BigNumber(0.03),
-      baseEntryPrice: entryPrice,
-      baseNetFunding: BigNumber(Math.random() * 20 - 10),
-      createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-      createdAtHeight: BigNumber(Math.floor(Math.random() * 1000000)),
-      initialRisk: BigNumber(0.1),
-      leverage,
-      liquidationPrice: BigNumber(
-        side === IndexerPositionSide.LONG ? market.entryPrice * 0.8 : market.entryPrice * 1.2
-      ),
-      marginMode: i % 3 === 0 ? MarginMode.ISOLATED : MarginMode.CROSS,
-      marginValueInitial: marginValue,
-      maintenanceRisk: BigNumber(0.05),
-      market: market.id,
-      marginValueMaintenance: marginValue.multipliedBy(0.6),
-      maxLeverage: BigNumber(20),
-      netFunding: BigNumber(Math.random() * 30 - 15),
-      notional,
-      realizedPnl: BigNumber(Math.random() * 1000 - 500),
-      side,
-      signedSize: side === IndexerPositionSide.LONG ? size : size.negated(),
-      maxSize: size.multipliedBy(2),
-      unrealizedPnl,
-      updatedUnrealizedPnl: unrealizedPnl,
-      updatedUnrealizedPnlPercent: unrealizedPnl.dividedBy(marginValue),
-      status: IndexerPerpetualPositionStatus.OPEN,
-      subaccountNumber: 0,
-      sumClose: BigNumber(0),
-      sumOpen: size,
-      unsignedSize: size,
-      value: notional,
-      closedAt: null,
-      exitPrice: null,
-      uniqueId: `pos-${market.id}-${i}` as any,
-      // We show current payload as market summary for mock positions
-      marketSummary: market as any,
-      stopLossOrders: [],
-      takeProfitOrders: [],
-      stepSizeDecimals,
-      tickSizeDecimals,
-      oraclePrice,
-    } satisfies PositionTableRow;
-  });
-}
