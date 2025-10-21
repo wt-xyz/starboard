@@ -1,6 +1,11 @@
-import { PerpetualMarketSummary, PositionUniqueId, SubaccountPosition } from '@/bonsai/types/summaryTypes';
-import { IndexerPositionSide } from '@/types/indexer/indexerApiGen';
+import {
+  PerpetualMarketSummary,
+  PositionUniqueId,
+  SubaccountPosition,
+} from '@/bonsai/types/summaryTypes';
 import { BigNumber } from 'bignumber.js';
+
+import { IndexerPositionSide } from '@/types/indexer/indexerApiGen';
 
 // Mock market summaries
 export const mockMarketSummaries: Record<string, PerpetualMarketSummary> = {
@@ -145,7 +150,6 @@ export const mockPositions: SubaccountPosition[] = [
     updatedUnrealizedPnl: new BigNumber('600'),
     updatedUnrealizedPnlPercent: new BigNumber('5.31'),
     liquidationPrice: new BigNumber('42000'),
-    entryPrice: new BigNumber('44000'),
   },
   {
     // ETH Short Position
@@ -182,7 +186,6 @@ export const mockPositions: SubaccountPosition[] = [
     updatedUnrealizedPnl: new BigNumber('-140'),
     updatedUnrealizedPnlPercent: new BigNumber('-2.15'),
     liquidationPrice: new BigNumber('3400'),
-    entryPrice: new BigNumber('3250'),
   },
   {
     // SOL Long Position
@@ -219,7 +222,6 @@ export const mockPositions: SubaccountPosition[] = [
     updatedUnrealizedPnl: new BigNumber('650'),
     updatedUnrealizedPnlPercent: new BigNumber('7.43'),
     liquidationPrice: new BigNumber('160'),
-    entryPrice: new BigNumber('175'),
   },
 ];
 

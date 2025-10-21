@@ -3,9 +3,9 @@ import { useCallback, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import {
-    HORIZONTAL_PANEL_MAX_HEIGHT,
-    HORIZONTAL_PANEL_MIN_HEIGHT,
-    TradeLayouts,
+  HORIZONTAL_PANEL_MAX_HEIGHT,
+  HORIZONTAL_PANEL_MIN_HEIGHT,
+  TradeLayouts,
 } from '@/constants/layout';
 
 import { useBreakpoints } from '@/hooks/useBreakpoints';
@@ -79,7 +79,7 @@ const TradePage = () => {
         </DetachedSection>
 
         <DetachedSection>
-          <MockDataProvider enabled={true}>
+          <MockDataProvider enabled>
             <HorizontalPanel handleStartResize={handleMouseDown} />
           </MockDataProvider>
         </DetachedSection>
@@ -117,7 +117,7 @@ const TradePage = () => {
       </$GridSection>
 
       <$GridSection gridArea="Horizontal">
-        <MockDataProvider enabled={true}>
+        <MockDataProvider enabled>
           <HorizontalPanel
             isOpen={isHorizontalPanelOpen}
             setIsOpen={setIsHorizontalPanelOpen}

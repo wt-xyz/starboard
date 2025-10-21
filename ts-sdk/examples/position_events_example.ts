@@ -6,13 +6,14 @@
  */
 
 import {
-    calculateLiquidationPrice,
-    Network,
-    PositionEventProcessor,
-    PositionEventType,
-    PositionSide,
-    SocketClient,
-    validatePositionParams
+  calculateLiquidationPrice,
+  Network,
+  PositionEventProcessor,
+  PositionEventType,
+  PositionSide,
+  PositionStatus,
+  SocketClient,
+  validatePositionParams
 } from '../src';
 
 // Example: Setup position event tracking
@@ -262,7 +263,7 @@ async function main() {
       side: PositionSide.LONG,
       size: '1.5',
       entryPrice: '3000',
-      status: 'OPEN' as any,
+      status: PositionStatus.OPEN,
     },
     'example-address',
     0
@@ -275,6 +276,6 @@ if (require.main === module) {
 }
 
 export {
-    calculateLongLiquidationPrice, getCurrentPositions, monitorPositions, setupPositionTracking, trackPositionAnalytics, validateLongPosition
+  calculateLongLiquidationPrice, getCurrentPositions, monitorPositions, setupPositionTracking, trackPositionAnalytics, validateLongPosition
 };
 

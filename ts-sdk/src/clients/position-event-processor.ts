@@ -43,16 +43,15 @@ export class PositionEventProcessor extends EventEmitter {
       const existingPosition = this.positions.get(positionKey);
       
       const eventType = this.determineEventType(update, existingPosition);
-      
-      if (!eventType) {
-        return null;
-      }
 
       const updatedPosition: Position = existingPosition
         ? { ...existingPosition, ...update }
         : this.createNewPosition(update);
-
       this.positions.set(positionKey, updatedPosition);
+
+      if (!eventType) {
+        return null;
+      }
 
       if (eventType === PositionEventType.POSITION_OPENED) {
         this.positionOpenTimes.set(positionKey, Date.now());
