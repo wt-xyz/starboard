@@ -11,6 +11,9 @@ import type { ColumnSize } from '@react-types/table';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { useMockMarketSummaries, useMockPositions } from '@/components/MockDataProvider';
+import { usePositionProcessor } from '@/components/PositionProcessorProvider';
+
 import { STRING_KEYS, StringGetterFunction } from '@/constants/localization';
 import { NumberSign, TOKEN_DECIMALS, USD_DECIMALS } from '@/constants/numbers';
 import { EMPTY_ARR } from '@/constants/objects';
@@ -460,19 +463,33 @@ export const PositionsTable = forwardRef(
 
     // todo this uses the old subaccount id for now
     const isAccountViewOnly = useAppSelector(calculateIsAccountViewOnly);
-    const marketSummaries = orEmptyRecord(useAppSelector(BonsaiCore.markets.markets.data));
+    
+    // Use position processor data if available, otherwise fall back to real data
+    const { isMockMode } = usePositionProcessor();
+    const mockPositions = useMockPositions(currentMarket, marketTypeFilter);
+    const mockMarketSummaries = useMockMarketSummaries();
+    
+    const realMarketSummaries = orEmptyRecord(useAppSelector(BonsaiCore.markets.markets.data));
+    const marketSummaries = Object.keys(mockMarketSummaries).length > 0 ? mockMarketSummaries : realMarketSummaries;
 
-    const openPositions =
+    const realOpenPositions =
       useAppSelector(BonsaiCore.account.parentSubaccountPositions.data) ?? EMPTY_ARR;
+    const openPositions = isMockMode ? mockPositions : realOpenPositions;
 
     const positions = useMemo(() => {
+      // If using mock data, it's already filtered, so return as-is
+      if (isMockMode) {
+        return openPositions;
+      }
+      
+      // Otherwise, apply the normal filtering logic
       return openPositions.filter((position) => {
         const matchesMarket = currentMarket == null || position.market === currentMarket;
         const marginType = position.marginMode;
         const matchesType = marginModeMatchesFilter(marginType, marketTypeFilter);
         return matchesMarket && matchesType;
       });
-    }, [currentMarket, marketTypeFilter, openPositions]);
+    }, [currentMarket, marketTypeFilter, openPositions, isMockMode]);
 
     const tpslOrdersByPositionUniqueId = useAppSelectorWithArgs(
       getSubaccountConditionalOrders,

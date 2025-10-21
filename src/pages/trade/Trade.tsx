@@ -3,9 +3,9 @@ import { useCallback, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import {
-  HORIZONTAL_PANEL_MAX_HEIGHT,
-  HORIZONTAL_PANEL_MIN_HEIGHT,
-  TradeLayouts,
+    HORIZONTAL_PANEL_MAX_HEIGHT,
+    HORIZONTAL_PANEL_MIN_HEIGHT,
+    TradeLayouts,
 } from '@/constants/layout';
 
 import { useBreakpoints } from '@/hooks/useBreakpoints';
@@ -16,6 +16,7 @@ import breakpoints from '@/styles/breakpoints';
 import { layoutMixins } from '@/styles/layoutMixins';
 
 import { DetachedSection } from '@/components/ContentSection';
+import { MockDataProvider } from '@/components/MockDataProvider';
 import { AccountInfo } from '@/views/AccountInfo';
 import { TradeBox } from '@/views/TradeBox';
 
@@ -78,7 +79,9 @@ const TradePage = () => {
         </DetachedSection>
 
         <DetachedSection>
-          <HorizontalPanel handleStartResize={handleMouseDown} />
+          <MockDataProvider enabled={true}>
+            <HorizontalPanel handleStartResize={handleMouseDown} />
+          </MockDataProvider>
         </DetachedSection>
 
         <DetachedSection>
@@ -114,11 +117,13 @@ const TradePage = () => {
       </$GridSection>
 
       <$GridSection gridArea="Horizontal">
-        <HorizontalPanel
-          isOpen={isHorizontalPanelOpen}
-          setIsOpen={setIsHorizontalPanelOpen}
-          handleStartResize={handleMouseDown}
-        />
+        <MockDataProvider enabled={true}>
+          <HorizontalPanel
+            isOpen={isHorizontalPanelOpen}
+            setIsOpen={setIsHorizontalPanelOpen}
+            handleStartResize={handleMouseDown}
+          />
+        </MockDataProvider>
       </$GridSection>
     </$TradeLayout>
   );
