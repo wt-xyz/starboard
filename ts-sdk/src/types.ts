@@ -3,8 +3,9 @@ import { Method } from '@cosmjs/tendermint-rpc';
 
 import { TransactionOptions } from './clients/types';
 
-export * from './clients/types';
 export * from './clients/constants';
+export * from './clients/types';
+export * from './types/indexer';
 
 // How long to wait and how often to check when calling Broadcast with
 // Method.BroadcastTxCommit
