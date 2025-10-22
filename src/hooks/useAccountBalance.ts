@@ -48,7 +48,7 @@ export const useAccountBalance = (): {
     queryKey: ['fuel', 'ethBalance', address, defaultRpc, usdcAssetId, chainTokenAssetId],
     queryFn: async () => {
       if (!address) return [ZERO, ZERO];
-      return await Promise.all([
+      return Promise.all([
         fuelProvider.getBalance(address, chainTokenAssetId),
         fuelProvider.getBalance(address, usdcAssetId),
       ]);

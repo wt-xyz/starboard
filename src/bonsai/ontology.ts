@@ -129,6 +129,7 @@ import {
   SubaccountTransfer,
   UserStats,
 } from './types/summaryTypes';
+// eslint-disable-next-line import/no-cycle
 import { useCurrentMarketTradesValue } from './websocket/trades';
 
 type BasicSelector<Result, Args extends any[] = []> = (state: RootState, ...args: Args) => Result;

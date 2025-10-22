@@ -84,16 +84,6 @@ export const DepositDialog2 = ({ setIsOpen }: DialogProps<DepositDialog2Props>) 
     tokenSelectRef.current?.scroll({ top: 0 });
   };
 
-  const onBack = () => {
-    // Note: We'll only allow to deposit
-    // from QR code - simply show address
-    if (formState === 'token-select') {
-      onShowForm();
-    } else {
-      setFormState('token-select');
-    }
-  };
-
   useLayoutEffect(() => {
     if (sourceAccount.walletInfo?.connectorType === ConnectorType.Privy) {
       setIsOpen(false);

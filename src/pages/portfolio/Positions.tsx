@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { AnalyticsEvents } from '@/constants/analytics';
 import { STRING_KEYS } from '@/constants/localization';
 import { AppRoute, PortfolioRoute } from '@/constants/routes';
 
@@ -14,16 +13,14 @@ import { useStringGetter } from '@/hooks/useStringGetter';
 
 import { AttachedExpandingSection, DetachedSection } from '@/components/ContentSection';
 import { ContentSectionHeader } from '@/components/ContentSectionHeader';
-import { Icon, IconName } from '@/components/Icon';
-import { Link } from '@/components/Link';
 import { PositionsTable, PositionsTableColumnKey } from '@/views/tables/PositionsTable';
 
 import { calculateShouldRenderActionsInPositionsTable } from '@/state/accountCalculators';
 
-import { track } from '@/lib/analytics/analytics';
 import { isTruthy } from '@/lib/isTruthy';
 
 import { MaybeUnopenedIsolatedPositionsPanel } from '../trade/UnopenedIsolatedPositions';
+
 /* import { MaybeVaultPositionsPanel } from '../vaults/VaultPositions'; */
 
 export const Positions = () => {
@@ -40,12 +37,12 @@ export const Positions = () => {
     });
   }, [navigate]);
 
-    /* const handleViewVault = useCallback(() => {
-  *   track(AnalyticsEvents.ClickViewVaultFromPositionCard());
-  *   navigate(`${AppRoute.Vault}`, {
-  *     state: { from: AppRoute.Portfolio },
-  *   });
-  * }, [navigate]); */
+  /* const handleViewVault = useCallback(() => {
+   *   track(AnalyticsEvents.ClickViewVaultFromPositionCard());
+   *   navigate(`${AppRoute.Vault}`, {
+   *     state: { from: AppRoute.Portfolio },
+   *   });
+   * }, [navigate]); */
 
   return (
     <>
@@ -100,7 +97,7 @@ export const Positions = () => {
         />
       </DetachedSection>
       <DetachedSection>
-              {/* <$MaybeVaultPositionsPanel
+        {/* <$MaybeVaultPositionsPanel
           header={
             <ContentSectionHeader
               title={stringGetter({ key: STRING_KEYS.VAULTS })}
@@ -130,10 +127,10 @@ const $MaybeUnopenedIsolatedPositionsPanel = styled(MaybeUnopenedIsolatedPositio
 `;
 
 /* const $MaybeVaultPositionsPanel = styled(MaybeVaultPositionsPanel)`
-*   margin-top: 1rem;
-*   margin-bottom: 1rem;
-*
-*   > div {
-*     padding-left: 1rem;
-*   }
-* `; */
+ *   margin-top: 1rem;
+ *   margin-bottom: 1rem;
+ *
+ *   > div {
+ *     padding-left: 1rem;
+ *   }
+ * `; */

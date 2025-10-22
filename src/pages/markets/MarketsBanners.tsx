@@ -55,6 +55,7 @@ export const MarketsBanners = ({
 
   const shouldDisplayPmlBanner = !hasDismissedPmlBanner;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const pmlBanner = shouldDisplayPmlBanner ? (
     <$PmlBanner onClick={onClickPmlBanner} role="button" tabIndex={0}>
       <img src="/affiliates-hedgie.png" alt="affiliates hedgie" tw="h-8 mobile:hidden" />
@@ -119,6 +120,7 @@ export const MarketsBanners = ({
 
   const shouldDisplayPumpBanner = !hasDismissedPumpBanner;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const pumpBanner = shouldDisplayPumpBanner ? (
     <$PumpBanner onClick={onClickPumpBanner} role="button" tabIndex={0}>
       <div tw="mr-auto flex flex-col">
@@ -147,9 +149,9 @@ export const MarketsBanners = ({
     </$PumpBanner>
   ) : null;
 
-    /* NOTE: disabled for demo */
-    /* return pumpBanner ?? pmlBanner ?? null; */
-    return null;
+  /* NOTE: disabled for demo */
+  /* return pumpBanner ?? pmlBanner ?? null; */
+  return null;
 };
 
 const $MarketsPageBanner = styled.div`

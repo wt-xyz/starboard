@@ -1,6 +1,9 @@
-import { useAppThemeAndColorModeContext } from '@/hooks/useAppThemeAndColorMode';
 import React, { useEffect, useRef } from 'react';
+
 import styled from 'styled-components';
+
+import { useAppThemeAndColorModeContext } from '@/hooks/useAppThemeAndColorMode';
+
 import './TradingViewWidget.css';
 
 interface TradingViewWidgetProps {
@@ -106,8 +109,7 @@ const TradingViewWidget: React.FC<TradingViewWidgetProps> = ({
     script.async = true;
     script.onload = () => {
       if (window.TradingView && containerRef.current) {
-
-
+        // eslint-disable-next-line new-cap
         const widget = new window.TradingView.widget({
           symbol,
           width,
@@ -223,7 +225,7 @@ const TradingViewWidget: React.FC<TradingViewWidgetProps> = ({
 const WidgetContainer = styled.div`
   width: 100%;
   height: 100%;
-  
+
   #tradingview_widget {
     width: 100%;
     height: 100%;

@@ -39,7 +39,7 @@ export const BaseTvChartWidget = ({
       '240': '240', // 4 hours
       '1D': 'D', // 1 day
     } as const;
-    return intervalMap[resolution] || 'D';
+    return intervalMap[resolution] ?? 'D';
   };
 
   const onResolutionChange = useCallback((resolution: ResolutionString) => {
@@ -89,18 +89,19 @@ export const BaseTvChartWidget = ({
         width="100%"
         height="100%"
         timezone="Etc/UTC"
+        // eslint-disable-next-line react/style-prop-object
         style="1"
         locale="en"
         enable_publishing={false}
         allow_symbol_change={false}
         hide_top_toolbar={false}
         hide_legend={false}
-        save_image={true}
+        save_image
         studies={['Volume@tv-basicstudies']}
         disabled_features={['use_localstorage_for_settings']}
         enabled_features={['study_templates']}
         onChartReady={handleWidgetReady}
-        autosize={true}
+        autosize
       />
     </$PriceChart>
   );

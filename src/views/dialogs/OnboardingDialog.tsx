@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 
-import { EvmDerivedAccountStatus, OnboardingSteps } from '@/constants/account';
+import { OnboardingSteps } from '@/constants/account';
 import { DialogProps, DialogTypes, OnboardingDialogProps } from '@/constants/dialogs';
 import { STRING_KEYS } from '@/constants/localization';
 import { StatsigFlags } from '@/constants/statsig';
@@ -23,7 +23,6 @@ import { layoutMixins } from '@/styles/layoutMixins';
 import { Dialog, DialogPlacement } from '@/components/Dialog';
 import { Icon, IconName } from '@/components/Icon';
 import { Link } from '@/components/Link';
-import { Ring } from '@/components/Ring';
 import { WithTooltip } from '@/components/WithTooltip';
 
 import { setDisplayChooseWallet, setOnboardedThisSession } from '@/state/account';
@@ -41,12 +40,11 @@ export const OnboardingDialog = ({
   setIsOpen: setIsOpenRaw,
 }: DialogProps<OnboardingDialogProps>) => {
   const dispatch = useAppDispatch();
-  const [derivationStatus, setDerivationStatus] = useState(EvmDerivedAccountStatus.NotDerived);
 
   const stringGetter = useStringGetter();
   const { isMobile } = useBreakpoints();
   const { walletLearnMore } = useURLConfigs();
-  const { sourceAccount, selectWallet } = useAccounts();
+  const { selectWallet } = useAccounts();
   const showNewDepositFlow =
     useStatsigGateValue(StatsigFlags.ffDepositRewrite) || testFlags.showNewDepositFlow;
 
@@ -215,8 +213,6 @@ const $Dialog = styled(Dialog)<{ width?: string }>`
   --dialog-icon-size: 1.25rem;
   --dialog-content-paddingBottom: 1rem;
 `;
-
-const $Ring = tw(Ring)`w-1.25 h-1.25 [--ring-color:--color-accent]`;
 
 const $WithTooltip = styled(WithTooltip)`
   a {

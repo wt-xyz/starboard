@@ -1,5 +1,6 @@
-import { MustBigNumber } from "@/lib/numbers";
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
+
+import { MustBigNumber } from '@/lib/numbers';
 
 // Shared transformer so REST and WS produce the same shape
 function countDecimalsFromString(s?: string) {
@@ -13,6 +14,7 @@ type SummaryMarkets = Record<string, any>; // define a proper interface if avail
 
 export function transformMarkets(markets: RawMarkets): SummaryMarkets {
   const out: SummaryMarkets = {};
+  // eslint-disable-next-line no-restricted-syntax
   for (const [marketId, market] of Object.entries(markets)) {
     const asset = market.ticker.split('-')[0];
     const oraclePrice = parseFloat(market.oraclePrice ?? '0');
@@ -25,7 +27,9 @@ export function transformMarkets(markets: RawMarkets): SummaryMarkets {
       openInterestUSDC: (parseFloat(market.openInterest) ?? 0) * oraclePrice,
       // NOTE: pick one naming convention; see next comment about percent vs price
       priceChange24h: parseFloat(market.priceChange24H) ?? 0,
-      percentChange24h: calculatePriceChangePercent(market.priceChange24H, market.oraclePrice.toString() || '0') || 0,
+      percentChange24h:
+        calculatePriceChangePercent(market.priceChange24H, market.oraclePrice.toString() || '0') ??
+        0,
       stepSizeDecimals: countDecimalsFromString(market.stepSize),
       tickSizeDecimals: countDecimalsFromString(market.tickSize),
 
@@ -52,7 +56,8 @@ export function transformMarkets(markets: RawMarkets): SummaryMarkets {
 
 export function calculatePriceChangePercent(
   priceChange24H: string | null | undefined,
-  oraclePrice: string | null | undefined): BigNumber | null {
+  oraclePrice: string | null | undefined
+): BigNumber | null {
   if (priceChange24H == null || oraclePrice == null) {
     return null;
   }
