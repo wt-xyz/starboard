@@ -50,7 +50,7 @@ export const WithdrawForm = ({
   destinationAddress: string;
   setDestinationAddress: Dispatch<SetStateAction<string>>;
   destinationChain: string;
-  onChainSelect: () => void;
+  onChainSelect?: () => void;
   onWithdraw: (withdraw: Withdraw) => void;
   onWithdrawBroadcastUpdate: (withdrawId: string, subtransaction: WithdrawSubtransaction) => void;
   onWithdrawSigned: (withdrawId: string) => void;
@@ -220,6 +220,7 @@ export const WithdrawForm = ({
         value={destinationAddress}
         onChange={setDestinationAddress}
         destinationChain={destinationChain}
+        // onDestinationClicked={onChainSelect}
       />
       <AmountInput value={amount} onChange={setAmount} />
       <TransferRouteOptions

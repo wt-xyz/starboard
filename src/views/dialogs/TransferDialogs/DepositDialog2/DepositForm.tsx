@@ -50,13 +50,14 @@ import { DepositStep, useDepositSteps } from './depositHooks';
 import { isInstantDeposit, useBalance, useDepositDeltas, useDepositRoutes } from './queries';
 
 export const DepositForm = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onTokenSelect: _onTokenSelect,
   amount,
   setAmount,
   token,
   onDeposit,
 }: {
-  onTokenSelect: () => void;
+  onTokenSelect?: () => void;
   amount: string;
   setAmount: Dispatch<SetStateAction<string>>;
   token: TokenForTransfer;
@@ -385,6 +386,7 @@ export const DepositForm = ({
       value={amount}
       onChange={setAmount}
       token={token}
+      // onTokenClick={onTokenSelect}
       error={error}
     />
   );
