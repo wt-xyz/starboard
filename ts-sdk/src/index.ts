@@ -1,9 +1,6 @@
 // Types.
 export * from './types';
 
-// Indexer examples (for development and documentation)
-export * from './types/indexer-examples';
-
 // Utility functions.
 export * as helpers from './lib/helpers';
 export * as onboarding from './lib/onboarding';
@@ -20,4 +17,3 @@ export { SubaccountInfo as SubaccountClient, SubaccountInfo } from './clients/su
 export { ValidatorClient } from './clients/validator-client';
 export { ByteArrayEncoding, encodeJson } from './lib/helpers';
 export { NetworkOptimizer } from './network_optimizer';
-
