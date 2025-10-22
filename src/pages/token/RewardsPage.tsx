@@ -12,7 +12,6 @@ import { AppRoute } from '@/constants/routes';
 import { useAccountBalance } from '@/hooks/useAccountBalance';
 import { useBreakpoints } from '@/hooks/useBreakpoints';
 import { useComplianceState } from '@/hooks/useComplianceState';
-import { useEnvConfig } from '@/hooks/useEnvConfig';
 import { useStringGetter } from '@/hooks/useStringGetter';
 import { useTokenConfigs } from '@/hooks/useTokenConfigs';
 
@@ -53,8 +52,6 @@ const RewardsPage = () => {
     (a) => a.amount
   );
 
-  const ethereumChainId = useEnvConfig('ethereumChainId');
-  const chainId = Number(ethereumChainId);
   // v3 token is only on mainnet
   const { balance: tokenBalance } = useAccountBalance();
 

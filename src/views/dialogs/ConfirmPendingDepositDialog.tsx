@@ -19,9 +19,6 @@ import { Button } from '@/components/Button';
 import { Dialog } from '@/components/Dialog';
 import { Output, OutputType } from '@/components/Output';
 
-import { getSelectedDydxChainId } from '@/state/appSelectors';
-import { useAppSelector } from '@/state/appTypes';
-
 import { log } from '@/lib/telemetry';
 
 export const ConfirmPendingDepositDialog = ({
@@ -29,7 +26,6 @@ export const ConfirmPendingDepositDialog = ({
   usdcBalance,
 }: DialogProps<ConfirmPendingDepositDialogProps>) => {
   const [isLoading, setIsLoading] = useState(false);
-  const selectedDydxChainId = useAppSelector(getSelectedDydxChainId);
   const { dydxAddress } = useAccounts();
 
   const stringGetter = useStringGetter();

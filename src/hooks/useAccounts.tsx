@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-import { BonsaiCore } from '@/bonsai/ontology';
 import { type Subaccount } from 'starboard-client-js';
 
 import { OnboardingGuard, OnboardingState } from '@/constants/account';
@@ -44,7 +43,6 @@ const useAccountsContext = () => {
     disconnect: disconnectFuel,
   } = useFuelWallet();
 
-  const hasSubAccount = useAppSelector(BonsaiCore.account.parentSubaccountSummary.data) != null;
   const sourceAccount = useAppSelector(getSourceAccount);
 
   // Debug: Log current onboarding state

@@ -35,7 +35,8 @@ export const useFuelWallet = () => {
 
     const handleConnectorChange = async (connection: FuelConnector) => {
       const accounts = await connection.accounts();
-      const address = accounts?.[0];
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      const address = accounts[0];
 
       // Early exit if no address
       if (!address) return;
