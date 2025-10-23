@@ -20,6 +20,13 @@ export { NetworkOptimizer } from './network_optimizer';
 
 // Position event processing
 export { PositionEventProcessor } from './clients/position-event-processor';
-export type { PositionEventProcessorConfig } from './clients/position-event-processor';
-export * from './clients/position-event-types';
+export type {
+    PositionAnalytics, PositionEvent, PositionEventProcessorConfig,
+    PositionUpdate
+} from './clients/position-event-processor';
+
+// Re-export indexer Position types used by processor
+export type {
+    Position, PositionChange, PositionKey
+} from './types/indexer';
 

@@ -1,68 +1,74 @@
 import { MarginMode, PositionUniqueId, SubaccountPosition } from '@/bonsai/types/summaryTypes';
 import { IndexerPositionSide } from '@/types/indexer/indexerApiGen';
 import { BigNumber } from 'bignumber.js';
-import { Position, PositionSide as SDKPositionSide } from 'starboard-client-js';
+import { Position } from '../../ts-sdk/src/types/indexer';
 
 /**
- * Converts SDK Position to SubaccountPosition format
+ * Converts SDK Position (indexer format) to SubaccountPosition format
  */
 export function convertSDKPositionToSubaccountPosition(
   sdkPosition: Position,
   address: string,
   subaccountNumber: number
 ): SubaccountPosition {
-  const positionKey = `${address}:${subaccountNumber}:${sdkPosition.market}`;
+  // Use the position key from the indexer Position
+  const market = `${sdkPosition.positionKey.indexAssetId}-USD`; // Construct market name
+  const positionKey = `${address}:${subaccountNumber}:${market}`;
   
   // Convert position side
-  const side = sdkPosition.side === SDKPositionSide.LONG 
+  const side = sdkPosition.positionKey.isLong 
     ? IndexerPositionSide.LONG 
     : IndexerPositionSide.SHORT;
 
   // Calculate derived values
-  const signedSize = new BigNumber(sdkPosition.size);
-  const unsignedSize = signedSize.abs();
-  const entryPrice = new BigNumber(sdkPosition.entryPrice);
-  const notional = unsignedSize.multipliedBy(entryPrice);
-  const value = signedSize.multipliedBy(entryPrice);
+  // Size and collateral are in base units (need to divide by 1e9 for display)
+  const sizeInUnits = new BigNumber(sdkPosition.size).dividedBy(1e9);
+  const collateralInUnits = new BigNumber(sdkPosition.collateralAmout).dividedBy(1e9);
   
-  // Calculate leverage (simplified - in real app this would come from margin data)
-  const leverage = new BigNumber(20); // Default leverage for mock data
+  const signedSize = sizeInUnits.multipliedBy(sdkPosition.positionKey.isLong ? 1 : -1);
+  const unsignedSize = sizeInUnits.abs();
+  
+  // Estimate entry price from size and collateral (simplified)
+  const leverage = unsignedSize.isZero() ? new BigNumber(1) : sizeInUnits.dividedBy(collateralInUnits);
+  const estimatedEntryPrice = new BigNumber(50000); // Default price for mock data
+  const notional = unsignedSize.multipliedBy(estimatedEntryPrice);
+  const value = signedSize.multipliedBy(estimatedEntryPrice);
   
   // Calculate margin values (simplified calculations)
-  const marginValueInitial = notional.dividedBy(leverage);
+  const marginValueInitial = collateralInUnits;
   const marginValueMaintenance = marginValueInitial.multipliedBy(0.6);
   
-  // Calculate unrealized PnL percentage
-  const unrealizedPnl = new BigNumber(sdkPosition.unrealizedPnl || '0');
-  const unrealizedPnlPercent = notional.isZero() 
-    ? new BigNumber(0) 
-    : unrealizedPnl.dividedBy(notional).multipliedBy(100);
+  // Calculate unrealized PnL (simplified - would need current price in real app)
+  const unrealizedPnl = new BigNumber(0);
+  const unrealizedPnlPercent = new BigNumber(0);
 
   // Calculate liquidation price (simplified)
-  const liquidationPrice = entryPrice.multipliedBy(
-    sdkPosition.side === SDKPositionSide.LONG ? 0.95 : 1.05
+  const liquidationPrice = estimatedEntryPrice.multipliedBy(
+    sdkPosition.positionKey.isLong ? 0.95 : 1.05
   );
+
+  const createdAt = new Date(sdkPosition.timestamp).toISOString();
 
   return {
     // Base fields from SDK position
     subaccountNumber,
-    market: sdkPosition.market,
+    market,
     side,
     status: 'OPEN' as any, // Default status for mock data
-    maxSize: new BigNumber(sdkPosition.maxSize),
-    entryPrice,
-    realizedPnl: new BigNumber(sdkPosition.realizedPnl),
-    createdAt: sdkPosition.createdAt,
-    createdAtHeight: new BigNumber(sdkPosition.createdAtHeight),
-    sumOpen: new BigNumber(sdkPosition.sumOpen || '0'),
-    sumClose: new BigNumber(sdkPosition.sumClose || '0'),
-    netFunding: new BigNumber(sdkPosition.netFunding || '0'),
-    unrealizedPnl: new BigNumber(sdkPosition.unrealizedPnl || '0'),
-    exitPrice: sdkPosition.exitPrice ? new BigNumber(sdkPosition.exitPrice) : undefined,
+    maxSize: unsignedSize,
+    entryPrice: estimatedEntryPrice,
+    realizedPnl: new BigNumber(0),
+    createdAt,
+    createdAtHeight: new BigNumber(0),
+    sumOpen: sizeInUnits,
+    sumClose: new BigNumber(0),
+    netFunding: new BigNumber(0),
+    unrealizedPnl,
+    exitPrice: undefined,
 
     // Derived fields
     uniqueId: positionKey as PositionUniqueId,
-    assetId: sdkPosition.market.split('-')[0] || sdkPosition.market, // Extract asset from market (e.g., 'BTC-USD' -> 'BTC')
+    assetId: sdkPosition.positionKey.indexAssetId,
     marginMode: 'ISOLATED' as MarginMode, // Default to isolated for mock data
     signedSize,
     unsignedSize,
@@ -73,8 +79,8 @@ export function convertSDKPositionToSubaccountPosition(
     initialRisk: marginValueInitial,
     maintenanceRisk: marginValueMaintenance,
     maxLeverage: leverage,
-    baseEntryPrice: entryPrice,
-    baseNetFunding: new BigNumber(sdkPosition.netFunding || '0'),
+    baseEntryPrice: estimatedEntryPrice,
+    baseNetFunding: new BigNumber(0),
     leverage,
     marginValueInitial,
     marginValueMaintenance,

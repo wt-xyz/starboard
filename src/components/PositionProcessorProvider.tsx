@@ -2,7 +2,7 @@ import { SubaccountPosition } from '@/bonsai/types/summaryTypes';
 import { convertSDKPositionsToSubaccountPositions } from '@/lib/positionConversion';
 import { MOCK_ADDRESS, MOCK_SUBACCOUNT_NUMBER, mockPositionUpdates } from '@/mockData/positionUpdatesMockData';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { PositionAnalytics, PositionEvent, PositionEventProcessor, PositionEventProcessorConfig } from 'starboard-client-js';
+import { PositionEventProcessor, type PositionAnalytics, type PositionEvent, type PositionEventProcessorConfig } from '../../ts-sdk/src/clients/position-event-processor';
 
 interface PositionProcessorContextType {
   positions: SubaccountPosition[];
@@ -47,13 +47,11 @@ export const PositionProcessorProvider: React.FC<PositionProcessorProviderProps>
       // Process mock position updates
       const processedEvents = processor.processPositionUpdates(
         mockPositionUpdates,
-        MOCK_ADDRESS,
-        MOCK_SUBACCOUNT_NUMBER,
         '12345680'
       );
 
       // Convert SDK positions to SubaccountPosition format
-      const sdkPositions = processor.getAllOpenPositions();
+      const sdkPositions = processor.getAllLatestPositions();
       const convertedPositions = convertSDKPositionsToSubaccountPositions(
         sdkPositions,
         MOCK_ADDRESS,
@@ -71,7 +69,7 @@ export const PositionProcessorProvider: React.FC<PositionProcessorProviderProps>
       setEvents(prev => [...prev, event]);
       
       // Update positions when events occur
-      const sdkPositions = processor.getAllOpenPositions();
+      const sdkPositions = processor.getAllLatestPositions();
       const convertedPositions = convertSDKPositionsToSubaccountPositions(
         sdkPositions,
         MOCK_ADDRESS,
