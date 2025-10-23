@@ -324,7 +324,7 @@ export async function placeOrder(payload: string): Promise<string> {
     const currentHeight = (json.currentHeight as number) ?? undefined;
 
     const subaccount = new SubaccountInfo(wallet, subaccountNumber);
-    const tx = await client.placeOrder(
+    const tx = await client.placeOrder({
       subaccount,
       marketId,
       type,
@@ -341,7 +341,7 @@ export async function placeOrder(payload: string): Promise<string> {
       marketInfo,
       currentHeight,
       goodTilBlock,
-    );
+    });
     return encodeJson(tx);
   } catch (error) {
     return wrappedError(error);

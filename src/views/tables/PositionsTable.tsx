@@ -8,7 +8,6 @@ import {
 } from '@/bonsai/types/summaryTypes';
 import { Separator } from '@radix-ui/react-separator';
 import type { ColumnSize } from '@react-types/table';
-import { BigNumber } from 'bignumber.js';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -466,100 +465,14 @@ export const PositionsTable = forwardRef(
     const openPositions =
       useAppSelector(BonsaiCore.account.parentSubaccountPositions.data) ?? EMPTY_ARR;
 
-    // MOCK: Add positions from localStorage mock orders
-    const mockPositions = useMemo(() => {
-      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return EMPTY_ARR;
-
-      try {
-        const mockOrders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
-
-        // Aggregate orders by market
-        const positionsByMarket = mockOrders.reduce((acc: any, mockOrder: any) => {
-          const { marketId, side, size, price } = mockOrder.orderPayload;
-          const sizeNum = Number(size);
-          const priceNum = Number(price);
-          const signedSize = side === 'BUY' ? sizeNum : -sizeNum;
-
-          if (!acc[marketId]) {
-            acc[marketId] = {
-              marketId,
-              totalSignedSize: 0,
-              totalCost: 0,
-              totalAbsSize: 0,
-              timestamps: [],
-            };
-          }
-
-          acc[marketId].totalSignedSize += signedSize;
-          acc[marketId].totalCost += sizeNum * priceNum;
-          acc[marketId].totalAbsSize += sizeNum;
-          acc[marketId].timestamps.push(mockOrder.timestamp);
-
-          return acc;
-        }, {});
-
-        // Convert aggregated positions to SubaccountPosition format
-        return Object.values(positionsByMarket).map((pos: any) => {
-          const avgPrice = pos.totalCost / pos.totalAbsSize;
-          const unsignedSize = Math.abs(pos.totalSignedSize);
-
-          return {
-            // Base fields from indexer
-            market: pos.marketId,
-            status: 'OPEN',
-            entryPrice: new BigNumber(avgPrice),
-            maxSize: new BigNumber(unsignedSize),
-            realizedPnl: new BigNumber(0),
-            createdAtHeight: new BigNumber(0),
-            sumOpen: new BigNumber(unsignedSize),
-            sumClose: new BigNumber(0),
-            netFunding: new BigNumber(0),
-            unrealizedPnl: new BigNumber(0),
-            exitPrice: null,
-
-            // Derived core fields
-            uniqueId: `mock-${pos.marketId}` as any,
-            assetId: pos.marketId.split('-')[0],
-            marginMode: 'CROSS' as any,
-            signedSize: new BigNumber(pos.totalSignedSize),
-            unsignedSize: new BigNumber(unsignedSize),
-            notional: new BigNumber(unsignedSize).times(avgPrice),
-            value: new BigNumber(pos.totalSignedSize).times(avgPrice),
-            adjustedImf: new BigNumber(0),
-            adjustedMmf: new BigNumber(0),
-            initialRisk: new BigNumber(0),
-            maintenanceRisk: new BigNumber(0),
-            maxLeverage: null,
-            baseEntryPrice: new BigNumber(avgPrice),
-            baseNetFunding: new BigNumber(0),
-
-            // Derived extra fields
-            leverage: null,
-            marginValueMaintenance: new BigNumber(0),
-            marginValueInitial: new BigNumber(0),
-            liquidationPrice: null,
-            updatedUnrealizedPnl: new BigNumber(0),
-            updatedUnrealizedPnlPercent: null,
-          };
-        }) as SubaccountPosition[];
-      } catch (e) {
-        console.error('[MOCK] Error creating mock positions:', e);
-        return EMPTY_ARR;
-      }
-    }, []);
-
-    const allPositions = useMemo(() => {
-      return [...openPositions, ...mockPositions];
-    }, [openPositions, mockPositions]);
-
     const positions = useMemo(() => {
-      return allPositions.filter((position) => {
+      return openPositions.filter((position) => {
         const matchesMarket = currentMarket == null || position.market === currentMarket;
         const marginType = position.marginMode;
         const matchesType = marginModeMatchesFilter(marginType, marketTypeFilter);
         return matchesMarket && matchesType;
       });
-    }, [currentMarket, marketTypeFilter, allPositions]);
+    }, [currentMarket, marketTypeFilter]);
 
     const tpslOrdersByPositionUniqueId = useAppSelectorWithArgs(
       getSubaccountConditionalOrders,

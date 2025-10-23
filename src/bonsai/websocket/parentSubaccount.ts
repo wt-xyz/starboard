@@ -91,6 +91,7 @@ function accountWebsocketValueCreator(
         return loadableLoaded(result);
       },
       handleUpdates: (baseUpdates, value, fullMessage) => {
+        console.debug({ baseUpdates, value, fullMessage }, 'ParentSubaccountTracker Update');
         const updates = isWsParentSubaccountUpdates(baseUpdates);
         const subaccountNumber = fullMessage?.subaccountNumber as number | undefined;
         if (value.data == null) {

@@ -11,6 +11,8 @@ import {
   Order_TimeInForce,
 } from '@dydxprotocol/v4-proto/src/codegen/dydxprotocol/clob/order';
 import { parseUnits } from 'ethers';
+import { createStore } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import Long from 'long';
 import protobuf from 'protobufjs';
 
@@ -107,6 +109,29 @@ export type TransferToSubaccountPayload = {
   recipientSubaccountNumber: number;
   transferAmount: string;
 };
+
+type PlaceOrderArgs = {
+  subaccount: SubaccountInfo;
+  marketId: string;
+  type: OrderType;
+  side: OrderSide;
+  price: number;
+  size: number;
+  clientId: number;
+  timeInForce?: OrderTimeInForce;
+  goodTilTimeInSeconds?: number;
+  execution?: OrderExecution;
+  postOnly?: boolean;
+  reduceOnly?: boolean;
+  triggerPrice?: number;
+  marketInfo?: MarketInfo;
+  currentHeight?: number;
+  goodTilBlock?: number;
+  memo?: string;
+};
+
+const atomTrades = atomWithStorage<Record<string, PlaceOrderArgs[]>>('starboard.trades', {});
+const store = createStore();
 
 export class CompositeClient {
   public readonly network: Network;
@@ -418,57 +443,46 @@ export class CompositeClient {
    * @returns The transaction hash.
    */
   async placeOrder(
-    subaccount: SubaccountInfo,
-    marketId: string,
-    type: OrderType,
-    side: OrderSide,
-    price: number,
-    size: number,
-    clientId: number,
-    timeInForce?: OrderTimeInForce,
-    goodTilTimeInSeconds?: number,
-    execution?: OrderExecution,
-    postOnly?: boolean,
-    reduceOnly?: boolean,
-    triggerPrice?: number,
-    marketInfo?: MarketInfo,
-    currentHeight?: number,
-    goodTilBlock?: number,
-    memo?: string,
+    orderPayload: PlaceOrderArgs,
   ): Promise<BroadcastTxAsyncResponse | BroadcastTxSyncResponse | IndexedTx> {
+    const {
+      clientId,
+      marketId,
+      price,
+      side,
+      size,
+      subaccount,
+      type,
+      timeInForce,
+      goodTilTimeInSeconds,
+      currentHeight,
+      execution,
+      goodTilBlock,
+      marketInfo,
+      memo,
+      postOnly,
+      reduceOnly,
+      triggerPrice,
+    } = orderPayload;
+
     // MOCK: Temporary mock implementation until Fuel chain migration
-    // We bypass dydx's logic and store orders locally for UI development
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const mockOrders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
-      mockOrders.push({
-        orderPayload: {
-          marketId,
-          type,
-          side,
-          price,
-          size,
-          clientId,
-          timeInForce,
-          goodTilTimeInSeconds,
-          execution,
-          postOnly,
-          reduceOnly,
-          triggerPrice,
-          subaccountNumber: subaccount.subaccountNumber,
-        },
-        timestamp: Date.now(),
+      console.debug({ subaccount });
+      const storeValue = store.get(atomTrades);
+      const orders = storeValue[subaccount.address] ?? [];
+      store.set(atomTrades, {
+        ...storeValue,
+        [subaccount.address]: [...orders, orderPayload],
       });
 
-      localStorage.setItem('mockOrders', JSON.stringify(mockOrders));
-
-      // Dispatch event to notify UI of the new order
-      window.dispatchEvent(
-        new CustomEvent('mockOrdersUpdated', {
-          detail: { orders: mockOrders },
-        }),
-      );
-
-      // Return a mock successful response
+      /**
+       * NOTES:
+       * Here we should relay the transaction to the Fuel chain instead of returning a mock response
+       * And regarding gas stuff,
+       * 1. We could propmt the user to confirm the TX
+       * 2. We could keep subaccount's logic and prompt the user to "top-up" the account with ETH and use it for gas
+       * 3. We sponsor the gas fees with a custom paymaster
+       */
       return Promise.resolve({
         code: 0,
         hash: `mock-${Date.now()}-${clientId}`,

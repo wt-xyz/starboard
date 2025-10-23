@@ -571,8 +571,8 @@ export class AccountTransactionSupervisor {
         const subaccountClientToUse = new SubaccountClient(localWallet, subaccountNumberToUse);
 
         // Place order
-        const tx = await compositeClient.placeOrder(
-          subaccountClientToUse,
+        const tx = await compositeClient.placeOrder({
+          subaccount: subaccountClientToUse,
           marketId,
           type,
           side,
@@ -580,16 +580,16 @@ export class AccountTransactionSupervisor {
           size,
           clientId,
           timeInForce,
-          goodTilTimeInSeconds ?? 0,
+          goodTilTimeInSeconds: goodTilTimeInSeconds ?? 0,
           execution,
-          postOnly ?? undefined,
-          reduceOnly ?? undefined,
-          triggerPrice ?? undefined,
-          marketInfo ?? undefined,
-          currentHeight ?? undefined,
-          goodTilBlock ?? undefined,
-          memo
-        );
+          postOnly,
+          reduceOnly,
+          triggerPrice,
+          marketInfo,
+          currentHeight,
+          goodTilBlock,
+          memo,
+        });
 
         if ((tx as IndexedTx | undefined)?.code !== 0) {
           throw new StatefulOrderError('Stateful order has failed to commit.', tx);

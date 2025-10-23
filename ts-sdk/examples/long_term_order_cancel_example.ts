@@ -1,12 +1,6 @@
 import { BECH32_PREFIX, OrderFlags } from '../src';
 import { CompositeClient } from '../src/clients/composite-client';
-import {
-  Network,
-  OrderExecution,
-  OrderSide,
-  OrderTimeInForce,
-  OrderType,
-} from '../src/clients/constants';
+import { Network, OrderExecution, OrderSide, OrderType } from '../src/clients/constants';
 import LocalWallet from '../src/clients/modules/local-wallet';
 import { SubaccountInfo } from '../src/clients/subaccount';
 import { randomInt } from '../src/lib/utils';
@@ -39,20 +33,16 @@ async function test(): Promise<void> {
   const longTermOrderClientId = randomInt(MAX_CLIENT_ID);
   try {
     // place a long term order
-    const tx = await client.placeOrder(
+    const tx = await client.placeOrder({
       subaccount,
-      'ETH-USD',
-      OrderType.LIMIT,
-      OrderSide.SELL,
-      40000,
-      0.01,
-      longTermOrderClientId,
-      OrderTimeInForce.GTT,
-      60,
-      OrderExecution.DEFAULT,
-      false,
-      false,
-    );
+      clientId: longTermOrderClientId,
+      side: OrderSide.SELL,
+      execution: OrderExecution.DEFAULT,
+      type: OrderType.LIMIT,
+      size: 0.01,
+      price: 50_000,
+      marketId: 'ETH-USD',
+    });
     console.log('**Long Term Order Tx**');
     console.log(tx.hash);
   } catch (error) {

@@ -61,6 +61,7 @@
     "ethereum-cryptography": "^2.0.0",
     "ethers": "^6.6.1",
     "https-proxy-agent": "^7.0.6",
+    "jotai": "^2.15.0",
     "long": "^4.0.0",
     "protobufjs": ">=6.11.4",
     "ws": "^8.14.2"
