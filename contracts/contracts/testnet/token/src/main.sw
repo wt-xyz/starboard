@@ -1,6 +1,6 @@
 contract;
 
-use src20::SRC20;
+use src20::{SetDecimalsEvent, SetNameEvent, SetSymbolEvent, SRC20, TotalSupplyEvent};
 use std::string::String;
 use std::asset::mint_to;
 use std::constants::DEFAULT_SUB_ID;
@@ -10,6 +10,7 @@ configurable {
     NAME: str[7] = __to_str_array("MyAsset"),
     /// The symbol of the asset minted by this contract.
     SYMBOL: str[5] = __to_str_array("MYTKN"),
+    DECIMALS: u8 = 6,
 }
 
 storage {
@@ -18,7 +19,6 @@ storage {
     initialized: bool = false,
 }
 
-const DECIMALS: u8 = 6;
 const FAUCET_AMOUNT: u64 = 1_000_000_000_000;
 
 abi TestnetToken {
@@ -91,63 +91,21 @@ impl TestnetToken for Contract {
 
     #[storage(read, write)]
     fn initialize() {
-        // require(
-        //     !storage.initialized.read(),
-        //     "AlreadyInitialized",
-        // );
-        // storage.initialized.write(true);
-        // let sender = msg_sender().unwrap();
-        // let asset_id = AssetId::default();
-        // log(SetNameEvent{asset: asset_id, name: Some(String::from_ascii_str(from_str_array(NAME))), sender: sender});
-        // log(SetSymbolEvent{asset: asset_id, symbol: Some(String::from_ascii_str(from_str_array(SYMBOL))), sender: sender});
-        // log(SetDecimalsEvent{asset: asset_id, decimals: DECIMALS, sender: sender});
-        // log(TotalSupplyEvent{asset: asset_id, supply: 0, sender: sender});
+        require(
+            !storage.initialized.read(),
+            "AlreadyInitialized",
+        );
+        storage.initialized.write(true);
+        let sender = msg_sender().unwrap();
+        let asset_id = AssetId::default();
+        log(SetNameEvent{asset: asset_id, name: Some(String::from_ascii_str(from_str_array(NAME))), sender: sender});
+        log(SetSymbolEvent{asset: asset_id, symbol: Some(String::from_ascii_str(from_str_array(SYMBOL))), sender: sender});
+        log(SetDecimalsEvent{asset: asset_id, decimals: DECIMALS, sender: sender});
+        log(TotalSupplyEvent{asset: asset_id, supply: 0, sender: sender});
     }
 
     fn get_asset_id() -> AssetId {
         // AssetId::new(ContractId::this(), DEFAULT_SUB_ID)
         AssetId::default()
     }
-}
-
-// These events are the standard events for a SRC20 token. Not included in the old SRC20 library.
-
-/// The event emitted when the name is set.
-pub struct SetNameEvent {
-    /// The asset for which name is set.
-    pub asset: AssetId,
-    /// The name that is set.
-    pub name: Option<String>,
-    /// The caller that set the name.
-    pub sender: Identity,
-}
-
-/// The event emitted when the symbol is set.
-pub struct SetSymbolEvent {
-    /// The asset for which symbol is set.
-    pub asset: AssetId,
-    /// The symbol that is set.
-    pub symbol: Option<String>,
-    /// The caller that set the symbol.
-    pub sender: Identity,
-}
-
-/// The event emitted when the decimals is set.
-pub struct SetDecimalsEvent {
-    /// The asset for which decimals is set.
-    pub asset: AssetId,
-    /// The decimals that is set.
-    pub decimals: u8,
-    /// The caller that set the decimals.
-    pub sender: Identity,
-}
-
-/// The event emitted when the total supply is changed.
-pub struct TotalSupplyEvent {
-    /// The asset for which supply is updated.
-    pub asset: AssetId,
-    /// The new supply of the asset.
-    pub supply: u64,
-    /// The caller that updated the supply.
-    pub sender: Identity,
 }

@@ -30,8 +30,6 @@ abi Vault {
     #[storage(read, write)]
     fn initialize(
         gov: Identity,
-        rusd: AssetId,
-        rusd_contr: ContractId,
     );
 
     /*
@@ -82,7 +80,6 @@ abi Vault {
         tax_basis_points: u64,
         stable_tax_basis_points: u64,
         mint_burn_fee_basis_points: u64,
-        swap_fee_basis_points: u64,
         margin_fee_basis_points: u64,
         liquidation_fee_usd: u256,
         min_profit_time: u64,
@@ -280,7 +277,9 @@ abi Vault {
     fn get_asset_decimals(asset: AssetId) -> u32;
 
     #[storage(read)]
-    fn get_stable_asset() -> AssetId;
+    fn get_collateral_asset() -> AssetId;
+
+    fn get_lp_asset() -> AssetId;
 
     #[storage(read)]
     fn get_position_leverage(
@@ -312,9 +311,6 @@ abi Vault {
 
     #[storage(read)]
     fn get_mint_burn_fee_basis_points() -> u64;
-
-    #[storage(read)]
-    fn get_swap_fee_basis_points() -> u64;
 
     #[storage(read)]
     fn get_margin_fee_basis_points() -> u64;
@@ -349,21 +345,14 @@ abi Vault {
     ) -> (u256, u256);
 
     #[storage(read)]
-    fn get_buy_rusd_amount(
+    fn get_add_liquidity_amount(
         asset_amount: u64
     ) -> (u256, u256, u256);
 
     #[storage(read)]
-    fn get_sell_rusd_amount(
+    fn get_remove_liquidity_amount(
         rusd_amount: u256
     ) -> (u256, u64, u256);
-
-    #[storage(read)]
-    fn get_swap_amounts(
-        asset_in: AssetId,
-        amount_in: u256,
-        asset_out: AssetId,
-    ) -> (u256, u64, u256, u256);
 
     #[storage(read)]
     fn adjust_for_decimals(
@@ -390,15 +379,11 @@ abi Vault {
 
     #[payable]
     #[storage(read, write)]
-    fn buy_rusd(receiver: Identity) -> u256;
+    fn add_liquidity(receiver: Identity) -> u256;
 
     #[payable]
     #[storage(read, write)]
-    fn sell_rusd(receiver: Identity) -> u256;
-
-    #[payable]
-    #[storage(read, write)]
-    fn swap(asset_in: AssetId, asset_out: AssetId, receiver: Identity) -> u64;
+    fn remove_liquidity(receiver: Identity) -> u256;
 
     #[payable]
     #[storage(read, write)]

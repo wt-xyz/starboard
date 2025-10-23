@@ -10,10 +10,6 @@ pub struct SetGov {
     pub gov: Identity,
 }
 
-pub struct SetRusdContract {
-    pub rusd_contr: ContractId
-}
-
 pub struct SetPaused {
     pub is_paused: bool,
 }
@@ -49,7 +45,6 @@ pub struct SetFees {
     pub tax_basis_points: u64,
     pub stable_tax_basis_points: u64,
     pub mint_burn_fee_basis_points: u64,
-    pub swap_fee_basis_points: u64,
     pub margin_fee_basis_points: u64,
     pub liquidation_fee_usd: u256,
     pub min_profit_time: u64,
@@ -95,19 +90,17 @@ pub struct SetPricefeedProvider {
     pub pricefeed_provider: ContractId,
 }
 
-pub struct BuyRUSD {
+pub struct AddLiquidity {
     pub account: Identity,
-    pub asset: AssetId,
-    pub asset_amount: u64,
-    pub rusd_amount: u256,
+    pub stable_asset_amount: u64,
+    pub lp_asset_amount: u64,
     pub fee_basis_points: u256,
 }
 
-pub struct SellRUSD {
+pub struct RemoveLiquidity {
     pub account: Identity,
-    pub asset: AssetId,
-    pub asset_amount: u64,
-    pub rusd_amount: u256,
+    pub stable_asset_amount: u64,
+    pub lp_asset_amount: u64,
     pub fee_basis_points: u256,
 }
 
@@ -120,16 +113,6 @@ pub struct CollectSwapFees {
 pub struct DirectPoolDeposit {
     pub asset: AssetId,
     pub amount: u256,
-}
-
-pub struct Swap {
-    pub account: Identity,
-    pub asset_in: AssetId,
-    pub asset_out: AssetId,
-    pub amount_in: u256,
-    pub amount_out: u256,
-    pub amount_out_after_fees: u64,
-    pub fee_basis_points: u256,
 }
 
 pub struct WithdrawFees {
