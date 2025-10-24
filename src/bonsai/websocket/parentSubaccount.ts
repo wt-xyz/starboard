@@ -21,6 +21,7 @@ import { isTruthy } from '@/lib/isTruthy';
 import { MustBigNumber } from '@/lib/numbers';
 
 import { accountRefreshSignal } from '../accountRefreshSignal';
+import { createNewPositionFromTrade } from '../calculators/accountActions';
 import { createStoreEffect } from '../lib/createStoreEffect';
 import { Loadable, loadableIdle, loadableLoaded, loadablePending } from '../lib/loadable';
 import {
@@ -222,10 +223,71 @@ const selectParentSubaccount = createAppSelector(
 
 export function setUpParentSubaccount(store: RootStore) {
   return createStoreEffect(store, selectParentSubaccount, ({ subaccount, wallet, wsUrl }) => {
+    console.debug('createStoreEffect::start', { wallet, subaccount });
     if (!isTruthy(wallet) || subaccount == null) {
       return undefined;
     }
+    console.debug('createStoreEffect::checks');
 
+    // Dummy flag to keep dydx's original logic structure
+    const isFuelWallet = wallet.startsWith('0x');
+
+    if (isFuelWallet) {
+      console.debug('createStoreEffect::Fuel Wallet');
+
+      // Read trades from localStorage (Jotai atomWithStorage)
+      const storedTrades = localStorage.getItem('starboard.trades');
+      const trades: Record<string, any[]> = storedTrades ? JSON.parse(storedTrades) : {};
+
+      // Convert trades to positions
+      const openPerpetualPositions: Record<string, IndexerPerpetualPositionResponseObject> = {};
+
+      Object.entries(trades).forEach(([marketId, tradesList]) => {
+        if (Array.isArray(tradesList) && tradesList.length > 0) {
+          // Use the most recent trade for each market
+          const latestTrade = tradesList[tradesList.length - 1];
+
+          try {
+            const position = createNewPositionFromTrade({
+              marketId: latestTrade.marketId || marketId,
+              side: latestTrade.side,
+              size: latestTrade.size,
+              averagePrice: latestTrade.price,
+              marketOraclePrice: latestTrade.price, // Use trade price as oracle price
+              subaccountNumber: latestTrade.subaccount?.subaccountNumber ?? 0,
+            });
+
+            openPerpetualPositions[marketId] = position;
+          } catch (error) {
+            console.error('Failed to create position from trade:', error, latestTrade);
+          }
+        }
+      });
+
+      // Construct ParentSubaccountData with positions
+      const fuelData: ParentSubaccountData = {
+        address: wallet,
+        parentSubaccount: 0,
+        childSubaccounts: {
+          '0': {
+            address: wallet,
+            subaccountNumber: 0,
+            openPerpetualPositions,
+            assetPositions: {},
+          },
+        },
+        live: { orders: {}, fills: [], transfers: [], tradingRewards: [] },
+      };
+
+      // Dispatch to Redux
+      store.dispatch(setParentSubaccountRaw(loadableLoaded(fuelData)));
+
+      return () => {
+        store.dispatch(setParentSubaccountRaw(loadableIdle()));
+      };
+    }
+
+    // Original dYdX websocket logic
     const unsub = subscribeToWsValue(
       AccountValueManager,
       { wsUrl, address: wallet, parentSubaccountNumber: subaccount.toString() },

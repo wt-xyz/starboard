@@ -84,7 +84,7 @@ function getSimpleQuoteBalanceAdjustment({
     .minus(fee);
 }
 
-function createNewPositionFromTrade(
+export function createNewPositionFromTrade(
   tradeProps: Omit<ApplyTradeProps, 'fee' | 'reduceOnly'>
 ): IndexerPerpetualPositionResponseObject {
   const { marketId, side, size, averagePrice, subaccountNumber } = tradeProps;
