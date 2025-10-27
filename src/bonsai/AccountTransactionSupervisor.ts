@@ -55,7 +55,6 @@ import { track } from '@/lib/analytics/analytics';
 import { calc } from '@/lib/do';
 import { operationFailureToErrorParams, wrapSimpleError } from '@/lib/errorHelpers';
 import { StatefulOrderError, stringifyTransactionError } from '@/lib/errors';
-import { localWalletManager } from '@/lib/hdKeyManager';
 import { AttemptBigNumber, AttemptNumber, MAX_INT_ROUGHLY, MustBigNumber } from '@/lib/numbers';
 import { parseToPrimitives, ToPrimitives } from '@/lib/parseToPrimitives';
 import { ConvertBigNumberToNumber, purgeBigNumbers } from '@/lib/purgeBigNumber';
@@ -104,8 +103,9 @@ export class AccountTransactionSupervisor {
 
   private hasValidLocalWallet(): boolean {
     const state = this.store.getState();
-    const localWalletNonce = getLocalWalletNonce(state);
-    return localWalletNonce != null;
+    // const localWalletNonce = getLocalWalletNonce(state);
+    const localWalletAddress = state.wallet.localWallet?.address;
+    return localWalletAddress != null;
   }
 
   private doClientAndWalletOperation<T, Args extends any[]>(
@@ -113,49 +113,49 @@ export class AccountTransactionSupervisor {
   ): (...args: Args) => Promise<T> {
     const nonceBefore = getLocalWalletNonce(this.store.getState());
     const networkBefore = getSelectedNetwork(this.store.getState());
+    const addressBefore = this.store.getState().wallet.localWallet?.address;
 
     return async (...args: Args) => {
       const network = getSelectedNetwork(this.store.getState());
       const localWalletNonce = getLocalWalletNonce(this.store.getState());
+      const currentAddress = this.store.getState().wallet.localWallet?.address;
 
       const clientConfig = {
         network,
         dispatch: this.store.dispatch,
       };
       const clientWrapper = this.compositeClientManager.use(clientConfig);
+      console.debug({ clientWrapper, localWalletNonce, network, currentAddress });
 
       try {
         if (network !== networkBefore) {
           throw new Error('Network changed before operation execution');
         }
-        if (localWalletNonce !== nonceBefore) {
+
+        // Check if wallet changed (either nonce or address)
+        if (localWalletNonce !== nonceBefore || currentAddress !== addressBefore) {
           throw new Error('Local wallet changed before operation execution');
         }
-        // MOCK: Skip wallet nonce check for development (until Fuel migration)
-        if (localWalletNonce == null) {
-          // throw new Error('No valid local wallet nonce found');
+
+        // Get wallet: either from wallet manager (dYdX) or create mock (Fuel)
+        let localWallet: LocalWallet | null = null;
+
+        if (currentAddress != null) {
+          // Fuel wallet - create a minimal LocalWallet object
+          localWallet = {
+            address: currentAddress,
+          } as LocalWallet;
         }
 
-        // MOCK: Use mock wallet when no real wallet available
-        let localWallet =
-          localWalletNonce != null ? localWalletManager.getLocalWallet(localWalletNonce) : null;
-
         if (localWallet == null) {
-          // throw new Error('Local wallet not initialized or nonce was incorrect.');
-          // Create a minimal mock wallet that satisfies the interface
-          // For Fuel: we'll use direct connected wallet, not subaccounts
-          localWallet = {
-            address: '0xMOCK_FUEL_WALLET_ADDRESS',
-            // Add other minimal properties if needed
-          } as any; // MOCK: Will be replaced with Fuel wallet
+          throw new Error('No valid wallet available');
         }
 
         // Wait for the composite client to be available
         const compositeClient = await clientWrapper.compositeClient.deferred.promise;
 
         // Execute the function with the client wallet pair
-        // MOCK: Cast to satisfy TypeScript - localWallet will be mock object in dev
-        return await fn({ compositeClient, localWallet: localWallet! }, ...args);
+        return await fn({ compositeClient, localWallet }, ...args);
       } finally {
         // Always mark the client as done to prevent memory leaks
         this.compositeClientManager.markDone(clientConfig);
@@ -623,43 +623,33 @@ export class AccountTransactionSupervisor {
 
   // does subaccount transfer and place order and manages local order state
   public async placeOrder(payloadBase: PlaceOrderPayload): Promise<OperationResult<any>> {
-    // MOCK: Skip wallet check for development (until Fuel migration)
-    // const maybeErr = this.maybeNoLocalWalletError('placeOrder');
-    // if (maybeErr) {
-    //   return maybeErr;
-    // }
-
-    const sourceSubaccount = getSubaccountId(this.store.getState()) ?? 0; // MOCK: Default to 0
-    const sourceAddress = getUserWalletAddress(this.store.getState()) ?? '0x0'; // MOCK: Default address
-    // MOCK: Provide defaults for development (until Fuel migration)
-    if (
-      getSubaccountId(this.store.getState()) == null ||
-      getUserWalletAddress(this.store.getState()) == null
-    ) {
-      // return wrapSimpleError(
-      //   'AccountTransactionSupervisor/placeOrder',
-      //   'unknown parent subaccount number or address',
-      //   STRING_KEYS.SOMETHING_WENT_WRONG
-      // );
+    const maybeErr = this.maybeNoLocalWalletError('placeOrder');
+    if (maybeErr) {
+      return maybeErr;
     }
 
-    const currentHeight =
-      estimateLiveValidatorHeight(
-        this.store.getState(),
-        BLOCK_TIME_BIAS_FOR_SHORT_TERM_ESTIMATION
-      ) ?? 1000; // MOCK: Default height
-    if (
-      estimateLiveValidatorHeight(
-        this.store.getState(),
-        BLOCK_TIME_BIAS_FOR_SHORT_TERM_ESTIMATION
-      ) == null
-    ) {
-      // MOCK: Use placeholder height to continue
-      // return wrapSimpleError(
-      //   'AccountTransactionSupervisor/placeOrder',
-      //   'validator height unknown',
-      //   STRING_KEYS.UNKNOWN_VALIDATOR_HEIGHT
-      // );
+    const sourceSubaccount = getSubaccountId(this.store.getState());
+    const sourceAddress = getUserWalletAddress(this.store.getState());
+
+    if (sourceSubaccount == null || sourceAddress == null) {
+      return wrapSimpleError(
+        'AccountTransactionSupervisor/placeOrder',
+        'unknown parent subaccount number or address',
+        STRING_KEYS.SOMETHING_WENT_WRONG
+      );
+    }
+
+    const currentHeight = estimateLiveValidatorHeight(
+      this.store.getState(),
+      BLOCK_TIME_BIAS_FOR_SHORT_TERM_ESTIMATION
+    );
+
+    if (currentHeight == null) {
+      return wrapSimpleError(
+        'AccountTransactionSupervisor/placeOrder',
+        'validator height unknown',
+        STRING_KEYS.UNKNOWN_VALIDATOR_HEIGHT
+      );
     }
     const isShortTermOrder = calc(() => {
       if (payloadBase.type === OrderType.MARKET) {
