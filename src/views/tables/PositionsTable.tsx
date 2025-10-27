@@ -472,7 +472,7 @@ export const PositionsTable = forwardRef(
         const matchesType = marginModeMatchesFilter(marginType, marketTypeFilter);
         return matchesMarket && matchesType;
       });
-    }, [currentMarket, marketTypeFilter]);
+    }, [openPositions, currentMarket, marketTypeFilter]);
 
     const tpslOrdersByPositionUniqueId = useAppSelectorWithArgs(
       getSubaccountConditionalOrders,
