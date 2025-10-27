@@ -164,12 +164,13 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
           );
           return result;
         } catch (error) {
+          log('useSubaccount/sendSkipWithdrawFromSubaccount', error);
+          throw error;
+        } finally {
           // Reset the default options after the tx is sent.
           if (isKeplr && window.keplr) {
             window.keplr.defaultOptions = {};
           }
-          log('useSubaccount/sendSkipWithdrawFromSubaccount', error);
-          throw error;
         }
       },
     }),
