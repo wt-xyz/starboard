@@ -32,22 +32,19 @@ async function test(): Promise<void> {
       const timeInForceString = orderParams.timeInForce ?? 'GTT';
       const timeInForce = OrderTimeInForce[timeInForceString as keyof typeof OrderTimeInForce];
       const price = orderParams.price ?? 1350;
-      const timeInForceSeconds = timeInForce === OrderTimeInForce.GTT ? 60 : 0;
       const postOnly = orderParams.postOnly ?? false;
-      const tx = await client.placeOrder(
+      const tx = await client.placeOrder({
         subaccount,
-        'ETH-USD',
+        marketId: 'ETH-USD',
         type,
         side,
         price,
-        0.01,
-        randomInt(MAX_CLIENT_ID),
         timeInForce,
-        timeInForceSeconds,
-        OrderExecution.DEFAULT,
+        size: 0.01,
+        clientId: randomInt(MAX_CLIENT_ID),
+        execution: OrderExecution.DEFAULT,
         postOnly,
-        false,
-      );
+      });
       console.log('**Order Tx**');
       console.log(tx);
     } catch (error) {

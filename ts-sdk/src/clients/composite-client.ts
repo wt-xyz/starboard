@@ -139,6 +139,16 @@ export class CompositeClient {
   private _indexerClient: IndexerClient;
   private _validatorClient?: ValidatorClient;
 
+  static getTrades() {
+    return store.get(atomTrades);
+  }
+
+  static subscribeTrades(callback: (trades: Record<string, PlaceOrderArgs[]>) => void) {
+    return store.sub(atomTrades, () => {
+      callback(store.get(atomTrades));
+    });
+  }
+
   static async connect(network: Network): Promise<CompositeClient> {
     const client = new CompositeClient(network);
     await client.initialize();

@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 import { isEmpty, keyBy } from 'lodash';
+import { CompositeClient } from 'starboard-client-js';
 
 import {
   IndexerAssetPositionResponseObject,
@@ -235,54 +236,51 @@ export function setUpParentSubaccount(store: RootStore) {
     if (isFuelWallet) {
       console.debug('createStoreEffect::Fuel Wallet');
 
-      // Read trades from localStorage (Jotai atomWithStorage)
-      const storedTrades = localStorage.getItem('starboard.trades');
-      const trades: Record<string, any[]> = storedTrades ? JSON.parse(storedTrades) : {};
+      // Helper function to update Redux with latest trades
+      const updatePositionsFromTrades = () => {
+        const trades = CompositeClient.getTrades();
+        const accountTrades = trades[wallet] ?? [];
 
-      // Convert trades to positions
-      const openPerpetualPositions: Record<string, IndexerPerpetualPositionResponseObject> = {};
+        console.debug({ trades, accountTrades, wallet });
 
-      Object.entries(trades).forEach(([marketId, tradesList]) => {
-        if (Array.isArray(tradesList) && tradesList.length > 0) {
-          // Use the most recent trade for each market
-          const latestTrade = tradesList[tradesList.length - 1];
+        const openPerpetualPositions: Record<string, IndexerPerpetualPositionResponseObject> = {};
+        accountTrades.forEach((trade) => {
+          const position = createNewPositionFromTrade({
+            ...trade,
+            averagePrice: trade.price,
+            marketOraclePrice: trade.price, // Use trade price as oracle price
+            subaccountNumber: trade.subaccount?.subaccountNumber ?? 0,
+          });
+          openPerpetualPositions[position.market] = position;
+        });
 
-          try {
-            const position = createNewPositionFromTrade({
-              marketId: latestTrade.marketId || marketId,
-              side: latestTrade.side,
-              size: latestTrade.size,
-              averagePrice: latestTrade.price,
-              marketOraclePrice: latestTrade.price, // Use trade price as oracle price
-              subaccountNumber: latestTrade.subaccount?.subaccountNumber ?? 0,
-            });
-
-            openPerpetualPositions[marketId] = position;
-          } catch (error) {
-            console.error('Failed to create position from trade:', error, latestTrade);
-          }
-        }
-      });
-
-      // Construct ParentSubaccountData with positions
-      const fuelData: ParentSubaccountData = {
-        address: wallet,
-        parentSubaccount: 0,
-        childSubaccounts: {
-          '0': {
-            address: wallet,
-            subaccountNumber: 0,
-            openPerpetualPositions,
-            assetPositions: {},
+        // Construct ParentSubaccountData with positions
+        const fuelData: ParentSubaccountData = {
+          address: wallet,
+          parentSubaccount: 0,
+          childSubaccounts: {
+            '0': {
+              address: wallet,
+              subaccountNumber: 0,
+              openPerpetualPositions,
+              assetPositions: {},
+            },
           },
-        },
-        live: { orders: {}, fills: [], transfers: [], tradingRewards: [] },
+          live: { orders: {}, fills: [], transfers: [], tradingRewards: [] },
+        };
+
+        // Dispatch to Redux
+        store.dispatch(setParentSubaccountRaw(loadableLoaded(fuelData)));
       };
 
-      // Dispatch to Redux
-      store.dispatch(setParentSubaccountRaw(loadableLoaded(fuelData)));
+      // Initial update
+      updatePositionsFromTrades();
+
+      // Subscribe to trade changes
+      const unsubscribe = CompositeClient.subscribeTrades(updatePositionsFromTrades);
 
       return () => {
+        unsubscribe();
         store.dispatch(setParentSubaccountRaw(loadableIdle()));
       };
     }
