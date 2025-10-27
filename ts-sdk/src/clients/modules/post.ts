@@ -282,17 +282,16 @@ export class Post {
    * when timestamp nonce is supported, no need to fetch account sequence number
    */
   public async account(address: string, orderFlags?: OrderFlags): Promise<Account> {
-    // MOCK: Return mock account for development (until Fuel migration)
-    if (address === '0xMOCK_FUEL_WALLET_ADDRESS') {
-      const mockAccount: Account = {
-        address,
-        accountNumber: 0,
-        sequence: 0,
-        pubkey: null, // Mock wallets don't need pubkey for our purposes
-      };
-      this.accountNumberCache.set(address, mockAccount);
-      return mockAccount;
-    }
+    // NOTE: We re-create a local account based on the given address
+    // If using an auth or account provider the current dydxs implementation should be
+    // removed or modified to support that flow.
+
+    const fuelAccount: Account = {
+      address,
+      accountNumber: 0,
+      sequence: 0,
+      pubkey: null,
+    };
 
     if (orderFlags === OrderFlags.SHORT_TERM || this.useTimestampNonce) {
       if (this.accountNumberCache.has(address)) {
@@ -300,7 +299,7 @@ export class Post {
         return this.accountNumberCache.get(address)!;
       }
     }
-    const account = await this.get.getAccount(address);
+    const account = fuelAccount; // await this.get.getAccount(address); // TODO: Remove/modify for Fuel
     this.accountNumberCache.set(address, account);
     return account;
   }
