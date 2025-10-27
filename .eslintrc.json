@@ -37,6 +37,7 @@
         "devDependencies": ["./scripts/*.js", "./__tests__/**/*.ts", "./src/**/__test__/**/*.ts"]
       }
     ],
+    "@typescript-eslint/return-await": "warn",
     "import/no-named-as-default": "off",
     "import/prefer-default-export": "off",
     "jsx-a11y/anchor-is-valid": "off",
