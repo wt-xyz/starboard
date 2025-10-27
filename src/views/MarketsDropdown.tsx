@@ -127,7 +127,7 @@ const MarketsDropdownContent = ({
           label: stringGetter({ key: STRING_KEYS._24H }),
           renderCell: ({ percentChange24h }: MarketData) => (
             <div tw="inlineRow">
-              {!percentChange24h ? (
+              {percentChange24h == null ? (
                 <$Output type={OutputType.Text} value={null} />
               ) : (
                 <$PriceChangeOutput
@@ -498,8 +498,7 @@ const $Table = styled(Table)`
   }
 ` as typeof Table;
 
-const $Output = styled(Output)<{ isNegative?: boolean }>`
-  color: ${({ isNegative }) => (isNegative ? `var(--color-negative)` : `var(--color-positive)`)};
+const $Output = styled(Output)`
   color: var(--color-text-2);
 `;
 

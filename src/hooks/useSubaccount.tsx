@@ -92,7 +92,7 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
         amount: number;
       }) => {
         try {
-          return compositeClient?.depositToSubaccount(
+          return await compositeClient?.depositToSubaccount(
             subaccountClient,
             amount.toFixed(usdcDecimals),
             TransactionMemo.depositToSubaccount
@@ -111,7 +111,7 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
         amount: number;
       }) => {
         try {
-          return compositeClient?.withdrawFromSubaccount(
+          return await compositeClient?.withdrawFromSubaccount(
             subaccountClient,
             amount.toFixed(usdcDecimals),
             undefined,
@@ -151,7 +151,7 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
             },
           };
 
-          return compositeClient.send(
+          return await compositeClient.send(
             subaccountClient.wallet,
             () => Promise.resolve([msg, ibcMsg]),
             false,
@@ -159,12 +159,13 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
             TransactionMemo.withdrawFromAccount
           );
         } catch (error) {
+          log('useSubaccount/sendSkipWithdrawFromSubaccount', error);
+          throw error;
+        } finally {
           // Reset the default options after the tx is sent.
           if (isKeplr && window.keplr) {
             window.keplr.defaultOptions = {};
           }
-          log('useSubaccount/sendSkipWithdrawFromSubaccount', error);
-          throw error;
         }
       },
     }),

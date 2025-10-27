@@ -134,14 +134,16 @@ const Profile = () => {
               <$ConnectedIcon />
               <span>{stringGetter({ key: STRING_KEYS.CONNECTED_TO })}</span>
               <span>
-                {sourceAccount.walletInfo.connectorType === ConnectorType.Injected
-                  ? sourceAccount.walletInfo.name
-                  : wallets[sourceAccount.walletInfo.name as keyof typeof wallets].stringKey
-                    ? stringGetter({
-                        key: wallets[sourceAccount.walletInfo.name as keyof typeof wallets]
-                          .stringKey,
-                      })
-                    : sourceAccount.walletInfo.name}
+                {(() => {
+                  if (sourceAccount.walletInfo.connectorType === ConnectorType.Injected) {
+                    return sourceAccount.walletInfo.name;
+                  }
+                  const walletEntry =
+                    wallets[sourceAccount.walletInfo.name as keyof typeof wallets];
+                  return walletEntry?.stringKey
+                    ? stringGetter({ key: walletEntry.stringKey })
+                    : sourceAccount.walletInfo.name;
+                })()}
               </span>
             </$SubHeader>
           ) : (

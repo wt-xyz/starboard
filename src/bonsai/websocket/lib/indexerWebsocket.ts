@@ -434,10 +434,12 @@ export class IndexerWebsocket {
       // messagePre is already parsed by ReconnectingWebSocket, so we don't need to parse it again
       const message = isWsMessage(messagePre);
 
-      logBonsaiInfo('IndexerWebsocket', 'Raw message received', {
-        messagePre,
-        wsId: this.indexerWsId,
-      });
+      if (BONSAI_DETAILED_LOGS) {
+        logBonsaiInfo('IndexerWebsocket', 'Raw message received', {
+          messagePre,
+          wsId: this.indexerWsId,
+        });
+      }
 
       // Check if this is a trade message we sent
 
