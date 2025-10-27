@@ -34,8 +34,6 @@ pub struct SetAssetConfig {
     pub asset_weight: u64,
     pub min_profit_bps: u64,
     pub max_rusd_amount: u256,
-    pub is_stable: bool,
-    pub is_shortable: bool
 }
 
 pub struct ClearAssetConfig {
@@ -52,7 +50,6 @@ pub struct SetFees {
     pub stable_tax_basis_points: u64,
     pub mint_burn_fee_basis_points: u64,
     pub swap_fee_basis_points: u64,
-    pub stable_swap_fee_basis_points: u64,
     pub margin_fee_basis_points: u64,
     pub liquidation_fee_usd: u256,
     pub min_profit_time: u64,
@@ -144,7 +141,6 @@ pub struct WithdrawFees {
 pub struct RegisterPositionByKey {
     pub position_key: b256,
     pub account: Identity,
-    pub collateral_asset: AssetId,
     pub index_asset: AssetId,
     pub is_long: bool
 }
@@ -152,7 +148,6 @@ pub struct RegisterPositionByKey {
 pub struct IncreasePosition {
     pub key: b256,
     pub account: Identity,
-    pub collateral_asset: AssetId,
     pub index_asset: AssetId,
     pub collateral_delta: u256,
     pub size_delta: u256,
@@ -164,7 +159,6 @@ pub struct IncreasePosition {
 pub struct DecreasePosition {
     pub key: b256,
     pub account: Identity,
-    pub collateral_asset: AssetId,
     pub index_asset: AssetId,
     pub collateral_delta: u256,
     pub size_delta: u256,
@@ -186,7 +180,6 @@ pub struct ClosePosition {
 pub struct LiquidatePosition {
     pub key: b256,
     pub account: Identity,
-    pub collateral_asset: AssetId,
     pub index_asset: AssetId,
     pub is_long: bool,
     pub size: u256,

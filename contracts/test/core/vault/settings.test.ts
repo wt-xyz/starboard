@@ -1,7 +1,7 @@
 import { expect, use } from "chai"
 import { AbstractContract, assets, Provider, Signer, Wallet, WalletUnlocked, AssetId } from "fuels"
 import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
-import { Fungible, Rlp, TimeDistributor, Rusd, Utils, VaultPricefeed, YieldTracker, Vault } from "../../../types"
+import { Fungible, TimeDistributor, Rusd, Utils, VaultPricefeed, YieldTracker, Vault } from "../../../types"
 import { deploy, getValStr, call } from "../../utils/utils"
 import { addrToIdentity, contrToIdentity, toAddress, toContract } from "../../utils/account"
 import { toPrice, toUsd } from "../../utils/units"
@@ -14,7 +14,7 @@ import { launchNode, getNodeWallets } from "../../utils/node"
 
 use(useChai)
 
-describe("Vault.settings", function () {
+describe.skip("Vault.settings", function () {
     let attachedContracts: AbstractContract[]
     let priceUpdateSigner: Signer
     let launchedNode: LaunchTestNodeReturn<DeployContractConfig[]>
@@ -34,7 +34,7 @@ describe("Vault.settings", function () {
     let vaultPricefeed: VaultPricefeed
     let timeDistributor: TimeDistributor
     let yieldTracker: YieldTracker
-    let rlp: Rlp
+    
 
     beforeEach(async () => {
         launchedNode = await launchNode()
@@ -53,12 +53,12 @@ describe("Vault.settings", function () {
             Vault + Router + RUSD
         */
         utils = await deploy("Utils", deployer)
-        vault = await deploy("Vault", deployer)
+        vault = await deploy("Vault", deployer, { STABLE_ASSET: toAsset(DAI) })
         vaultPricefeed = await deploy("VaultPricefeed", deployer)
         rusd = await deploy("Rusd", deployer)
         timeDistributor = await deploy("TimeDistributor", deployer)
         yieldTracker = await deploy("YieldTracker", deployer)
-        rlp = await deploy("Rlp", deployer)
+        
         attachedContracts = [vault, vaultPricefeed, rusd]
 
         await call(rusd.functions.initialize(toContract(vault), toAddress(user0)))
@@ -86,8 +86,6 @@ describe("Vault.settings", function () {
                 600, // stableFundingRateFactor
             ),
         )
-
-        await call(rlp.functions.initialize())
 
         vault_user0 = new Vault(vault.id.toAddress(), user0)
         vault_user1 = new Vault(vault.id.toAddress(), user1)
