@@ -1530,6 +1530,8 @@ fn _liquidate_position(
         funding_rate,
         funding_rate_has_profit,
         liquidation_fee,
+        pnl_delta_has_profit: has_profit,
+        pnl_delta,
         cumulative_funding_rate: new_cumulative_funding_rate,
     });
 
