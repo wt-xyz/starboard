@@ -88,6 +88,8 @@ pub struct DecreasePosition {
     pub position_fee: u256,
     pub funding_rate: u256,
     pub funding_rate_has_profit: bool,
+    pub pnl_delta: u256,
+    pub pnl_delta_has_profit: bool,
     pub cumulative_funding_rate: u256,
 }
 pub struct ClosePosition {
@@ -106,12 +108,9 @@ pub struct LiquidatePosition {
     pub funding_rate: u256,
     pub funding_rate_has_profit: bool,
     pub liquidation_fee: u256,
+    pub pnl_delta: u256,
+    pub pnl_delta_has_profit: bool,
     pub cumulative_funding_rate: u256,
-}
-pub struct UpdatePnl {
-    pub key: b256,
-    pub has_profit: bool,
-    pub delta: u256,
 }
 pub struct SetMaxLeverage {
     pub asset: b256,
