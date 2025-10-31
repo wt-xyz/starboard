@@ -141,7 +141,8 @@
     "wagmi": "^2.14.9",
     "@keplr-wallet/types": "^0.12.188",
     "@react-types/table": "^3.6.1",
-    "twin.macro": "^3.4.1"
+    "twin.macro": "^3.4.1",
+    "lightweight-charts": "^5.0.9"
   },
   "devDependencies": {
     "@apollo/server": "^4.9.5",
