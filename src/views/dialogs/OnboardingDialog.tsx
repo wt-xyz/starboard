@@ -21,7 +21,7 @@ import { formMixins } from '@/styles/formMixins';
 import { layoutMixins } from '@/styles/layoutMixins';
 
 import { Dialog, DialogPlacement } from '@/components/Dialog';
-import { Icon, IconName } from '@/components/Icon';
+import { IconName } from '@/components/Icon';
 import { Link } from '@/components/Link';
 import { WithTooltip } from '@/components/WithTooltip';
 
