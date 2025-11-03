@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { BonsaiHooks } from '@/bonsai/ontology';
 import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
@@ -20,48 +18,73 @@ export const useAccountBalance = (): {
   queryStatus: 'success' | 'error' | 'pending';
   usdcBalance: number;
   refetchQuery: (options?: RefetchOptions) => Promise<QueryObserverResult>;
+  error: Error | null;
+  isOffline: boolean;
 } => {
   const { chainTokenAssetId, usdcAssetId, usdcDecimals } = useTokenConfigs();
-  const { defaultRpc } = useEndpointsConfig();
+  const { rpcs } = useEndpointsConfig();
   const { address } = useAccounts();
 
   /**
- * TODO: Map-out balances to user open / closed positions
- * const { chainTokenAmount: nativeTokenCoinBalance, usdcAmount: usdcCoinBalance } = useAppSelector(
-    BonsaiCore.account.balances.data
-  );
- */
+   * TODO: Map-out balances to user open / closed positions
+   * const { chainTokenAmount: nativeTokenCoinBalance, usdcAmount: usdcCoinBalance } = useAppSelector(
+   *   BonsaiCore.account.balances.data
+   * );
+   */
 
   const stakingBalances = BonsaiHooks.useStakingDelegations().data?.balances;
   const nativeStakingCoinBalanace = stakingBalances?.[chainTokenAssetId];
   const nativeStakingBalance = MustBigNumber(nativeStakingCoinBalanace?.amount).toNumber();
-
-  // Fuel ETH balance fetching
-  const fuelProvider = useMemo(() => new Provider(defaultRpc), [defaultRpc]);
 
   const {
     data: balances = [],
     status,
     isFetching,
     refetch,
+    error: queryError,
   } = useQuery({
-    queryKey: ['fuel', 'ethBalance', address, defaultRpc, usdcAssetId, chainTokenAssetId],
+    queryKey: ['fuel', 'ethBalance', address, rpcs, usdcAssetId, chainTokenAssetId],
     queryFn: async () => {
       if (!address) return [ZERO, ZERO];
-      return Promise.all([
-        fuelProvider.getBalance(address, chainTokenAssetId),
-        fuelProvider.getBalance(address, usdcAssetId),
-      ]);
+
+      let lastError: Error | null = null;
+
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < rpcs.length; i++) {
+        const rpcUrl = rpcs[i];
+        if (!rpcUrl) continue;
+
+        try {
+          const provider = new Provider(rpcUrl);
+          // eslint-disable-next-line no-await-in-loop -- Sequential RPC failover: try each endpoint one at a time
+          return await Promise.all([
+            provider.getBalance(address, chainTokenAssetId),
+            provider.getBalance(address, usdcAssetId),
+          ]);
+        } catch (error) {
+          lastError = error instanceof Error ? error : new Error(String(error));
+          console.error(`RPC ${rpcUrl} failed:`, lastError.message);
+        }
+      }
+
+      throw lastError || new Error('All RPC endpoints failed to fetch balance');
     },
     enabled: Boolean(address),
     refetchInterval: 3500,
     staleTime: 2000,
+    retry: false,
   });
 
   const [ethBalanceRaw = ZERO, usdcBalanceRaw = ZERO] = balances;
 
   const balance = formatUnits(ethBalanceRaw, 9);
   const usdcBalance = Number(formatUnits(usdcBalanceRaw, usdcDecimals));
+
+  const isOffline =
+    status === 'error' &&
+    (queryError?.message?.toLowerCase().includes('fetch') ||
+      queryError?.message?.toLowerCase().includes('network') ||
+      queryError?.name === 'TypeError');
 
   return {
     balance,
@@ -71,5 +94,7 @@ export const useAccountBalance = (): {
     queryStatus: status,
     isQueryFetching: isFetching,
     refetchQuery: refetch,
+    error: queryError as Error | null,
+    isOffline,
   };
 };

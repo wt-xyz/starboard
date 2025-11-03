@@ -69,7 +69,7 @@ export const AccountOverviewSection = () => {
 
   const equity = useAppSelector(getSubaccountEquity);
   const freeCollateral = useAppSelector(getSubaccountFreeCollateral);
-  const { usdcBalance } = useAccountBalance();
+  const { usdcBalance, isOffline, error } = useAccountBalance();
 
   const { balanceUsdc: vaultBalance } = orEmptyObj(useLoadedVaultAccount().data);
   const depositVaultBalance = mapIfPresent(equity, (e) => e + (vaultBalance ?? 0));
@@ -117,7 +117,21 @@ export const AccountOverviewSection = () => {
     <$AccountOverviewWrapper>
       <div tw="row w-full justify-between p-1">
         <$WithLabel label={stringGetter({ key: STRING_KEYS.PORTFOLIO_VALUE })}>
-          <Output tw="font-extra-book" type={OutputType.Fiat} value={totalValue} />
+          <div tw="row items-center gap-0.5">
+            <Output tw="font-extra-book" type={OutputType.Fiat} value={totalValue} />
+            {isOffline && (
+              <Tag type={TagType.Number} sign={TagSign.Negative}>
+                <span tw="text-color-text-0 font-tiny-book">Offline</span>
+              </Tag>
+            )}
+            {error && !isOffline && (
+              <WithTooltip tooltipStringTitle={error.message}>
+                <Tag type={TagType.Number} sign={TagSign.Warning}>
+                  <span tw="text-color-text-0 font-tiny-book">⚠️</span>
+                </Tag>
+              </WithTooltip>
+            )}
+          </div>
         </$WithLabel>
       </div>
       <div tw="row w-full gap-1 p-1">
