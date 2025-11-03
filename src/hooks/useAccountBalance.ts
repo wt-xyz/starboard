@@ -67,7 +67,7 @@ export const useAccountBalance = (): {
         }
       }
 
-      throw lastError || new Error('All RPC endpoints failed to fetch balance');
+      throw lastError ?? new Error('All RPC endpoints failed to fetch balance');
     },
     enabled: Boolean(address),
     refetchInterval: 3500,
