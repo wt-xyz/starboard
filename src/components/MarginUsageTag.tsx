@@ -14,21 +14,21 @@ export const MarginUsageTag = ({ marginUsage }: { marginUsage: BigNumber | null 
   const stringGetter = useStringGetter();
 
   const marginUsageUiOptions = useMemo(() => {
-    if (marginUsage?.lt(0.2)) {
+    if (marginUsage?.lt(0.5)) {
       return {
         marginLabel: stringGetter({ key: STRING_KEYS.LOW_RISK }),
         tagSign: TagSign.Positive,
       };
     }
 
-    if (marginUsage?.lt(0.4)) {
+    if (marginUsage?.lt(0.8)) {
       return {
         marginLabel: stringGetter({ key: STRING_KEYS.MEDIUM_RISK }),
         tagSign: TagSign.Warning,
       };
     }
 
-    if (marginUsage?.gt(0.4)) {
+    if (marginUsage?.gt(0.8)) {
       return {
         marginLabel: stringGetter({ key: STRING_KEYS.HIGH_RISK }),
         tagSign: TagSign.Negative,
