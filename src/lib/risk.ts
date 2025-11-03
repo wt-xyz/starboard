@@ -5,10 +5,10 @@ export enum RiskLevel {
 }
 
 export function marginRiskLevel(marginUsage: number): RiskLevel {
-  if (marginUsage < 0.2) {
+  if (marginUsage < 0.5) {
     return RiskLevel.LOW;
   }
-  if (marginUsage < 0.4) {
+  if (marginUsage < 0.8) {
     return RiskLevel.MEDIUM;
   }
   return RiskLevel.HIGH;
