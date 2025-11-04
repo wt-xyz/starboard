@@ -59,3 +59,27 @@ type TotalPosition @entity {
   size: String!
   lastTimestamp: Int!
 }
+
+
+enum CandleResolution {
+  M1
+  M5
+  M15
+  M30
+  H1
+  H4
+  D1
+}
+
+type Candle @entity {
+  id: ID! # "asset_id:resolution:startedAt_timestamp"
+  ticker: String! @index # "asset_id"
+  resolution: CandleResolution! @index
+  startedAt: BigInt! @index # timestamp in milliseconds
+  open: String!
+  close: String!
+  high: String!
+  low: String!
+  volume: String # usdVolume
+  trades: Int
+}

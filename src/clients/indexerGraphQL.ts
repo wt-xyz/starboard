@@ -11,6 +11,23 @@ export interface IndexerPricesResponse {
   prices: PriceData[];
 }
 
+export interface CandleData {
+  id: string;
+  ticker: string;
+  resolution: string;
+  startedAt: string; // bigint as string
+  open: string;
+  close: string;
+  high: string;
+  low: string;
+  volume?: string | null;
+  trades?: number | null;
+}
+
+export interface IndexerCandlesResponse {
+  candles: CandleData[];
+}
+
 export class IndexerGraphQLClient {
   private endpoint: string;
 
@@ -111,6 +128,77 @@ export class IndexerGraphQLClient {
     } catch (error) {
       log('IndexerGraphQLClient/getLatestPrices', error);
       throw error;
+    }
+  }
+
+  async getCandles(
+    ticker: string,
+    resolution: string,
+    fromMs: number,
+    toMs: number,
+    limit: number = 1000
+  ): Promise<CandleData[]> {
+    try {
+      const query = `
+        query GetCandles($ticker: String!, $resolution: String!, $fromMs: BigInt!, $toMs: BigInt!, $limit: Int!) {
+          candles(
+            where: {
+              ticker: $ticker
+              resolution: $resolution
+              startedAt_gte: $fromMs
+              startedAt_lte: $toMs
+            }
+            orderBy: startedAt_ASC
+            limit: $limit
+          ) {
+            id
+            ticker
+            resolution
+            startedAt
+            open
+            close
+            high
+            low
+            volume
+            trades
+          }
+        }
+      `;
+
+      const response = await fetch(this.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query,
+          variables: {
+            ticker,
+            resolution,
+            fromMs: fromMs.toString(),
+            toMs: toMs.toString(),
+            limit,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.errors) {
+        log('IndexerGraphQLClient/getCandles/errors', result.errors);
+        // Return empty array instead of throwing to allow fallback to mock data
+        return [];
+      }
+
+      return result.data?.candles || [];
+    } catch (error) {
+      log('IndexerGraphQLClient/getCandles', error);
+      // Return empty array to allow fallback to mock data
+      return [];
     }
   }
 }

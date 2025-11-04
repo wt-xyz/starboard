@@ -21,6 +21,7 @@ import { isDev } from '@/constants/networks';
 import { parseToPrimitives } from '@/lib/parseToPrimitives';
 import { log } from '@/lib/telemetry';
 
+import { getIndexerGraphQLClient } from '@/clients/indexerGraphQL';
 import { useEndpointsConfig } from './useEndpointsConfig';
 import { useLocalStorage } from './useLocalStorage';
 import { useRestrictions } from './useRestrictions';
@@ -38,6 +39,20 @@ export const useDydxClient = () => useContext(DydxContext);
 const DEFAULT_PAGE_SIZE_TARGET = 1000;
 // parallel requests should be limited to prevent hitting 429 errors and failing the whole operation
 const DEFAULT_MAX_REQUESTS = 20;
+
+// Map TradingView resolution to indexer format
+function mapResolutionToIndexer(resolution: ResolutionString): string {
+  const map: Record<string, string> = {
+    '1': 'M1',
+    '5': 'M5',
+    '15': 'M15',
+    '30': 'M30',
+    '60': 'H1',
+    '240': 'H4',
+    '1D': 'D1',
+  };
+  return map[resolution] || 'H1';
+}
 
 const useDydxClientContext = () => {
   // ------ Client Initialization ------ //
@@ -335,6 +350,47 @@ const useDydxClientContext = () => {
     toIso?: string;
     limit?: number;
   }): Promise<Candle[]> => {
+    // First try to get candles from local indexer
+    const localIndexer = getIndexerGraphQLClient();
+    if (localIndexer) {
+      try {
+        const fromMs = fromIso ? new Date(fromIso).getTime() : Date.now() - 30 * 24 * 60 * 60 * 1000;
+        const toMs = toIso ? new Date(toIso).getTime() : Date.now();
+        
+        // Map resolution to indexer format (M1, M5, etc.)
+        const indexerResolution = mapResolutionToIndexer(resolution);
+        
+        const indexerCandles = await localIndexer.getCandles(
+          marketId,
+          indexerResolution,
+          fromMs,
+          toMs,
+          limit || 1000
+        );
+
+        // Convert indexer candles to Candle format
+        if (indexerCandles && indexerCandles.length > 0) {
+          return indexerCandles.map((c) => ({
+            startedAt: new Date(Number(c.startedAt)).toISOString(),
+            ticker: c.ticker,
+            resolution: RESOLUTION_MAP[resolution]!,
+            low: c.low,
+            high: c.high,
+            open: c.open,
+            close: c.close,
+            baseTokenVolume: c.volume || '0',
+            usdVolume: c.volume || '0',
+            trades: c.trades || 0,
+            startingOpenInterest: '0',
+          }));
+        }
+      } catch (error) {
+        log('useDydxClient/requestCandles/localIndexer', error);
+        // Fall through to dYdX indexer
+      }
+    }
+
+    // Fallback to dYdX indexer
     try {
       const { candles } =
         (await indexerClient?.markets.getPerpetualMarketCandles(
