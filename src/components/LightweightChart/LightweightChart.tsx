@@ -1,17 +1,19 @@
-import { getIndexerGraphQLClient } from '@/clients/indexerGraphQL';
 import { useAppThemeAndColorModeContext } from '@/hooks/useAppThemeAndColorMode';
+import { useDydxClient } from '@/hooks/useDydxClient';
 import { log } from '@/lib/telemetry';
+import { mapCandle } from '@/lib/tradingView/utils';
 import { useAppSelector } from '@/state/appTypes';
 import { getAppTheme } from '@/state/appUiConfigsSelectors';
 import {
-    CandlestickData,
-    CandlestickSeries,
-    ColorType,
-    createChart,
-    IChartApi,
-    ISeriesApi,
-    Time
+  CandlestickData,
+  CandlestickSeries,
+  ColorType,
+  createChart,
+  IChartApi,
+  ISeriesApi,
+  Time
 } from 'lightweight-charts';
+import { ResolutionString } from 'public/tradingview/charting_library';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
@@ -20,11 +22,6 @@ export interface LightweightChartProps {
   width?: string | number;
   height?: string | number;
   onChartReady?: () => void;
-}
-
-interface PriceData {
-  time: number;
-  price: number;
 }
 
 export const LightweightChart: React.FC<LightweightChartProps> = ({
@@ -39,22 +36,28 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
   const appTheme = useAppSelector(getAppTheme);
   const colorTheme = useAppThemeAndColorModeContext();
   const [isLoading, setIsLoading] = useState(true);
+  const dydxClient = useDydxClient();
+  const getCandlesForDatafeed = dydxClient?.getCandlesForDatafeed;
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
-
-    // Clear any existing chart
-    if (chartRef.current) {
-      chartRef.current.remove();
-      chartRef.current = null;
-      seriesRef.current = null;
-    }
 
     // Determine theme colors
     const isDark = appTheme === 'Dark';
     const backgroundColor = isDark ? colorTheme.layer2 : '#ffffff';
     const textColor = isDark ? colorTheme.textSecondary : '#191919';
     const gridColor = isDark ? 'rgba(197, 203, 206, 0.1)' : 'rgba(42, 46, 57, 0.1)';
+
+    // Calculate chart dimensions
+    const getChartHeight = () => {
+      if (typeof height === 'number') {
+        return height;
+      }
+      // For percentage-based or other string heights, use container's actual height
+      // with a minimum fallback to prevent rendering issues
+      const containerHeight = chartContainerRef.current?.clientHeight || 0;
+      return Math.max(containerHeight, 300); // Minimum 300px height
+    };
 
     // Create chart
     const chart = createChart(chartContainerRef.current, {
@@ -67,7 +70,7 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
         horzLines: { color: gridColor },
       },
       width: chartContainerRef.current.clientWidth,
-      height: typeof height === 'number' ? height : chartContainerRef.current.clientHeight,
+      height: getChartHeight(),
       timeScale: {
         timeVisible: true,
         secondsVisible: false,
@@ -93,37 +96,68 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
     chartRef.current = chart;
     seriesRef.current = candlestickSeries;
 
-    // Fetch and set data
-    fetchPriceData(symbol)
-      .then((data) => {
-        if (seriesRef.current) {
-          seriesRef.current.setData(data);
-          setIsLoading(false);
-          onChartReady?.();
-        }
-      })
-      .catch((error) => {
-        log('LightweightChart/fetchPriceData', error);
-        setIsLoading(false);
-      });
+    // Handle resize with ResizeObserver for better container size tracking
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (!chartRef.current || !chartContainerRef.current) return;
+      
+      const entry = entries[0];
+      if (entry) {
+        const { width, height: observedHeight } = entry.contentRect;
+        chartRef.current.applyOptions({
+          width: Math.max(width, 0),
+          height: typeof height === 'number' ? height : Math.max(observedHeight, 300),
+        });
+      }
+    });
 
-    // Handle resize
+    if (chartContainerRef.current) {
+      resizeObserver.observe(chartContainerRef.current);
+    }
+
+    // Fallback window resize handler
     const handleResize = () => {
       if (chartContainerRef.current && chartRef.current) {
         chartRef.current.applyOptions({
           width: chartContainerRef.current.clientWidth,
+          height: getChartHeight(),
         });
       }
     };
 
     window.addEventListener('resize', handleResize);
 
+    // Check if getCandlesForDatafeed is available
+    if (!getCandlesForDatafeed) {
+      log('LightweightChart', new Error('getCandlesForDatafeed not available, using mock data'));
+      const mockData = generateMockCandleData();
+      if (seriesRef.current) {
+        seriesRef.current.setData(mockData);
+        setIsLoading(false);
+        onChartReady?.();
+      }
+    } else {
+      // Fetch and set data
+      fetchCandleData(symbol, getCandlesForDatafeed)
+        .then((data) => {
+          if (seriesRef.current) {
+            seriesRef.current.setData(data);
+            setIsLoading(false);
+            onChartReady?.();
+          }
+        })
+        .catch((error) => {
+          log('LightweightChart/fetchCandleData', error);
+          setIsLoading(false);
+        });
+    }
+
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       chart.remove();
     };
-  }, [symbol, appTheme, height, colorTheme, onChartReady]);
+  }, [symbol, appTheme, height, colorTheme, onChartReady, getCandlesForDatafeed]);
 
   return (
     <ChartContainer ref={chartContainerRef} $width={width} $height={height}>
@@ -132,76 +166,45 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
   );
 };
 
-// Fetch price data from indexer
-async function fetchPriceData(symbol: string): Promise<CandlestickData[]> {
+// Fetch candle data from dYdX indexer
+async function fetchCandleData(
+  marketId: string,
+  getCandlesForDatafeed: ReturnType<typeof useDydxClient>['getCandlesForDatafeed']
+): Promise<CandlestickData[]> {
   try {
-    const client = getIndexerGraphQLClient();
-    
-    if (!client) {
-      // Return mock data if no client is available
-      log('LightweightChart/fetchPriceData', new Error('No indexer GraphQL client available, using mock data'));
+    const resolution = '1H' as ResolutionString; // Default to 1 hour candles
+    const toMs = Date.now();
+    const fromMs = toMs - 100 * 60 * 60 * 1000; // 100 hours of data
+
+    const candles = await getCandlesForDatafeed({
+      marketId,
+      resolution,
+      fromMs,
+      toMs,
+    });
+
+    if (!candles || candles.length === 0) {
+      log('LightweightChart/fetchCandleData', new Error(`No candles found for market: ${marketId}`));
       return generateMockCandleData();
     }
 
-    const asset = extractAssetFromSymbol(symbol);
-    const prices = await client.getPrices(asset, 1000);
-    
-    if (prices.length === 0) {
-      log('LightweightChart/fetchPriceData', new Error(`No prices found for asset: ${asset}`));
-      return generateMockCandleData();
-    }
+    // Convert to lightweight charts format
+    const candleData: CandlestickData[] = candles.map((candle) => {
+      const tradingViewBar = mapCandle(candle);
+      return {
+        time: Math.floor(tradingViewBar.time / 1000) as Time,
+        open: tradingViewBar.open,
+        high: tradingViewBar.high,
+        low: tradingViewBar.low,
+        close: tradingViewBar.close,
+      };
+    });
 
-    // Convert prices to candlestick data
-    // Group by time intervals and calculate OHLC
-    const candleData = convertPricesToCandles(prices.map(p => ({
-      time: p.timestamp,
-      price: parseFloat(p.price),
-    })));
-    
     return candleData;
   } catch (error) {
-    log('LightweightChart/fetchPriceData/error', error);
+    log('LightweightChart/fetchCandleData/error', error);
     return generateMockCandleData();
   }
-}
-
-function extractAssetFromSymbol(symbol: string): string {
-  // Extract asset from symbol (e.g., "BTC-USD" -> "BTC")
-  return symbol.split('-')[0] || symbol;
-}
-
-function convertPricesToCandles(prices: PriceData[]): CandlestickData[] {
-  if (prices.length === 0) return [];
-
-  // Group prices by hour and calculate OHLC
-  const candleMap = new Map<number, { open: number; high: number; low: number; close: number; time: number }>();
-
-  prices.forEach((price) => {
-    // Round timestamp to hour
-    const hourTimestamp = Math.floor(price.time / 3600) * 3600;
-
-    if (!candleMap.has(hourTimestamp)) {
-      candleMap.set(hourTimestamp, {
-        time: hourTimestamp,
-        open: price.price,
-        high: price.price,
-        low: price.price,
-        close: price.price,
-      });
-    } else {
-      const candle = candleMap.get(hourTimestamp)!;
-      candle.high = Math.max(candle.high, price.price);
-      candle.low = Math.min(candle.low, price.price);
-      candle.close = price.price;
-    }
-  });
-
-  return Array.from(candleMap.values())
-    .sort((a, b) => a.time - b.time)
-    .map(candle => ({
-      ...candle,
-      time: candle.time as Time,
-    }));
 }
 
 function generateMockCandleData(): CandlestickData[] {
