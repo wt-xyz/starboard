@@ -83,3 +83,13 @@ type Candle @entity {
   volume: String # usdVolume
   trades: Int
 }
+
+# Custom queries
+type Query {
+  candles(
+    ticker: String!
+    resolution: CandleResolution!
+    fromMs: Int!
+    toMs: Int!
+  ): [Candle!]!
+}

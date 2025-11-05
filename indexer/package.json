@@ -5,7 +5,8 @@
     "gen:model": "npx squid-typeorm-codegen",
     "gen:migration": "squid-typeorm-migration generate",
     "apply:migration": "squid-typeorm-migration apply",
-    "build": "rm -rf lib && tsc"
+    "build": "rm -rf lib && tsc",
+    "seed:candles": "node -r dotenv/config lib/seed-mock-candles.js"
   },
   "dependencies": {
     "@subsquid/batch-processor": "^0.0.0",

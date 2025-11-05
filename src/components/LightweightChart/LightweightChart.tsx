@@ -128,28 +128,24 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
 
     // Check if getCandlesForDatafeed is available
     if (!getCandlesForDatafeed) {
-      log('LightweightChart', new Error('getCandlesForDatafeed not available, using mock data'));
-      const mockData = generateMockCandleData();
-      if (seriesRef.current) {
-        seriesRef.current.setData(mockData);
-        setIsLoading(false);
-        onChartReady?.();
-      }
-    } else {
-      // Fetch and set data
-      fetchCandleData(symbol, getCandlesForDatafeed)
-        .then((data) => {
-          if (seriesRef.current) {
-            seriesRef.current.setData(data);
-            setIsLoading(false);
-            onChartReady?.();
-          }
-        })
-        .catch((error) => {
-          log('LightweightChart/fetchCandleData', error);
-          setIsLoading(false);
-        });
+      log('LightweightChart', new Error('getCandlesForDatafeed not available'));
+      setIsLoading(false);
+      return;
     }
+
+    // Fetch and set data
+    fetchCandleData(symbol, getCandlesForDatafeed)
+      .then((data) => {
+        if (seriesRef.current) {
+          seriesRef.current.setData(data);
+          setIsLoading(false);
+          onChartReady?.();
+        }
+      })
+      .catch((error) => {
+        log('LightweightChart/fetchCandleData', error);
+        setIsLoading(false);
+      });
 
     // Cleanup
     return () => {
@@ -185,7 +181,7 @@ async function fetchCandleData(
 
     if (!candles || candles.length === 0) {
       log('LightweightChart/fetchCandleData', new Error(`No candles found for market: ${marketId}`));
-      return generateMockCandleData();
+      return [];
     }
 
     // Convert to lightweight charts format
@@ -203,38 +199,8 @@ async function fetchCandleData(
     return candleData;
   } catch (error) {
     log('LightweightChart/fetchCandleData/error', error);
-    return generateMockCandleData();
+    return [];
   }
-}
-
-function generateMockCandleData(): CandlestickData[] {
-  // Generate 100 days of mock candle data
-  const data: CandlestickData[] = [];
-  let basePrice = 100;
-  const now = Math.floor(Date.now() / 1000);
-  const dayInSeconds = 86400;
-
-  for (let i = 99; i >= 0; i--) {
-    const time = (now - i * dayInSeconds) as Time;
-    const volatility = 5;
-    const change = (Math.random() - 0.5) * volatility;
-    basePrice = Math.max(basePrice + change, 50);
-
-    const open = basePrice;
-    const close = basePrice + (Math.random() - 0.5) * volatility;
-    const high = Math.max(open, close) + Math.random() * volatility;
-    const low = Math.min(open, close) - Math.random() * volatility;
-
-    data.push({
-      time,
-      open,
-      high,
-      low,
-      close,
-    });
-  }
-
-  return data;
 }
 
 const ChartContainer = styled.div<{ $width: string | number; $height: string | number }>`

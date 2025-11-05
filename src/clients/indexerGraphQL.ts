@@ -140,11 +140,11 @@ export class IndexerGraphQLClient {
   ): Promise<CandleData[]> {
     try {
       const query = `
-        query GetCandles($ticker: String!, $resolution: String!, $fromMs: BigInt!, $toMs: BigInt!, $limit: Int!) {
+        query GetCandles($ticker: String!, $resolution: CandleResolution!, $fromMs: BigInt!, $toMs: BigInt!, $limit: Int!) {
           candles(
             where: {
-              ticker: $ticker
-              resolution: $resolution
+              ticker_eq: $ticker
+              resolution_eq: $resolution
               startedAt_gte: $fromMs
               startedAt_lte: $toMs
             }
