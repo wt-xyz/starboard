@@ -210,9 +210,7 @@ const Content = () => {
                 <Route path={`${AppRoute.Portfolio}/*`} element={<PortfolioPage />} />
               </Route>
 
-              <Route path={AppRoute.Vault}>
-                <Route path={AppRoute.Vault} element={<VaultPage />} />
-              </Route>
+              <Route path={AppRoute.Vault} element={<VaultPage />} />
               <Route path={AppRoute.Terms} element={<TermsOfUsePage />} />
               <Route path={AppRoute.Privacy} element={<PrivacyPolicyPage />} />
               <Route

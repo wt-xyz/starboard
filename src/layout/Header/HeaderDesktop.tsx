@@ -7,15 +7,11 @@ import { ComplianceStates } from '@/constants/compliance';
 import { DialogTypes } from '@/constants/dialogs';
 import { STRING_KEYS } from '@/constants/localization';
 import { AppRoute } from '@/constants/routes';
-import { StatsigFlags } from '@/constants/statsig';
 
 import { useAccounts } from '@/hooks/useAccounts';
 import { useComplianceState } from '@/hooks/useComplianceState';
 import { useMobileAppUrl } from '@/hooks/useMobileAppUrl';
-import { useStatsigGateValue } from '@/hooks/useStatsig';
 import { useStringGetter } from '@/hooks/useStringGetter';
-import { useTokenConfigs } from '@/hooks/useTokenConfigs';
-import { useURLConfigs } from '@/hooks/useURLConfigs';
 
 import { BellStrokeIcon } from '@/icons';
 import { LogoShortIcon } from '@/icons/logo-short';
@@ -36,26 +32,17 @@ import { NotificationsMenu } from '@/views/menus/NotificationsMenu';
 
 import { getOnboardingState, getSubaccountFreeCollateral } from '@/state/accountSelectors';
 import { useAppDispatch, useAppSelector } from '@/state/appTypes';
-import { getHasSeenLaunchIncentives } from '@/state/appUiConfigsSelectors';
 import { openDialog } from '@/state/dialogs';
-
-import { isTruthy } from '@/lib/isTruthy';
 
 export const HeaderDesktop = () => {
   const { isUrlDataEmpty } = useMobileAppUrl();
   const stringGetter = useStringGetter();
-  const { documentation, community, mintscanBase, exchangeStats } = useURLConfigs();
   const dispatch = useAppDispatch();
-  const { chainTokenLabel } = useTokenConfigs();
   const { address } = useAccounts();
   const onboardingState = useAppSelector(getOnboardingState);
   const { complianceState } = useComplianceState();
 
   const availableBalance = useAppSelector(getSubaccountFreeCollateral);
-
-  const affiliatesEnabled = useStatsigGateValue(StatsigFlags.ffEnableAffiliates);
-
-  const hasSeenLaunchIncentives = useAppSelector(getHasSeenLaunchIncentives);
 
   const navItems = [
     {
@@ -76,89 +63,18 @@ export const HeaderDesktop = () => {
           label: stringGetter({ key: STRING_KEYS.PORTFOLIO }),
           href: AppRoute.Portfolio,
         },
-        /* {
-         *   value: 'VAULT',
-         *   label: stringGetter({ key: STRING_KEYS.MEGAVAULT }),
-         *   href: AppRoute.Vault,
-         * }, */
-        /* affiliatesEnabled && {
-         *   value: 'REFERRALS',
-         *   label: stringGetter({ key: STRING_KEYS.REFERRALS }),
-         *   href: AppRoute.Referrals,
-         * }, */
-        /* {
-         *   value: chainTokenLabel,
-         *   label: chainTokenLabel,
-         *   href: `/${chainTokenLabel}`,
-         *   slotAfter: !hasSeenLaunchIncentives && (
-         *     <div tw="h-[0.4375rem] w-[0.4375rem] rounded-[50%] bg-color-accent" />
-         *   ),
-         * }, */
+        {
+          value: 'VAULT',
+          label: stringGetter({ key: STRING_KEYS.MEGAVAULT }),
+          href: AppRoute.Vault,
+        },
         {
           value: 'MINTSCAN',
           label: stringGetter({ key: STRING_KEYS.BLOCK_EXPLORER }),
           slotBefore: <Icon iconName={IconName.Terminal} />,
           href: 'https://app.fuel.network/contract/0x8002f2e86302ef9421558d0ae25a68cdfdbec5d27915cc2db49eded220799ecc/transactions',
         },
-        /* {
-* value: 'MORE',
-* label: stringGetter({ key: STRING_KEYS.MORE }),
-* subitems: [
-*   {
-*     value: 'DOCUMENTATION',
-*     slotBefore: <Icon iconName={IconName.Terminal} />,
-*     label: stringGetter({ key: STRING_KEYS.API_DOCUMENTATION }),
-*     onClick: () => {
-*       dispatch(
-*         openDialog(
-*           DialogTypes.ExternalLink({
-*             link: documentation,
-*           })
-*         )
-*       );
-*     },
-*   },
-*   {
-*     value: 'MINTSCAN',
-*     slotBefore: <Icon iconName={IconName.Mintscan} />,
-*     label: stringGetter({ key: STRING_KEYS.MINTSCAN }),
-*     href: mintscanBase,
-*     },
-*   {
-*     value: 'COMMUNITY',
-*     slotBefore: <Icon iconName={IconName.Discord} />,
-*     label: stringGetter({ key: STRING_KEYS.COMMUNITY }),
-*     href: community,
-*   },
-*   {
-*     value: 'TERMS_OF_USE',
-*     slotBefore: <Icon iconName={IconName.File} />,
-*     label: stringGetter({ key: STRING_KEYS.TERMS_OF_USE }),
-*     href: AppRoute.Terms,
-*   },
-*   {
-*     value: 'PRIVACY_POLICY',
-*     slotBefore: <Icon iconName={IconName.Privacy} />,
-*     label: stringGetter({ key: STRING_KEYS.PRIVACY_POLICY }),
-*     href: AppRoute.Privacy,
-*   },
-*   {
-*     value: 'HELP',
-*     slotBefore: <Icon iconName={IconName.HelpCircle} />,
-*     label: stringGetter({ key: STRING_KEYS.HELP }),
-*     onClick: () => {
-*       dispatch(openDialog(DialogTypes.Help()));
-*     },
-*   },
-*   {
-*     value: 'STATS',
-*     slotBefore: <Icon iconName={IconName.FundingChart} />,
-*     label: stringGetter({ key: STRING_KEYS.STATISTICS }),
-*     href: exchangeStats,
-*   },
-* ],
-        }, */
-      ].filter(isTruthy),
+      ],
     },
   ];
 
