@@ -58,7 +58,7 @@ export const WithdrawAmountInput: FC = () => {
   return (
     <AmountInput
       disabled={false}
-      label={getLocaleString({ key: STRING_KEYS.AMOUNT_TO_ADD })}
+      label={getLocaleString({ key: STRING_KEYS.AMOUNT_TO_REMOVE })}
       maxAmount={`${Math.floor(100 * (userAvailableBalance ?? 0)) / 100}`}
       receiptItems={inputReceiptItems}
     />
