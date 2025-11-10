@@ -1,9 +1,13 @@
 import { useCallback, useMemo } from 'react';
 
+import { get } from 'lodash';
+
 import { StringGetterProps } from '@/constants/localization';
 
-import { useAppStore } from '@/state/appTypes';
-import { getStringForLocaleDate } from '@/state/localizationSelectors';
+import { useAppSelector, useAppStore } from '@/state/appTypes';
+import { getEnLocaleData, getSelectedLocaleData } from '@/state/localizationSelectors';
+
+import formatString from '@/lib/formatString';
 
 /**
  * Custom hook for accessing locale-specific date formatting
@@ -21,27 +25,28 @@ import { getStringForLocaleDate } from '@/state/localizationSelectors';
  */
 export function useLocaleGetter() {
   const store = useAppStore();
+  const localeData = useAppSelector(getSelectedLocaleData);
 
-  /**
-   * Retrieves a localized date string based on the provided properties
-   *
-   * @param props - Configuration object for the string getter
-   * @returns The localized date string for the current locale
-   */
   const getLocale = useCallback(
-    (props: StringGetterProps) => {
-      return getStringForLocaleDate(store.getState(), props);
+    (params: StringGetterProps) => {
+      const localeString = get(localeData, params.key);
+      if (localeString) return formatString(localeString, params.params);
+
+      const enString = get(getEnLocaleData(store.getState()), params.key);
+      if (enString) return formatString(enString, params.params);
+
+      return params.fallback ? formatString(params.fallback, params.params) : '';
     },
-    [store]
+    [localeData, store]
   );
 
   const getLocaleString = useCallback(
     (props: StringGetterProps) => {
-      const locale = getStringForLocaleDate(store.getState(), props);
+      const locale = getLocale(props);
       if (!(typeof locale === 'string')) return `<LOCALE TYPE FOR "${props.key}" IS NOT STRING>`;
       return locale;
     },
-    [store]
+    [getLocale]
   );
 
   return useMemo(
