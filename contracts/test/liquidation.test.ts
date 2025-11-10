@@ -509,7 +509,17 @@ describe("Vault.funding_rate", () => {
                     0, // liquidation_fee_usd
                 ),
             )
-            // the actual long position
+            // create a short position just to balance the short position below so that the funding rate is zero
+            await call(USDC.functions.mint(user0Identity, expandDecimals(40000)))
+            await call(
+                vaultUser0.functions
+                    .increase_position(user0Identity, BTC_ASSET, expandDecimals(1000), false)
+                    .addContracts(attachedContracts)
+                    .callParams({
+                        forward: [expandDecimals(100), USDC_ASSET_ID],
+                    }),
+            )
+            // the actual short position
             await call(USDC.functions.mint(user1Identity, expandDecimals(40000)))
             await call(
                 vaultUser1.functions
