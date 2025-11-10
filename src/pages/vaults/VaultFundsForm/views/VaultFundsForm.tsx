@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { DepositFundsForm } from '../components/DepositFundsForm';
 import { OperationType, OperationTypeSwitch } from '../components/OperationTypeSwitch';
 import { WithdrawFundsForm } from '../components/WithdrawFundsForm';
 import $ from './VaultFundsForm.styles';
 
-export const VaultFundsForms = () => {
+export const VaultFundsForms = memo(() => {
   const [operation, setOperation] = useState<OperationType>(OperationType.DEPOSIT);
 
   return (
@@ -20,4 +20,4 @@ export const VaultFundsForms = () => {
       </$.FormBox>
     </$.RootStyle>
   );
-};
+});
