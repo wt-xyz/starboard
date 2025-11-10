@@ -110,11 +110,9 @@ export const ChooseWallet = ({
             size={isSimpleUi ? ButtonSize.Large : ButtonSize.Small}
           >
             <$WalletName>
-              {wallet.connectorType === ConnectorType.Injected
-                ? wallet.name
-                : wallets[wallet.name as keyof typeof wallets].stringKey
-                  ? stringGetter({ key: wallets[wallet.name as keyof typeof wallets].stringKey })
-                  : wallet.name}
+              {wallets[wallet.name as keyof typeof wallets].stringKey
+                ? stringGetter({ key: wallets[wallet.name as keyof typeof wallets].stringKey })
+                : wallet.name}
             </$WalletName>
           </$WalletButton>
         ))}
