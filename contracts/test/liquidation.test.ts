@@ -1,32 +1,32 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { AbstractContract, WalletUnlocked } from "fuels"
-import { launchNode, getNodeWallets } from "./node"
+import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
+import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import {
-    call,
-    call2,
+    Fungible,
+    FungibleFactory,
+    PricefeedWrapper,
+    PricefeedWrapperFactory,
+    StorkMock,
+    StorkMockFactory,
+    Vault,
+    VaultExposeFactory,
+} from "../../apps/indexer/src/types"
+import { getNodeWallets, launchNode } from "./node"
+import {
     AddressIdentity,
-    walletToAddressIdentity,
-    expandDecimals,
-    COLLATERAL_ASSET,
-    USDC_ASSET,
     BTC_ASSET,
     BTC_MAX_LEVERAGE,
+    call,
+    call2,
+    COLLATERAL_ASSET,
+    expandDecimals,
+    getAssetId,
     getBtcConfig,
     getUsdcConfig,
-    getAssetId,
     moveBlockchainTime,
+    USDC_ASSET,
+    walletToAddressIdentity,
 } from "./utils"
-import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
-import {
-    FungibleFactory,
-    PricefeedWrapperFactory,
-    StorkMockFactory,
-    VaultExposeFactory,
-    Fungible,
-    StorkMock,
-    PricefeedWrapper,
-    Vault,
-} from "../types"
 
 describe("Vault.funding_rate", () => {
     let attachedContracts: AbstractContract[]

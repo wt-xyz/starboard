@@ -1,23 +1,16 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest"
-import { WalletUnlocked, DateTime, BN } from "fuels"
-import { launchNode, getNodeWallets } from "./node"
-import {
-    call,
-    AddressIdentity,
-    walletToAddressIdentity,
-    expandDecimals,
-    COLLATERAL_ASSET,
-    USDC_ASSET,
-    BTC_ASSET,
-    BTC_MAX_LEVERAGE,
-    getBtcConfig,
-    getUsdcConfig,
-    getAssetId,
-    moveBlockchainTime,
-} from "./utils"
+import { WalletUnlocked } from "fuels"
 import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
-import { PricefeedWrapper, StorkMock, PricefeedWrapperFactory, StorkMockFactory, Vault, VaultFactory, FungibleFactory, Fungible } from "../../contracts/types"
-import * as compose from 'docker-compose'
+import { afterEach, beforeEach, describe, it } from "vitest"
+import { Fungible, FungibleFactory, PricefeedWrapper, PricefeedWrapperFactory, StorkMock, StorkMockFactory, Vault, VaultFactory } from "../../apps/indexer/src/types"
+import { getNodeWallets, launchNode } from "./node"
+import {
+    AddressIdentity,
+    call,
+    COLLATERAL_ASSET,
+    expandDecimals,
+    getAssetId,
+    walletToAddressIdentity
+} from "./utils"
 
 function toPrice(value: number, decimals: number = 9): string {
     const v = BigInt(value) * BigInt(10) ** BigInt(decimals)
