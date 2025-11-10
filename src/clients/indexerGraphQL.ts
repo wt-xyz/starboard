@@ -119,12 +119,15 @@ export class IndexerGraphQLClient {
       }
 
       const prices: PriceData[] = result.data?.prices || [];
-      
+
       // Convert array to map by asset
-      return prices.reduce((acc, price) => {
-        acc[price.asset] = price;
-        return acc;
-      }, {} as Record<string, PriceData>);
+      return prices.reduce(
+        (acc, price) => {
+          acc[price.asset] = price;
+          return acc;
+        },
+        {} as Record<string, PriceData>
+      );
     } catch (error) {
       log('IndexerGraphQLClient/getLatestPrices', error);
       throw error;
@@ -233,4 +236,3 @@ function getIndexerGraphQLEndpoint(): string | null {
   }
   return null;
 }
-

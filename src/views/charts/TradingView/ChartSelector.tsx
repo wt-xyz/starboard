@@ -1,4 +1,3 @@
-
 import { USE_WIDGET_CHARTS } from '@/constants/chartConfig';
 
 import { LightweightChartSimple } from './LightweightChartSimple';

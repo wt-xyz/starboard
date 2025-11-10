@@ -90,4 +90,3 @@ const $PriceChart = styled.div<{ isChartReady?: boolean }>`
     }
   }
 `;
-

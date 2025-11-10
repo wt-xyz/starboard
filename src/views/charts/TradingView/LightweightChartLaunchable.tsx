@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { BaseLightweightChart } from './BaseLightweightChart';
 
 export const LightweightChartLaunchable = ({ marketId }: { marketId: string }) => {
@@ -6,4 +7,3 @@ export const LightweightChartLaunchable = ({ marketId }: { marketId: string }) =
 
   return <BaseLightweightChart symbol={marketId} isLaunchable isSimpleUi={isSimpleUi} />;
 };
-

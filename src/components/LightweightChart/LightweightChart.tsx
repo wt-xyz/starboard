@@ -1,9 +1,6 @@
-import { useAppThemeAndColorModeContext } from '@/hooks/useAppThemeAndColorMode';
-import { useDydxClient } from '@/hooks/useDydxClient';
-import { log } from '@/lib/telemetry';
-import { mapCandle } from '@/lib/tradingView/utils';
-import { useAppSelector } from '@/state/appTypes';
-import { getAppTheme } from '@/state/appUiConfigsSelectors';
+/* eslint-disable react/prop-types */
+import { useEffect, useRef, useState } from 'react';
+
 import {
   CandlestickData,
   CandlestickSeries,
@@ -11,11 +8,19 @@ import {
   createChart,
   IChartApi,
   ISeriesApi,
-  Time
+  Time,
 } from 'lightweight-charts';
 import { ResolutionString } from 'public/tradingview/charting_library';
-import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+
+import { useAppThemeAndColorModeContext } from '@/hooks/useAppThemeAndColorMode';
+import { useDydxClient } from '@/hooks/useDydxClient';
+
+import { useAppSelector } from '@/state/appTypes';
+import { getAppTheme } from '@/state/appUiConfigsSelectors';
+
+import { log } from '@/lib/telemetry';
+import { mapCandle } from '@/lib/tradingView/utils';
 
 export interface LightweightChartProps {
   symbol: string;
@@ -37,10 +42,10 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
   const colorTheme = useAppThemeAndColorModeContext();
   const [isLoading, setIsLoading] = useState(true);
   const dydxClient = useDydxClient();
-  const getCandlesForDatafeed = dydxClient?.getCandlesForDatafeed;
+  const getCandlesForDatafeed = dydxClient.getCandlesForDatafeed;
 
   useEffect(() => {
-    if (!chartContainerRef.current) return;
+    if (!chartContainerRef.current) return undefined;
 
     // Determine theme colors
     const isDark = appTheme === 'Dark';
@@ -55,7 +60,7 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
       }
       // For percentage-based or other string heights, use container's actual height
       // with a minimum fallback to prevent rendering issues
-      const containerHeight = chartContainerRef.current?.clientHeight || 0;
+      const containerHeight = chartContainerRef.current?.clientHeight ?? 0;
       return Math.max(containerHeight, 300); // Minimum 300px height
     };
 
@@ -99,12 +104,12 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
     // Handle resize with ResizeObserver for better container size tracking
     const resizeObserver = new ResizeObserver((entries) => {
       if (!chartRef.current || !chartContainerRef.current) return;
-      
+
       const entry = entries[0];
       if (entry) {
-        const { width, height: observedHeight } = entry.contentRect;
+        const { width: observedWidth, height: observedHeight } = entry.contentRect;
         chartRef.current.applyOptions({
-          width: Math.max(width, 0),
+          width: Math.max(observedWidth, 0),
           height: typeof height === 'number' ? height : Math.max(observedHeight, 300),
         });
       }
@@ -126,26 +131,25 @@ export const LightweightChart: React.FC<LightweightChartProps> = ({
 
     window.addEventListener('resize', handleResize);
 
-    // Check if getCandlesForDatafeed is available
-    if (!getCandlesForDatafeed) {
+    // Check if getCandlesForDatafeed is available and fetch data
+    if (getCandlesForDatafeed) {
+      // Fetch and set data
+      fetchCandleData(symbol, getCandlesForDatafeed)
+        .then((data) => {
+          if (seriesRef.current) {
+            seriesRef.current.setData(data);
+            setIsLoading(false);
+            onChartReady?.();
+          }
+        })
+        .catch((error) => {
+          log('LightweightChart/fetchCandleData', error);
+          setIsLoading(false);
+        });
+    } else {
       log('LightweightChart', new Error('getCandlesForDatafeed not available'));
       setIsLoading(false);
-      return;
     }
-
-    // Fetch and set data
-    fetchCandleData(symbol, getCandlesForDatafeed)
-      .then((data) => {
-        if (seriesRef.current) {
-          seriesRef.current.setData(data);
-          setIsLoading(false);
-          onChartReady?.();
-        }
-      })
-      .catch((error) => {
-        log('LightweightChart/fetchCandleData', error);
-        setIsLoading(false);
-      });
 
     // Cleanup
     return () => {
@@ -180,7 +184,10 @@ async function fetchCandleData(
     });
 
     if (!candles || candles.length === 0) {
-      log('LightweightChart/fetchCandleData', new Error(`No candles found for market: ${marketId}`));
+      log(
+        'LightweightChart/fetchCandleData',
+        new Error(`No candles found for market: ${marketId}`)
+      );
       return [];
     }
 
@@ -223,4 +230,3 @@ const LoadingOverlay = styled.div`
   font-size: 14px;
   z-index: 1;
 `;
-

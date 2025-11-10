@@ -18,10 +18,10 @@ import { RESOLUTION_MAP, RESOLUTION_TO_INTERVAL_MS, type Candle } from '@/consta
 import { LocalStorageKey } from '@/constants/localStorage';
 import { isDev } from '@/constants/networks';
 
+import { getIndexerGraphQLClient } from '@/clients/indexerGraphQL';
 import { parseToPrimitives } from '@/lib/parseToPrimitives';
 import { log } from '@/lib/telemetry';
 
-import { getIndexerGraphQLClient } from '@/clients/indexerGraphQL';
 import { useEndpointsConfig } from './useEndpointsConfig';
 import { useLocalStorage } from './useLocalStorage';
 import { useRestrictions } from './useRestrictions';
@@ -51,7 +51,7 @@ function mapResolutionToIndexer(resolution: ResolutionString): string {
     '240': 'H4',
     '1D': 'D1',
   };
-  return map[resolution] || 'H1';
+  return map[resolution] ?? 'H1';
 }
 
 const useDydxClientContext = () => {
@@ -354,18 +354,20 @@ const useDydxClientContext = () => {
     const localIndexer = getIndexerGraphQLClient();
     if (localIndexer) {
       try {
-        const fromMs = fromIso ? new Date(fromIso).getTime() : Date.now() - 30 * 24 * 60 * 60 * 1000;
+        const fromMs = fromIso
+          ? new Date(fromIso).getTime()
+          : Date.now() - 30 * 24 * 60 * 60 * 1000;
         const toMs = toIso ? new Date(toIso).getTime() : Date.now();
-        
+
         // Map resolution to indexer format (M1, M5, etc.)
         const indexerResolution = mapResolutionToIndexer(resolution);
-        
+
         const indexerCandles = await localIndexer.getCandles(
           marketId,
           indexerResolution,
           fromMs,
           toMs,
-          limit || 1000
+          limit ?? 1000
         );
 
         // Convert indexer candles to Candle format
@@ -378,9 +380,9 @@ const useDydxClientContext = () => {
             high: c.high,
             open: c.open,
             close: c.close,
-            baseTokenVolume: c.volume || '0',
-            usdVolume: c.volume || '0',
-            trades: c.trades || 0,
+            baseTokenVolume: c.volume ?? '0',
+            usdVolume: c.volume ?? '0',
+            trades: c.trades ?? 0,
             startingOpenInterest: '0',
           }));
         }
