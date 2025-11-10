@@ -5,12 +5,12 @@ import { getLazyLocalWallet } from '@/bonsai/lib/lazyDynamicLibs';
 import { useCompositeClient, useIndexerClient } from '@/bonsai/rest/lib/useIndexer';
 import type { ResolutionString } from 'public/tradingview/charting_library';
 import {
-    BECH32_PREFIX,
-    FaucetClient,
-    PnlTickInterval,
-    SelectedGasDenom,
-    onboarding,
-    type ProposalStatus,
+  BECH32_PREFIX,
+  FaucetClient,
+  PnlTickInterval,
+  SelectedGasDenom,
+  onboarding,
+  type ProposalStatus,
 } from 'starboard-client-js';
 
 import { RawSubaccountFill, RawSubaccountTransfer } from '@/constants/account';
@@ -105,8 +105,10 @@ const useDydxClientContext = () => {
 
   const getMegavaultHistoricalPnl = useCallback(
     async (resolution: PnlTickInterval = PnlTickInterval.day) => {
+      if (!indexerClient) return undefined;
       try {
-        return await indexerClient?.vault.getMegavaultHistoricalPnl(resolution);
+        const result = await indexerClient.vault.getMegavaultHistoricalPnl(resolution);
+        return result;
       } catch (error) {
         log('useDydxClient/getMegavaultHistoricalPnl', error);
         return undefined;
@@ -116,8 +118,10 @@ const useDydxClientContext = () => {
   );
 
   const getMegavaultPositions = useCallback(async () => {
+    if (!indexerClient) return undefined;
     try {
-      return await indexerClient?.vault.getMegavaultPositions();
+      const result = await indexerClient.vault.getMegavaultPositions();
+      return result;
     } catch (error) {
       log('useDydxClient/getMegavaultPositions', error);
       return undefined;
@@ -125,8 +129,10 @@ const useDydxClientContext = () => {
   }, [indexerClient]);
 
   const getVaultsHistoricalPnl = useCallback(async () => {
+    if (!indexerClient) return undefined;
     try {
-      return await indexerClient?.vault.getVaultsHistoricalPnl();
+      const result = await indexerClient.vault.getVaultsHistoricalPnl();
+      return result;
     } catch (error) {
       log('useDydxClient/getVaultsHistoricalPnl', error);
       return undefined;
@@ -140,13 +146,15 @@ const useDydxClientContext = () => {
       recipientAddress: string,
       recipientSubaccountNumber: string
     ) => {
+      if (!indexerClient) return undefined;
       try {
-        return await indexerClient?.account.getTransfersBetween(
+        const result = await indexerClient.account.getTransfersBetween(
           sourceAddress,
           sourceSubaccountNumber,
           recipientAddress,
           recipientSubaccountNumber
         );
+        return result;
       } catch (error) {
         log('useDydxClient/getAllAccountTransfersBetween', error);
         return undefined;

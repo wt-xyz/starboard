@@ -4,16 +4,14 @@ import BigNumber from 'bignumber.js';
 import { erc20Abi, formatUnits } from 'viem';
 import { useBalance, useReadContracts } from 'wagmi';
 
-import { EvmAddress, SolAddress, WalletNetworkType } from '@/constants/wallets';
+import { EvmAddress, WalletNetworkType } from '@/constants/wallets';
 
-import { getSelectedDydxChainId } from '@/state/appSelectors';
 import { useAppSelector } from '@/state/appTypes';
 
 import { isNativeDenom } from '@/lib/assetUtils';
 import { MustBigNumber } from '@/lib/numbers';
 
 import { useAccounts } from './useAccounts';
-import { useEndpointsConfig } from './useEndpointsConfig';
 import { useEnvConfig } from './useEnvConfig';
 import { useTokenConfigs } from './useTokenConfigs';
 
@@ -40,25 +38,22 @@ export const useAccountBalance = ({
   usdcBalance: number;
   refetchQuery: (options?: RefetchOptions) => Promise<QueryObserverResult>;
 } => {
-  const { sourceAccount, dydxAddress } = useAccounts();
+  const { sourceAccount } = useAccounts();
 
   const { chainTokenAmount: nativeTokenCoinBalance, usdcAmount: usdcCoinBalance } = useAppSelector(
     BonsaiCore.account.balances.data
   );
 
-  const { chainTokenDenom, usdcDecimals } = useTokenConfigs();
+  const { chainTokenDenom } = useTokenConfigs();
   const evmChainId = Number(useEnvConfig('ethereumChainId'));
   const stakingBalances = BonsaiHooks.useStakingDelegations().data?.balances;
-  const selectedDydxChainId = useAppSelector(getSelectedDydxChainId);
 
-  const { validators } = useEndpointsConfig();
   const isSolanaChain = sourceAccount.chain === WalletNetworkType.Solana;
 
   const evmAddress =
     sourceAccount.chain === WalletNetworkType.Evm
       ? (sourceAccount.address as EvmAddress)
       : undefined;
-  const solAddress = isSolanaChain ? (sourceAccount.address as SolAddress) : undefined;
 
   const isEVMnativeToken = isNativeDenom(addressOrDenom);
 
@@ -115,8 +110,8 @@ export const useAccountBalance = ({
   const nativeStakingCoinBalanace = stakingBalances?.[chainTokenDenom];
   const nativeStakingBalance = MustBigNumber(nativeStakingCoinBalanace?.amount).toNumber();
 
-  let queryStatus = evmNative.status;
-  let isQueryFetching = evmNative.isFetching;
+  const queryStatus = evmNative.status;
+  const isQueryFetching = evmNative.isFetching;
 
   return {
     balance: balance?.toString(),

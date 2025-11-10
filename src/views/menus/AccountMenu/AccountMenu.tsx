@@ -23,7 +23,6 @@ import { useStatsigGateValue } from '@/hooks/useStatsig';
 import { useStringGetter } from '@/hooks/useStringGetter';
 import { useSubaccount } from '@/hooks/useSubaccount';
 import { useTokenConfigs } from '@/hooks/useTokenConfigs';
-import { useURLConfigs } from '@/hooks/useURLConfigs';
 
 import { DiscordIcon, GoogleIcon, TwitterIcon } from '@/icons';
 import { headerMixins } from '@/styles/headerMixins';
@@ -57,7 +56,6 @@ import { WalletActions } from './WalletActions';
 
 export const AccountMenu = () => {
   const stringGetter = useStringGetter();
-  const { mintscanBase } = useURLConfigs();
   const { isTablet } = useBreakpoints();
   const { complianceState } = useComplianceState();
   const affiliatesEnabled = useStatsigGateValue(StatsigFlags.ffEnableAffiliates);
@@ -66,9 +64,9 @@ export const AccountMenu = () => {
   const freeCollateral = useAppSelector(getSubaccountFreeCollateral);
   const isKeplr = useAppSelector(selectIsKeplrConnected);
 
-  const { nativeTokenBalance, usdcBalance } = useAccountBalance();
+  const { usdcBalance } = useAccountBalance();
 
-  const { usdcImage, usdcLabel, chainTokenImage, chainTokenLabel } = useTokenConfigs();
+  const { usdcImage, usdcLabel, chainTokenLabel } = useTokenConfigs();
   const theme = useAppSelector(getAppTheme);
 
   const { debugCompliance } = useEnvFeatures();
@@ -134,7 +132,7 @@ export const AccountMenu = () => {
           <div tw="flexColumn gap-1 px-1 pb-0.5 pt-1">
             <$AddressRow>
               <AssetIcon
-                logoUrl={'https://verified-assets.fuel.network/images/fuel.svg'}
+                logoUrl="https://verified-assets.fuel.network/images/fuel.svg"
                 symbol={chainTokenLabel}
                 tw="z-[2] [--asset-icon-size:1.75rem]"
               />
@@ -142,12 +140,12 @@ export const AccountMenu = () => {
                 {walletInfo && walletInfo.name !== WalletType.Keplr ? (
                   'Fuel Address'
                 ) : (
-                  <$label>"Fuel Address"</$label>
+                  <$label>Fuel Address</$label>
                 )}
                 <$Address>{truncateAddress(dydxAddress)}</$Address>
               </$Column>
               <$CopyButton buttonType="icon" value={address} shape={ButtonShape.Square} />
-              <WithTooltip tooltipString={'Fuel Block Explorer'}>
+              <WithTooltip tooltipString="Fuel Block Explorer">
                 <$IconButton
                   action={ButtonAction.Base}
                   href={`https://app.fuel.network/account/${address}/transactions`}
