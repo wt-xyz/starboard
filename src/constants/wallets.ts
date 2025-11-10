@@ -5,14 +5,12 @@ import { type onboarding } from 'starboard-client-js';
 import { STRING_KEYS } from '@/constants/localization';
 
 import {
+  BakoSafeIcon,
   CoinbaseIcon,
-  EmailIcon,
+  FueletIcon,
   FuelWalletIcon,
   GenericWalletIcon,
-  KeplrIcon,
-  MetaMaskIcon,
   OkxWalletIcon,
-  PhantomIcon,
   WalletConnectIcon,
 } from '@/icons';
 
@@ -64,6 +62,8 @@ export enum WalletType {
   Phantom = 'PHANTOM',
   MetaMask = 'METAMASK',
   FuelWallet = 'Fuel Wallet',
+  BakoSafe = 'Bako Safe',
+  Fuelet = 'Fuelet Wallet',
 }
 
 export enum ConnectorType {
@@ -104,7 +104,7 @@ export type WalletInfo =
     }
   | { connectorType: ConnectorType.Test; name: WalletType.TestWallet }
   | { connectorType: ConnectorType.DownloadWallet; name: string; downloadLink: string }
-  | { connectorType: ConnectorType.Fuel; name: WalletType.FuelWallet }
+  | { connectorType: ConnectorType.Fuel; name: WalletType.FuelWallet | WalletType.BakoSafe | WalletType.Fuelet }
   | { connectorType: ConnectorType.Coinbase; name: WalletType.CoinbaseWallet };
 
 type WalletConfig = {
@@ -119,50 +119,25 @@ export const wallets = {
     stringKey: STRING_KEYS.OTHER_WALLET,
     icon: GenericWalletIcon,
   },
-  [WalletType.CoinbaseWallet]: {
-    type: WalletType.CoinbaseWallet,
-    stringKey: STRING_KEYS.COINBASE_WALLET,
-    icon: CoinbaseIcon,
-  },
-  [WalletType.OkxWallet]: {
-    type: WalletType.OkxWallet,
-    stringKey: STRING_KEYS.OKX_WALLET,
-    icon: OkxWalletIcon,
-  },
-  [WalletType.Keplr]: {
-    type: WalletType.Keplr,
-    stringKey: STRING_KEYS.KEPLR,
-    icon: KeplrIcon,
-  },
-  [WalletType.TestWallet]: {
-    type: WalletType.TestWallet,
-    stringKey: STRING_KEYS.TEST_WALLET,
-    icon: GenericWalletIcon,
-  },
-  [WalletType.Privy]: {
-    type: WalletType.Privy,
-    stringKey: STRING_KEYS.EMAIL_OR_SOCIAL,
-    icon: EmailIcon,
-  },
-  [WalletType.Phantom]: {
-    type: WalletType.Phantom,
-    stringKey: STRING_KEYS.PHANTOM_SOL,
-    icon: PhantomIcon,
-  },
   [WalletType.WalletConnect2]: {
     type: WalletType.WalletConnect2,
     stringKey: STRING_KEYS.WALLET_CONNECT_2,
     icon: WalletConnectIcon,
   },
-  [WalletType.MetaMask]: {
-    type: WalletType.MetaMask,
-    stringKey: STRING_KEYS.METAMASK,
-    icon: MetaMaskIcon,
-  },
   [WalletType.FuelWallet]: {
     type: WalletType.FuelWallet,
     stringKey: STRING_KEYS.FUEL_WALLET,
     icon: FuelWalletIcon,
+  },
+  [WalletType.BakoSafe]: {
+    type: WalletType.BakoSafe,
+    stringKey: STRING_KEYS.BAKO_SAFE,
+    icon: BakoSafeIcon,
+  },
+  [WalletType.Fuelet]: {
+    type: WalletType.Fuelet,
+    stringKey: STRING_KEYS.FUELET_WALLET,
+    icon: FueletIcon,
   },
 } satisfies Record<WalletInfo['name'], WalletConfig>;
 

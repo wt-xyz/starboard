@@ -1,5 +1,7 @@
 {
   "FUEL_WALLET": "Fuel Wallet",
+  "BAKO_SAFE": "Bako Safe",
+  "FUELET_WALLET": "Fuelet Wallet",
   "COPY_FUEL_WALLET_ADDRESS": "Copy Wallet Address",
   "ONLY_SEND_ON_FUEL": "Only send assets on Fuel to this address"
 }

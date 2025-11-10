@@ -156,6 +156,8 @@ export { default as TwitterIcon } from './wallets/twitter.svg';
 export { default as WalletConnectIcon } from './wallets/walletconnect.svg';
 export { default as WebsiteIcon } from './website.svg';
 export { default as WhitepaperIcon } from './whitepaper.svg';
+export { default as BakoSafeIcon } from './wallets/bako-safe.svg';
+export { default as FueletIcon } from './wallets/fuelet.svg';
 
 // Logos
 // Commented out because of https://github.com/dydxprotocol/v4-web/pull/737
