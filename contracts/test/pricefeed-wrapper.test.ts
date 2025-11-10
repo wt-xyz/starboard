@@ -1,7 +1,7 @@
 import { BN, DateTime, WalletUnlocked } from "fuels"
 import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
-import { PricefeedWrapper, PricefeedWrapperFactory, StorkMock, StorkMockFactory } from "../../apps/indexer/src/types"
+import { PricefeedWrapper, PricefeedWrapperFactory, StorkMock, StorkMockFactory } from "../types"
 import { getNodeWallets, launchNode } from "./node"
 import { BTC_ASSET, call, ETH_ASSET, USDC_ASSET } from "./utils"
 

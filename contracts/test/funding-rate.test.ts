@@ -10,7 +10,7 @@ import {
     StorkMockFactory,
     VaultExpose,
     VaultExposeFactory,
-} from "../../apps/indexer/src/types"
+} from "../types"
 import { getNodeWallets, launchNode } from "./node"
 import {
     AddressIdentity,

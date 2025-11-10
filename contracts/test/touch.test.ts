@@ -11,7 +11,7 @@ import {
     TestnetTokenFactory,
     Vault,
     VaultFactory,
-} from "../../apps/indexer/src/types"
+} from "../types"
 import { getNodeWallets, launchNode } from "./node"
 import {
     AddressIdentity,

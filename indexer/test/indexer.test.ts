@@ -1,7 +1,7 @@
 import { WalletUnlocked } from "fuels"
 import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
 import { afterEach, beforeEach, describe, it } from "vitest"
-import { Fungible, FungibleFactory, PricefeedWrapper, PricefeedWrapperFactory, StorkMock, StorkMockFactory, Vault, VaultFactory } from "../../apps/indexer/src/types"
+import { Fungible, FungibleFactory, PricefeedWrapper, PricefeedWrapperFactory, StorkMock, StorkMockFactory, Vault, VaultFactory } from "../../contracts/types"
 import { getNodeWallets, launchNode } from "./node"
 import {
     AddressIdentity,
