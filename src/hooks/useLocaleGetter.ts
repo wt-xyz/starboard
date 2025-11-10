@@ -35,10 +35,20 @@ export function useLocaleGetter() {
     [store]
   );
 
+  const getLocaleString = useCallback(
+    (props: StringGetterProps) => {
+      const locale = getStringForLocaleDate(store.getState(), props);
+      if (!(typeof locale === 'string')) return `<LOCALE TYPE FOR "${props.key}" IS NOT STRING>`;
+      return locale;
+    },
+    [store]
+  );
+
   return useMemo(
     () => ({
       getLocale,
+      getLocaleString,
     }),
-    [getLocale]
+    [getLocale, getLocaleString]
   );
 }
