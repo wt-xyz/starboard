@@ -55,7 +55,7 @@ export type LocaleData = (typeof LOCALE_DATA)[SupportedLocales.EN] &
 export type StringGetterParams = Record<string, any>;
 
 export type StringGetterProps<T extends StringGetterParams = StringGetterParams> = {
-  key?: string;
+  key: string;
   params?: T;
   fallback?: string;
 };

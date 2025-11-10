@@ -1,6 +1,12 @@
 import { get } from 'lodash';
+import { createSelector } from 'reselect';
 
-import { LocaleData, StringGetterFunction, SupportedLocales } from '@/constants/localization';
+import {
+  LocaleData,
+  StringGetterFunction,
+  StringGetterProps,
+  SupportedLocales,
+} from '@/constants/localization';
 
 import formatString from '@/lib/formatString';
 
@@ -60,6 +66,26 @@ export const getStringGetterForLocaleData = (
     return '';
   };
 };
+
+export const getStringForLocaleDate = createSelector(
+  [
+    (_state, params: StringGetterProps) => params,
+    getSelectedLocaleData,
+    getEnLocaleData,
+    getIsLocaleLoaded,
+  ],
+  (params, localeData, enLocaleDate, isLocaleLoaded) => {
+    if (!isLocaleLoaded) return '';
+
+    const localeString = get(localeData, params.key);
+    if (localeString) return formatString(localeString, params.params);
+
+    const enString = get(enLocaleDate, params.key);
+    if (enString) return formatString(enString, params.params);
+
+    return params.fallback ? formatString(params.fallback, params.params) : '';
+  }
+);
 
 /**
  * @param state
