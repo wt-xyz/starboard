@@ -25,20 +25,21 @@ type AmountInputProps = {
 export const AmountInput: FC<AmountInputProps> = ({ label, disabled, maxAmount, receiptItems }) => {
   const { control } = useRequiredContext(VaultFormContext);
   const { field } = useController({ control, name: 'amountInUsdString' });
+  const isFilled = !!field.value;
 
   const handleAmountChange = (change: NumberFormatValues) => {
-    field.onChange(change.value);
+    if (change.floatValue) field.onChange(change.value);
   };
 
-  const handleMaxClick = (isActive: boolean) => {
-    if (!isActive) field.onChange(maxAmount);
-    else field.onChange('');
+  const handleMaxClick = () => {
+    if (isFilled) field.onChange('');
+    else field.onChange(maxAmount);
   };
 
   const MaxToggleButton = (
     <FormMaxInputToggleButton
       size={ButtonSize.XSmall}
-      isInputEmpty={field.value === ''}
+      isInputEmpty={!isFilled}
       isLoading={false}
       disabled={disabled}
       onPressedChange={handleMaxClick}
