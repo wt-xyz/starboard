@@ -603,12 +603,13 @@ export const VaultDepositWithdrawForm = ({
       <$FlexFill />
 
       <WithDetailsReceipt detailItems={inputFormConfig.receiptItems}>
-        {maybeConnectWalletButton ?? (
+        {/* TODO: Change it to ?? */}
+        {maybeConnectWalletButton && (
           <Button
             type={ButtonType.Submit}
             action={ButtonAction.Primary}
             state={{
-              isDisabled: hasInputErrors || shouldDisableFormBecauseWallet || isSubmitting,
+              // isDisabled: hasInputErrors || shouldDisableFormBecauseWallet || isSubmitting,
               isLoading: isSubmitting,
             }}
             slotLeft={

@@ -20,6 +20,7 @@ import { useAppDispatch } from '@/state/appTypes';
 import { openDialog } from '@/state/dialogs';
 
 import { VaultDepositWithdrawForm } from './VaultDepositWithdrawForm';
+import { VaultFundsForms } from './VaultFundsForm';
 import {
   VaultDescription,
   VaultHeader,
@@ -104,6 +105,9 @@ const VaultPage = () => {
           <$YourVaultDetailsCards />
           <$DepositFormContainer>
             <div tw="rounded-[0.7rem] bg-color-layer-3">
+              <p>The good form:</p>
+              <VaultFundsForms />
+              <p>The bad form:</p>
               <VaultDepositWithdrawForm />
             </div>
           </$DepositFormContainer>
