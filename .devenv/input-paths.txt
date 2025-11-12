@@ -1,0 +1,10 @@
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/.devenv/flake.json
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/.devenv.flake.nix
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/.env
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/apps/microvisor/cachix.nix
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/apps/microvisor/devenv.nix
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/apps/microvisor/languages.nix
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/apps/microvisor/scripts.nix
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/devenv.lock
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/devenv.nix
+/Users/mattiaslightstone/Documents/repos/charthouse/fuel/starboard/starboard/devenv.yaml
