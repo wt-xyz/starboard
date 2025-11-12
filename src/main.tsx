@@ -10,6 +10,7 @@ import { storeLifecycles } from './bonsai/storeLifecycles';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import './index.css';
 import { runFn } from './lib/do';
+import './lib/pipe';
 import { store } from './state/_store';
 
 const Router = import.meta.env.VITE_ROUTER_TYPE === 'hash' ? HashRouter : BrowserRouter;
