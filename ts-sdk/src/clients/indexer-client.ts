@@ -3,10 +3,8 @@ import AccountClient from './modules/account';
 import MarketsClient from './modules/markets';
 import UtilityClient from './modules/utility';
 import VaultClient from './modules/vault';
+import PositionsGraphQLClient from './modules/positions-graphql';
 
-/**
- * @description Client for Indexer
- */
 export class IndexerClient {
   public readonly config: IndexerConfig;
   readonly apiTimeout: number;
@@ -14,8 +12,9 @@ export class IndexerClient {
   readonly _account: AccountClient;
   readonly _utility: UtilityClient;
   readonly _vault: VaultClient;
+  readonly _positionsGraphql?: PositionsGraphQLClient;
 
-  constructor(config: IndexerConfig, apiTimeout?: number) {
+  constructor(config: IndexerConfig, apiTimeout?: number, graphqlEndpoint?: string) {
     this.config = config;
     this.apiTimeout = apiTimeout ?? DEFAULT_API_TIMEOUT;
 
@@ -23,39 +22,29 @@ export class IndexerClient {
     this._account = new AccountClient(config.restEndpoint, apiTimeout, config.proxy);
     this._utility = new UtilityClient(config.restEndpoint, apiTimeout, config.proxy);
     this._vault = new VaultClient(config.restEndpoint, apiTimeout, config.proxy);
+
+    if (graphqlEndpoint) {
+      this._positionsGraphql = new PositionsGraphQLClient(graphqlEndpoint, apiTimeout);
+    }
   }
 
-  /**
-   * @description Get the public module, used for interacting with public endpoints.
-   *
-   * @returns The public module
-   */
   get markets(): MarketsClient {
     return this._markets;
   }
 
-  /**
-   * @description Get the private module, used for interacting with private endpoints.
-   *
-   * @returns The private module
-   */
   get account(): AccountClient {
     return this._account;
   }
 
-  /**
-   * @description Get the utility module, used for interacting with non-market public endpoints.
-   */
   get utility(): UtilityClient {
     return this._utility;
   }
 
-  /**
-   * @description Get the vault module, used for interacting with vault endpoints.
-   *
-   * @returns The vault module
-   */
   get vault(): VaultClient {
     return this._vault;
+  }
+
+  get positionsGraphql(): PositionsGraphQLClient | undefined {
+    return this._positionsGraphql;
   }
 }
