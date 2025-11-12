@@ -9,6 +9,7 @@ import { DetailsItem } from '@/components/Details';
 import { DepositVaultFormProvider } from '../contexts/DepositVaultForm.provider';
 import { AmountInput } from './common/AmountInput';
 import { FreeCollateralDiff } from './common/FreeCollateralDiff';
+import { ValidationAlertMessages } from './common/ValidationAlertMessages';
 
 const RawDepositFundsForm: FC = () => {
   const { getLocaleString } = useLocaleGetter();
@@ -23,12 +24,15 @@ const RawDepositFundsForm: FC = () => {
   ];
 
   return (
-    <AmountInput
-      disabled={false}
-      label={getLocaleString({ key: STRING_KEYS.AMOUNT_TO_ADD })}
-      maxAmount="0"
-      receiptItems={inputReceiptItems}
-    />
+    <>
+      <AmountInput
+        disabled={false}
+        label={getLocaleString({ key: STRING_KEYS.AMOUNT_TO_ADD })}
+        maxAmount="0"
+        receiptItems={inputReceiptItems}
+      />
+      <ValidationAlertMessages />
+    </>
   );
 };
 

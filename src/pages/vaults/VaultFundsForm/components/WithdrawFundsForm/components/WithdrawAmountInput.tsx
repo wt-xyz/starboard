@@ -21,11 +21,8 @@ import { AmountInput } from '../../common/AmountInput';
 export const WithdrawAmountInput: FC = () => {
   const { getLocaleString } = useLocaleGetter();
   const { amount } = useComputedVaultFormData();
-  const currentAvailableUserBalance = useLoadedVaultAccount().data?.withdrawableUsdc;
-  const userAvailableBalance = useLoadedVaultAccount().data?.withdrawableUsdc;
-
-  const projectedAvailableUserBalance =
-    useVaultFundsValidationResult().summaryData.withdrawableVaultBalance;
+  const availableUserBalance = useLoadedVaultAccount().data?.withdrawableUsdc;
+  const projectedUserBalance = useVaultFundsValidationResult().summaryData.withdrawableVaultBalance;
 
   const inputReceiptItems: DetailsItem[] = [
     {
@@ -36,19 +33,17 @@ export const WithdrawAmountInput: FC = () => {
         <DiffOutput
           type={OutputType.Fiat}
           roundingMode={BigNumber.ROUND_FLOOR}
-          value={currentAvailableUserBalance}
-          newValue={projectedAvailableUserBalance}
-          sign={getNumberSign(
-            mapIfPresent(
-              projectedAvailableUserBalance,
-              currentAvailableUserBalance ?? 0.0,
-              (updated, cur) => updated - cur
-            )
-          )}
+          value={availableUserBalance}
+          newValue={projectedUserBalance}
+          sign={mapIfPresent(
+            projectedUserBalance,
+            availableUserBalance ?? 0.0,
+            (updated, cur) => updated - cur
+          )?.pipe(getNumberSign)}
           withDiff={
             MustBigNumber(amount).gt(0) &&
-            projectedAvailableUserBalance != null &&
-            projectedAvailableUserBalance !== currentAvailableUserBalance
+            projectedUserBalance != null &&
+            projectedUserBalance !== availableUserBalance
           }
         />
       ),
@@ -59,7 +54,7 @@ export const WithdrawAmountInput: FC = () => {
     <AmountInput
       disabled={false}
       label={getLocaleString({ key: STRING_KEYS.AMOUNT_TO_REMOVE })}
-      maxAmount={`${Math.floor(100 * (userAvailableBalance ?? 0)) / 100}`}
+      maxAmount={`${Math.floor(100 * (availableUserBalance ?? 0)) / 100}`}
       receiptItems={inputReceiptItems}
     />
   );
