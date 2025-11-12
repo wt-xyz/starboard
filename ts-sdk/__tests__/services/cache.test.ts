@@ -1,4 +1,5 @@
 import { LRUCache, Debouncer, CacheKeyGenerator } from '../../src/services/cache';
+import { vi } from 'vitest';
 
 describe('LRUCache', () => {
   let cache: LRUCache<string, string>;
@@ -103,7 +104,7 @@ describe('Debouncer', () => {
   });
 
   it('should debounce function calls', async () => {
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
     const debouncedFn = debouncer.debounce('test', mockFn, 100);
     
     debouncedFn('arg1');
@@ -119,7 +120,7 @@ describe('Debouncer', () => {
   });
 
   it('should cancel debounced calls', async () => {
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
     const debouncedFn = debouncer.debounce('test', mockFn, 100);
     
     debouncedFn('arg1');
@@ -131,8 +132,8 @@ describe('Debouncer', () => {
   });
 
   it('should cancel all debounced calls', async () => {
-    const mockFn1 = jest.fn();
-    const mockFn2 = jest.fn();
+    const mockFn1 = vi.fn();
+    const mockFn2 = vi.fn();
     
     const debouncedFn1 = debouncer.debounce('test1', mockFn1, 100);
     const debouncedFn2 = debouncer.debounce('test2', mockFn2, 100);
