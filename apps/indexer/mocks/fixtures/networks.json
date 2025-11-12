@@ -1,0 +1,32 @@
+{
+  "testnet": {
+    "id": "testnet",
+    "name": "Fuel Testnet",
+    "chainId": "0",
+    "rpcUrl": "https://testnet.fuel.network/v1/graphql",
+    "indexerUrl": "http://localhost:4000",
+    "explorerUrl": "https://app-testnet.fuel.network",
+    "contracts": {
+      "clearingHouse": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "vault": "0x0000000000000000000000000000000000000000000000000000000000000002",
+      "oracle": "0x0000000000000000000000000000000000000000000000000000000000000003",
+      "rlpToken": "0x0000000000000000000000000000000000000000000000000000000000000004"
+    },
+    "faucetUrl": "https://faucet-testnet.fuel.network"
+  },
+  "mainnet": {
+    "id": "mainnet",
+    "name": "Fuel Mainnet",
+    "chainId": "1",
+    "rpcUrl": "https://mainnet.fuel.network/v1/graphql",
+    "indexerUrl": "https://indexer.starboard.finance",
+    "explorerUrl": "https://app.fuel.network",
+    "contracts": {
+      "clearingHouse": "0x1000000000000000000000000000000000000000000000000000000000000001",
+      "vault": "0x1000000000000000000000000000000000000000000000000000000000000002",
+      "oracle": "0x1000000000000000000000000000000000000000000000000000000000000003",
+      "rlpToken": "0x1000000000000000000000000000000000000000000000000000000000000004"
+    }
+  }
+}
+

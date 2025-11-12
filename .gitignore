@@ -50,3 +50,8 @@ public/._tradingview
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+# TypeScript build artifacts in src
+src/**/*.js
+src/**/*.js.map
+!src/**/*.config.js

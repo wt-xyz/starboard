@@ -1,0 +1,119 @@
+{
+  "testnet": [
+    {
+      "ticker": "ETH-USD",
+      "clobPairId": "1",
+      "basePrice": 3200.42,
+      "priceVariance": 120.33,
+      "baseVolume": 250000000000,
+      "minLeverage": 2,
+      "maxLeverage": 20,
+      "makerFee": "0.0002",
+      "takerFee": "0.0005",
+      "minPositionSize": "10",
+      "maxPositionSize": "1000000",
+      "status": "ACTIVE"
+    },
+    {
+      "ticker": "BTC-USD",
+      "clobPairId": "2",
+      "basePrice": 62050.12,
+      "priceVariance": 980.45,
+      "baseVolume": 480000000000,
+      "minLeverage": 2,
+      "maxLeverage": 20,
+      "makerFee": "0.0002",
+      "takerFee": "0.0005",
+      "minPositionSize": "10",
+      "maxPositionSize": "1000000",
+      "status": "ACTIVE"
+    },
+    {
+      "ticker": "FUEL-USD",
+      "clobPairId": "3",
+      "basePrice": 0.089,
+      "priceVariance": 0.012,
+      "baseVolume": 45000000000,
+      "minLeverage": 2,
+      "maxLeverage": 10,
+      "makerFee": "0.0002",
+      "takerFee": "0.0005",
+      "minPositionSize": "10",
+      "maxPositionSize": "500000",
+      "status": "ACTIVE"
+    },
+    {
+      "ticker": "stFUEL-USD",
+      "clobPairId": "4",
+      "basePrice": 0.095,
+      "priceVariance": 0.008,
+      "baseVolume": 25000000000,
+      "minLeverage": 2,
+      "maxLeverage": 10,
+      "makerFee": "0.0002",
+      "takerFee": "0.0005",
+      "minPositionSize": "10",
+      "maxPositionSize": "500000",
+      "status": "ACTIVE"
+    }
+  ],
+  "mainnet": [
+    {
+      "ticker": "ETH-USD",
+      "clobPairId": "1",
+      "basePrice": 3250.75,
+      "priceVariance": 150.22,
+      "baseVolume": 850000000000,
+      "minLeverage": 2,
+      "maxLeverage": 20,
+      "makerFee": "0.0002",
+      "takerFee": "0.0005",
+      "minPositionSize": "10",
+      "maxPositionSize": "1000000",
+      "status": "ACTIVE"
+    },
+    {
+      "ticker": "BTC-USD",
+      "clobPairId": "2",
+      "basePrice": 63500.88,
+      "priceVariance": 1200.55,
+      "baseVolume": 1200000000000,
+      "minLeverage": 2,
+      "maxLeverage": 20,
+      "makerFee": "0.0002",
+      "takerFee": "0.0005",
+      "minPositionSize": "10",
+      "maxPositionSize": "1000000",
+      "status": "ACTIVE"
+    },
+    {
+      "ticker": "FUEL-USD",
+      "clobPairId": "3",
+      "basePrice": 0.092,
+      "priceVariance": 0.015,
+      "baseVolume": 120000000000,
+      "minLeverage": 2,
+      "maxLeverage": 10,
+      "makerFee": "0.0002",
+      "takerFee": "0.0005",
+      "minPositionSize": "10",
+      "maxPositionSize": "500000",
+      "status": "ACTIVE"
+    },
+    {
+      "ticker": "stFUEL-USD",
+      "clobPairId": "4",
+      "basePrice": 0.098,
+      "priceVariance": 0.010,
+      "baseVolume": 60000000000,
+      "minLeverage": 2,
+      "maxLeverage": 10,
+      "makerFee": "0.0002",
+      "takerFee": "0.0005",
+      "minPositionSize": "10",
+      "maxPositionSize": "500000",
+      "status": "ACTIVE"
+    }
+  ]
+}
+

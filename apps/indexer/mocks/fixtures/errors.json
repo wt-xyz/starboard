@@ -1,0 +1,151 @@
+{
+  "validationErrors": {
+    "INSUFFICIENT_BALANCE": {
+      "code": "INSUFFICIENT_BALANCE",
+      "message": "Insufficient balance to complete this transaction",
+      "httpStatus": 400,
+      "suggestedAction": {
+        "label": "Deposit USDC",
+        "action": "navigate_deposit"
+      }
+    },
+    "INVALID_LEVERAGE": {
+      "code": "INVALID_LEVERAGE",
+      "message": "Leverage must be between {min}x and {max}x for this market",
+      "httpStatus": 400,
+      "suggestedAction": {
+        "label": "Adjust Leverage",
+        "action": "focus_leverage_input"
+      }
+    },
+    "POSITION_TOO_SMALL": {
+      "code": "POSITION_TOO_SMALL",
+      "message": "Position size must be at least $10",
+      "httpStatus": 400,
+      "suggestedAction": {
+        "label": "Increase Size",
+        "action": "focus_size_input"
+      }
+    },
+    "POSITION_TOO_LARGE": {
+      "code": "POSITION_TOO_LARGE",
+      "message": "Position size exceeds maximum of ${max}",
+      "httpStatus": 400
+    },
+    "WOULD_BE_LIQUIDATED": {
+      "code": "WOULD_BE_LIQUIDATED",
+      "message": "This position would be immediately liquidated",
+      "httpStatus": 400,
+      "suggestedAction": {
+        "label": "Reduce Size or Add Collateral",
+        "action": "focus_size_input"
+      }
+    }
+  },
+  "networkErrors": {
+    "RPC_TIMEOUT": {
+      "code": "RPC_TIMEOUT",
+      "message": "Connection to Fuel network timed out",
+      "httpStatus": 504,
+      "suggestedAction": {
+        "label": "Retry",
+        "action": "retry"
+      }
+    },
+    "CONNECTION_LOST": {
+      "code": "CONNECTION_LOST",
+      "message": "Lost connection to the network",
+      "httpStatus": 503,
+      "suggestedAction": {
+        "label": "Reconnect",
+        "action": "reconnect"
+      }
+    },
+    "GAS_ESTIMATION_FAILED": {
+      "code": "GAS_ESTIMATION_FAILED",
+      "message": "Unable to estimate gas for this transaction",
+      "httpStatus": 500
+    }
+  },
+  "contractErrors": {
+    "SLIPPAGE_EXCEEDED": {
+      "code": "SLIPPAGE_EXCEEDED",
+      "message": "Price moved beyond acceptable slippage",
+      "httpStatus": 400,
+      "suggestedAction": {
+        "label": "Increase Slippage Tolerance",
+        "action": "open_settings"
+      }
+    },
+    "CONTRACT_PAUSED": {
+      "code": "CONTRACT_PAUSED",
+      "message": "Trading is temporarily paused for maintenance",
+      "httpStatus": 503
+    },
+    "MARKET_CLOSED": {
+      "code": "MARKET_CLOSED",
+      "message": "This market is currently closed",
+      "httpStatus": 400
+    },
+    "INSUFFICIENT_LIQUIDITY": {
+      "code": "INSUFFICIENT_LIQUIDITY",
+      "message": "Insufficient liquidity to execute this order",
+      "httpStatus": 400,
+      "suggestedAction": {
+        "label": "Reduce Size",
+        "action": "focus_size_input"
+      }
+    }
+  },
+  "walletErrors": {
+    "USER_REJECTED": {
+      "code": "USER_REJECTED",
+      "message": "Transaction was rejected",
+      "httpStatus": 400
+    },
+    "WALLET_LOCKED": {
+      "code": "WALLET_LOCKED",
+      "message": "Please unlock your wallet",
+      "httpStatus": 401,
+      "suggestedAction": {
+        "label": "Unlock Wallet",
+        "action": "prompt_unlock"
+      }
+    },
+    "WRONG_NETWORK": {
+      "code": "WRONG_NETWORK",
+      "message": "Please switch to {network} network",
+      "httpStatus": 400,
+      "suggestedAction": {
+        "label": "Switch Network",
+        "action": "switch_network"
+      }
+    },
+    "WALLET_NOT_CONNECTED": {
+      "code": "WALLET_NOT_CONNECTED",
+      "message": "Please connect your wallet",
+      "httpStatus": 401,
+      "suggestedAction": {
+        "label": "Connect Wallet",
+        "action": "open_wallet_modal"
+      }
+    }
+  },
+  "triggers": {
+    "addressPatterns": {
+      "err": "UNKNOWN_ERROR",
+      "gas": "GAS_ESTIMATION_FAILED",
+      "rej": "USER_REJECTED",
+      "lck": "WALLET_LOCKED",
+      "net": "WRONG_NETWORK",
+      "bal": "INSUFFICIENT_BALANCE",
+      "liq": "INSUFFICIENT_LIQUIDITY",
+      "slp": "SLIPPAGE_EXCEEDED"
+    },
+    "amountTriggers": {
+      "greaterThan999999": "POSITION_TOO_LARGE",
+      "lessThan10": "POSITION_TOO_SMALL"
+    }
+  }
+}
+
