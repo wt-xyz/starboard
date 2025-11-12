@@ -9,7 +9,13 @@ Array.prototype.pipe = pipe;
 String.prototype.pipe = pipe;
 Number.prototype.pipe = pipe;
 Boolean.prototype.pipe = pipe;
-Object.prototype.pipe = pipe;
+
+Object.defineProperty(Object.prototype, 'pipe', {
+  value: pipe,
+  writable: true,
+  enumerable: false,
+  configurable: true,
+});
 
 declare global {
   interface Array<T> {
