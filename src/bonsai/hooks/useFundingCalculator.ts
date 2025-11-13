@@ -19,13 +19,14 @@ import {
   type FundingProjections,
   type FundingRateInfo,
 } from '../calculators/fundingCalculations';
-import { BonsaiCore, BonsaiHelpers } from '../ontology';
+import { selectParentSubaccountOpenPositions } from '../selectors/account';
+import { selectAllMarketSummaries, selectCurrentMarketInfo } from '../selectors/summary';
 import type { MarketInfo, SubaccountPosition } from '../types/summaryTypes';
 
 export function useFundingRateInfo(
   position: SubaccountPosition | undefined
 ): FundingRateInfo | undefined {
-  const markets = useAppSelector(BonsaiCore.markets.markets.data);
+  const markets = useAppSelector(selectAllMarketSummaries);
 
   return useMemo(() => {
     if (!position || !markets) return undefined;
@@ -38,7 +39,7 @@ export function useFundingRateInfo(
 export function useFundingCosts(
   position: SubaccountPosition | undefined
 ): FundingCostCalculation | undefined {
-  const markets = useAppSelector(BonsaiCore.markets.markets.data);
+  const markets = useAppSelector(selectAllMarketSummaries);
 
   return useMemo(() => {
     if (!position || !markets) return undefined;
@@ -51,7 +52,7 @@ export function useFundingCosts(
 export function useFundingProjections(
   position: SubaccountPosition | undefined
 ): FundingProjections | undefined {
-  const markets = useAppSelector(BonsaiCore.markets.markets.data);
+  const markets = useAppSelector(selectAllMarketSummaries);
 
   return useMemo(() => {
     if (!position || !markets) return undefined;
@@ -64,7 +65,7 @@ export function useFundingProjections(
 export function useBreakEvenWithFunding(
   position: SubaccountPosition | undefined
 ): BreakEvenWithFunding | undefined {
-  const markets = useAppSelector(BonsaiCore.markets.markets.data);
+  const markets = useAppSelector(selectAllMarketSummaries);
 
   return useMemo(() => {
     if (!position || !markets) return undefined;
@@ -77,7 +78,7 @@ export function useBreakEvenWithFunding(
 export function useCompleteFundingAnalysis(
   position: SubaccountPosition | undefined
 ): CompleteFundingAnalysis | undefined {
-  const markets = useAppSelector(BonsaiCore.markets.markets.data);
+  const markets = useAppSelector(selectAllMarketSummaries);
 
   return useMemo(() => {
     if (!position || !markets) return undefined;
@@ -88,8 +89,8 @@ export function useCompleteFundingAnalysis(
 }
 
 export function useAllPositionsFundingAnalysis(): Map<string, CompleteFundingAnalysis> {
-  const positions = useAppSelector(BonsaiCore.account.parentSubaccountPositions.data);
-  const markets = useAppSelector(BonsaiCore.markets.markets.data);
+  const positions = useAppSelector(selectParentSubaccountOpenPositions);
+  const markets = useAppSelector(selectAllMarketSummaries);
 
   return useMemo(() => {
     const analysisMap = new Map<string, CompleteFundingAnalysis>();
@@ -112,7 +113,7 @@ export function useCurrentMarketFundingRate(): {
   fundingRatePer8Hours: number | undefined;
   fundingRatePerDay: number | undefined;
 } {
-  const market = useAppSelector(BonsaiHelpers.currentMarket.marketInfo);
+  const market = useAppSelector(selectCurrentMarketInfo);
 
   return useMemo(() => {
     const fundingRatePerHour =
@@ -202,9 +203,9 @@ export function useAggregateFundingInfo(): {
       totalDailyFundingCost += dailyCost;
 
       if (analysis.costs.direction === 'PAY') {
-        totalPositionsPaying++;
+        totalPositionsPaying += 1;
       } else if (analysis.costs.direction === 'RECEIVE') {
-        totalPositionsReceiving++;
+        totalPositionsReceiving += 1;
       }
 
       if (analysis.rateInfo.isExtreme) {
@@ -212,7 +213,7 @@ export function useAggregateFundingInfo(): {
       }
 
       if (analysis.warnings.length > 0) {
-        positionsWithWarnings++;
+        positionsWithWarnings += 1;
       }
     });
 
