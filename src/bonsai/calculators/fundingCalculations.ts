@@ -95,9 +95,8 @@ export function getFundingRateInfo(
   market: MarketInfo | undefined,
   positionSide: IndexerPositionSide
 ): FundingRateInfo {
-  const fundingRate = market?.nextFundingRate != null 
-    ? new BigNumber(market.nextFundingRate)
-    : BIG_NUMBERS.ZERO;
+  const fundingRate =
+    market?.nextFundingRate != null ? new BigNumber(market.nextFundingRate) : BIG_NUMBERS.ZERO;
 
   return {
     rate: fundingRate,
@@ -124,9 +123,8 @@ export function calculateFundingCosts(
   position: SubaccountPosition,
   market: MarketInfo | undefined
 ): FundingCostCalculation {
-  const fundingRate = market?.nextFundingRate != null
-    ? new BigNumber(market.nextFundingRate)
-    : BIG_NUMBERS.ZERO;
+  const fundingRate =
+    market?.nextFundingRate != null ? new BigNumber(market.nextFundingRate) : BIG_NUMBERS.ZERO;
 
   const positionNotional = position.notional;
   const direction = getFundingDirection(fundingRate, position.side);
@@ -153,9 +151,8 @@ export function calculateFundingProjections(
   position: SubaccountPosition,
   market: MarketInfo | undefined
 ): FundingProjections {
-  const fundingRate = market?.nextFundingRate != null
-    ? new BigNumber(market.nextFundingRate)
-    : BIG_NUMBERS.ZERO;
+  const fundingRate =
+    market?.nextFundingRate != null ? new BigNumber(market.nextFundingRate) : BIG_NUMBERS.ZERO;
 
   const positionNotional = position.notional;
   const direction = getFundingDirection(fundingRate, position.side);
@@ -197,9 +194,8 @@ export function calculateBreakEvenWithFunding(
 ): BreakEvenWithFunding {
   const entryPrice = position.baseEntryPrice;
   const positionSize = position.unsignedSize;
-  const fundingRate = market?.nextFundingRate != null
-    ? new BigNumber(market.nextFundingRate)
-    : BIG_NUMBERS.ZERO;
+  const fundingRate =
+    market?.nextFundingRate != null ? new BigNumber(market.nextFundingRate) : BIG_NUMBERS.ZERO;
 
   const isLong = position.side === IndexerPositionSide.LONG;
 
@@ -290,7 +286,7 @@ export function calculateFundingCostSafe(
 ): { cost: BigNumber; overflow: boolean } {
   try {
     const cost = calculateFundingCost(positionSize, fundingRatePerHour, hours);
-    
+
     if (!cost.isFinite() || (maxCost && cost.abs().gt(maxCost))) {
       return {
         cost: maxCost ?? positionSize,
@@ -340,16 +336,13 @@ export function calculateTradeFundingCost(
   direction: FundingDirection;
   costPercentage: BigNumber;
 } {
-  const fundingRate = market?.nextFundingRate != null
-    ? new BigNumber(market.nextFundingRate)
-    : BIG_NUMBERS.ZERO;
+  const fundingRate =
+    market?.nextFundingRate != null ? new BigNumber(market.nextFundingRate) : BIG_NUMBERS.ZERO;
 
   const notional = size.times(price);
   const cost = calculateFundingCost(notional, fundingRate, hours);
   const direction = getFundingDirection(fundingRate, side);
-  const costPercentage = notional.isZero() 
-    ? BIG_NUMBERS.ZERO 
-    : cost.abs().div(notional).times(100);
+  const costPercentage = notional.isZero() ? BIG_NUMBERS.ZERO : cost.abs().div(notional).times(100);
 
   return {
     cost,
@@ -382,9 +375,8 @@ export function calculateFundingCostRange(
   pessimistic: BigNumber;
   average: BigNumber;
 } {
-  const currentRate = market?.nextFundingRate != null
-    ? new BigNumber(market.nextFundingRate)
-    : BIG_NUMBERS.ZERO;
+  const currentRate =
+    market?.nextFundingRate != null ? new BigNumber(market.nextFundingRate) : BIG_NUMBERS.ZERO;
 
   const currentCost = calculateFundingCost(position.notional, currentRate, 24);
 
@@ -399,11 +391,13 @@ export function calculateFundingCostRange(
 
   const rates = historicalRates.map((r) => new BigNumber(r.rate));
   const avgRate = calculateAverageFundingRate(historicalRates);
-  
-  const variance = rates.reduce((acc, rate) => {
-    return acc.plus(rate.minus(avgRate).pow(2));
-  }, BIG_NUMBERS.ZERO).div(rates.length);
-  
+
+  const variance = rates
+    .reduce((acc, rate) => {
+      return acc.plus(rate.minus(avgRate).pow(2));
+    }, BIG_NUMBERS.ZERO)
+    .div(rates.length);
+
   const stdDev = variance.sqrt();
 
   const optimisticRate = avgRate.minus(stdDev);
@@ -416,4 +410,3 @@ export function calculateFundingCostRange(
     average: calculateFundingCost(position.notional, avgRate, 24),
   };
 }
-

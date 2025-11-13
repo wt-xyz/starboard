@@ -1,5 +1,5 @@
 import { Provider, Wallet } from "fuels"
-import { Vault as VaultContract } from "starboard-indexer/src/types/Vault"
+import { Vault as VaultContract } from "../types/Vault"
 import { call, getArgs } from "./utils"
 import { deployTestnetToken } from "./deploy-testnet-token"
 import { deployStarboard } from "./deploy-starboard"
