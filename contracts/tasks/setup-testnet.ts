@@ -1,5 +1,5 @@
 import { Provider, Wallet } from "fuels"
-import { Vault as VaultContract } from "../types/Vault"
+import { Vault as VaultContract } from "starboard-indexer/src/types/Vault"
 import { call, getArgs } from "./utils"
 import { deployTestnetToken } from "./deploy-testnet-token"
 import { deployStarboard } from "./deploy-starboard"
@@ -12,13 +12,15 @@ if (require.main === module) {
     // it may be because multiple providers and wallets are instantiated within the same process
     // with a single provider/wallet scripts this is not observed
     // process..exit() enforces an exit
-    setupTestnet(getArgs(["url", "privK", "storkContractAddress"])).then(() => {
-        process.exit(0)
-    }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-        process.exit(1)
-    })
+    setupTestnet(getArgs(["url", "privK", "storkContractAddress"]))
+        .then(() => {
+            process.exit(0)
+        })
+        .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error)
+            process.exit(1)
+        })
 }
 
 export async function setupTestnet(taskArgs: Record<string, string>) {
