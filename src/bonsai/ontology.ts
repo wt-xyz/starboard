@@ -14,6 +14,7 @@ import { getCurrentMarketId } from '@/state/currentMarketSelectors';
 
 import { RecordValueType } from '@/lib/typeUtils';
 
+import { HistoricalFundingObject } from './calculators/funding';
 import {
   AggregatedFundingData,
   FundingPaymentProcessed,
@@ -21,7 +22,6 @@ import {
   MarketFundingAggregate,
   TimePeriod,
 } from './calculators/fundingDataProcessing';
-import { HistoricalFundingObject } from './calculators/funding';
 import { AdjustIsolatedMarginFormFns } from './forms/adjustIsolatedMargin';
 import { TradeFormFns } from './forms/trade/trade';
 import { TransferFormFns } from './forms/transfers';
@@ -454,7 +454,7 @@ interface BonsaiHooksShape {
   useUnbondingDelegations: () => Loadable<UnbondingDelegation[]>;
   useStakingDelegations: () => Loadable<StakingDelegationsResult>;
   useFundingPayments: () => Loadable<IndexerFundingPaymentResponseObject[]>;
-  
+
   useProcessedFundingPayments: typeof useProcessedFundingPayments;
   useFundingStats: typeof useFundingStats;
   useFundingByPeriod: typeof useFundingByPeriod;
@@ -487,7 +487,7 @@ export const BonsaiHooks: BonsaiHooksShape = {
   useTotalTradingRewards,
   useUnbondingDelegations,
   useStakingDelegations,
-  
+
   useProcessedFundingPayments,
   useFundingStats,
   useFundingByPeriod,

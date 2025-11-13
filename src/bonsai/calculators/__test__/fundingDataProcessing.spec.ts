@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js';
 import { describe, expect, it } from 'vitest';
 
-import { IndexerFundingPaymentResponseObject, IndexerPositionSide } from '@/types/indexer/indexerApiGen';
+import {
+  IndexerFundingPaymentResponseObject,
+  IndexerPositionSide,
+} from '@/types/indexer/indexerApiGen';
 
 import { BIG_NUMBERS } from '@/lib/numbers';
 
@@ -55,7 +58,13 @@ describe('fundingDataProcessing - Core Functions', () => {
     });
 
     it('should handle positive payments', () => {
-      const raw = createMockPayment('ETH', '50', '-0.0001', '2024-01-01T00:00:00.000Z', IndexerPositionSide.SHORT);
+      const raw = createMockPayment(
+        'ETH',
+        '50',
+        '-0.0001',
+        '2024-01-01T00:00:00.000Z',
+        IndexerPositionSide.SHORT
+      );
       const processed = processFundingPayment(raw);
 
       expect(processed.payment.toNumber()).toBe(50);
@@ -119,9 +128,21 @@ describe('fundingDataProcessing - Aggregation', () => {
   describe('aggregateFundingByPeriod', () => {
     it('should aggregate payments correctly', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0001', '2024-01-01T13:00:00.000Z')),
-        processFundingPayment(createMockPayment('ETH', '75', '-0.0001', '2024-01-01T14:00:00.000Z', IndexerPositionSide.SHORT)),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0001', '2024-01-01T13:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment(
+            'ETH',
+            '75',
+            '-0.0001',
+            '2024-01-01T14:00:00.000Z',
+            IndexerPositionSide.SHORT
+          )
+        ),
       ];
 
       const startDate = new Date('2024-01-01T00:00:00.000Z');
@@ -141,8 +162,12 @@ describe('fundingDataProcessing - Aggregation', () => {
 
     it('should calculate average rate correctly', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0002', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0002', '2024-01-01T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('ETH', '75', '0.0003', '2024-01-01T14:00:00.000Z')),
       ];
 
@@ -156,9 +181,15 @@ describe('fundingDataProcessing - Aggregation', () => {
 
     it('should filter payments by date range', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0001', '2024-01-05T13:00:00.000Z')),
-        processFundingPayment(createMockPayment('ETH', '75', '-0.0001', '2024-01-10T14:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0001', '2024-01-05T13:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('ETH', '75', '-0.0001', '2024-01-10T14:00:00.000Z')
+        ),
       ];
 
       const startDate = new Date('2024-01-02T00:00:00.000Z');
@@ -174,16 +205,22 @@ describe('fundingDataProcessing - Aggregation', () => {
   describe('aggregateFundingByMarket', () => {
     it('should group payments by market', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0002', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0002', '2024-01-01T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('ETH', '75', '0.0003', '2024-01-01T14:00:00.000Z')),
-        processFundingPayment(createMockPayment('ETH', '-25', '0.0001', '2024-01-01T15:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('ETH', '-25', '0.0001', '2024-01-01T15:00:00.000Z')
+        ),
       ];
 
       const result = aggregateFundingByMarket(payments);
 
       expect(result.size).toBe(2);
-      
+
       const btcAggregate = result.get('BTC-USD');
       expect(btcAggregate).toBeDefined();
       expect(btcAggregate!.totalPaid.toNumber()).toBe(150);
@@ -201,8 +238,12 @@ describe('fundingDataProcessing - Aggregation', () => {
 
     it('should calculate average rate per market', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0003', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0003', '2024-01-01T13:00:00.000Z')
+        ),
       ];
 
       const result = aggregateFundingByMarket(payments);
@@ -215,8 +256,12 @@ describe('fundingDataProcessing - Aggregation', () => {
   describe('createFundingTimeSeries', () => {
     it('should create time series with cumulative values', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0001', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0001', '2024-01-01T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('ETH', '75', '0.0001', '2024-01-01T14:00:00.000Z')),
       ];
 
@@ -225,18 +270,22 @@ describe('fundingDataProcessing - Aggregation', () => {
       expect(result).toHaveLength(3);
       expect(result[0].cumulativeNet.toNumber()).toBe(-100);
       expect(result[0].payment.toNumber()).toBe(-100);
-      
+
       expect(result[1].cumulativeNet.toNumber()).toBe(-150);
       expect(result[1].payment.toNumber()).toBe(-50);
-      
+
       expect(result[2].cumulativeNet.toNumber()).toBe(-75);
       expect(result[2].payment.toNumber()).toBe(75);
     });
 
     it('should sort payments by timestamp', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0001', '2024-01-01T14:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0001', '2024-01-01T14:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('ETH', '75', '0.0001', '2024-01-01T13:00:00.000Z')),
       ];
 
@@ -253,8 +302,12 @@ describe('fundingDataProcessing - Filters', () => {
   describe('filterPaymentsByMarket', () => {
     it('should filter payments by market ID', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('ETH', '-50', '0.0001', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('ETH', '-50', '0.0001', '2024-01-01T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('BTC', '75', '0.0001', '2024-01-01T14:00:00.000Z')),
       ];
 
@@ -269,8 +322,12 @@ describe('fundingDataProcessing - Filters', () => {
   describe('filterPaymentsByDateRange', () => {
     it('should filter payments within date range', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('ETH', '-50', '0.0001', '2024-01-02T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('ETH', '-50', '0.0001', '2024-01-02T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('BTC', '75', '0.0001', '2024-01-03T14:00:00.000Z')),
       ];
 
@@ -289,8 +346,12 @@ describe('fundingDataProcessing - Statistics', () => {
   describe('calculatePaymentDistribution', () => {
     it('should calculate distribution correctly', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0001', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0001', '2024-01-01T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('ETH', '75', '0.0001', '2024-01-01T14:00:00.000Z')),
         processFundingPayment(createMockPayment('ETH', '25', '0.0001', '2024-01-01T15:00:00.000Z')),
       ];
@@ -310,8 +371,12 @@ describe('fundingDataProcessing - Statistics', () => {
   describe('getFundingRateStats', () => {
     it('should calculate rate statistics', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0003', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0003', '2024-01-01T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('ETH', '75', '0.0002', '2024-01-01T14:00:00.000Z')),
         processFundingPayment(createMockPayment('ETH', '25', '0.0004', '2024-01-01T15:00:00.000Z')),
       ];
@@ -337,8 +402,12 @@ describe('fundingDataProcessing - Statistics', () => {
   describe('calculateRollingAverage', () => {
     it('should calculate rolling average correctly', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-50', '0.0002', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-50', '0.0002', '2024-01-01T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('ETH', '75', '0.0003', '2024-01-01T14:00:00.000Z')),
         processFundingPayment(createMockPayment('ETH', '25', '0.0004', '2024-01-01T15:00:00.000Z')),
       ];
@@ -348,13 +417,15 @@ describe('fundingDataProcessing - Statistics', () => {
       expect(result).toHaveLength(3);
       expect(result[0].averageRate.toNumber()).toBeCloseTo(0.00015, 6);
       expect(result[0].averagePayment.toNumber()).toBeCloseTo(-75, 6);
-      
+
       expect(result[1].averageRate.toNumber()).toBeCloseTo(0.00025, 6);
     });
 
     it('should handle window size larger than array', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
       ];
 
       const result = calculateRollingAverage(payments, 3);
@@ -366,10 +437,16 @@ describe('fundingDataProcessing - Statistics', () => {
   describe('findLargestPayments', () => {
     it('should find largest payments by absolute value', () => {
       const payments = [
-        processFundingPayment(createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')),
-        processFundingPayment(createMockPayment('BTC', '-250', '0.0002', '2024-01-01T13:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('BTC', '-100', '0.0001', '2024-01-01T12:00:00.000Z')
+        ),
+        processFundingPayment(
+          createMockPayment('BTC', '-250', '0.0002', '2024-01-01T13:00:00.000Z')
+        ),
         processFundingPayment(createMockPayment('ETH', '75', '0.0003', '2024-01-01T14:00:00.000Z')),
-        processFundingPayment(createMockPayment('ETH', '300', '0.0004', '2024-01-01T15:00:00.000Z')),
+        processFundingPayment(
+          createMockPayment('ETH', '300', '0.0004', '2024-01-01T15:00:00.000Z')
+        ),
       ];
 
       const result = findLargestPayments(payments, 2);
@@ -402,7 +479,7 @@ describe('fundingDataProcessing - Complete Stats', () => {
       expect(result.byMarket.has('ETH-USD')).toBe(true);
 
       expect(result.timeSeries).toHaveLength(3);
-      
+
       expect(result.periodAggregates.size).toBeGreaterThan(0);
       expect(result.periodAggregates.has('1d')).toBe(true);
       expect(result.periodAggregates.has('7d')).toBe(true);
@@ -410,4 +487,3 @@ describe('fundingDataProcessing - Complete Stats', () => {
     });
   });
 });
-

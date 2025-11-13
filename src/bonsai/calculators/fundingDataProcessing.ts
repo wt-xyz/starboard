@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js';
 import { groupBy, orderBy, sumBy } from 'lodash';
 
-import { IndexerFundingPaymentResponseObject, IndexerPositionSide } from '@/types/indexer/indexerApiGen';
+import {
+  IndexerFundingPaymentResponseObject,
+  IndexerPositionSide,
+} from '@/types/indexer/indexerApiGen';
 
 import { BIG_NUMBERS, MustBigNumber } from '@/lib/numbers';
 
@@ -60,7 +63,7 @@ export function processFundingPayment(
   payment: IndexerFundingPaymentResponseObject
 ): FundingPaymentProcessed {
   const createdAt = new Date(payment.createdAt);
-  
+
   return {
     createdAt,
     timestamp: createdAt.getTime(),
@@ -92,14 +95,13 @@ export function aggregateFundingByPeriod(
     .filter((p) => p.payment.isPositive())
     .reduce((sum, p) => sum.plus(p.payment), BIG_NUMBERS.ZERO);
 
-  const netFunding = paymentsInPeriod.reduce(
-    (sum, p) => sum.plus(p.payment),
-    BIG_NUMBERS.ZERO
-  );
+  const netFunding = paymentsInPeriod.reduce((sum, p) => sum.plus(p.payment), BIG_NUMBERS.ZERO);
 
   const averageRate =
     paymentsInPeriod.length > 0
-      ? paymentsInPeriod.reduce((sum, p) => sum.plus(p.rate), BIG_NUMBERS.ZERO).div(paymentsInPeriod.length)
+      ? paymentsInPeriod
+          .reduce((sum, p) => sum.plus(p.rate), BIG_NUMBERS.ZERO)
+          .div(paymentsInPeriod.length)
       : BIG_NUMBERS.ZERO;
 
   const markets = Array.from(new Set(paymentsInPeriod.map((p) => p.market)));
@@ -132,19 +134,20 @@ export function aggregateFundingByMarket(
       .filter((p) => p.payment.isPositive())
       .reduce((sum, p) => sum.plus(p.payment), BIG_NUMBERS.ZERO);
 
-    const netFunding = marketPayments.reduce(
-      (sum, p) => sum.plus(p.payment),
-      BIG_NUMBERS.ZERO
-    );
+    const netFunding = marketPayments.reduce((sum, p) => sum.plus(p.payment), BIG_NUMBERS.ZERO);
 
     const averageRate =
       marketPayments.length > 0
-        ? marketPayments.reduce((sum, p) => sum.plus(p.rate), BIG_NUMBERS.ZERO).div(marketPayments.length)
+        ? marketPayments
+            .reduce((sum, p) => sum.plus(p.rate), BIG_NUMBERS.ZERO)
+            .div(marketPayments.length)
         : BIG_NUMBERS.ZERO;
 
     const averageSize =
       marketPayments.length > 0
-        ? marketPayments.reduce((sum, p) => sum.plus(p.size), BIG_NUMBERS.ZERO).div(marketPayments.length)
+        ? marketPayments
+            .reduce((sum, p) => sum.plus(p.size), BIG_NUMBERS.ZERO)
+            .div(marketPayments.length)
         : BIG_NUMBERS.ZERO;
 
     result.set(market, {
@@ -161,16 +164,14 @@ export function aggregateFundingByMarket(
   return result;
 }
 
-export function createFundingTimeSeries(
-  payments: FundingPaymentProcessed[]
-): FundingTimeSeries[] {
+export function createFundingTimeSeries(payments: FundingPaymentProcessed[]): FundingTimeSeries[] {
   const sorted = orderBy(payments, ['timestamp'], ['asc']);
-  
+
   let cumulativeNet = BIG_NUMBERS.ZERO;
-  
+
   return sorted.map((payment) => {
     cumulativeNet = cumulativeNet.plus(payment.payment);
-    
+
     return {
       timestamp: payment.timestamp,
       date: payment.createdAt,
@@ -181,7 +182,10 @@ export function createFundingTimeSeries(
   });
 }
 
-export function getTimePeriodRange(period: TimePeriod, referenceDate: Date = new Date()): {
+export function getTimePeriodRange(
+  period: TimePeriod,
+  referenceDate: Date = new Date()
+): {
   startDate: Date;
   endDate: Date;
 } {
@@ -269,11 +273,11 @@ export function calculateRollingAverage(
 
   for (let i = windowSize - 1; i < sorted.length; i++) {
     const window = sorted.slice(i - windowSize + 1, i + 1);
-    
+
     const averageRate = window
       .reduce((sum, p) => sum.plus(p.rate), BIG_NUMBERS.ZERO)
       .div(window.length);
-    
+
     const averagePayment = window
       .reduce((sum, p) => sum.plus(p.payment), BIG_NUMBERS.ZERO)
       .div(window.length);
@@ -342,9 +346,9 @@ export function getFundingRateStats(payments: FundingPaymentProcessed[]): {
 
   const min = sortedRates[0];
   const max = sortedRates[sortedRates.length - 1];
-  
+
   const average = rates.reduce((sum, r) => sum.plus(r), BIG_NUMBERS.ZERO).div(rates.length);
-  
+
   const medianIndex = Math.floor(sortedRates.length / 2);
   const median =
     sortedRates.length % 2 === 0
@@ -354,9 +358,8 @@ export function getFundingRateStats(payments: FundingPaymentProcessed[]): {
   const variance = rates
     .reduce((sum, r) => sum.plus(r.minus(average).pow(2)), BIG_NUMBERS.ZERO)
     .div(rates.length);
-  
+
   const stdDev = variance.sqrt();
 
   return { min, max, average, median, stdDev };
 }
-

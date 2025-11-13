@@ -3,20 +3,20 @@ import { useMemo } from 'react';
 import { useAppSelector } from '@/state/appTypes';
 
 import {
-    AggregatedFundingData,
-    calculateFundingStats,
-    calculatePaymentDistribution,
-    calculateRollingAverage,
-    filterPaymentsByDateRange,
-    filterPaymentsByMarket,
-    findLargestPayments,
-    FundingPaymentProcessed,
-    FundingStats,
-    getFundingRateStats,
-    getTimePeriodRange,
-    MarketFundingAggregate,
-    processFundingPayment,
-    TimePeriod,
+  AggregatedFundingData,
+  calculateFundingStats,
+  calculatePaymentDistribution,
+  calculateRollingAverage,
+  filterPaymentsByDateRange,
+  filterPaymentsByMarket,
+  findLargestPayments,
+  FundingPaymentProcessed,
+  FundingStats,
+  getFundingRateStats,
+  getTimePeriodRange,
+  MarketFundingAggregate,
+  processFundingPayment,
+  TimePeriod,
 } from '../calculators/fundingDataProcessing';
 import { BonsaiCore } from '../ontology';
 import { useFundingPayments } from '../rest/fundingPayments';
@@ -80,7 +80,10 @@ export function useFundingTimeSeries() {
   }, [stats]);
 }
 
-export function useFundingPaymentsByDateRange(startDate: Date, endDate: Date): FundingPaymentProcessed[] {
+export function useFundingPaymentsByDateRange(
+  startDate: Date,
+  endDate: Date
+): FundingPaymentProcessed[] {
   const processed = useProcessedFundingPayments();
 
   return useMemo(() => {
@@ -210,4 +213,3 @@ export function useMarketsWithMostFunding(count: number = 5) {
       .slice(0, count);
   }, [aggregates, count]);
 }
-
