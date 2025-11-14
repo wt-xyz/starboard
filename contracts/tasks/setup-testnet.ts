@@ -5,13 +5,6 @@ import { deployTestnetToken } from "./deploy-testnet-token"
 import { deployStarboard } from "./deploy-starboard"
 
 if (require.main === module) {
-    // this is a walkaround
-    // sometimes the script hangs after the deployment of the vault
-    // it hangs when everything is done, no code left to execute
-    // debug shows multiple threads stuck on futex
-    // it may be because multiple providers and wallets are instantiated within the same process
-    // with a single provider/wallet scripts this is not observed
-    // process..exit() enforces an exit
     setupTestnet(getArgs(["url", "privK", "storkContractAddress"])).then(() => {
         process.exit(0)
     }).catch((error) => {
