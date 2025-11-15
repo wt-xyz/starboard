@@ -14,6 +14,7 @@ dist-ssr
 *.local
 *.key
 .env
+deployment.local.json
 
 index.html
 entry_points/

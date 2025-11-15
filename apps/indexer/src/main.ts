@@ -2,13 +2,13 @@ import { run } from '@subsquid/batch-processor'
 import { augmentBlock } from '@subsquid/fuel-objects'
 import { DataSourceBuilder } from '@subsquid/fuel-stream'
 import { TypeormDatabase } from '@subsquid/typeorm-store'
-import { Contract, Position, Market, Asset, Account, Payment, Trade } from './model'
+import { Account, Asset, Contract, Market, Payment, Position, Trade } from './model'
 
 const SUBSQUID_NETWORK_GATEWAY_URL_MAINNET = 'https://v2.archive.subsquid.io/network/fuel-mainnet'
 const SUBSQUID_NETWORK_GATEWAY_URL_TESTNET = 'https://v2.archive.subsquid.io/network/fuel-testnet'
 const MAINNET_URL = 'https://mainnet.fuel.network/v1/graphql'
 const TESTNET_URL = 'https://testnet.fuel.network/v1/graphql'
-const LOCAL_NODE_URL = 'http://localhost:4000/v1/graphql'
+const LOCAL_NODE_URL = 'http://127.0.0.1:4000/v1/graphql'
 const CONTRACTS = {
     VAULT: {
         ADDRESS: {
@@ -19,12 +19,12 @@ const CONTRACTS = {
 }
 
 const dataSource = new DataSourceBuilder()
-    .setGateway(SUBSQUID_NETWORK_GATEWAY_URL_TESTNET)
+    // .setGateway(SUBSQUID_NETWORK_GATEWAY_URL_TESTNET)
     // .setGateway(SUBSQUID_NETWORK_GATEWAY_URL_MAINNET)
     .setGraphql({
         // url: MAINNET_URL,
-        url: TESTNET_URL,
-        // url: LOCAL_NODE_URL,
+        // url: TESTNET_URL,
+        url: LOCAL_NODE_URL,
         strideConcurrency: 3,
         strideSize: 30
     })

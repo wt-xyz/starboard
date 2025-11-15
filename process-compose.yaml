@@ -1,0 +1,87 @@
+version: "0.5"
+
+log_location: /tmp/process-compose.log
+log_level: info
+
+processes:
+  # PostgreSQL Database
+  postgres:
+    command: "docker compose up"
+    working_dir: apps/indexer
+    availability:
+      restart: "on_failure"
+      max_restarts: 3
+      backoff_seconds: 5
+    readiness_probe:
+      exec:
+        command: "docker ps --filter name=starboard-indexer-postgres --filter status=running --quiet"
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+
+  # Local Fuel Node
+  fuel-node:
+    command: "fuel-core run --debug --db-type in-memory --port 4000"
+    availability:
+      restart: "on_failure"
+      max_restarts: 3
+    readiness_probe:
+      http_get:
+        host: 127.0.0.1
+        port: 4000
+        path: "/v1/health"
+      initial_delay_seconds: 5
+      period_seconds: 5
+      timeout_seconds: 3
+    log_location: /tmp/fuel-node.log
+
+  # Indexer Service
+  indexer:
+    command: "node --require=dotenv/config lib/main.js"
+    working_dir: apps/indexer
+    depends_on:
+      postgres:
+        condition: process_healthy
+      fuel-node:
+        condition: process_healthy
+    availability:
+      restart: "on_failure"
+      max_restarts: 5
+    log_location: /tmp/indexer.log
+
+  # GraphQL API Server
+  graphql-api:
+    command: "npx squid-graphql-server"
+    working_dir: apps/indexer
+    depends_on:
+      indexer:
+        condition: process_started
+    availability:
+      restart: "on_failure"
+      max_restarts: 5
+    readiness_probe:
+      http_get:
+        host: localhost
+        port: 4350
+        path: "/"
+      initial_delay_seconds: 5
+      period_seconds: 5
+      timeout_seconds: 3
+    log_location: /tmp/graphql-server.log
+
+  # Frontend (Vite Dev Server)
+  frontend:
+    command: "pnpm dev"
+    availability:
+      restart: "on_failure"
+      max_restarts: 5
+    readiness_probe:
+      http_get:
+        host: localhost
+        port: 5173
+        path: "/"
+      initial_delay_seconds: 10
+      period_seconds: 5
+      timeout_seconds: 3
+    log_location: /tmp/frontend.log
+

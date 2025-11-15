@@ -5,362 +5,170 @@
 <div align="center">
 
 ![Static Badge](https://img.shields.io/badge/pnpm-F69220?logo=pnpm&logoColor=fff)
-
 ![Static Badge](https://img.shields.io/badge/Monorepo-%23143055?style=flat&logo=Nx&link=https%3A%2F%2Fnx.dev%2F)
-
 <a href="https://conventionalcommits.org">
 <img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white" alt="Conventional Commits">
 </a>
 <a href="http://commitizen.github.io/cz-cli/">
 <img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen friendly">
 </a>
-  <a href='https://github.com/dydxprotocol/v4-web/blob/main/LICENSE'>
-    <img src='https://img.shields.io/badge/License-AGPL_v3-blue.svg' alt='License' />
-  </a>
+<a href='https://github.com/dydxprotocol/v4-web/blob/main/LICENSE'>
+<img src='https://img.shields.io/badge/License-AGPL_v3-blue.svg' alt='License' />
+</a>
 
 [![Maturity badge - level 3](https://img.shields.io/badge/Maturity-Level%203%20--%20Stable-green.svg)](https://github.com/tophat/getting-started/blob/master/scorecard.md)
 
 </div>
 
+## 🚀 Quick Start (3 commands!)
+
+```bash
+# 1. Install dependencies
+pnpm install
+
+# 2. Start all services  
+pnpm dev:all
+
+# 3. In a new terminal, deploy contracts
+pnpm dev:setup
+```
+
+**That's it!** You now have:
+- ✅ Local Fuel blockchain with deployed contracts
+- ✅ Indexer syncing blockchain events
+- ✅ GraphQL API serving data at http://localhost:4350
+- ✅ Frontend running at http://localhost:5173
+- ✅ Pre-funded test wallets ready to use
+
+## 📖 Documentation
+
+- **[Development Guide](./DEVELOPMENT.md)** - Detailed setup and development workflow
+- **[Contracts README](./contracts/README.md)** - Smart contract documentation
+- **[Indexer README](./indexer/README.md)** - Indexer setup and testing
+
 ## Prerequisites
 
-- Node.js v18 (we recommend using [nvm](https://github.com/nvm-sh/nvm) for easy version management)
-- `pnpm`
-- Docker
-- Wallet Connect account
+- Node.js v18+ (we recommend using [nvm](https://github.com/nvm-sh/nvm))
+- `pnpm` (`curl -fsSL https://get.pnpm.io/install.sh | sh -`)
+- Docker (for PostgreSQL)
+- [Fuelup](https://install.fuel.network/) (Fuel toolchain manager)
 
-For deploying with Vercel, create an account with [Vercel](https://vercel.com/signup) if you don't have one already.
+## What Gets Started?
 
-For deploying to IPFS, choose one of the following:
+Running `pnpm dev:all` starts all these services automatically:
 
-- A free [web3.storage](https://web3.storage/) account, or
-- An IPFS client such as [IPFS Kubo](https://docs.ipfs.tech/install/command-line/)
+1. **Local Fuel Node** - Port 4000
+   - Fresh blockchain for development
+   - Pre-funded test wallets
 
-For web3.storage, sign up for an account and generate an API token on the [API tokens page](https://web3.storage/manage/tokens). web3.storage offers an easy-to-use interface for storing and retrieving content on IPFS.
+2. **PostgreSQL Database** - Docker container
+   - Stores indexed blockchain data
+   - Auto-migrated schema
 
-Alternatively, follow the [IPFS Kubo installation guide](https://docs.ipfs.tech/install/command-line/) to download the IPFS command-line tool.
+3. **Indexer Service**
+   - Watches blockchain for Starboard events
+   - Indexes: positions, trades, liquidity, prices
 
-## Part 1: Setting up your local environment
+4. **GraphQL API** - Port 4350
+   - Query indexed data
+   - GraphQL playground at http://localhost:4350/graphql
 
-### 1. Clone repo & navigate to directory
+5. **Frontend** - Port 5173
+   - React app connected to local node
+   - Hot reload enabled
+
+## Test Wallets
+
+Your local node comes with pre-funded test wallets:
+
+```typescript
+// Deployer (has contracts deployed)
+Address: 0x0a0da2e1d4d201cc73cd500dfd64a732f1b94e5fb2d86657ab43ff620acaefd6
+PrivKey: 0x9e42fa83bda35cbc769c4b058c721adef68011d7945d0b30165397ec6d05a53a
+
+// User 0
+Address: 0xc2833c4eae8a3b056a6f21a04d1a176780d5dc9df621270c41bec86a90c3d770  
+PrivKey: 0x366079294383ed426ef94b9e86a8e448876a92c1ead9bbf75e6e205a6f4f570d
+
+// User 1
+Address: 0x7ab1e9d9fd10909aead61cbfd4a5ec2d80bb304f34cfa2b5a9446398e284e92c
+PrivKey: 0xb978aa71a1487dc9c1f996493af73f0427cf78f560b606224e7f0089bae04c41
+```
+
+## Service Endpoints
+
+- **Frontend**: http://localhost:5173
+- **GraphQL API**: http://localhost:4350
+- **GraphQL Playground**: http://localhost:4350/graphql
+- **Fuel Node Health**: http://127.0.0.1:4000/v1/health
+- **Fuel Node GraphQL**: http://127.0.0.1:4000/v1/graphql
+
+## Common Commands
 
 ```bash
-git clone https://github.com/dydxprotocol/v4-web.git
-cd v4-web
-```
+# Development
+pnpm dev:all         # Start all services
+pnpm dev:all:tui     # Start with interactive UI
+pnpm dev:setup       # Deploy contracts to local node
 
-### 2. Install pnpm
-
-```bash
-curl -fsSL https://get.pnpm.io/install.sh | sh -
-```
-
-### 3. Install Node.js v18
-
-This project requires Node.js v18. We use **nvm** for Node version management:
-
-```bash
-# Install nvm if you haven't already
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-
-# Install and use Node.js v18 (reads from .nvmrc)
-nvm install
-nvm use
-```
-
-> 💡 **Tip:** Enable auto-switching so Node version changes automatically when you enter the repo. Add this to your `~/.bashrc` or `~/.zshrc`:
-> ```bash
-> # Auto-switch Node version based on .nvmrc
-> autoload -U add-zsh-hook
-> load-nvmrc() {
->   local node_version="$(nvm version)"
->   local nvmrc_path="$(nvm_find_nvmrc)"
->   if [ -n "$nvmrc_path" ]; then
->     local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
->     if [ "$nvmrc_node_version" = "N/A" ]; then
->       nvm install
->     elif [ "$nvmrc_node_version" != "$node_version" ]; then
->       nvm use
->     fi
->   fi
-> }
-> add-zsh-hook chpwd load-nvmrc
-> load-nvmrc
-> ```
-
-**Alternative tools:**
-- [fnm](https://github.com/Schniz/fnm) (faster Rust-based alternative - auto-reads `.node-version`)
-- pnpm can also manage Node, but nvm is our recommended approach
-
-### 4. Install dependencies
-
-```bash
-pnpm install
-```
-
-## Part 2: Running the application
-
-### 5. Run indexer
-
-```bash
-pnpm nx dev indexer
-```
-
-### 6. Run web app
-
-```bash
-pnpm dev
-```
-
-The development server will be running at `http://localhost:5173` (or the port number displayed in the terminal). Visit this URL to interact with the web app and see your changes in real-time.
-
-To view component stories:
-
-```bash
-pnpm ladle
-```
-
-This will automatically open your default browser at `http://localhost:61000`.
-
-## Part 3: Configuring environment
-
-Add or modify the relevant endpoints, links and options in `/public/configs/v1/env.json`.
-
-You'll need to provide a Wallet Connect project id to enable onboarding and wallet connection:
-
-- Create a project on https://cloud.walletconnect.com/app
-- Copy over the project ID into this [field](https://github.com/dydxprotocol/v4-web/blob/67ecbd75b43e0c264b7b4d2d9b3d969830b0621c/public/configs/env.json#L822C33-L822C46)
-
-## Part 4: Set Enviornment variables
-
-Set environment variables via `.env`.
-
-- `VITE_BASE_URL` (required): The base URL of the deployment (e.g., `https://www.example.com`).
-- `VITE_ALCHEMY_API_KEY` (optional): Add an Alchemy API key for EVM interactions; the app will fall back to public RPCs if not provided.
-- `VITE_PK_ENCRYPTION_KEY` (optional): AES encryption key used for signature obfuscation; necessary for enabling the "Remember Me" feature.
-- `VITE_V3_TOKEN_ADDRESS` (optional): Address of the V3 $DYDX token.
-- `VITE_TOKEN_MIGRATION_URI` (optional): The URL of the token migration website.
-- `AMPLITUDE_API_KEY` (optional): Amplitude API key for enabling Amplitude; used with `pnpm run build:inject-amplitude`.
-- `AMPLITUDE_SERVER_URL` (optional): Custom Amplitude server URL
-- `AMPLITUDE_SERVER_ZONE` (optional): Custom Amplitude server zone; if provided, `AMPLITUDE_SERVER_URL` must be provided too.
-- `GOOGLE_TAG_MANAGER_CONTAINER_ID` (optional): Id for a google tag manager container; used with `pnpm run build:inject-google-tag-manager`.
-- `HOTJAR_SITE_ID`, `HOTJAR_VERSION` (optional): used for enabling Hotjar tracking; used with `pnpm run build:inject-hotjar`
-- `BUGSNAG_API_KEY` (optional): API key for enabling Bugsnag; used with `pnpm run build:inject-bugsnag`.
-- `IOS_APP_ID` (optional): iOS app ID used for enabling deep linking to the iOS app; used with `pnpm run build:inject-app-deeplinks`.
-- `INTERCOM_APP_ID` (optional): Used for enabling Intercom; utilized with `pnpm run build:inject-intercom`.
-- `STATUS_PAGE_SCRIPT_URI` (optional): Used for enabling the status page; used with `pnpm run build:inject-statuspage`.
-- `SMARTBANNER_APP_NAME`, `SMARTBANNER_ORG_NAME`, `SMARTBANNER_ICON_URL`, `SMARTBANNER_APPSTORE_URL` (optional): Used for enabling the smart app banner; used with `pnpm run build:inject-smartbanner`.
-- `VITE_PRIVY_APP_ID` (optional): App ID used for enabling Privy authentication. For deployment of DYDX token holders use `clua5njf801bncvpa0woolzq4`.
-- `VITE_PRIVY_APP_CLIENT_ID` (optional): App Client ID used for enabling Privy authentication.
-- `VITE_ROBOTS` (optional): Value of the HTML meta tag "robots"; recommended values: `index, follow` or `noindex`.
-
-## Part 5: Configure entry points
-
-### HTML files
-
-Edit `scripts/generate-entry-points.js` and set up entry points according to your SEO needs. At least one entry point must be configured,
-i.e. at least one element must be present in the `ENTRY_POINTS` array. This array consists of objects of the form:
-
-```
-{
-    title: 'Page title',
-    description: 'Page description.',
-    fileName: 'HTML entry point file name, e.g.: index.html',
-},
-```
-
-The build script will traverse these entries and create files in `entry-points` directory, modifying the `template.html` file accordingly
-for each entry. The `rollupOptions` config option in `vite.config.ts` informs the framework about the location of all the entry points
-created above.
-
-### Rewrite rules
-
-Edit `vercel.json` and configure the `rewrites` configuration option. It is an array of objects of the form:
-
-```
-    {
-      "source": "Regexp for matching the URL path, e.g.: /portfolio(/?.*)",
-      "destination": "Entry point file to use, e.g.: /entry-points/portfolio.html"
-    },
-```
-
-Note: The first matching rule takes precedence over anything defined afterwards in the array.
-
-## Part 6: Configure sitemap generation (optional)
-
-1. Edit `public/configs/sitemap.json`. Provide the base site URL and the list of static URLs that you wish to appear in the sitemap.
-2. Edit the deploy command and ensure that `node scripts/generate-sitemap.js` is run before `pnpm run build`.
-
-The sitemap will be generated at build time.
-It will contain the static URLs as well as up-to-date URLs for market pairs.
-The market pairs are evaluated by inspecting an appropriate REST API of a full node.
+# Building
+pnpm nx build starboard/contracts  # Build smart contracts
+pnpm nx build indexer              # Build indexer
+pnpm build                         # Build frontend
 
 # Testing
+pnpm nx test starboard/contracts   # Contract tests
+pnpm test                          # Frontend tests
 
-## Unit testing
-
-Run unit tests with the following command: `pnpm run test`
-
-## Functional Testing
-
-Functional testing is supported via Browserstack. To run the tests you need to set the following environment variables:
-
-- `BROWSERSTACK_USERNAME`: username of your browserstack account
-- `BROWSERSTACK_ACCESS_KEY`: access key of your browserstack account
-- `E2E_ENVIRONMENT_URL`: the URL you want to run the functional tests against
-
-To run the tests run: `pnpm run wdio`
-
-# Local Client-js Development
-
-## Directory structure
-
-Our tooling assumes that the [v4-clients repo](https://github.com/dydxprotocol/v4-clients) is checked out alongside v4-web:
-
-```
---- parent folder
- |___ v4-web
- |___ v4-clients
+# Cleanup
+cd apps/indexer && docker compose down -v  # Reset database
 ```
 
-## Using your local v4-clients repo
+## Troubleshooting
 
-Whenever you have changes in v4-clients that you'd like to test in your local v4-web branch, use the following command:
+**"Connection refused" when deploying contracts?**
+- Make sure `pnpm dev:all` is running first
+- Check fuel node is healthy: `curl http://127.0.0.1:4000/v1/health`
 
-```
-pnpm run install-local-client-js --clean
-```
+**Indexer not syncing?**
+- Run `pnpm dev:setup` to deploy contracts
+- Check indexer logs: `tail -f /tmp/indexer.log`
 
-The `--clean` option will uninstall the package first, **it is not needed on subsequent runs.**
-
-## Reverting to remote clients
-
-Revert any changes to @dydxprotocol/v4-clients in package.json and pnpm-lock.yaml. If you haven't made any other package changes, you can use:
-
-```
-git restore main package.json
-git restore main pnpm-lock.yaml
-```
-
-Then run `pnpm install`
-
-**Remember to revert to remote v4-clients before making a PR.**
-
-# Local Localization (l10n) Development
-
-## Directory structure
-
-Our tooling assumes that the [v4-localization repo](https://github.com/dydxprotocol/v4-localization) is checked out alongside v4-web:
-
-```
---- parent folder
- |___ v4-web
- |___ v4-localization
-```
-
-## Using your local v4-localization repo
-
-When you want to begin developing in v4-localization:
-**kill your dev server first** then use the following command:
-
-```
-pnpm run install-local-l10n
-```
-
-## Reverting to remote localization
-
-You'll need to unlink your local localization package with the following command:
-
-```
-pnpm run remove-local-l10n
-```
-
-You will need to **restart your dev server** to see the revert take effect.
-
-# Deployments
-
-## Deploying with Vercel
-
-### Step 1: Connect your repository to Vercel
-
-Select "Import Git Repository" from your dashboard, and provide the URL of this repository or your forked repository.
-
-### Step 2: Configure your project
-
-For the "Build & Development Settings", we recommend the following:
-
-- Framework Preset: `Vite`
-- Build Command (override): `pnpm run build`
-
-By default, the dev server runs in development mode and the build command runs in production mode. To override the default mode, you can pass in the `--mode` option flag. For example, if you want to build your app for testnet:
-
-```
-pnpm run build --mode testnet
-```
-
-If you wish to incorporate analytics via Amplitude, Hotjar and Bugsnag, you can use our scripts:
-`pnpm run build:inject-amplitude`, `pnpm run build:inject-hotjar` and `pnpm run build:inject-bugsnag`. You will need to provide your own API keys for these services. In the Environment Variables section, name the variables as `AMPLITUDE_API_KEY`, `HOTJAR_SITE_ID`, `HOTJAR_VERSION` and `BUGSNAG_API_KEY` and provide the respective keys as their values.
-To incorporate all three services with a single command use `pnpm run build:inject-analytics`.
-
-If you wish to incorporate smart banner for iOS and/or Android apps, you can use our scripts:
-`pnpm run build:inject-smartbanner`. You will need to provide your own app configurations for these services. In the Environment Variables section, name the variables as `SMARTBANNER_APP_NAME`, `SMARTBANNER_ORG_NAME`, `SMARTBANNER_ICON_URL` and `SMARTBANNER_APPSTORE_URL` or `SMARTBANNER_GOOGLEPLAY_URL` and provide the respective values.
-
-For more details, check out Vercel's [official documentation](https://vercel.com/docs).
-
-## Deploying to IPFS
-
-### Must Enable HashRouting
-
-Add the following to `.env` file
-
-```
-VITE_ROUTER_TYPE=hash
-```
-
-### web3.storage: deploy to IPFS via web3.storage using the provided script
-
-Export the API token as an environment variable (replace `your_token` with the generated token), and run the script to build and deploy to IPFS:
-
+**Port already in use?**
 ```bash
-export WEB3_STORAGE_TOKEN=your_token
-pnpm run deploy:ipfs
+# Find what's using a port
+lsof -i :4000  # or :5173, :4350
+
+# Kill the process
+kill -9 <PID>
 ```
 
-Save the URL provided in the output, as it is the link to your deployed content on IPFS.
-
-### IPFS client: deploy with the command-line tool
-
-To use the IPFS command-line tool, run:
-
+**Reset everything**
 ```bash
-ipfs add -r dist
+# Stop all services
+process-compose down  # or Ctrl+C if running in terminal
+
+# Clean database
+cd apps/indexer && docker compose down -v
+
+# Restart
+pnpm dev:all
+pnpm dev:setup
 ```
 
-Save the CID provided in the output.
+## Architecture
 
-### Accessing your content on IPFS
+Starboard is a decentralized perpetuals trading platform built on Fuel:
 
-To access your content on IPFS:
+- **Smart Contracts** (Sway) - Vault, liquidity pools, position management
+- **Indexer** (TypeScript + Subsquid) - Indexes blockchain events  
+- **GraphQL API** - Serves indexed data
+- **Frontend** (React + Vite) - Trading interface
 
-1. **Native IPFS support in a browser:** Use a browser with native IPFS support, such as Brave or Opera. Enable a local IPFS node and visit the URL directly using the IPNS protocol, like `ipfs://your_cid`.
+## License
 
-2. **Public IPFS gateway:** Access your content via a public IPFS gateway, such as [https://dweb.link](https://dweb.link/) or [https://w3s.link/](https://w3s.link/). Use the gateway URL with your CID appended, like `https://dweb.link/ipfs/your_cid`.
+All code in this repository is protected under the AGPL-3.0 License.
 
-Replace `your_cid` with the actual CID.
+## Contributing
 
-## Cloudflare Settings
-
-We recommend that you add your website to Cloudflare for additional security settings.
-
-To block OFAC Sanctioned countries:
-
-1. Navigate Websites > Domain > Security > WAF
-
-2. Create Rule with the following settings:
-
-- If incoming requests match
-  `(ip.geoip.country eq "CU") or (ip.geoip.country eq "IR") or (ip.geoip.country eq "KP") or (ip.geoip.country eq "SY") or (ip.geoip.country eq "MM") or (ip.geoip.subdivision_1_iso_code eq "UA-09") or (ip.geoip.subdivision_1_iso_code eq "UA-14") or (ip.geoip.subdivision_1_iso_code eq "UA-43")`
-- This rule will bring up a Cloudflare page when a restricted geography tries to access your site. You will have the option to display:
-  1. Custom Text
-  - (e.g. `Because you appear to be a resident of, or trading from, a jurisdiction that violates our terms of use, or have engaged in activity that violates our terms of use, you have been blocked. You may withdraw your funds from the protocol at any time.`)
-  2. Default Cloudflare WAF block page
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
