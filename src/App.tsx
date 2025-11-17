@@ -52,6 +52,7 @@ import { useCommandMenu } from './hooks/useCommandMenu';
 import { useComplianceState } from './hooks/useComplianceState';
 import { useInitializePage } from './hooks/useInitializePage';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { useMockWalletAutoConnect } from './hooks/useMockWalletAutoConnect';
 import { useReferralCode } from './hooks/useReferralCode';
 import { useShouldShowFooter } from './hooks/useShouldShowFooter';
 import { useSimpleUiEnabled } from './hooks/useSimpleUiEnabled';
@@ -92,6 +93,7 @@ const Content = () => {
   useReferralCode();
   useUiRefreshMigrations();
   useOpenDepositIfRelevant();
+  useMockWalletAutoConnect();
 
   const { isTablet, isNotTablet } = useBreakpoints();
   const { chainTokenLabel } = useTokenConfigs();

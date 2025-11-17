@@ -50,9 +50,10 @@ export function registerRestRoutes(app: FastifyInstance, service: MockDataProvid
     reply.send(service.complianceScreen(address));
   });
 
-  app.get('/v4/perpetualMarkets', (request, reply) => {
+  app.get('/v4/perpetualMarkets', async (request, reply) => {
     const { ticker } = request.query as { ticker?: string };
-    reply.send(service.getPerpetualMarkets(ticker));
+    const data = await Promise.resolve(service.getPerpetualMarkets(ticker));
+    reply.send(data);
   });
 
   app.get('/v4/orderbooks/perpetualMarket/:market', (request, reply) => {
@@ -60,14 +61,14 @@ export function registerRestRoutes(app: FastifyInstance, service: MockDataProvid
     reply.send(service.getPerpetualMarketOrderbook(market));
   });
 
-  app.get('/v4/trades/perpetualMarket/:market', (request, reply) => {
+  app.get('/v4/trades/perpetualMarket/:market', async (request, reply) => {
     const { market } = request.params as { market: string };
     const { limit, page, createdBeforeOrAt } = request.query as {
       limit?: string;
       page?: string;
       createdBeforeOrAt?: string;
     };
-    reply.send(
+    const data = await Promise.resolve(
       service.getPerpetualMarketTrades(
         market,
         toNumber(limit),
@@ -75,6 +76,7 @@ export function registerRestRoutes(app: FastifyInstance, service: MockDataProvid
         createdBeforeOrAt
       )
     );
+    reply.send(data);
   });
 
   app.get('/v4/candles/perpetualMarkets/:market', (request, reply) => {
@@ -119,14 +121,16 @@ export function registerRestRoutes(app: FastifyInstance, service: MockDataProvid
 
   app.get('/v4/sparklines', (_, reply) => reply.send(service.getSparklines()));
 
-  app.get('/v4/addresses/:address', (request, reply) => {
+  app.get('/v4/addresses/:address', async (request, reply) => {
     const { address } = request.params as { address: string };
-    reply.send(service.getAddressOverview(address));
+    const data = await Promise.resolve(service.getAddressOverview(address));
+    reply.send(data);
   });
 
-  app.get('/v4/addresses/:address/subaccountNumber/:subaccountNumber', (request, reply) => {
+  app.get('/v4/addresses/:address/subaccountNumber/:subaccountNumber', async (request, reply) => {
     const { address, subaccountNumber } = request.params as { address: string; subaccountNumber: string };
-    reply.send(service.getSubaccount(address, Number(subaccountNumber)));
+    const data = await Promise.resolve(service.getSubaccount(address, Number(subaccountNumber)));
+    reply.send(data);
   });
 
   app.get('/v4/addresses/:address/parentSubaccountNumber/:parentSubaccountNumber', (request, reply) => {
@@ -134,7 +138,7 @@ export function registerRestRoutes(app: FastifyInstance, service: MockDataProvid
     reply.send(service.getParentSubaccount(address, Number(parentSubaccountNumber)));
   });
 
-  app.get('/v4/perpetualPositions', (request, reply) => {
+  app.get('/v4/perpetualPositions', async (request, reply) => {
     const { address, subaccountNumber, status, createdBeforeOrAt, limit } = request.query as {
       address?: string;
       subaccountNumber?: string;
@@ -146,7 +150,7 @@ export function registerRestRoutes(app: FastifyInstance, service: MockDataProvid
       reply.code(400).send({ error: 'address is required' });
       return;
     }
-    reply.send(
+    const data = await Promise.resolve(
       service.getPerpetualPositions(
         address,
         subaccountNumber != null ? Number(subaccountNumber) : undefined,
@@ -155,6 +159,7 @@ export function registerRestRoutes(app: FastifyInstance, service: MockDataProvid
         toNumber(limit)
       )
     );
+    reply.send(data);
   });
 
   app.get('/v4/assetPositions', (request, reply) => {

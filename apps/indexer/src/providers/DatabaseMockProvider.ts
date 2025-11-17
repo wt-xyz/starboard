@@ -20,34 +20,52 @@ import {
   IndexerParentSubaccountResponse,
   IndexerParentSubaccountTransferResponse,
   IndexerPerpetualMarketResponse,
+  IndexerPerpetualMarketResponseObject,
+  IndexerPerpetualMarketStatus,
   IndexerPerpetualPositionResponse,
+  IndexerPerpetualPositionResponseObject,
   IndexerPerpetualPositionStatus,
+  IndexerSubaccountResponseObject,
   IndexerTimeResponse,
   IndexerTradeResponse,
+  IndexerTradeResponseObject,
+  IndexerTradeType,
   IndexerTransferBetweenResponse,
   IndexerTransferResponse,
-  IndexerVaultsHistoricalPnlResponse,
+  IndexerVaultsHistoricalPnlResponse
 } from '../../../../src/types/indexer/indexerApiGen';
 import {
   IndexerCompositeOrderObject,
   IndexerSparklineResponseObject,
 } from '../../../../src/types/indexer/indexerManual';
-import { MockDataProvider } from './MockDataProvider.interface';
 import { AppDataSource, initializeDatabase } from '../db/data-source';
 import { Account } from '../model/generated/account.model';
+import { Asset } from '../model/generated/asset.model';
 import { Market } from '../model/generated/market.model';
+import { Payment } from '../model/generated/payment.model';
 import { Position } from '../model/generated/position.model';
 import { Trade } from '../model/generated/trade.model';
-import { Payment } from '../model/generated/payment.model';
-import { Asset } from '../model/generated/asset.model';
+import { MockDataProvider } from './MockDataProvider.interface';
 
 /**
  * Database-backed mock data provider.
  * Reads from PostgreSQL via TypeORM for persistent, stateful mocks.
  * 
+ * IMPLEMENTED (Queries from seed data):
+ * ✅ getPerpetualMarkets() - 4 markets (ETH, BTC, SOL, FUEL)
+ * ✅ getPerpetualMarketTrades() - 200 trades across markets
+ * ✅ getAddressOverview() - Account summaries
+ * ✅ getSubaccount() - Individual subaccount data
+ * ✅ getPerpetualPositions() - 24 positions with full filtering
+ * 
+ * STUBBED (Not in seed data, returns empty):
+ * - Orderbook, Candles, Sparklines (dynamic/derived data)
+ * - Orders, Transfers, Payments, Rewards (not persisted)
+ * - Compliance, Vault, Height endpoints
+ * 
  * Requires:
  * 1. PostgreSQL running via docker-compose
- * 2. Database seeded with test data
+ * 2. Database seeded: `pnpm seed:reset`
  * 3. MOCK_DATA_SOURCE=database environment variable
  */
 export class DatabaseMockProvider implements MockDataProvider {
@@ -128,28 +146,93 @@ export class DatabaseMockProvider implements MockDataProvider {
     }
   }
 
-  getPerpetualMarkets(ticker?: string): IndexerPerpetualMarketResponse {
-    // TODO: Query Market entities from database
-    return { markets: {} };
+  async getPerpetualMarkets(ticker?: string): Promise<IndexerPerpetualMarketResponse> {
+    this.ensureInitialized();
+    
+    let query = this.marketRepo.createQueryBuilder('market');
+    
+    if (ticker) {
+      query = query.where('market.ticker = :ticker', { ticker });
+    }
+    
+    const markets = await query.getMany();
+    
+    const marketsObj = markets.reduce<Record<string, IndexerPerpetualMarketResponseObject>>((acc, market) => {
+      acc[market.ticker] = {
+        clobPairId: market.clobPairId?.toString() || '1',
+        ticker: market.ticker,
+        status: IndexerPerpetualMarketStatus.ACTIVE,
+        oraclePrice: market.oraclePrice?.toString() || '0',
+        priceChange24H: market.priceChange24H?.toString() || '0',
+        volume24H: market.volume24H?.toString() || '0',
+        trades24H: Number(market.trades24H) || 0,
+        nextFundingRate: market.nextFundingRate?.toString() || '0',
+        initialMarginFraction: market.initialMarginFraction?.toString() || '0.05',
+        maintenanceMarginFraction: market.maintenanceMarginFraction?.toString() || '0.03',
+        openInterest: market.openInterest?.toString() || '0',
+        baseOpenInterest: market.openInterest?.toString() || '0',
+        atomicResolution: -6,
+        quantumConversionExponent: -9,
+        tickSize: market.tickSize?.toString() || '0.01',
+        stepSize: market.stepSize?.toString() || '0.001',
+        stepBaseQuantums: 1000,
+        subticksPerTick: 1000,
+        marketType: IndexerPerpetualMarketStatus.ACTIVE as any, // Fix type mismatch
+      };
+      return acc;
+    }, {});
+    
+    return { markets: marketsObj };
   }
 
   getPerpetualMarketOrderbook(ticker: string): IndexerOrderbookResponseObject {
-    // TODO: Query orderbook data
+    // Orderbook data is not persisted in database, return empty
     return { bids: [], asks: [] };
   }
 
-  getPerpetualMarketTrades(
+  async getPerpetualMarketTrades(
     ticker: string,
     limit?: number | null,
     page?: number | null,
     createdBeforeOrAt?: string | null
-  ): IndexerTradeResponse {
-    // TODO: Query Trade entities
+  ): Promise<IndexerTradeResponse> {
+    this.ensureInitialized();
+    
+    let query = this.tradeRepo
+      .createQueryBuilder('trade')
+      .leftJoinAndSelect('trade.market', 'market')
+      .where('market.ticker = :ticker', { ticker });
+    
+    if (createdBeforeOrAt) {
+      query = query.andWhere('trade.createdAt <= :date', { date: new Date(createdBeforeOrAt) });
+    }
+    
+    query = query.orderBy('trade.createdAt', 'DESC');
+    
+    const pageSize = limit ?? 100;
+    const pageNumber = page ?? 1;
+    const offset = (pageNumber - 1) * pageSize;
+    
+    const [trades, totalResults] = await query
+      .skip(offset)
+      .take(pageSize)
+      .getManyAndCount();
+    
+    const tradesResponse: IndexerTradeResponseObject[] = trades.map(trade => ({
+      id: trade.id,
+      side: (trade.side || 'BUY') as any, // Database enum -> API enum
+      size: trade.size?.toString() || '0',
+      price: trade.price?.toString() || '0',
+      type: IndexerTradeType.LIMIT,
+      createdAt: trade.createdAt?.toISOString() || new Date().toISOString(),
+      createdAtHeight: trade.createdAtHeight.toString(),
+    }));
+    
     return {
-      trades: [],
-      pageSize: 0,
-      offset: 0,
-      totalResults: 0,
+      trades: tradesResponse,
+      pageSize,
+      offset,
+      totalResults,
     };
   }
 
@@ -178,22 +261,47 @@ export class DatabaseMockProvider implements MockDataProvider {
     return {};
   }
 
-  getAddressOverview(address: string): IndexerAddressResponse {
-    // TODO: Query Account entities
+  async getAddressOverview(address: string): Promise<IndexerAddressResponse> {
+    this.ensureInitialized();
+    
+    const accounts = await this.accountRepo.find({
+      where: { address: address.toLowerCase() },
+    });
+    
+    const subaccounts: IndexerSubaccountResponseObject[] = accounts.map(account => ({
+      address: account.address!,
+      subaccountNumber: account.subaccountNumber!,
+      equity: '10000', // Calculated field, not persisted
+      freeCollateral: '8000', // Calculated field, not persisted
+      openPerpetualPositions: {},
+      assetPositions: {},
+      marginEnabled: true,
+      updatedAtHeight: '0',
+      latestProcessedBlockHeight: '0',
+    }));
+    
     return {
-      subaccounts: [],
+      subaccounts,
       totalTradingRewards: '0',
     };
   }
 
-  getSubaccount(address: string, subaccountNumber: number) {
-    // TODO: Query specific subaccount
+  async getSubaccount(address: string, subaccountNumber: number) {
+    this.ensureInitialized();
+    
+    const account = await this.accountRepo.findOne({
+      where: {
+        address: address.toLowerCase(),
+        subaccountNumber,
+      },
+    });
+    
     return {
       subaccount: {
-        address,
+        address: account?.address || address,
         subaccountNumber,
-        equity: '0',
-        freeCollateral: '0',
+        equity: '10000', // Calculated field, not persisted
+        freeCollateral: '8000', // Calculated field, not persisted
         openPerpetualPositions: {},
         assetPositions: {},
         marginEnabled: true,
@@ -214,15 +322,59 @@ export class DatabaseMockProvider implements MockDataProvider {
     };
   }
 
-  getPerpetualPositions(
+  async getPerpetualPositions(
     address: string,
     subaccountNumber?: number | null,
     status?: IndexerPerpetualPositionStatus | null,
     createdBeforeOrAt?: string | null,
     limit?: number | null
-  ): IndexerPerpetualPositionResponse {
-    // TODO: Query Position entities
-    return { positions: [] };
+  ): Promise<IndexerPerpetualPositionResponse> {
+    this.ensureInitialized();
+    
+    let query = this.positionRepo
+      .createQueryBuilder('position')
+      .leftJoinAndSelect('position.account', 'account')
+      .leftJoinAndSelect('position.market', 'market')
+      .where('account.address = :address', { address: address.toLowerCase() });
+    
+    if (subaccountNumber != null) {
+      query = query.andWhere('account.subaccountNumber = :subaccountNumber', { subaccountNumber });
+    }
+    
+    if (status) {
+      query = query.andWhere('position.status = :status', { status });
+    }
+    
+    if (createdBeforeOrAt) {
+      query = query.andWhere('position.createdAt <= :date', { date: new Date(createdBeforeOrAt) });
+    }
+    
+    if (limit) {
+      query = query.take(limit);
+    }
+    
+    const positions = await query.getMany();
+    
+    const positionsResponse: IndexerPerpetualPositionResponseObject[] = positions.map(position => ({
+      market: position.market?.ticker || '',
+      status: (position.status || 'OPEN') as any, // Database enum -> API enum
+      side: (position.side || 'LONG') as any, // Database enum -> API enum
+      size: position.size?.toString() || '0',
+      maxSize: position.maxSize?.toString() || '0',
+      entryPrice: position.entryPrice?.toString() || '0',
+      exitPrice: position.exitPrice?.toString() || null,
+      realizedPnl: position.realizedPnl?.toString() || '0',
+      unrealizedPnl: position.unrealizedPnl?.toString() || '0',
+      createdAt: position.createdAt?.toISOString() || new Date().toISOString(),
+      createdAtHeight: position.createdAtHeight?.toString() || '0',
+      closedAt: position.closedAt?.toISOString() || null,
+      sumOpen: position.size?.toString() || '0',
+      sumClose: '0',
+      netFunding: '0',
+      subaccountNumber: position.account?.subaccountNumber || 0,
+    }));
+    
+    return { positions: positionsResponse };
   }
 
   getAssetPositions(

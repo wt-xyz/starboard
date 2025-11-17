@@ -1,35 +1,35 @@
 import {
-  IndexerAddressResponse,
-  IndexerAssetPositionResponse,
-  IndexerCandleResolution,
-  IndexerCandleResponse,
-  IndexerComplianceResponse,
-  IndexerComplianceV2Response,
-  IndexerFillResponse,
-  IndexerFundingPaymentResponse,
-  IndexerHeightResponse,
-  IndexerHistoricalBlockTradingRewardsResponse,
-  IndexerHistoricalFundingResponse,
-  IndexerHistoricalPnlResponse,
-  IndexerHistoricalTradingRewardAggregationsResponse,
-  IndexerMegavaultHistoricalPnlResponse,
-  IndexerMegavaultPositionResponse,
-  IndexerOrderResponseObject,
-  IndexerOrderbookResponseObject,
-  IndexerParentSubaccountResponse,
-  IndexerParentSubaccountTransferResponse,
-  IndexerPerpetualMarketResponse,
-  IndexerPerpetualPositionResponse,
-  IndexerPerpetualPositionStatus,
-  IndexerTimeResponse,
-  IndexerTradeResponse,
-  IndexerTransferBetweenResponse,
-  IndexerTransferResponse,
-  IndexerVaultsHistoricalPnlResponse,
+    IndexerAddressResponse,
+    IndexerAssetPositionResponse,
+    IndexerCandleResolution,
+    IndexerCandleResponse,
+    IndexerComplianceResponse,
+    IndexerComplianceV2Response,
+    IndexerFillResponse,
+    IndexerFundingPaymentResponse,
+    IndexerHeightResponse,
+    IndexerHistoricalBlockTradingRewardsResponse,
+    IndexerHistoricalFundingResponse,
+    IndexerHistoricalPnlResponse,
+    IndexerHistoricalTradingRewardAggregationsResponse,
+    IndexerMegavaultHistoricalPnlResponse,
+    IndexerMegavaultPositionResponse,
+    IndexerOrderResponseObject,
+    IndexerOrderbookResponseObject,
+    IndexerParentSubaccountResponse,
+    IndexerParentSubaccountTransferResponse,
+    IndexerPerpetualMarketResponse,
+    IndexerPerpetualPositionResponse,
+    IndexerPerpetualPositionStatus,
+    IndexerTimeResponse,
+    IndexerTradeResponse,
+    IndexerTransferBetweenResponse,
+    IndexerTransferResponse,
+    IndexerVaultsHistoricalPnlResponse,
 } from '../../../../src/types/indexer/indexerApiGen';
 import {
-  IndexerCompositeOrderObject,
-  IndexerSparklineResponseObject,
+    IndexerCompositeOrderObject,
+    IndexerSparklineResponseObject,
 } from '../../../../src/types/indexer/indexerManual';
 
 /**
@@ -37,15 +37,15 @@ import {
  * Implementations can be in-memory (fast, stateless) or database-backed (persistent).
  */
 export interface MockDataProvider {
-  // Market data
-  getPerpetualMarkets(ticker?: string): IndexerPerpetualMarketResponse;
+  // Market data  
+  getPerpetualMarkets(ticker?: string): Promise<IndexerPerpetualMarketResponse> | IndexerPerpetualMarketResponse;
   getPerpetualMarketOrderbook(ticker: string): IndexerOrderbookResponseObject;
   getPerpetualMarketTrades(
     ticker: string,
     limit?: number | null,
     page?: number | null,
     createdBeforeOrAt?: string | null
-  ): IndexerTradeResponse;
+  ): Promise<IndexerTradeResponse> | IndexerTradeResponse;
   getPerpetualMarketCandles(
     ticker: string,
     resolution: IndexerCandleResolution,
@@ -61,8 +61,8 @@ export interface MockDataProvider {
   getSparklines(): IndexerSparklineResponseObject;
 
   // Account data
-  getAddressOverview(address: string): IndexerAddressResponse;
-  getSubaccount(address: string, subaccountNumber: number): { subaccount: any };
+  getAddressOverview(address: string): Promise<IndexerAddressResponse> | IndexerAddressResponse;
+  getSubaccount(address: string, subaccountNumber: number): Promise<{ subaccount: any }> | { subaccount: any };
   getParentSubaccount(address: string, parentSubaccountNumber: number): IndexerParentSubaccountResponse;
 
   // Positions
@@ -72,7 +72,7 @@ export interface MockDataProvider {
     status?: IndexerPerpetualPositionStatus | null,
     createdBeforeOrAt?: string | null,
     limit?: number | null
-  ): IndexerPerpetualPositionResponse;
+  ): Promise<IndexerPerpetualPositionResponse> | IndexerPerpetualPositionResponse;
   getAssetPositions(
     address: string,
     subaccountNumber?: number | null,

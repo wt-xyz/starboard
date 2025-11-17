@@ -645,9 +645,9 @@ function sendSubaccountUpdate(ws: WebSocket, address: string, subaccountNumber: 
   }
 }
 
-function sendMarketsUpdate(ws: WebSocket, mockProvider: MockDataProvider) {
+async function sendMarketsUpdate(ws: WebSocket, mockProvider: MockDataProvider) {
   try {
-    const markets = mockProvider.getPerpetualMarkets();
+    const markets = await Promise.resolve(mockProvider.getPerpetualMarkets());
     
     sendMessage(ws, {
       type: 'channel_data',
@@ -709,7 +709,7 @@ function sendError(ws: WebSocket, error: string) {
 async function start() {
   // Initialize mock data provider (async for database mode)
   const mockProvider = await createMockDataProvider();
-  const graphSnapshot = createGraphSnapshot(mockProvider);
+  const graphSnapshot = await createGraphSnapshot(mockProvider);
   const resolvers = createResolvers(graphSnapshot);
   
   const app = Fastify({ logger: false });
@@ -746,7 +746,7 @@ start().catch((error) => {
   process.exit(1);
 });
 
-function createGraphSnapshot(service: any): GraphSnapshot {
+async function createGraphSnapshot(service: any): Promise<GraphSnapshot> {
   const addresses: GraphAddress[] = SAMPLE_ADDRESSES.map((address, idx) => ({
     id: `addr-${idx + 1}`,
     address,
@@ -770,7 +770,9 @@ function createGraphSnapshot(service: any): GraphSnapshot {
     });
   });
 
-  const markets: GraphMarket[] = (Object.values(service.getPerpetualMarkets().markets) as IndexerPerpetualMarketResponseObject[]).map(
+  // Await getPerpetualMarkets() since it may return a Promise in database mode
+  const marketsResponse = await Promise.resolve(service.getPerpetualMarkets());
+  const markets: GraphMarket[] = (Object.values(marketsResponse.markets) as IndexerPerpetualMarketResponseObject[]).map(
     (market, idx) => ({
       id: market.clobPairId || `market-${idx + 1}`,
       ticker: market.ticker,
@@ -797,11 +799,16 @@ function createGraphSnapshot(service: any): GraphSnapshot {
     })
   );
 
-  const positions: GraphPosition[] = accounts.flatMap((account) => {
-    const { positions: positionList } = service.getPerpetualPositions(
-      account.address,
-      account.subaccountNumber
-    );
+  // Fetch all positions data upfront
+  const allPositionsData = await Promise.all(
+    accounts.map(async (account) => ({
+      account,
+      data: await Promise.resolve(service.getPerpetualPositions(account.address, account.subaccountNumber))
+    }))
+  );
+
+  const positions: GraphPosition[] = allPositionsData.flatMap(({ account, data }) => {
+    const { positions: positionList } = data;
     return positionList.map((position: IndexerPerpetualPositionResponseObject, idx: number) => {
       const market = markets.find((m) => m.ticker === position.market) ?? markets[0];
       return {
@@ -833,8 +840,16 @@ function createGraphSnapshot(service: any): GraphSnapshot {
     });
   });
 
-  const trades: GraphTrade[] = markets.flatMap((market) => {
-    const { trades: tradeList } = service.getPerpetualMarketTrades(market.ticker, 10);
+  // Fetch all trades data upfront
+  const allTradesData = await Promise.all(
+    markets.map(async (market) => ({
+      market,
+      data: await Promise.resolve(service.getPerpetualMarketTrades(market.ticker, 10))
+    }))
+  );
+
+  const trades: GraphTrade[] = allTradesData.flatMap(({ market, data }) => {
+    const { trades: tradeList } = data;
     return tradeList.map((trade: any) => {
       const position = positions.find((pos) => pos.marketId === market.id) ?? null;
       return {
