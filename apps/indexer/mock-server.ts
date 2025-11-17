@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ApolloServer } from '@apollo/server';
 import { fastifyApolloDrainPlugin, fastifyApolloHandler } from '@as-integrations/fastify';
 import cors from '@fastify/cors';
@@ -5,8 +6,13 @@ import Fastify from 'fastify';
 import { readFileSync } from 'fs';
 import { WebSocket, WebSocketServer } from 'ws';
 
-import { IndexerCandleResolution, IndexerPerpetualMarketResponseObject } from '../../src/types/indexer/indexerApiGen';
-import { createMockDataProvider } from './src/providers';
+import { 
+  IndexerCandleResolution, 
+  IndexerPerpetualMarketResponseObject,
+  IndexerPerpetualPositionResponseObject,
+  IndexerFillResponseObject
+} from '../../src/types/indexer/indexerApiGen';
+import { createMockDataProvider, MockDataProvider } from './src/providers';
 import { registerRestRoutes } from './src/rest-routes';
 
 type GraphAddress = {
@@ -137,8 +143,6 @@ const SAMPLE_ADDRESSES = Array.from({ length: 4 }).map(
   (_, idx) => `0x${(idx + 1).toString(16).padStart(40, String(idx + 1))}`
 );
 
-const mockProvider = createMockDataProvider();
-const graphSnapshot = createGraphSnapshot(mockProvider);
 const typeDefs = readFileSync('./schema-clean.graphql', 'utf8');
 
 // WebSocket subscription management
@@ -164,8 +168,9 @@ function paginateResults<T>(results: T[], first?: number, after?: string): T[] {
   return results.slice(startIndex, startIndex + first);
 }
 
-const resolvers = {
-  Query: {
+function createResolvers(graphSnapshot: GraphSnapshot) {
+  return {
+    Query: {
     addresses: (_: unknown, args: { first?: number; after?: string }) =>
       paginateResults(graphSnapshot.addresses, args.first, args.after),
     address: (_: unknown, args: { id: string }) =>
@@ -358,10 +363,11 @@ const resolvers = {
     market: (parent: GraphCandle) =>
       graphSnapshot.markets.find((market) => market.id === parent.marketId),
   },
-};
+  };
+}
 
 // WebSocket server setup and handlers
-function setupWebSocketServer(wss: WebSocketServer) {
+function setupWebSocketServer(wss: WebSocketServer, mockProvider: MockDataProvider) {
   wss.on('connection', (ws: WebSocket) => {
     console.log('[ws] Client connected');
     clientSubscriptions.set(ws, []);
@@ -369,7 +375,7 @@ function setupWebSocketServer(wss: WebSocketServer) {
     ws.on('message', (data: Buffer) => {
       try {
         const message = JSON.parse(data.toString());
-        handleWebSocketMessage(ws, message);
+        handleWebSocketMessage(ws, message, mockProvider);
       } catch (error) {
         console.error('[ws] Failed to parse message:', error);
         sendError(ws, 'Invalid message format');
@@ -388,12 +394,12 @@ function setupWebSocketServer(wss: WebSocketServer) {
   });
 }
 
-function handleWebSocketMessage(ws: WebSocket, message: any) {
+function handleWebSocketMessage(ws: WebSocket, message: any, mockProvider: MockDataProvider) {
   const { type, channel, id } = message;
 
   switch (type) {
     case 'subscribe':
-      handleSubscribe(ws, channel, id);
+      handleSubscribe(ws, channel, id, mockProvider);
       break;
     case 'unsubscribe':
       handleUnsubscribe(ws, channel, id);
@@ -407,7 +413,7 @@ function handleWebSocketMessage(ws: WebSocket, message: any) {
   }
 }
 
-function handleSubscribe(ws: WebSocket, channel: string, id?: string) {
+function handleSubscribe(ws: WebSocket, channel: string, id: string | undefined, mockProvider: MockDataProvider) {
   console.log(`[ws] Subscribe request: ${channel}${id ? ` (id: ${id})` : ''}`);
 
   const subscriptions = clientSubscriptions.get(ws) || [];
@@ -420,17 +426,17 @@ function handleSubscribe(ws: WebSocket, channel: string, id?: string) {
 
   // Handle different channel types
   if (channel === 'v4_parent_subaccounts') {
-    subscribeToParentSubaccounts(ws, id);
+    subscribeToParentSubaccounts(ws, id, mockProvider);
   } else if (channel === 'v4_subaccounts') {
-    subscribeToSubaccounts(ws, id);
+    subscribeToSubaccounts(ws, id, mockProvider);
   } else if (channel === 'v4_markets') {
-    subscribeToMarkets(ws);
+    subscribeToMarkets(ws, mockProvider);
   } else if (channel.startsWith('v4_orderbook/')) {
     const ticker = channel.replace('v4_orderbook/', '');
-    subscribeToOrderbook(ws, ticker);
+    subscribeToOrderbook(ws, ticker, mockProvider);
   } else if (channel.startsWith('v4_trades/')) {
     const ticker = channel.replace('v4_trades/', '');
-    subscribeToTrades(ws, ticker);
+    subscribeToTrades(ws, ticker, mockProvider);
   } else {
     console.warn(`[ws] Unknown channel: ${channel}`);
     sendError(ws, `Unknown channel: ${channel}`);
@@ -469,7 +475,7 @@ function cleanupSubscriptions(ws: WebSocket) {
 }
 
 // Channel-specific subscription handlers
-function subscribeToParentSubaccounts(ws: WebSocket, id?: string) {
+function subscribeToParentSubaccounts(ws: WebSocket, id: string | undefined, mockProvider: MockDataProvider) {
   if (!id) {
     sendError(ws, 'v4_parent_subaccounts requires id (address/parentSubaccountNumber)');
     return;
@@ -488,11 +494,11 @@ function subscribeToParentSubaccounts(ws: WebSocket, id?: string) {
   });
 
   // Send initial data immediately
-  sendParentSubaccountUpdate(ws, address, parentSubaccountNumber, id);
+  sendParentSubaccountUpdate(ws, address, parentSubaccountNumber, id, mockProvider);
 
   // Set up periodic updates (every 3 seconds)
   const interval = setInterval(() => {
-    sendParentSubaccountUpdate(ws, address, parentSubaccountNumber, id);
+    sendParentSubaccountUpdate(ws, address, parentSubaccountNumber, id, mockProvider);
   }, 3000);
 
   const subscriptions = clientSubscriptions.get(ws) || [];
@@ -504,7 +510,7 @@ function subscribeToParentSubaccounts(ws: WebSocket, id?: string) {
   clientSubscriptions.set(ws, subscriptions);
 }
 
-function subscribeToSubaccounts(ws: WebSocket, id?: string) {
+function subscribeToSubaccounts(ws: WebSocket, id: string | undefined, mockProvider: MockDataProvider) {
   if (!id) {
     sendError(ws, 'v4_subaccounts requires id (address/subaccountNumber)');
     return;
@@ -521,10 +527,10 @@ function subscribeToSubaccounts(ws: WebSocket, id?: string) {
     message_id: 1,
   });
 
-  sendSubaccountUpdate(ws, address, subaccountNumber, id);
+  sendSubaccountUpdate(ws, address, subaccountNumber, id, mockProvider);
 
   const interval = setInterval(() => {
-    sendSubaccountUpdate(ws, address, subaccountNumber, id);
+    sendSubaccountUpdate(ws, address, subaccountNumber, id, mockProvider);
   }, 3000);
 
   const subscriptions = clientSubscriptions.get(ws) || [];
@@ -536,7 +542,7 @@ function subscribeToSubaccounts(ws: WebSocket, id?: string) {
   clientSubscriptions.set(ws, subscriptions);
 }
 
-function subscribeToMarkets(ws: WebSocket) {
+function subscribeToMarkets(ws: WebSocket, mockProvider: MockDataProvider) {
   sendMessage(ws, {
     type: 'subscribed',
     channel: 'v4_markets',
@@ -544,10 +550,10 @@ function subscribeToMarkets(ws: WebSocket) {
     message_id: 1,
   });
 
-  sendMarketsUpdate(ws);
+  sendMarketsUpdate(ws, mockProvider);
 
   const interval = setInterval(() => {
-    sendMarketsUpdate(ws);
+    sendMarketsUpdate(ws, mockProvider);
   }, 2000);
 
   const subscriptions = clientSubscriptions.get(ws) || [];
@@ -558,7 +564,7 @@ function subscribeToMarkets(ws: WebSocket) {
   clientSubscriptions.set(ws, subscriptions);
 }
 
-function subscribeToOrderbook(ws: WebSocket, ticker: string) {
+function subscribeToOrderbook(ws: WebSocket, ticker: string, mockProvider: MockDataProvider) {
   sendMessage(ws, {
     type: 'subscribed',
     channel: `v4_orderbook/${ticker}`,
@@ -567,10 +573,10 @@ function subscribeToOrderbook(ws: WebSocket, ticker: string) {
     message_id: 1,
   });
 
-  sendOrderbookUpdate(ws, ticker);
+  sendOrderbookUpdate(ws, ticker, mockProvider);
 
   const interval = setInterval(() => {
-    sendOrderbookUpdate(ws, ticker);
+    sendOrderbookUpdate(ws, ticker, mockProvider);
   }, 1500);
 
   const subscriptions = clientSubscriptions.get(ws) || [];
@@ -582,7 +588,7 @@ function subscribeToOrderbook(ws: WebSocket, ticker: string) {
   clientSubscriptions.set(ws, subscriptions);
 }
 
-function subscribeToTrades(ws: WebSocket, ticker: string) {
+function subscribeToTrades(ws: WebSocket, ticker: string, mockProvider: MockDataProvider) {
   sendMessage(ws, {
     type: 'subscribed',
     channel: `v4_trades/${ticker}`,
@@ -591,10 +597,10 @@ function subscribeToTrades(ws: WebSocket, ticker: string) {
     message_id: 1,
   });
 
-  sendTradesUpdate(ws, ticker);
+  sendTradesUpdate(ws, ticker, mockProvider);
 
   const interval = setInterval(() => {
-    sendTradesUpdate(ws, ticker);
+    sendTradesUpdate(ws, ticker, mockProvider);
   }, 4000);
 
   const subscriptions = clientSubscriptions.get(ws) || [];
@@ -607,7 +613,7 @@ function subscribeToTrades(ws: WebSocket, ticker: string) {
 }
 
 // Data update senders
-function sendParentSubaccountUpdate(ws: WebSocket, address: string, parentSubaccountNumber: number, id: string) {
+function sendParentSubaccountUpdate(ws: WebSocket, address: string, parentSubaccountNumber: number, id: string, mockProvider: MockDataProvider) {
   try {
     const data = mockProvider.getParentSubaccount(address, parentSubaccountNumber);
     
@@ -623,7 +629,7 @@ function sendParentSubaccountUpdate(ws: WebSocket, address: string, parentSubacc
   }
 }
 
-function sendSubaccountUpdate(ws: WebSocket, address: string, subaccountNumber: number, id: string) {
+function sendSubaccountUpdate(ws: WebSocket, address: string, subaccountNumber: number, id: string, mockProvider: MockDataProvider) {
   try {
     const data = mockProvider.getSubaccount(address, subaccountNumber);
     
@@ -639,7 +645,7 @@ function sendSubaccountUpdate(ws: WebSocket, address: string, subaccountNumber: 
   }
 }
 
-function sendMarketsUpdate(ws: WebSocket) {
+function sendMarketsUpdate(ws: WebSocket, mockProvider: MockDataProvider) {
   try {
     const markets = mockProvider.getPerpetualMarkets();
     
@@ -654,7 +660,7 @@ function sendMarketsUpdate(ws: WebSocket) {
   }
 }
 
-function sendOrderbookUpdate(ws: WebSocket, ticker: string) {
+function sendOrderbookUpdate(ws: WebSocket, ticker: string, mockProvider: MockDataProvider) {
   try {
     const orderbook = mockProvider.getPerpetualMarketOrderbook(ticker);
     
@@ -670,7 +676,7 @@ function sendOrderbookUpdate(ws: WebSocket, ticker: string) {
   }
 }
 
-function sendTradesUpdate(ws: WebSocket, ticker: string) {
+function sendTradesUpdate(ws: WebSocket, ticker: string, mockProvider: MockDataProvider) {
   try {
     const trades = mockProvider.getPerpetualMarketTrades(ticker);
     
@@ -701,6 +707,11 @@ function sendError(ws: WebSocket, error: string) {
 }
 
 async function start() {
+  // Initialize mock data provider (async for database mode)
+  const mockProvider = await createMockDataProvider();
+  const graphSnapshot = createGraphSnapshot(mockProvider);
+  const resolvers = createResolvers(graphSnapshot);
+  
   const app = Fastify({ logger: false });
   await app.register(cors, { origin: true });
   registerRestRoutes(app, mockProvider);
@@ -724,7 +735,7 @@ async function start() {
 
   // Set up WebSocket server
   const wss = new WebSocketServer({ port: 4001 });
-  setupWebSocketServer(wss);
+  setupWebSocketServer(wss, mockProvider);
   console.log('[mock-indexer] WebSocket server ready at ws://0.0.0.0:4001');
 }
 
@@ -791,7 +802,7 @@ function createGraphSnapshot(service: any): GraphSnapshot {
       account.address,
       account.subaccountNumber
     );
-    return positionList.map((position, idx) => {
+    return positionList.map((position: IndexerPerpetualPositionResponseObject, idx: number) => {
       const market = markets.find((m) => m.ticker === position.market) ?? markets[0];
       return {
         id: `${account.id}-pos-${idx}`,
@@ -824,7 +835,7 @@ function createGraphSnapshot(service: any): GraphSnapshot {
 
   const trades: GraphTrade[] = markets.flatMap((market) => {
     const { trades: tradeList } = service.getPerpetualMarketTrades(market.ticker, 10);
-    return tradeList.map((trade) => {
+    return tradeList.map((trade: any) => {
       const position = positions.find((pos) => pos.marketId === market.id) ?? null;
       return {
         id: trade.id,
@@ -845,7 +856,7 @@ function createGraphSnapshot(service: any): GraphSnapshot {
       account.address,
       account.subaccountNumber
     );
-    return fundingPayments.map((payment, idx) => {
+    return fundingPayments.map((payment: any, idx: number) => {
       const market = markets.find((m) => m.ticker === payment.ticker) ?? markets[0];
       const position =
         positions.find((pos) => pos.accountId === account.id && pos.marketId === market.id) ?? null;
@@ -874,7 +885,7 @@ function createGraphSnapshot(service: any): GraphSnapshot {
       IndexerCandleResolution._1HOUR,
       12
     );
-    return candleList.map((candle, idx) => ({
+    return candleList.map((candle: any, idx: number) => ({
       id: `${market.id}-candle-${idx}`,
       ticker: candle.ticker,
       resolution: toGraphResolution(candle.resolution),

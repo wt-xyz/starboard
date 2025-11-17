@@ -1,4 +1,3 @@
-import { DatabaseMockProvider } from './DatabaseMockProvider';
 import { InMemoryMockProvider } from './InMemoryMockProvider';
 import { MockDataProvider } from './MockDataProvider.interface';
 
@@ -11,15 +10,19 @@ type MockDataSource = 'memory' | 'database';
  * - 'memory' (default): Fast, deterministic, in-memory mocks. No Docker required.
  * - 'database': Persistent mocks backed by PostgreSQL via TypeORM.
  * 
- * @returns MockDataProvider instance
+ * @returns MockDataProvider instance (initialized if database mode)
  */
-export function createMockDataProvider(): MockDataProvider {
+export async function createMockDataProvider(): Promise<MockDataProvider> {
   const dataSource = (process.env.MOCK_DATA_SOURCE || 'memory').toLowerCase() as MockDataSource;
 
   switch (dataSource) {
     case 'database':
       console.log('[MockDataProvider] Using database-backed mock data provider');
-      return new DatabaseMockProvider();
+      // Dynamic import to avoid loading TypeORM entities in memory mode
+      const { DatabaseMockProvider } = await import('./DatabaseMockProvider');
+      const dbProvider = new DatabaseMockProvider();
+      await dbProvider.initialize();
+      return dbProvider;
     
     case 'memory':
     default:
@@ -32,7 +35,8 @@ export function createMockDataProvider(): MockDataProvider {
 }
 
 // Export types and classes for direct usage if needed
-export { MockDataProvider } from './MockDataProvider.interface';
 export { InMemoryMockProvider } from './InMemoryMockProvider';
-export { DatabaseMockProvider } from './DatabaseMockProvider';
+export { MockDataProvider } from './MockDataProvider.interface';
+// DatabaseMockProvider is exported lazily to avoid loading TypeORM in memory mode
+
 

@@ -5,16 +5,25 @@
   "scripts": {
     "start": "tsx mock-server.ts",
     "dev": "tsx watch mock-server.ts",
+    "dev:db": "pnpm build && MOCK_DATA_SOURCE=database node lib/apps/indexer/mock-server.js",
+    "dev:db:watch": "nodemon --watch src --ext ts --exec 'pnpm dev:db'",
     "apply": "squid-typeorm-migration apply",
-    "build": "rm -rf lib && tsc"
+    "build": "rm -rf lib && tsc",
+    "seed:all": "pnpm build && node lib/apps/indexer/src/seeds/seed-all.js",
+    "seed:clean": "pnpm build && node lib/apps/indexer/src/seeds/clean-db.js",
+    "seed:reset": "pnpm build && node lib/apps/indexer/src/seeds/clean-db.js && node lib/apps/indexer/src/seeds/seed-all.js",
+    "seed:markets": "pnpm build && node lib/apps/indexer/src/seeds/seed-markets.js",
+    "seed:accounts": "pnpm build && node lib/apps/indexer/src/seeds/seed-accounts.js",
+    "seed:positions": "pnpm build && node lib/apps/indexer/src/seeds/seed-positions.js",
+    "seed:trades": "pnpm build && node lib/apps/indexer/src/seeds/seed-trades.js"
   },
   "dependencies": {
+    "@apollo/server": "^4.9.5",
+    "@apollo/subgraph": "^2.5.5",
     "@as-integrations/fastify": "^2.0.2",
     "@fastify/cors": "^9.0.1",
-    "@apollo/server": "^4.9.5",
-    "@subsquid/big-decimal": "^1.0.0",
-    "@apollo/subgraph": "^2.5.5",
     "@subsquid/batch-processor": "^0.0.0",
+    "@subsquid/big-decimal": "^1.0.0",
     "@subsquid/fuel-objects": "^0.0.4",
     "@subsquid/fuel-stream": "^1.0.4",
     "@subsquid/graphql-server": "^4.11.0",
@@ -25,6 +34,7 @@
     "fuels": "^0.101.3",
     "graphql": "^16.8.1",
     "pg": "^8.13.0",
+    "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.20",
     "ws": "^8.18.0"
   },

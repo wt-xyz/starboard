@@ -1,3 +1,4 @@
+import { DataSource, Repository } from 'typeorm';
 import {
   IndexerAddressResponse,
   IndexerAssetPositionResponse,
@@ -32,18 +33,99 @@ import {
   IndexerSparklineResponseObject,
 } from '../../../../src/types/indexer/indexerManual';
 import { MockDataProvider } from './MockDataProvider.interface';
+import { AppDataSource, initializeDatabase } from '../db/data-source';
+import { Account } from '../model/generated/account.model';
+import { Market } from '../model/generated/market.model';
+import { Position } from '../model/generated/position.model';
+import { Trade } from '../model/generated/trade.model';
+import { Payment } from '../model/generated/payment.model';
+import { Asset } from '../model/generated/asset.model';
 
 /**
  * Database-backed mock data provider.
  * Reads from PostgreSQL via TypeORM for persistent, stateful mocks.
  * 
- * TODO: Implement TypeORM queries once seed scripts are ready.
- * For now, this is a placeholder that returns empty/minimal data.
+ * Requires:
+ * 1. PostgreSQL running via docker-compose
+ * 2. Database seeded with test data
+ * 3. MOCK_DATA_SOURCE=database environment variable
  */
 export class DatabaseMockProvider implements MockDataProvider {
+  private dataSource: DataSource;
+  private marketRepo: Repository<Market>;
+  private accountRepo: Repository<Account>;
+  private positionRepo: Repository<Position>;
+  private tradeRepo: Repository<Trade>;
+  private paymentRepo: Repository<Payment>;
+  private assetRepo: Repository<Asset>;
+  private isInitialized = false;
+
   constructor() {
-    // TODO: Initialize TypeORM connection
-    console.log('[DatabaseMockProvider] Database mode not yet implemented. Returning empty data.');
+    this.dataSource = AppDataSource;
+    
+    // Initialize repositories (will be properly set after connection)
+    this.marketRepo = {} as Repository<Market>;
+    this.accountRepo = {} as Repository<Account>;
+    this.positionRepo = {} as Repository<Position>;
+    this.tradeRepo = {} as Repository<Trade>;
+    this.paymentRepo = {} as Repository<Payment>;
+    this.assetRepo = {} as Repository<Asset>;
+  }
+
+  /**
+   * Initialize database connection and repositories.
+   * Must be called before using any provider methods.
+   */
+  async initialize(): Promise<void> {
+    if (this.isInitialized) {
+      return;
+    }
+
+    console.log('[DatabaseMockProvider] Initializing database connection...');
+    
+    try {
+      await initializeDatabase();
+      
+      // Initialize repositories
+      this.marketRepo = this.dataSource.getRepository(Market);
+      this.accountRepo = this.dataSource.getRepository(Account);
+      this.positionRepo = this.dataSource.getRepository(Position);
+      this.tradeRepo = this.dataSource.getRepository(Trade);
+      this.paymentRepo = this.dataSource.getRepository(Payment);
+      this.assetRepo = this.dataSource.getRepository(Asset);
+      
+      this.isInitialized = true;
+      console.log('[DatabaseMockProvider] ✓ Database provider ready');
+    } catch (error) {
+      console.error('[DatabaseMockProvider] ✗ Failed to initialize:', error);
+      throw new Error(
+        'DatabaseMockProvider initialization failed. ' +
+        'Please ensure PostgreSQL is running (docker-compose up -d) ' +
+        'and the database has been seeded (pnpm seed:reset)'
+      );
+    }
+  }
+
+  /**
+   * Close database connection gracefully.
+   */
+  async close(): Promise<void> {
+    if (this.isInitialized && this.dataSource.isInitialized) {
+      await this.dataSource.destroy();
+      this.isInitialized = false;
+      console.log('[DatabaseMockProvider] Connection closed');
+    }
+  }
+
+  /**
+   * Ensure database is initialized before queries.
+   */
+  private ensureInitialized(): void {
+    if (!this.isInitialized) {
+      throw new Error(
+        'DatabaseMockProvider not initialized. Call initialize() first.'
+      );
+    }
   }
 
   getPerpetualMarkets(ticker?: string): IndexerPerpetualMarketResponse {
@@ -360,4 +442,5 @@ export class DatabaseMockProvider implements MockDataProvider {
     return { vaultsPnl: [] };
   }
 }
+
 

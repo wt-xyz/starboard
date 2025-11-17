@@ -17,6 +17,7 @@
   },
   "include": [
     "src",
+    "mock-server.ts",
     "../../src/types/indexer/**/*"
   ],
   "exclude": [

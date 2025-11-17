@@ -16,6 +16,7 @@ pnpm --filter indexer dev
 # REST API: http://localhost:4000/v4/*
 # GraphQL: http://localhost:4000/graphql
 # WebSocket: ws://localhost:4001
+
 ```
 
 ### Database Mode (Optional)

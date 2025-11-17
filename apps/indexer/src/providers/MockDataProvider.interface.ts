@@ -162,3 +162,7 @@ export interface MockDataProvider {
   getVaultHistoricalPnl(): IndexerVaultsHistoricalPnlResponse;
 }
 
+
+
+
+

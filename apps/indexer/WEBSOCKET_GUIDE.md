@@ -309,3 +309,7 @@ These can be adjusted in `mock-server.ts` by modifying the `setInterval` duratio
 4. **Connect frontend:** The frontend should automatically connect when you start it
 5. **Monitor logs:** Watch for `[ws]` prefixed messages in the server output
 
+
+
+
+
