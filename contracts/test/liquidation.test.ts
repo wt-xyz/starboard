@@ -1,32 +1,32 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { AbstractContract, WalletUnlocked } from "fuels"
-import { launchNode, getNodeWallets } from "./node"
+import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
+import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import {
-    call,
-    call2,
+    Fungible,
+    FungibleFactory,
+    PricefeedWrapper,
+    PricefeedWrapperFactory,
+    StorkMock,
+    StorkMockFactory,
+    Vault,
+    VaultExposeFactory,
+} from "../types"
+import { getNodeWallets, launchNode } from "./node"
+import {
     AddressIdentity,
-    walletToAddressIdentity,
-    expandDecimals,
-    COLLATERAL_ASSET,
-    USDC_ASSET,
     BTC_ASSET,
     BTC_MAX_LEVERAGE,
+    call,
+    call2,
+    COLLATERAL_ASSET,
+    expandDecimals,
+    getAssetId,
     getBtcConfig,
     getUsdcConfig,
-    getAssetId,
     moveBlockchainTime,
+    USDC_ASSET,
+    walletToAddressIdentity,
 } from "./utils"
-import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
-import {
-    FungibleFactory,
-    PricefeedWrapperFactory,
-    StorkMockFactory,
-    VaultExposeFactory,
-    Fungible,
-    StorkMock,
-    PricefeedWrapper,
-    Vault,
-} from "../types"
 
 describe("Vault.funding_rate", () => {
     let attachedContracts: AbstractContract[]
@@ -281,7 +281,7 @@ describe("Vault.funding_rate", () => {
             // close the short position to create an imbalance (now only longs remain)
             await call(
                 vaultUser0.functions
-                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(1000), false, user0Identity)
+                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(100), expandDecimals(1000), false, user0Identity)
                     .addContracts(attachedContracts),
             )
             // generate some funding rate debt from the imbalance
@@ -553,7 +553,7 @@ describe("Vault.funding_rate", () => {
             // close the long position to create an imbalance (now only shorts remain)
             await call(
                 vaultUser0.functions
-                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(1000), true, user0Identity)
+                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(100), expandDecimals(1000), true, user0Identity)
                     .addContracts(attachedContracts),
             )
             // generate some funding rate debt from the imbalance
@@ -931,7 +931,7 @@ describe("Vault.funding_rate", () => {
             // close the short position to create an imbalance (now only longs remain)
             await call(
                 vaultUser0.functions
-                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(1000), false, user0Identity)
+                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(100), expandDecimals(1000), false, user0Identity)
                     .addContracts(attachedContracts),
             )
             // generate some funding rate debt from the imbalance
@@ -1301,7 +1301,7 @@ describe("Vault.funding_rate", () => {
             // close the long position to create an imbalance (now only shorts remain)
             await call(
                 vaultUser0.functions
-                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(1000), true, user0Identity)
+                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(100), expandDecimals(1000), true, user0Identity)
                     .addContracts(attachedContracts),
             )
             // generate some funding rate debt from the imbalance

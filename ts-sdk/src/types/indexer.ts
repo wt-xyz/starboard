@@ -40,7 +40,7 @@ export interface PositionKey {
 export interface Position {
   id: string;
   positionKey: PositionKey;
-  collateralAmout: string;
+  collateralAmount: string;
   size: string;
   timestamp: number;
   latest: boolean;
@@ -51,7 +51,7 @@ export interface TotalPosition {
   id: string;
   indexAssetId: string;
   isLong: boolean;
-  collateralAmout: string;
+  collateralAmount: string;
   size: string;
   lastTimestamp: number;
 }
