@@ -84,6 +84,7 @@ export interface RawDataState {
     orders: Loadable<OrdersData>;
     transfers: Loadable<IndexerParentSubaccountTransferResponse>;
     blockTradingRewards: Loadable<IndexerHistoricalBlockTradingRewardsResponse>;
+    graphqlPositions: Loadable<any[]>; // GraphQL positions from Squid indexer
   };
   network: {
     [networkId: string]: NetworkState;
@@ -117,6 +118,7 @@ const initialState: RawDataState = {
     orders: loadableIdle(),
     transfers: loadableIdle(),
     blockTradingRewards: loadableIdle(),
+    graphqlPositions: loadableIdle(),
   },
   network: {},
   heights: {
@@ -222,6 +224,9 @@ export const rawSlice = createSlice({
       ) => {
         state.rewards.price = action.payload;
       },
+      setGraphqlPositionsRaw: (state, action: PayloadAction<Loadable<any[]>>) => {
+        state.account.graphqlPositions = action.payload;
+      },
     }),
     // orderbook is throttled separately for fine-grained control
     setOrderbookRaw: (
@@ -299,4 +304,5 @@ export const {
   setSourceAddressScreenV2Raw,
   setRewardsParams,
   setRewardsTokenPrice,
+  setGraphqlPositionsRaw,
 } = rawSlice.actions;

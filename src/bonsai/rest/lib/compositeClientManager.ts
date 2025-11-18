@@ -63,7 +63,11 @@ function makeCompositeClient({
     if (indexerUrl == null) {
       throw new Error('No indexer urls found');
     }
-    return new (await getLazyIndexerConfig())(indexerUrl.api, indexerUrl.socket);
+    return new (await getLazyIndexerConfig())(
+      indexerUrl.api,
+      indexerUrl.socket,
+      indexerUrl.graphql
+    );
   }
 
   async function initializeCompositeClient() {

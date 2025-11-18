@@ -17,6 +17,9 @@ export const selectRawParentSubaccountData = (state: RootState) =>
   state.raw.account.parentSubaccount.data;
 
 export const selectRawFillsRestData = (state: RootState) => state.raw.account.fills.data;
+export const selectRawGraphqlPositions = (state: RootState) => state.raw.account.graphqlPositions;
+export const selectRawGraphqlPositionsData = (state: RootState) =>
+  state.raw.account.graphqlPositions.data;
 export const selectRawOrdersRestData = (state: RootState) => state.raw.account.orders.data;
 export const selectRawTransfersRestData = (state: RootState) => state.raw.account.transfers.data;
 export const selectRawBlockTradingRewardsRestData = (state: RootState) =>

@@ -1,6 +1,7 @@
-import { IndexerConfig, DEFAULT_API_TIMEOUT } from './constants';
+import { DEFAULT_API_TIMEOUT, IndexerConfig } from './constants';
 import AccountClient from './modules/account';
 import MarketsClient from './modules/markets';
+import PositionsGraphQLClient from './modules/positions-graphql';
 import UtilityClient from './modules/utility';
 import VaultClient from './modules/vault';
 
@@ -14,6 +15,7 @@ export class IndexerClient {
   readonly _account: AccountClient;
   readonly _utility: UtilityClient;
   readonly _vault: VaultClient;
+  readonly _positions: PositionsGraphQLClient | null;
 
   constructor(config: IndexerConfig, apiTimeout?: number) {
     this.config = config;
@@ -23,6 +25,11 @@ export class IndexerClient {
     this._account = new AccountClient(config.restEndpoint, apiTimeout, config.proxy);
     this._utility = new UtilityClient(config.restEndpoint, apiTimeout, config.proxy);
     this._vault = new VaultClient(config.restEndpoint, apiTimeout, config.proxy);
+    
+    // Initialize positions client if graphqlEndpoint is provided
+    this._positions = config.graphqlEndpoint 
+      ? new PositionsGraphQLClient(config.graphqlEndpoint)
+      : null;
   }
 
   /**
@@ -57,5 +64,14 @@ export class IndexerClient {
    */
   get vault(): VaultClient {
     return this._vault;
+  }
+
+  /**
+   * @description Get the positions module, used for querying position data from GraphQL.
+   *
+   * @returns The positions module or null if graphqlEndpoint is not configured
+   */
+  get positions(): PositionsGraphQLClient | null {
+    return this._positions;
   }
 }

@@ -29,27 +29,27 @@ import {
 import { calculateTransfers } from '../calculators/transfers';
 import { mergeLoadableStatus } from '../lib/mapLoadable';
 import { selectParentSubaccountInfo } from '../socketSelectors';
-import { SubaccountTransfer } from '../types/summaryTypes';
+import { SubaccountPosition, SubaccountTransfer } from '../types/summaryTypes';
 import { selectLatestIndexerHeight, selectLatestValidatorHeight } from './apiStatus';
 import {
-  selectRawBlockTradingRewardsLiveData,
-  selectRawBlockTradingRewardsRest,
-  selectRawBlockTradingRewardsRestData,
-  selectRawFillsLiveData,
-  selectRawFillsRest,
-  selectRawFillsRestData,
-  selectRawIndexerHeightDataLoadable,
-  selectRawMarkets,
-  selectRawMarketsData,
-  selectRawOrdersLiveData,
-  selectRawOrdersRest,
-  selectRawOrdersRestData,
-  selectRawParentSubaccount,
-  selectRawParentSubaccountData,
-  selectRawTransfersLiveData,
-  selectRawTransfersRest,
-  selectRawTransfersRestData,
-  selectRawValidatorHeightDataLoadable,
+    selectRawBlockTradingRewardsLiveData,
+    selectRawBlockTradingRewardsRest,
+    selectRawBlockTradingRewardsRestData,
+    selectRawFillsLiveData,
+    selectRawFillsRest,
+    selectRawFillsRestData,
+    selectRawIndexerHeightDataLoadable,
+    selectRawMarkets,
+    selectRawMarketsData,
+    selectRawOrdersLiveData,
+    selectRawOrdersRest,
+    selectRawOrdersRestData,
+    selectRawParentSubaccount,
+    selectRawParentSubaccountData,
+    selectRawTransfersLiveData,
+    selectRawTransfersRest,
+    selectRawTransfersRestData,
+    selectRawValidatorHeightDataLoadable,
 } from './base';
 
 const BACKUP_BLOCK_HEIGHT = { height: 0, time: '1971-01-01T00:00:00Z' };
@@ -110,8 +110,14 @@ export const selectParentSubaccountSummaryLoading = createAppSelector(
 );
 
 export const selectParentSubaccountOpenPositions = createAppSelector(
-  [selectParentSubaccountPositions],
-  (positions) => {
+  [selectParentSubaccountPositions, selectRawGraphqlPositionsData],
+  (positions, graphqlPositions) => {
+    if (graphqlPositions && graphqlPositions.length > 0) {
+      return graphqlPositions.filter(
+        (p: any) => p.status === IndexerPerpetualPositionStatus.OPEN
+      ) as SubaccountPosition[];
+    }
+
     return positions?.filter((p) => p.status === IndexerPerpetualPositionStatus.OPEN);
   }
 );

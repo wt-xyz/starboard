@@ -7,6 +7,7 @@ export interface EndpointsConfig {
   indexers: {
     api: string;
     socket: string;
+    graphql?: string;
   }[];
   validators: string[];
   skip: string;

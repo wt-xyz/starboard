@@ -244,11 +244,18 @@ export const PAGE_REQUEST: PageRequest = {
 export class IndexerConfig {
   public restEndpoint: string;
   public websocketEndpoint: string;
+  public graphqlEndpoint?: string;
   public proxy?: AxiosProxyConfig;
 
-  constructor(restEndpoint: string, websocketEndpoint: string, proxy?: AxiosProxyConfig) {
+  constructor(
+    restEndpoint: string, 
+    websocketEndpoint: string, 
+    graphqlEndpoint?: string,
+    proxy?: AxiosProxyConfig
+  ) {
     this.restEndpoint = restEndpoint;
     this.websocketEndpoint = websocketEndpoint;
+    this.graphqlEndpoint = graphqlEndpoint;
     this.proxy = proxy;
   }
 }

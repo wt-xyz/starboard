@@ -11,6 +11,7 @@ import {
 import { setUpConfigTiersQuery } from './rest/configTiers';
 import { setUpFillsQuery } from './rest/fills';
 import { setUpGeoQuery } from './rest/geo';
+import { setUpGraphQLPositionsQuery } from './rest/graphqlPositions';
 import { setUpIndexerHeightQuery, setUpValidatorHeightQuery } from './rest/height';
 import { alwaysUseCurrentNetworkClient } from './rest/lib/compositeClientManager';
 import { setUpOrdersQuery } from './rest/orders';
@@ -35,6 +36,7 @@ export const storeLifecycles = [
   setUpOrdersQuery,
   setUpTransfersQuery,
   setUpBlockTradingRewardsQuery,
+  setUpGraphQLPositionsQuery, // Fetch positions from GraphQL indexer
   setUpOrderbook,
   setUpSparklinesQuery,
   setUpIndexerHeightQuery,
