@@ -5,7 +5,7 @@ describe('lib/util', () => {
   describe('randomInt', () => {
     it('random values', () => {
       const maxValue: number = 9999;
-      let lastValue: number = 0;
+      const values = new Set<number>();
       for (let i = 0; i < 100; i++) {
         const value: number = randomInt(maxValue);
 
@@ -13,10 +13,11 @@ describe('lib/util', () => {
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(maxValue);
 
-        // No collision.
-        expect(value).not.toEqual(lastValue);
-        lastValue = value;
+        values.add(value);
       }
+
+      // Should generate multiple unique values (allowing some collisions due to randomness)
+      expect(values.size).toBeGreaterThan(50);
     });
 
     it('zero', () => {
@@ -26,7 +27,7 @@ describe('lib/util', () => {
 
   describe('generateRandomClientId', () => {
     it('random values', () => {
-      let lastValue: number = 0;
+      const values = new Set<number>();
       for (let i = 0; i < 100; i++) {
         const value: number = generateRandomClientId();
 
@@ -34,10 +35,12 @@ describe('lib/util', () => {
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(MAX_UINT_32);
 
-        // No collision.
-        expect(value).not.toEqual(lastValue);
-        lastValue = value;
+        values.add(value);
       }
+
+      // Should generate multiple unique values (allowing some collisions due to randomness)
+      // With MAX_UINT_32 range, collisions should be extremely rare
+      expect(values.size).toBeGreaterThan(95);
     });
   });
 
