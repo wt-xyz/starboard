@@ -252,6 +252,16 @@ describe("Vault.funding_rate", () => {
                     0, // liquidation_fee_usd
                 ),
             )
+            // create a short position just to balance the long position below so that the funding rate starts at zero
+            await call(USDC.functions.mint(user0Identity, expandDecimals(40000)))
+            await call(
+                vaultUser0.functions
+                    .increase_position(user0Identity, BTC_ASSET, expandDecimals(1000), false)
+                    .addContracts(attachedContracts)
+                    .callParams({
+                        forward: [expandDecimals(100), USDC_ASSET_ID],
+                    }),
+            )
             // the actual long position
             await call(USDC.functions.mint(user1Identity, expandDecimals(40000)))
             await call(
@@ -268,11 +278,16 @@ describe("Vault.funding_rate", () => {
                 await vaultLiquidator.functions.validate_liquidation(user1Identity, BTC_ASSET, true, false).get()
             ).value
             expect(liquidationState1[0].toString()).eq("0") // 0 means no liquidation needed
-            // generate some funding rate debt
+            // close the short position to create an imbalance (now only longs remain)
+            await call(
+                vaultUser0.functions
+                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(1000), false, user0Identity)
+                    .addContracts(attachedContracts),
+            )
+            // generate some funding rate debt from the imbalance
             await moveBlockchainTime(launchedNode, 110)
             // refresh the timestamp in stork mock
             await call(storkMock.functions.update_price(BTC_ASSET, expandDecimals(36800, 18)))
-            // TODO something wrong here
             const liquidationState2 = (
                 await vaultLiquidator.functions.validate_liquidation(user1Identity, BTC_ASSET, true, false).get()
             ).value
@@ -509,7 +524,17 @@ describe("Vault.funding_rate", () => {
                     0, // liquidation_fee_usd
                 ),
             )
-            // the actual long position
+            // create a long position just to balance the short position below so that the funding rate starts at zero
+            await call(USDC.functions.mint(user0Identity, expandDecimals(40000)))
+            await call(
+                vaultUser0.functions
+                    .increase_position(user0Identity, BTC_ASSET, expandDecimals(1000), true)
+                    .addContracts(attachedContracts)
+                    .callParams({
+                        forward: [expandDecimals(100), USDC_ASSET_ID],
+                    }),
+            )
+            // the actual short position
             await call(USDC.functions.mint(user1Identity, expandDecimals(40000)))
             await call(
                 vaultUser1.functions
@@ -525,11 +550,16 @@ describe("Vault.funding_rate", () => {
                 await vaultLiquidator.functions.validate_liquidation(user1Identity, BTC_ASSET, false, false).get()
             ).value
             expect(liquidationState1[0].toString()).eq("0") // 0 means no liquidation needed
-            // generate some funding rate debt
+            // close the long position to create an imbalance (now only shorts remain)
+            await call(
+                vaultUser0.functions
+                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(1000), true, user0Identity)
+                    .addContracts(attachedContracts),
+            )
+            // generate some funding rate debt from the imbalance
             await moveBlockchainTime(launchedNode, 110)
             // refresh the timestamp in stork mock
             await call(storkMock.functions.update_price(BTC_ASSET, expandDecimals(43200, 18)))
-            // TODO something wrong here
             const liquidationState2 = (
                 await vaultLiquidator.functions.validate_liquidation(user1Identity, BTC_ASSET, false, false).get()
             ).value
@@ -876,6 +906,16 @@ describe("Vault.funding_rate", () => {
                     0, // liquidation_fee_usd
                 ),
             )
+            // create a short position just to balance the long position below so that the funding rate starts at zero
+            await call(USDC.functions.mint(user0Identity, expandDecimals(40000)))
+            await call(
+                vaultUser0.functions
+                    .increase_position(user0Identity, BTC_ASSET, expandDecimals(1000), false)
+                    .addContracts(attachedContracts)
+                    .callParams({
+                        forward: [expandDecimals(100), USDC_ASSET_ID],
+                    }),
+            )
             // the actual long position
             await call(USDC.functions.mint(user1Identity, expandDecimals(40000)))
             await call(
@@ -888,7 +928,13 @@ describe("Vault.funding_rate", () => {
             )
             // still ok
             await call(storkMock.functions.update_price(BTC_ASSET, expandDecimals(36800, 18)))
-            // generate some funding rate debt
+            // close the short position to create an imbalance (now only longs remain)
+            await call(
+                vaultUser0.functions
+                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(1000), false, user0Identity)
+                    .addContracts(attachedContracts),
+            )
+            // generate some funding rate debt from the imbalance
             await moveBlockchainTime(launchedNode, 110)
             // refresh the timestamp in stork mock
             await call(storkMock.functions.update_price(BTC_ASSET, expandDecimals(36800, 18)))
@@ -1230,7 +1276,17 @@ describe("Vault.funding_rate", () => {
                     0, // liquidation_fee_usd
                 ),
             )
-            // the actual long position
+            // create a long position just to balance the short position below so that the funding rate starts at zero
+            await call(USDC.functions.mint(user0Identity, expandDecimals(40000)))
+            await call(
+                vaultUser0.functions
+                    .increase_position(user0Identity, BTC_ASSET, expandDecimals(1000), true)
+                    .addContracts(attachedContracts)
+                    .callParams({
+                        forward: [expandDecimals(100), USDC_ASSET_ID],
+                    }),
+            )
+            // the actual short position
             await call(USDC.functions.mint(user1Identity, expandDecimals(40000)))
             await call(
                 vaultUser1.functions
@@ -1242,7 +1298,13 @@ describe("Vault.funding_rate", () => {
             )
             // still ok
             await call(storkMock.functions.update_price(BTC_ASSET, expandDecimals(43200, 18)))
-            // generate some funding rate debt
+            // close the long position to create an imbalance (now only shorts remain)
+            await call(
+                vaultUser0.functions
+                    .decrease_position(user0Identity, BTC_ASSET, expandDecimals(1000), true, user0Identity)
+                    .addContracts(attachedContracts),
+            )
+            // generate some funding rate debt from the imbalance
             await moveBlockchainTime(launchedNode, 110)
             // refresh the timestamp in stork mock
             await call(storkMock.functions.update_price(BTC_ASSET, expandDecimals(43200, 18)))
