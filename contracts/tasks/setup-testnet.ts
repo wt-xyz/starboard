@@ -1,6 +1,6 @@
 import { Provider, Wallet } from "fuels"
 import { Vault as VaultContract } from "../types/Vault"
-import { call, getArgs } from "./utils"
+import { call, getArgs, USDC_ASSET, BTC_ASSET, BNB_ASSET, ETH_ASSET } from "./utils"
 import { deployTestnetToken } from "./deploy-testnet-token"
 import { deployStarboard } from "./deploy-starboard"
 
@@ -17,11 +17,6 @@ if (require.main === module) {
 export async function setupTestnet(taskArgs: Record<string, string>) {
     // eslint-disable-next-line no-console
     console.log("Setup asset configuration for the testnet")
-
-    const usdcPricefeedId = "0x0000000000000000000000000000000000000000000000000000000000000069"
-    const btcPricefeedId = "0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43"
-    const bnbPricefeedId = "0x2f95862b045670cd22bee3114c39763a4a08beeb663b145d283c31d7d1101c4f"
-    const ethPricefeedId = "0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace"
 
     const [, USDCAssetId] = await deployTestnetToken({
         // [USDCAddress, USDCAssetId]
@@ -58,13 +53,13 @@ export async function setupTestnet(taskArgs: Record<string, string>) {
     })
 
     // eslint-disable-next-line no-console
-    console.log("usdc setup", USDCAssetId)
+    console.log("usdc setup, asset_id", USDCAssetId)
     const [vaultAddress] = await deployStarboard({
         // [vaultAddress, pricefeedWrapperAddress]
         url: taskArgs.url,
         privK: taskArgs.privK,
         usdcAssetId: USDCAssetId,
-        usdcPricefeedId,
+        usdcPricefeedId: USDC_ASSET,
         usdcDecimals: "6",
         storkContract: taskArgs.storkContractAddress,
     })
@@ -74,9 +69,9 @@ export async function setupTestnet(taskArgs: Record<string, string>) {
     const deployer = Wallet.fromPrivateKey(taskArgs.privK, provider)
     const vault = new VaultContract(vaultAddress, deployer)
 
-    await call(vault.functions.set_asset_config(btcPricefeedId, 9))
-    await call(vault.functions.set_asset_config(bnbPricefeedId, 9))
-    await call(vault.functions.set_asset_config(ethPricefeedId, 9))
+    await call(vault.functions.set_asset_config(BTC_ASSET, 9))
+    await call(vault.functions.set_asset_config(BNB_ASSET, 9))
+    await call(vault.functions.set_asset_config(ETH_ASSET, 9))
 
     // eslint-disable-next-line no-console
     console.log("Setup complete")
