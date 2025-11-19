@@ -49,10 +49,7 @@ importers:
         version: 1.3.0
       '@fuels/connectors':
         specifier: ^0.43.2
-        version: 0.43.2(@types/react@18.3.3)(@wagmi/connectors@5.9.9)(fuels@0.101.3)(immer@10.1.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
-      '@hookform/resolvers':
-        specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.66.0)
+        version: 0.43.2(@types/react@18.3.3)(@wagmi/connectors@5.9.9)(fuels@0.101.3)(immer@10.1.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)
       '@hugocxl/react-to-image':
         specifier: ^0.0.9
         version: 0.0.9(html-to-image@1.11.13)(react@18.2.0)
@@ -61,7 +58,7 @@ importers:
         version: 0.12.188
       '@privy-io/react-auth':
         specifier: ^1.73.0
-        version: 1.73.0(@babel/core@7.23.9)(@types/react@18.3.3)(react-dom@18.2.0)(react-is@19.1.1)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+        version: 1.73.0(@babel/core@7.23.9)(@types/react@18.3.3)(react-dom@18.2.0)(react-is@19.1.1)(react@18.2.0)(typescript@5.7.2)
       '@privy-io/wagmi':
         specifier: ^0.2.10
         version: 0.2.10(@privy-io/react-auth@1.73.0)(react-dom@18.2.0)(react@18.2.0)(viem@2.22.17)(wagmi@2.14.9)
@@ -220,7 +217,7 @@ importers:
         version: 0.101.3(vitest@1.4.0)
       graz:
         specifier: ^0.1.19
-        version: 0.1.19(@cosmjs/amino@0.32.1)(@cosmjs/cosmwasm-stargate@0.36.0)(@cosmjs/launchpad@0.27.1)(@cosmjs/proto-signing@0.32.1)(@cosmjs/stargate@0.32.1)(@cosmjs/tendermint-rpc@0.32.1)(@leapwallet/cosmos-social-login-capsule-provider@0.0.39)(@types/react@18.3.3)(axios@1.6.7)(bitcoinjs-lib@6.1.7)(immer@10.1.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+        version: 0.1.19(@cosmjs/amino@0.32.1)(@cosmjs/cosmwasm-stargate@0.36.0)(@cosmjs/launchpad@0.27.1)(@cosmjs/proto-signing@0.32.1)(@cosmjs/stargate@0.32.1)(@cosmjs/tendermint-rpc@0.32.1)(@leapwallet/cosmos-social-login-capsule-provider@0.0.39)(@types/react@18.3.3)(axios@1.6.7)(bitcoinjs-lib@6.1.7)(immer@10.1.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -245,9 +242,6 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
-      react-hook-form:
-        specifier: ^7.66.0
-        version: 7.66.0(react@18.2.0)
       react-number-format:
         specifier: ^5.2.2
         version: 5.2.2(react-dom@18.2.0)(react@18.2.0)
@@ -286,13 +280,10 @@ importers:
         version: 1.2.1(@types/react@18.3.3)(react@18.2.0)
       viem:
         specifier: ^2.22.17
-        version: 2.22.17(typescript@5.7.2)(zod@3.25.76)
+        version: 2.22.17(typescript@5.7.2)
       wagmi:
         specifier: ^2.14.9
-        version: 2.14.9(@tanstack/react-query@5.37.1)(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)(zod@3.25.76)
-      zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        version: 2.14.9(@tanstack/react-query@5.37.1)(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)
     devDependencies:
       '@apollo/server':
         specifier: ^4.9.5
@@ -1699,16 +1690,16 @@ packages:
     resolution: {integrity: sha512-ZG6ZDOHU5MZ4yxA3yY3gcZYnkcPtPaOwGOJrWD4Drar/u1TTBy1tWnP70atBa6LGm1+Ll1nb2GwS+HyWuFOWkw==}
     dev: false
 
-  /@base-org/account@1.1.1(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@base-org/account@1.1.1(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-IfVJPrDPhHfqXRDb89472hXkpvJuQQR7FDI9isLPHEqSYt/45whIoBxSPgZ0ssTt379VhQo4+87PWI1DoLSfAQ==}
     dependencies:
       '@noble/hashes': 1.4.0
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.6.9(typescript@5.7.2)(zod@3.25.76)
+      ox: 0.6.9(typescript@5.7.2)
       preact: 10.24.2
-      viem: 2.37.4(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.37.4(typescript@5.7.2)(zod@3.22.4)
       zustand: 5.0.3(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
@@ -1834,16 +1825,16 @@ packages:
       preact: 10.27.1
     dev: false
 
-  /@coinbase/wallet-sdk@4.3.6(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@coinbase/wallet-sdk@4.3.6(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-4q8BNG1ViL4mSAAvPAtpwlOs1gpC+67eQtgIwNvT3xyeyFFd+guwkc8bcX5rTmQhXpqnhzC4f0obACbP9CqMSA==}
     dependencies:
       '@noble/hashes': 1.4.0
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.6.9(typescript@5.7.2)(zod@3.25.76)
+      ox: 0.6.9(typescript@5.7.2)
       preact: 10.24.2
-      viem: 2.37.4(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.37.4(typescript@5.7.2)(zod@3.22.4)
       zustand: 5.0.3(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
@@ -4728,7 +4719,7 @@ packages:
       cli-table: 0.3.11
     dev: false
 
-  /@fuels/connectors@0.43.2(@types/react@18.3.3)(@wagmi/connectors@5.9.9)(fuels@0.101.3)(immer@10.1.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@fuels/connectors@0.43.2(@types/react@18.3.3)(@wagmi/connectors@5.9.9)(fuels@0.101.3)(immer@10.1.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-WFHP5PYHU+ZKhEPVIRL8EsN+xtkGAi+9GBDdbvIYkmEeEAkGZa5A/MX08LJy0Pz+Hp4z4j+8XRLC90NhRxs9rw==}
     peerDependencies:
       fuels: 0.101.1
@@ -4739,12 +4730,12 @@ packages:
       '@wagmi/core': 2.13.4(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.20.1)
       '@web3modal/core': 5.0.0(@types/react@18.3.3)(react@18.2.0)
       '@web3modal/scaffold': 5.0.0(@types/react@18.3.3)(react@18.2.0)
-      '@web3modal/solana': 5.0.0(@types/react@18.3.3)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@web3modal/solana': 5.0.0(@types/react@18.3.3)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)
       '@web3modal/wagmi': 5.0.0(@types/react@18.3.3)(@wagmi/connectors@5.9.9)(@wagmi/core@2.13.4)(react-dom@18.2.0)(react@18.2.0)(viem@2.20.1)
       fuels: 0.101.3(vitest@1.4.0)
       rpc-websockets: 7.11.0
       socket.io-client: 4.7.2
-      viem: 2.20.1(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.20.1(typescript@5.7.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -4791,7 +4782,7 @@ packages:
     dependencies:
       '@metamask/rpc-errors': 7.0.2
       eventemitter3: 5.0.1
-      viem: 2.22.17(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.22.17(typescript@5.7.2)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4934,15 +4925,6 @@ packages:
       react: '>= 16 || ^19.0.0-rc'
     dependencies:
       react: 18.2.0
-    dev: false
-
-  /@hookform/resolvers@5.2.2(react-hook-form@7.66.0):
-    resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
-    peerDependencies:
-      react-hook-form: ^7.55.0
-    dependencies:
-      '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.66.0(react@18.2.0)
     dev: false
 
   /@hugocxl/react-to-image@0.0.9(html-to-image@1.11.13)(react@18.2.0):
@@ -5572,15 +5554,15 @@ packages:
       chalk: 4.1.2
     dev: true
 
-  /@jnwng/walletconnect-solana@0.2.0(@solana/web3.js@1.91.7)(typescript@5.7.2)(zod@3.25.76):
+  /@jnwng/walletconnect-solana@0.2.0(@solana/web3.js@1.91.7)(typescript@5.7.2):
     resolution: {integrity: sha512-nyRq0xLEj9i2J4UXQ0Mr4KzsooTMbLu0ewHOqdQV7iZE0PfbtKa8poTSF4ZBAQD8hoMHEx+I7zGFCNMI9BTrTA==}
     peerDependencies:
       '@solana/web3.js': ^1.63.0
     dependencies:
       '@solana/web3.js': 1.91.7
       '@walletconnect/qrcode-modal': 1.8.0
-      '@walletconnect/sign-client': 2.21.8(typescript@5.7.2)(zod@3.25.76)
-      '@walletconnect/utils': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/sign-client': 2.21.8(typescript@5.7.2)
+      '@walletconnect/utils': 2.21.8(typescript@5.7.2)
       bs58: 5.0.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -7041,7 +7023,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@privy-io/react-auth@1.73.0(@babel/core@7.23.9)(@types/react@18.3.3)(react-dom@18.2.0)(react-is@19.1.1)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@privy-io/react-auth@1.73.0(@babel/core@7.23.9)(@types/react@18.3.3)(react-dom@18.2.0)(react-is@19.1.1)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-KCnSXsYh+e7CgsIdy29OX5cbDloBtArcFlM7+m8iDXJHpy0Opwi6HJihvZNLRMxjd5ZaAmNTASfGGoj6t4EYLg==}
     peerDependencies:
       react: ^18
@@ -7064,7 +7046,7 @@ packages:
       '@metamask/eth-sig-util': 6.0.2
       '@privy-io/js-sdk-core': 0.23.2
       '@simplewebauthn/browser': 9.0.1
-      '@walletconnect/ethereum-provider': 2.21.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/ethereum-provider': 2.21.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
       '@walletconnect/modal': 2.7.0(@types/react@18.3.3)(react@18.2.0)
       base64-js: 1.5.1
       dotenv: 16.6.1
@@ -7128,11 +7110,11 @@ packages:
       viem: ^2
       wagmi: ^2
     dependencies:
-      '@privy-io/react-auth': 1.73.0(@babel/core@7.23.9)(@types/react@18.3.3)(react-dom@18.2.0)(react-is@19.1.1)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@privy-io/react-auth': 1.73.0(@babel/core@7.23.9)(@types/react@18.3.3)(react-dom@18.2.0)(react-is@19.1.1)(react@18.2.0)(typescript@5.7.2)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      viem: 2.22.17(typescript@5.7.2)(zod@3.25.76)
-      wagmi: 2.14.9(@tanstack/react-query@5.37.1)(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)(zod@3.25.76)
+      viem: 2.22.17(typescript@5.7.2)
+      wagmi: 2.14.9(@tanstack/react-query@5.37.1)(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)
     dev: false
 
   /@promptbook/utils@0.69.5:
@@ -9929,27 +9911,14 @@ packages:
       - zod
     dev: false
 
-  /@reown/appkit-common@1.7.8(typescript@5.7.2)(zod@3.25.76):
-    resolution: {integrity: sha512-ridIhc/x6JOp7KbDdwGKY4zwf8/iK8EYBl+HtWrruutSLwZyVi5P8WaZa+8iajL6LcDcDF7LoyLwMTym7SRuwQ==}
-    dependencies:
-      big.js: 6.2.2
-      dayjs: 1.11.13
-      viem: 2.37.4(typescript@5.7.2)(zod@3.25.76)
-    transitivePeerDependencies:
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /@reown/appkit-controllers@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@reown/appkit-controllers@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-IdXlJlivrlj6m63VsGLsjtPHHsTWvKGVzWIP1fXZHVqmK+rZCBDjCi9j267Rb9/nYRGHWBtlFQhO8dK35WfeDA==}
     dependencies:
-      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.25.76)
+      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.22.4)
       '@reown/appkit-wallet': 1.7.8(typescript@5.7.2)
-      '@walletconnect/universal-provider': 2.21.0(encoding@0.1.13)(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/universal-provider': 2.21.0(encoding@0.1.13)(typescript@5.7.2)
       valtio: 1.13.2(@types/react@18.3.3)(react@18.2.0)
-      viem: 2.37.4(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.37.4(typescript@5.7.2)(zod@3.22.4)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -9979,13 +9948,13 @@ packages:
       - zod
     dev: false
 
-  /@reown/appkit-pay@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@reown/appkit-pay@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-OSGQ+QJkXx0FEEjlpQqIhT8zGJKOoHzVnyy/0QFrl3WrQTjCzg0L6+i91Ad5Iy1zb6V5JjqtfIFpRVRWN4M3pw==}
     dependencies:
-      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-ui': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-utils': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)(zod@3.25.76)
+      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.22.4)
+      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
+      '@reown/appkit-ui': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
+      '@reown/appkit-utils': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)
       lit: 3.3.0
       valtio: 1.13.2(@types/react@18.3.3)(react@18.2.0)
     transitivePeerDependencies:
@@ -10023,13 +9992,13 @@ packages:
       buffer: 6.0.3
     dev: false
 
-  /@reown/appkit-scaffold-ui@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)(zod@3.25.76):
+  /@reown/appkit-scaffold-ui@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2):
     resolution: {integrity: sha512-RCeHhAwOrIgcvHwYlNWMcIDibdI91waaoEYBGw71inE0kDB8uZbE7tE6DAXJmDkvl0qPh+DqlC4QbJLF1FVYdQ==}
     dependencies:
-      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-ui': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-utils': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)(zod@3.25.76)
+      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.22.4)
+      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
+      '@reown/appkit-ui': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
+      '@reown/appkit-utils': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)
       '@reown/appkit-wallet': 1.7.8(typescript@5.7.2)
       lit: 3.3.0
     transitivePeerDependencies:
@@ -10062,11 +10031,11 @@ packages:
       - zod
     dev: false
 
-  /@reown/appkit-ui@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@reown/appkit-ui@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-1hjCKjf6FLMFzrulhl0Y9Vb9Fu4royE+SXCPSWh4VhZhWqlzUFc7kutnZKx8XZFVQH4pbBvY62SpRC93gqoHow==}
     dependencies:
-      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.22.4)
+      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
       '@reown/appkit-wallet': 1.7.8(typescript@5.7.2)
       lit: 3.3.0
       qrcode: 1.5.3
@@ -10099,19 +10068,19 @@ packages:
       - zod
     dev: false
 
-  /@reown/appkit-utils@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)(zod@3.25.76):
+  /@reown/appkit-utils@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2):
     resolution: {integrity: sha512-8X7UvmE8GiaoitCwNoB86pttHgQtzy4ryHZM9kQpvjQ0ULpiER44t1qpVLXNM4X35O0v18W0Dk60DnYRMH2WRw==}
     peerDependencies:
       valtio: 1.13.2
     dependencies:
-      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.22.4)
+      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
       '@reown/appkit-polyfills': 1.7.8
       '@reown/appkit-wallet': 1.7.8(typescript@5.7.2)
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/universal-provider': 2.21.0(encoding@0.1.13)(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/universal-provider': 2.21.0(encoding@0.1.13)(typescript@5.7.2)
       valtio: 1.13.2(@types/react@18.3.3)(react@18.2.0)
-      viem: 2.37.4(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.37.4(typescript@5.7.2)(zod@3.22.4)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -10154,22 +10123,22 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@reown/appkit@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@reown/appkit@1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-51kTleozhA618T1UvMghkhKfaPcc9JlKwLJ5uV+riHyvSoWPKPRIa5A6M1Wano5puNyW0s3fwywhyqTHSilkaA==}
     dependencies:
-      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-pay': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@reown/appkit-common': 1.7.8(typescript@5.7.2)(zod@3.22.4)
+      '@reown/appkit-controllers': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
+      '@reown/appkit-pay': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
       '@reown/appkit-polyfills': 1.7.8
-      '@reown/appkit-scaffold-ui': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)(zod@3.25.76)
-      '@reown/appkit-ui': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
-      '@reown/appkit-utils': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)(zod@3.25.76)
+      '@reown/appkit-scaffold-ui': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)
+      '@reown/appkit-ui': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
+      '@reown/appkit-utils': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(valtio@1.13.2)
       '@reown/appkit-wallet': 1.7.8(typescript@5.7.2)
       '@walletconnect/types': 2.21.0
-      '@walletconnect/universal-provider': 2.21.0(encoding@0.1.13)(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/universal-provider': 2.21.0(encoding@0.1.13)(typescript@5.7.2)
       bs58: 6.0.0
       valtio: 1.13.2(@types/react@18.3.3)(react@18.2.0)
-      viem: 2.37.4(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.37.4(typescript@5.7.2)(zod@3.22.4)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -10396,10 +10365,10 @@ packages:
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
     dev: true
 
-  /@safe-global/safe-apps-provider@0.18.5(typescript@5.7.2)(zod@3.25.76):
+  /@safe-global/safe-apps-provider@0.18.5(typescript@5.7.2):
     resolution: {integrity: sha512-9v9wjBi3TwLsEJ3C2ujYoexp3pFJ0omDLH/GX91e2QB+uwCKTBYyhxFSrTQ9qzoyQd+bfsk4gjOGW87QcJhf7g==}
     dependencies:
-      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.7.2)(zod@3.25.76)
+      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.7.2)
       events: 3.3.0
     transitivePeerDependencies:
       - bufferutil
@@ -10408,10 +10377,10 @@ packages:
       - zod
     dev: false
 
-  /@safe-global/safe-apps-provider@0.18.6(typescript@5.7.2)(zod@3.25.76):
+  /@safe-global/safe-apps-provider@0.18.6(typescript@5.7.2):
     resolution: {integrity: sha512-4LhMmjPWlIO8TTDC2AwLk44XKXaK6hfBTWyljDm0HQ6TWlOEijVWNrt2s3OCVMSxlXAcEzYfqyu1daHZooTC2Q==}
     dependencies:
-      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.7.2)(zod@3.25.76)
+      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.7.2)
       events: 3.3.0
     transitivePeerDependencies:
       - bufferutil
@@ -10420,11 +10389,11 @@ packages:
       - zod
     dev: false
 
-  /@safe-global/safe-apps-sdk@9.1.0(typescript@5.7.2)(zod@3.25.76):
+  /@safe-global/safe-apps-sdk@9.1.0(typescript@5.7.2):
     resolution: {integrity: sha512-N5p/ulfnnA2Pi2M3YeWjULeWbjo7ei22JwU/IXnhoHzKq3pYCN6ynL9mJBOlvDVv892EgLPCWCOwQk/uBT2v0Q==}
     dependencies:
       '@safe-global/safe-gateway-typescript-sdk': 3.23.1
-      viem: 2.22.17(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.22.17(typescript@5.7.2)
     transitivePeerDependencies:
       - bufferutil
       - typescript
@@ -10732,7 +10701,7 @@ packages:
       bech32: 2.0.0
       cosmjs-types: 0.9.0
       keccak: 3.0.4
-      viem: 2.22.17(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.22.17(typescript@5.7.2)
     transitivePeerDependencies:
       - '@types/react'
       - bufferutil
@@ -10827,13 +10796,13 @@ packages:
       '@solana/web3.js': 1.91.7
     dev: false
 
-  /@solana/wallet-adapter-walletconnect@0.1.16(@solana/web3.js@1.91.7)(typescript@5.7.2)(zod@3.25.76):
+  /@solana/wallet-adapter-walletconnect@0.1.16(@solana/web3.js@1.91.7)(typescript@5.7.2):
     resolution: {integrity: sha512-jNaQwSho8hT7gF1ifePE8TJc1FULx8jCF16KX3fZPtzXDxKrj0R4VUpHMGcw4MlDknrnZNLOJAVvyiawAkPCRQ==}
     engines: {node: '>=16'}
     peerDependencies:
       '@solana/web3.js': ^1.77.3
     dependencies:
-      '@jnwng/walletconnect-solana': 0.2.0(@solana/web3.js@1.91.7)(typescript@5.7.2)(zod@3.25.76)
+      '@jnwng/walletconnect-solana': 0.2.0(@solana/web3.js@1.91.7)(typescript@5.7.2)
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.91.7)
       '@solana/web3.js': 1.91.7
     transitivePeerDependencies:
@@ -11090,10 +11059,6 @@ packages:
       '@stablelib/keyagreement': 1.0.1
       '@stablelib/random': 1.0.2
       '@stablelib/wipe': 1.0.1
-    dev: false
-
-  /@standard-schema/utils@0.3.0:
-    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
     dev: false
 
   /@statsig/client-core@1.4.0:
@@ -13911,7 +13876,7 @@ packages:
       tinyrainbow: 2.0.0
     dev: false
 
-  /@wagmi/connectors@5.7.5(@types/react@18.3.3)(@wagmi/core@2.16.3)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)(zod@3.25.76):
+  /@wagmi/connectors@5.7.5(@types/react@18.3.3)(@wagmi/core@2.16.3)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17):
     resolution: {integrity: sha512-btqHHUSTzg4BZe9at/7SnRPv4cz8O3pisbeZBh0qxKz7PVm+9vRxY0bSala3xQPDcS0PRTB30Vn/+lM73GCjbw==}
     peerDependencies:
       '@wagmi/core': 2.16.3
@@ -13923,13 +13888,13 @@ packages:
     dependencies:
       '@coinbase/wallet-sdk': 4.2.3
       '@metamask/sdk': 0.31.5
-      '@safe-global/safe-apps-provider': 0.18.5(typescript@5.7.2)(zod@3.25.76)
-      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.7.2)(zod@3.25.76)
+      '@safe-global/safe-apps-provider': 0.18.5(typescript@5.7.2)
+      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.7.2)
       '@wagmi/core': 2.16.3(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(use-sync-external-store@1.4.0)(viem@2.22.17)
       '@walletconnect/ethereum-provider': 2.17.0(@types/react@18.3.3)(react@18.2.0)
       cbw-sdk: /@coinbase/wallet-sdk@3.9.3
       typescript: 5.7.2
-      viem: 2.22.17(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.22.17(typescript@5.7.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -13959,7 +13924,7 @@ packages:
       - zod
     dev: false
 
-  /@wagmi/connectors@5.9.9(@types/react@18.3.3)(@wagmi/core@2.16.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)(zod@3.25.76):
+  /@wagmi/connectors@5.9.9(@types/react@18.3.3)(@wagmi/core@2.16.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17):
     resolution: {integrity: sha512-6+eqU7P2OtxU2PkIw6kHojfYYUJykYG2K5rSkzVh29RDCAjhJqGEZW5f1b8kV5rUBORip1NpST8QTBNi96JHGQ==}
     peerDependencies:
       '@wagmi/core': 2.20.3
@@ -13969,17 +13934,17 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@base-org/account': 1.1.1(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
-      '@coinbase/wallet-sdk': 4.3.6(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@base-org/account': 1.1.1(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)
+      '@coinbase/wallet-sdk': 4.3.6(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)
       '@gemini-wallet/core': 0.2.0(viem@2.22.17)
       '@metamask/sdk': 0.32.0
-      '@safe-global/safe-apps-provider': 0.18.6(typescript@5.7.2)(zod@3.25.76)
-      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.7.2)(zod@3.25.76)
+      '@safe-global/safe-apps-provider': 0.18.6(typescript@5.7.2)
+      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.7.2)
       '@wagmi/core': 2.16.3(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(use-sync-external-store@1.4.0)(viem@2.22.17)
-      '@walletconnect/ethereum-provider': 2.21.1(@types/react@18.3.3)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/ethereum-provider': 2.21.1(@types/react@18.3.3)(react@18.2.0)(typescript@5.7.2)
       cbw-sdk: /@coinbase/wallet-sdk@3.9.3
       typescript: 5.7.2
-      viem: 2.22.17(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.22.17(typescript@5.7.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -14026,7 +13991,7 @@ packages:
       eventemitter3: 5.0.1
       mipd: 0.0.7(typescript@5.7.2)
       typescript: 5.7.2
-      viem: 2.20.1(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.20.1(typescript@5.7.2)
       zustand: 4.4.1(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
@@ -14049,7 +14014,7 @@ packages:
       eventemitter3: 5.0.1
       mipd: 0.0.7(typescript@5.7.2)
       typescript: 5.7.2
-      viem: 2.22.17(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.22.17(typescript@5.7.2)
       zustand: 5.0.0(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(use-sync-external-store@1.4.0)
     transitivePeerDependencies:
       - '@types/react'
@@ -14221,7 +14186,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@walletconnect/core@2.21.0(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/core@2.21.0(typescript@5.7.2):
     resolution: {integrity: sha512-o6R7Ua4myxR8aRUAJ1z3gT9nM+jd2B2mfamu6arzy1Cc6vi10fIwFWb6vg3bC8xJ6o9H3n/cN5TOW3aA9Y1XVw==}
     engines: {node: '>=18'}
     dependencies:
@@ -14237,7 +14202,7 @@ packages:
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.21.0
-      '@walletconnect/utils': 2.21.0(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.0(typescript@5.7.2)
       '@walletconnect/window-getters': 1.0.1
       es-toolkit: 1.33.0
       events: 3.3.0
@@ -14268,7 +14233,7 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/core@2.21.1(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/core@2.21.1(typescript@5.7.2):
     resolution: {integrity: sha512-Tp4MHJYcdWD846PH//2r+Mu4wz1/ZU/fr9av1UWFiaYQ2t2TPLDiZxjLw54AAEpMqlEHemwCgiRiAmjR1NDdTQ==}
     engines: {node: '>=18'}
     dependencies:
@@ -14284,7 +14249,7 @@ packages:
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.21.1
-      '@walletconnect/utils': 2.21.1(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.1(typescript@5.7.2)
       '@walletconnect/window-getters': 1.0.1
       es-toolkit: 1.33.0
       events: 3.3.0
@@ -14315,7 +14280,7 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/core@2.21.8(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/core@2.21.8(typescript@5.7.2):
     resolution: {integrity: sha512-MD1SY7KAeHWvufiBK8C1MwP9/pxxI7SnKi/rHYfjco2Xvke+M+Bbm2OzvuSN7dYZvwLTkZCiJmBccTNVPCpSUQ==}
     engines: {node: '>=18'}
     dependencies:
@@ -14331,7 +14296,7 @@ packages:
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.21.8
-      '@walletconnect/utils': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.8(typescript@5.7.2)
       '@walletconnect/window-getters': 1.0.1
       es-toolkit: 1.39.3
       events: 3.3.0
@@ -14448,20 +14413,20 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@walletconnect/ethereum-provider@2.21.1(@types/react@18.3.3)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/ethereum-provider@2.21.1(@types/react@18.3.3)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-SSlIG6QEVxClgl1s0LMk4xr2wg4eT3Zn/Hb81IocyqNSGfXpjtawWxKxiC5/9Z95f1INyBD6MctJbL/R1oBwIw==}
     deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
     dependencies:
-      '@reown/appkit': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@reown/appkit': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
       '@walletconnect/jsonrpc-http-connection': 1.0.8(encoding@0.1.13)
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1
-      '@walletconnect/sign-client': 2.21.1(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/sign-client': 2.21.1(typescript@5.7.2)
       '@walletconnect/types': 2.21.1
-      '@walletconnect/universal-provider': 2.21.1(typescript@5.7.2)(zod@3.25.76)
-      '@walletconnect/utils': 2.21.1(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/universal-provider': 2.21.1(typescript@5.7.2)
+      '@walletconnect/utils': 2.21.1(typescript@5.7.2)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -14492,19 +14457,19 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/ethereum-provider@2.21.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/ethereum-provider@2.21.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-yjDlPpGMkuSXoIdmX7q7K7mDjPBqBqRW3hjXExhrRpbScdP92ZEFHoJf3E4ALDxdaV894ivXrOmMyGsoY5Eexg==}
     dependencies:
-      '@reown/appkit': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76)
+      '@reown/appkit': 1.7.8(@types/react@18.3.3)(encoding@0.1.13)(react@18.2.0)(typescript@5.7.2)
       '@walletconnect/jsonrpc-http-connection': 1.0.8(encoding@0.1.13)
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1
-      '@walletconnect/sign-client': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/sign-client': 2.21.8(typescript@5.7.2)
       '@walletconnect/types': 2.21.8
-      '@walletconnect/universal-provider': 2.21.8(encoding@0.1.13)(typescript@5.7.2)(zod@3.25.76)
-      '@walletconnect/utils': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/universal-provider': 2.21.8(encoding@0.1.13)(typescript@5.7.2)
+      '@walletconnect/utils': 2.21.8(typescript@5.7.2)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -14900,17 +14865,17 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@walletconnect/sign-client@2.21.0(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/sign-client@2.21.0(typescript@5.7.2):
     resolution: {integrity: sha512-z7h+PeLa5Au2R591d/8ZlziE0stJvdzP9jNFzFolf2RG/OiXulgFKum8PrIyXy+Rg2q95U9nRVUF9fWcn78yBA==}
     dependencies:
-      '@walletconnect/core': 2.21.0(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/core': 2.21.0(typescript@5.7.2)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.21.0
-      '@walletconnect/utils': 2.21.0(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.0(typescript@5.7.2)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -14938,18 +14903,18 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/sign-client@2.21.1(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/sign-client@2.21.1(typescript@5.7.2):
     resolution: {integrity: sha512-QaXzmPsMnKGV6tc4UcdnQVNOz4zyXgarvdIQibJ4L3EmLat73r5ZVl4c0cCOcoaV7rgM9Wbphgu5E/7jNcd3Zg==}
     deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
     dependencies:
-      '@walletconnect/core': 2.21.1(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/core': 2.21.1(typescript@5.7.2)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.21.1
-      '@walletconnect/utils': 2.21.1(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.1(typescript@5.7.2)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -14977,17 +14942,17 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/sign-client@2.21.8(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/sign-client@2.21.8(typescript@5.7.2):
     resolution: {integrity: sha512-lTcUbMjQ0YUZ5wzCLhpBeS9OkWYgLLly6BddEp2+pm4QxiwCCU2Nao0nBJXgzKbZYQOgrEGqtdm/7ze67gjzRA==}
     dependencies:
-      '@walletconnect/core': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/core': 2.21.8(typescript@5.7.2)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.21.8
-      '@walletconnect/utils': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.8(typescript@5.7.2)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -15353,7 +15318,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@walletconnect/universal-provider@2.21.0(encoding@0.1.13)(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/universal-provider@2.21.0(encoding@0.1.13)(typescript@5.7.2):
     resolution: {integrity: sha512-mtUQvewt+X0VBQay/xOJBvxsB3Xsm1lTwFjZ6WUwSOTR1X+FNb71hSApnV5kbsdDIpYPXeQUbGt2se1n5E5UBg==}
     dependencies:
       '@walletconnect/events': 1.0.1
@@ -15363,9 +15328,9 @@ packages:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/sign-client': 2.21.0(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/sign-client': 2.21.0(typescript@5.7.2)
       '@walletconnect/types': 2.21.0
-      '@walletconnect/utils': 2.21.0(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.0(typescript@5.7.2)
       es-toolkit: 1.33.0
       events: 3.3.0
     transitivePeerDependencies:
@@ -15395,7 +15360,7 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/universal-provider@2.21.1(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/universal-provider@2.21.1(typescript@5.7.2):
     resolution: {integrity: sha512-Wjx9G8gUHVMnYfxtasC9poGm8QMiPCpXpbbLFT+iPoQskDDly8BwueWnqKs4Mx2SdIAWAwuXeZ5ojk5qQOxJJg==}
     deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
     dependencies:
@@ -15406,9 +15371,9 @@ packages:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/sign-client': 2.21.1(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/sign-client': 2.21.1(typescript@5.7.2)
       '@walletconnect/types': 2.21.1
-      '@walletconnect/utils': 2.21.1(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.1(typescript@5.7.2)
       es-toolkit: 1.33.0
       events: 3.3.0
     transitivePeerDependencies:
@@ -15438,7 +15403,7 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/universal-provider@2.21.8(encoding@0.1.13)(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/universal-provider@2.21.8(encoding@0.1.13)(typescript@5.7.2):
     resolution: {integrity: sha512-Nc1Z6VXnya152yucNDPnlTkrhG289tCUfcjiWqDmwNYzFSfdT5oJQHlnffQXlvoks90kn5Ru8Rnwag2CH1YOVQ==}
     dependencies:
       '@walletconnect/events': 1.0.1
@@ -15448,9 +15413,9 @@ packages:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/sign-client': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/sign-client': 2.21.8(typescript@5.7.2)
       '@walletconnect/types': 2.21.8
-      '@walletconnect/utils': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.8(typescript@5.7.2)
       es-toolkit: 1.39.3
       events: 3.3.0
     transitivePeerDependencies:
@@ -15638,7 +15603,7 @@ packages:
       - uploadthing
     dev: false
 
-  /@walletconnect/utils@2.21.0(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/utils@2.21.0(typescript@5.7.2):
     resolution: {integrity: sha512-zfHLiUoBrQ8rP57HTPXW7rQMnYxYI4gT9yTACxVW6LhIFROTF6/ytm5SKNoIvi4a5nX5dfXG4D9XwQUCu8Ilig==}
     dependencies:
       '@noble/ciphers': 1.2.1
@@ -15657,7 +15622,7 @@ packages:
       detect-browser: 5.3.0
       query-string: 7.1.3
       uint8arrays: 3.1.0
-      viem: 2.23.2(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.23.2(typescript@5.7.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -15684,7 +15649,7 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/utils@2.21.1(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/utils@2.21.1(typescript@5.7.2):
     resolution: {integrity: sha512-VPZvTcrNQCkbGOjFRbC24mm/pzbRMUq2DSQoiHlhh0X1U7ZhuIrzVtAoKsrzu6rqjz0EEtGxCr3K1TGRqDG4NA==}
     dependencies:
       '@noble/ciphers': 1.2.1
@@ -15703,7 +15668,7 @@ packages:
       detect-browser: 5.3.0
       query-string: 7.1.3
       uint8arrays: 3.1.0
-      viem: 2.23.2(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.23.2(typescript@5.7.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -15730,7 +15695,7 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/utils@2.21.8(typescript@5.7.2)(zod@3.25.76):
+  /@walletconnect/utils@2.21.8(typescript@5.7.2):
     resolution: {integrity: sha512-HtMraGJ9qXo55l4wGSM1aZvyz0XVv460iWhlRGAyRl9Yz8RQeKyXavDhwBfcTFha/6kwLxPExqQ+MURtKeVVXw==}
     dependencies:
       '@msgpack/msgpack': 3.1.2
@@ -15752,7 +15717,7 @@ packages:
       detect-browser: 5.3.0
       query-string: 7.1.3
       uint8arrays: 3.1.1
-      viem: 2.31.0(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.31.0(typescript@5.7.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -16360,7 +16325,7 @@ packages:
       - uploadthing
     dev: false
 
-  /@web3modal/solana@5.0.0(@types/react@18.3.3)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /@web3modal/solana@5.0.0(@types/react@18.3.3)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-l/u1BPmsNsShrDLSSQ66GEiFDDz9//MH2KDgnpxpaqaTl0L7bKgwnClOjuyhpN+rKP2urxtCbIhMpr7wVKnDeQ==}
     peerDependencies:
       react: '>=17'
@@ -16380,7 +16345,7 @@ packages:
       '@solana/wallet-adapter-phantom': 0.9.24(@solana/web3.js@1.91.7)
       '@solana/wallet-adapter-solflare': 0.6.28(@solana/web3.js@1.91.7)
       '@solana/wallet-adapter-trust': 0.1.13(@solana/web3.js@1.91.7)
-      '@solana/wallet-adapter-walletconnect': 0.1.16(@solana/web3.js@1.91.7)(typescript@5.7.2)(zod@3.25.76)
+      '@solana/wallet-adapter-walletconnect': 0.1.16(@solana/web3.js@1.91.7)(typescript@5.7.2)
       '@solana/web3.js': 1.91.7
       '@walletconnect/universal-provider': 2.11.2
       '@web3modal/polyfills': 5.0.0
@@ -16464,7 +16429,7 @@ packages:
       vue:
         optional: true
     dependencies:
-      '@wagmi/connectors': 5.9.9(@types/react@18.3.3)(@wagmi/core@2.16.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)(zod@3.25.76)
+      '@wagmi/connectors': 5.9.9(@types/react@18.3.3)(@wagmi/core@2.16.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)
       '@wagmi/core': 2.13.4(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.20.1)
       '@walletconnect/ethereum-provider': 2.13.0(@types/react@18.3.3)(react@18.2.0)
       '@web3modal/polyfills': 5.0.0
@@ -16475,7 +16440,7 @@ packages:
       '@web3modal/siwe': 5.0.0(@types/react@18.3.3)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      viem: 2.20.1(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.20.1(typescript@5.7.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -16844,7 +16809,7 @@ packages:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
     dev: true
 
-  /abitype@1.0.5(typescript@5.7.2)(zod@3.25.76):
+  /abitype@1.0.5(typescript@5.7.2):
     resolution: {integrity: sha512-YzDhti7cjlfaBhHutMaboYB21Ha3rXR9QTkNJFzYC4kC8YclaiwPBBBJY8ejFdu2wnJeZCVZSMlQJ7fi8S6hsw==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -16856,10 +16821,9 @@ packages:
         optional: true
     dependencies:
       typescript: 5.7.2
-      zod: 3.25.76
     dev: false
 
-  /abitype@1.0.8(typescript@5.7.2)(zod@3.25.76):
+  /abitype@1.0.8(typescript@5.7.2):
     resolution: {integrity: sha512-ZeiI6h3GnW06uYDLx0etQtX/p8E24UaHHBj57RSjK7YBFe7iuVn07EDpOeP451D06sF27VOz9JJPlIKJmXgkEg==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -16871,7 +16835,6 @@ packages:
         optional: true
     dependencies:
       typescript: 5.7.2
-      zod: 3.25.76
     dev: false
 
   /abitype@1.1.0(typescript@5.7.2)(zod@3.22.4):
@@ -16887,21 +16850,6 @@ packages:
     dependencies:
       typescript: 5.7.2
       zod: 3.22.4
-    dev: false
-
-  /abitype@1.1.0(typescript@5.7.2)(zod@3.25.76):
-    resolution: {integrity: sha512-6Vh4HcRxNMLA0puzPjM5GBgT4aAcFGKZzSgAXvuZ27shJP6NEpielTuqbBmZILR5/xd0PizkBGy5hReKz9jl5A==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-      zod: ^3.22.0 || ^4.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-      zod:
-        optional: true
-    dependencies:
-      typescript: 5.7.2
-      zod: 3.25.76
     dev: false
 
   /abort-controller@3.0.0:
@@ -20102,7 +20050,6 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
-    dev: true
 
   /cssfilter@0.0.10:
     resolution: {integrity: sha512-FAaLDaplstoRsDR8XGYH51znUN0UY7nMc6Z9/fvE8EXGwvJE9hu7W2vHwx1+bd6gCYnln9nLbzxFTrcO9YQDZw==}
@@ -24313,7 +24260,7 @@ packages:
     resolution: {integrity: sha512-BL/Xd/T9baO6NFzoMpiMD7YUZ62R6viR5tp/MULVEnbYJXZA//kRNW7J0j1w/wXArgL0sCxhDfK5dczSKn3+cg==}
     engines: {node: '>= 10.x'}
 
-  /graz@0.1.19(@cosmjs/amino@0.32.1)(@cosmjs/cosmwasm-stargate@0.36.0)(@cosmjs/launchpad@0.27.1)(@cosmjs/proto-signing@0.32.1)(@cosmjs/stargate@0.32.1)(@cosmjs/tendermint-rpc@0.32.1)(@leapwallet/cosmos-social-login-capsule-provider@0.0.39)(@types/react@18.3.3)(axios@1.6.7)(bitcoinjs-lib@6.1.7)(immer@10.1.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2)(zod@3.25.76):
+  /graz@0.1.19(@cosmjs/amino@0.32.1)(@cosmjs/cosmwasm-stargate@0.36.0)(@cosmjs/launchpad@0.27.1)(@cosmjs/proto-signing@0.32.1)(@cosmjs/stargate@0.32.1)(@cosmjs/tendermint-rpc@0.32.1)(@leapwallet/cosmos-social-login-capsule-provider@0.0.39)(@types/react@18.3.3)(axios@1.6.7)(bitcoinjs-lib@6.1.7)(immer@10.1.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.7.2):
     resolution: {integrity: sha512-KaRQJ7HTQp3vbX/bG2Oc9T3t/KyaIuU5dLoGU2QNFirNjIpRbhkBtCll9Li5A6+zw3O9bHkbZ1aUaKfuVyBS8w==}
     hasBin: true
     peerDependencies:
@@ -24341,9 +24288,9 @@ packages:
       '@tanstack/react-query': 4.40.1(react-dom@18.2.0)(react@18.2.0)
       '@terra-money/station-connector': 1.1.4(@cosmjs/amino@0.32.1)(axios@1.6.7)
       '@vectis/extension-client': 0.7.2
-      '@walletconnect/sign-client': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/sign-client': 2.21.8(typescript@5.7.2)
       '@walletconnect/types': 2.21.8
-      '@walletconnect/utils': 2.21.8(typescript@5.7.2)(zod@3.25.76)
+      '@walletconnect/utils': 2.21.8(typescript@5.7.2)
       '@web3modal/standalone': 2.4.3(react@18.2.0)
       cosmos-directory-client: 0.0.6
       long: 4.0.0
@@ -26730,7 +26677,6 @@ packages:
   /jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
     hasBin: true
-    dev: true
 
   /jiti@2.5.1:
     resolution: {integrity: sha512-twQoecYPiVA5K/h6SxtORw/Bs3ar+mLUtoPSc7iMXzQzK8d7eJ/R09wmTwAjiamETn1cXYPGfNnu7DMoHgu12w==}
@@ -29646,7 +29592,7 @@ packages:
       safe-push-apply: 1.0.0
     dev: true
 
-  /ox@0.6.7(typescript@5.7.2)(zod@3.25.76):
+  /ox@0.6.7(typescript@5.7.2):
     resolution: {integrity: sha512-17Gk/eFsFRAZ80p5eKqv89a57uXjd3NgIf1CaXojATPBuujVc/fQSVhBeAU9JCRB+k7J50WQAyWTxK19T9GgbA==}
     peerDependencies:
       typescript: '>=5.4.0'
@@ -29659,14 +29605,14 @@ packages:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.0.8(typescript@5.7.2)(zod@3.25.76)
+      abitype: 1.0.8(typescript@5.7.2)
       eventemitter3: 5.0.1
       typescript: 5.7.2
     transitivePeerDependencies:
       - zod
     dev: false
 
-  /ox@0.6.9(typescript@5.7.2)(zod@3.25.76):
+  /ox@0.6.9(typescript@5.7.2):
     resolution: {integrity: sha512-wi5ShvzE4eOcTwQVsIPdFr+8ycyX+5le/96iAJutaZAvCes1J0+RvpEPg5QDPDiaR0XQQAvZVl7AwqQcINuUug==}
     peerDependencies:
       typescript: '>=5.4.0'
@@ -29679,14 +29625,14 @@ packages:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.1.0(typescript@5.7.2)(zod@3.25.76)
+      abitype: 1.1.0(typescript@5.7.2)(zod@3.22.4)
       eventemitter3: 5.0.1
       typescript: 5.7.2
     transitivePeerDependencies:
       - zod
     dev: false
 
-  /ox@0.7.1(typescript@5.7.2)(zod@3.25.76):
+  /ox@0.7.1(typescript@5.7.2):
     resolution: {integrity: sha512-+k9fY9PRNuAMHRFIUbiK9Nt5seYHHzSQs9Bj+iMETcGtlpS7SmBzcGSVUQO3+nqGLEiNK4598pHNFlVRaZbRsg==}
     peerDependencies:
       typescript: '>=5.4.0'
@@ -29700,7 +29646,7 @@ packages:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.0.8(typescript@5.7.2)(zod@3.25.76)
+      abitype: 1.0.8(typescript@5.7.2)
       eventemitter3: 5.0.1
       typescript: 5.7.2
     transitivePeerDependencies:
@@ -29722,27 +29668,6 @@ packages:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.1.0(typescript@5.7.2)(zod@3.22.4)
-      eventemitter3: 5.0.1
-      typescript: 5.7.2
-    transitivePeerDependencies:
-      - zod
-    dev: false
-
-  /ox@0.9.3(typescript@5.7.2)(zod@3.25.76):
-    resolution: {integrity: sha512-KzyJP+fPV4uhuuqrTZyok4DC7vFzi7HLUFiUNEmpbyh59htKWkOC98IONC1zgXJPbHAhQgqs6B0Z6StCGhmQvg==}
-    peerDependencies:
-      typescript: '>=5.4.0'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@adraffy/ens-normalize': 1.11.0
-      '@noble/ciphers': 1.3.0
-      '@noble/curves': 1.9.1
-      '@noble/hashes': 1.8.0
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
-      abitype: 1.1.0(typescript@5.7.2)(zod@3.25.76)
       eventemitter3: 5.0.1
       typescript: 5.7.2
     transitivePeerDependencies:
@@ -31161,15 +31086,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.2
-
-  /react-hook-form@7.66.0(react@18.2.0):
-    resolution: {integrity: sha512-xXBqsWGKrY46ZqaHDo+ZUYiMUgi8suYu5kdrS20EG8KiL7VRQitEbNjm+UcrDYrNi1YLyfpmAeGjCZYXLT9YBw==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      react: ^16.8.0 || ^17 || ^18 || ^19
-    dependencies:
-      react: 18.2.0
-    dev: false
 
   /react-hotkeys-hook@4.6.2(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-FmP+ZriY3EG59Ug/lxNfrObCnW9xQShgk7Nb83+CkpfkcCpfS95ydv+E9JuXA5cp8KtskU7LGlIARpkc92X22Q==}
@@ -35186,7 +35102,7 @@ packages:
       vfile-message: 4.0.3
     dev: true
 
-  /viem@2.20.1(typescript@5.7.2)(zod@3.25.76):
+  /viem@2.20.1(typescript@5.7.2):
     resolution: {integrity: sha512-a/BSe25TSfkc423GTSKYl1O0ON2J5huoQeOLkylHT1WS8wh3JFqb8nfAq7vg+aZ+W06BCTn36bbi47yp4D92Cg==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -35199,7 +35115,7 @@ packages:
       '@noble/hashes': 1.4.0
       '@scure/bip32': 1.4.0
       '@scure/bip39': 1.3.0
-      abitype: 1.0.5(typescript@5.7.2)(zod@3.25.76)
+      abitype: 1.0.5(typescript@5.7.2)
       isows: 1.0.4(ws@8.17.1)
       typescript: 5.7.2
       webauthn-p256: 0.0.5
@@ -35210,7 +35126,7 @@ packages:
       - zod
     dev: false
 
-  /viem@2.22.17(typescript@5.7.2)(zod@3.25.76):
+  /viem@2.22.17(typescript@5.7.2):
     resolution: {integrity: sha512-eqNhlPGgRLR29XEVUT2uuaoEyMiaQZEKx63xT1py9OYsE+ZwlVgjnfrqbXad7Flg2iJ0Bs5Hh7o0FfRWUJGHvg==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -35222,9 +35138,9 @@ packages:
       '@noble/hashes': 1.7.1
       '@scure/bip32': 1.6.2
       '@scure/bip39': 1.5.4
-      abitype: 1.0.8(typescript@5.7.2)(zod@3.25.76)
+      abitype: 1.0.8(typescript@5.7.2)
       isows: 1.0.6(ws@8.18.0)
-      ox: 0.6.7(typescript@5.7.2)(zod@3.25.76)
+      ox: 0.6.7(typescript@5.7.2)
       typescript: 5.7.2
       ws: 8.18.0
     transitivePeerDependencies:
@@ -35233,7 +35149,7 @@ packages:
       - zod
     dev: false
 
-  /viem@2.23.2(typescript@5.7.2)(zod@3.25.76):
+  /viem@2.23.2(typescript@5.7.2):
     resolution: {integrity: sha512-NVmW/E0c5crMOtbEAqMF0e3NmvQykFXhLOc/CkLIXOlzHSA6KXVz3CYVmaKqBF8/xtjsjHAGjdJN3Ru1kFJLaA==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -35245,9 +35161,9 @@ packages:
       '@noble/hashes': 1.7.1
       '@scure/bip32': 1.6.2
       '@scure/bip39': 1.5.4
-      abitype: 1.0.8(typescript@5.7.2)(zod@3.25.76)
+      abitype: 1.0.8(typescript@5.7.2)
       isows: 1.0.6(ws@8.18.0)
-      ox: 0.6.7(typescript@5.7.2)(zod@3.25.76)
+      ox: 0.6.7(typescript@5.7.2)
       typescript: 5.7.2
       ws: 8.18.0
     transitivePeerDependencies:
@@ -35256,7 +35172,7 @@ packages:
       - zod
     dev: false
 
-  /viem@2.31.0(typescript@5.7.2)(zod@3.25.76):
+  /viem@2.31.0(typescript@5.7.2):
     resolution: {integrity: sha512-U7OMQ6yqK+bRbEIarf2vqxL7unSEQvNxvML/1zG7suAmKuJmipqdVTVJGKBCJiYsm/EremyO2FS4dHIPpGv+eA==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -35268,9 +35184,9 @@ packages:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.0.8(typescript@5.7.2)(zod@3.25.76)
+      abitype: 1.0.8(typescript@5.7.2)
       isows: 1.0.7(ws@8.18.2)
-      ox: 0.7.1(typescript@5.7.2)(zod@3.25.76)
+      ox: 0.7.1(typescript@5.7.2)
       typescript: 5.7.2
       ws: 8.18.2
     transitivePeerDependencies:
@@ -35294,29 +35210,6 @@ packages:
       abitype: 1.1.0(typescript@5.7.2)(zod@3.22.4)
       isows: 1.0.7(ws@8.18.3)
       ox: 0.9.3(typescript@5.7.2)(zod@3.22.4)
-      typescript: 5.7.2
-      ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /viem@2.37.4(typescript@5.7.2)(zod@3.25.76):
-    resolution: {integrity: sha512-1ig5O6l1wJmaw3yrSrUimjRLQEZon2ymTqSDjdntu6Bry1/tLC2GClXeS3SiCzrifpLxzfCLQWDITYVTBA10KA==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@noble/curves': 1.9.1
-      '@noble/hashes': 1.8.0
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
-      abitype: 1.1.0(typescript@5.7.2)(zod@3.25.76)
-      isows: 1.0.7(ws@8.18.3)
-      ox: 0.9.3(typescript@5.7.2)(zod@3.25.76)
       typescript: 5.7.2
       ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
@@ -35776,7 +35669,7 @@ packages:
       - supports-color
     dev: true
 
-  /wagmi@2.14.9(@tanstack/react-query@5.37.1)(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)(zod@3.25.76):
+  /wagmi@2.14.9(@tanstack/react-query@5.37.1)(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17):
     resolution: {integrity: sha512-nDJ5hwPaiVpn/8Bi82m5K4BCqDiOSnOV976p/jKXt0svQABGdAxUxej0UgDRoVlrp+NutmejN+SyQKmhV477/A==}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -35788,12 +35681,12 @@ packages:
         optional: true
     dependencies:
       '@tanstack/react-query': 5.37.1(react@18.2.0)
-      '@wagmi/connectors': 5.7.5(@types/react@18.3.3)(@wagmi/core@2.16.3)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)(zod@3.25.76)
+      '@wagmi/connectors': 5.7.5(@types/react@18.3.3)(@wagmi/core@2.16.3)(react@18.2.0)(typescript@5.7.2)(viem@2.22.17)
       '@wagmi/core': 2.16.3(@types/react@18.3.3)(immer@10.1.1)(react@18.2.0)(typescript@5.7.2)(use-sync-external-store@1.4.0)(viem@2.22.17)
       react: 18.2.0
       typescript: 5.7.2
       use-sync-external-store: 1.4.0(react@18.2.0)
-      viem: 2.22.17(typescript@5.7.2)(zod@3.25.76)
+      viem: 2.22.17(typescript@5.7.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -36830,7 +36723,6 @@ packages:
     resolution: {integrity: sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==}
     engines: {node: '>= 14.6'}
     hasBin: true
-    dev: true
 
   /yargs-parser@13.1.2:
     resolution: {integrity: sha512-3lbsNRf/j+A4QuSZfDRA7HRSfWrzO0YjqTJd5kjAq37Zep1CEgaYmrH9Q3GwPiB9cHyd1Y1UwggGhJGoxipbzg==}
