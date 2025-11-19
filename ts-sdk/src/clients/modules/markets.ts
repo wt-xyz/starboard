@@ -1,4 +1,3 @@
-import { generateFakeHistoricalFunding } from '../../utils/fakeDataGenerators';
 import { TimePeriod } from '../constants';
 import { Data } from '../types';
 import RestClient from './rest';
@@ -9,21 +8,7 @@ import RestClient from './rest';
 export default class MarketsClient extends RestClient {
   async getPerpetualMarkets(market?: string): Promise<Data> {
     const uri = '/v4/perpetualMarkets';
-    // return this.get(uri, { ticker: "MIRG.BA-USD" });
-
-    // Load emerging markets data from JSON file
-    try {
-      const response = await fetch('/emerging_markets.json');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch emerging markets: ${response.status}`);
-      }
-      const emergingMarkets = await response.json();
-      return emergingMarkets;
-    } catch (error) {
-      console.error('Error loading emerging markets:', error);
-      // Fallback to empty markets if JSON loading fails
-      return { markets: {} };
-    }
+    return this.get(uri, { ticker: market });
   }
 
   async getPerpetualMarketOrderbook(market: string): Promise<Data> {
@@ -66,25 +51,15 @@ export default class MarketsClient extends RestClient {
   async getPerpetualMarketHistoricalFunding(
     market: string,
     effectiveBeforeOrAt?: string | null,
-    effectiveBeforeOrAtHeight?: number | null,
+    _effectiveBeforeOrAtHeight?: number | null,
     limit?: number | null,
   ): Promise<Data> {
-
-    const { historicalFunding } = generateFakeHistoricalFunding(market, undefined);
-    const cutoffTime = effectiveBeforeOrAt ? Date.parse(effectiveBeforeOrAt) : undefined;
-    const cutoffHeight = effectiveBeforeOrAtHeight ?? undefined;
-
-    let data = historicalFunding;
-    if (cutoffTime != null) {
-      data = data.filter((d: { effectiveAt: string; }) => Date.parse(d.effectiveAt) <= cutoffTime);
-    } else if (cutoffHeight != null) {
-      const h = Number(cutoffHeight);
-      data = data.filter((d: { effectiveAtHeight: any; }) => Number(d.effectiveAtHeight) <= h);
-    }
-    if (limit && limit > 0) {
-      data = data.slice(-limit); // most recent N
-    }
-    return { historicalFunding: data };
+    const uri = '/v4/perpetualMarkets/historicalFunding';
+    return this.get(uri, {
+      ticker: market,
+      effectiveBeforeOrAt,
+      limit,
+    });
   }
 
   async getPerpetualMarketSparklines(period: string = TimePeriod.ONE_DAY): Promise<Data> {

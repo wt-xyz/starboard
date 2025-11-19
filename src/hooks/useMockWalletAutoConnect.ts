@@ -7,17 +7,18 @@ import { ConnectorType, WalletNetworkType, WalletType } from '@/constants/wallet
 import { getOnboardingState } from '@/state/accountSelectors';
 import { useAppDispatch, useAppSelector } from '@/state/appTypes';
 import { setSourceAddress, setWalletInfo } from '@/state/wallet';
+import { setOnboardingState } from '@/state/account';
 
 /**
  * Auto-connects to a mock wallet if mock addresses are set in localStorage.
  * This enables development/testing with the mock indexer without requiring
  * a real wallet connection.
- * 
+ *
  * Only activates if:
  * 1. dydx.DydxAddress is set in localStorage
- * 2. dydx.EvmAddress is set in localStorage  
+ * 2. dydx.EvmAddress is set in localStorage
  * 3. Current onboarding state is Disconnected
- * 
+ *
  * Mock addresses (from mock indexer):
  * - 0x1111111111111111111111111111111111111111
  * - 0x2222222222222222222222222222222222222222
@@ -64,27 +65,34 @@ export const useMockWalletAutoConnect = () => {
       console.log('🔧 [Mock Wallet] Auto-connecting to mock wallet:', evmAddress);
 
       // Set the selected wallet in localStorage (app checks this)
-      localStorage.setItem(LocalStorageKey.OnboardingSelectedWallet, JSON.stringify({
-        connectorType: ConnectorType.Test,
-        name: WalletType.TestWallet,
-      }));
+      localStorage.setItem(
+        LocalStorageKey.OnboardingSelectedWallet,
+        JSON.stringify({
+          connectorType: ConnectorType.Test,
+          name: WalletType.TestWallet,
+        })
+      );
 
       // Set wallet source account
-      dispatch(setSourceAddress({ 
-        address: evmAddress, 
-        chain: WalletNetworkType.Evm 
-      }));
+      dispatch(
+        setSourceAddress({
+          address: evmAddress,
+          chain: WalletNetworkType.Evm,
+        })
+      );
 
       // Set wallet info (using TestWallet type)
-      dispatch(setWalletInfo({
-        connectorType: ConnectorType.Test,
-        name: WalletType.TestWallet,
-      }));
+      dispatch(
+        setWalletInfo({
+          connectorType: ConnectorType.Test,
+          name: WalletType.TestWallet,
+        })
+      );
 
-      // Don't change onboarding state - let the app handle it naturally
-      // The app will detect the wallet and transition states automatically
-      
-      console.log('✅ [Mock Wallet] Wallet address set');
+      // Explicitly mark onboarding as connected to avoid relying on external effects
+      dispatch(setOnboardingState(OnboardingState.AccountConnected));
+
+      console.log('✅ [Mock Wallet] Wallet address set and onboarding marked connected');
       console.log('📊 [Mock Wallet] Address:', evmAddress);
       console.log('🔗 [Mock Wallet] Indexer should be running at http://localhost:4000');
       console.log('⏳ [Mock Wallet] App should auto-detect and connect...');
@@ -93,4 +101,3 @@ export const useMockWalletAutoConnect = () => {
     }
   }, [onboardingState, dispatch]);
 };
-

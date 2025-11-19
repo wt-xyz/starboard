@@ -153,6 +153,13 @@ interface Subscription {
 }
 
 const clientSubscriptions = new Map<WebSocket, Subscription[]>();
+const messageCounters = new Map<WebSocket, number>();
+
+function getNextMessageId(ws: WebSocket): number {
+  const current = messageCounters.get(ws) ?? 1;
+  messageCounters.set(ws, current + 1);
+  return current;
+}
 
 function paginateResults<T>(results: T[], first?: number, after?: string): T[] {
   if (!first) return results;
@@ -371,6 +378,12 @@ function setupWebSocketServer(wss: WebSocketServer, mockProvider: MockDataProvid
   wss.on('connection', (ws: WebSocket) => {
     console.log('[ws] Client connected');
     clientSubscriptions.set(ws, []);
+    messageCounters.set(ws, 1);
+
+    sendMessage(ws, {
+      type: 'connected',
+      message_id: getNextMessageId(ws),
+    });
 
     ws.on('message', (data: Buffer) => {
       try {
@@ -385,11 +398,13 @@ function setupWebSocketServer(wss: WebSocketServer, mockProvider: MockDataProvid
     ws.on('close', () => {
       console.log('[ws] Client disconnected');
       cleanupSubscriptions(ws);
+      messageCounters.delete(ws);
     });
 
     ws.on('error', (error) => {
       console.error('[ws] WebSocket error:', error);
       cleanupSubscriptions(ws);
+      messageCounters.delete(ws);
     });
   });
 }
@@ -413,41 +428,51 @@ function handleWebSocketMessage(ws: WebSocket, message: any, mockProvider: MockD
   }
 }
 
+function normalizeChannelAndId(channel: string, id?: string): { channel: string; id?: string } {
+  if (channel.startsWith('v4_orderbook/')) {
+    return { channel: 'v4_orderbook', id: channel.replace('v4_orderbook/', '') };
+  }
+  if (channel.startsWith('v4_trades/')) {
+    return { channel: 'v4_trades', id: channel.replace('v4_trades/', '') };
+  }
+  return { channel, id };
+}
+
 function handleSubscribe(ws: WebSocket, channel: string, id: string | undefined, mockProvider: MockDataProvider) {
-  console.log(`[ws] Subscribe request: ${channel}${id ? ` (id: ${id})` : ''}`);
+  const { channel: normalizedChannel, id: normalizedId } = normalizeChannelAndId(channel, id);
+  console.log(`[ws] Subscribe request: ${normalizedChannel}${normalizedId ? ` (id: ${normalizedId})` : ''}`);
 
   const subscriptions = clientSubscriptions.get(ws) || [];
   
   // Check if already subscribed
-  if (subscriptions.some(sub => sub.channel === channel && sub.id === id)) {
-    console.log(`[ws] Already subscribed to ${channel}`);
+  if (subscriptions.some(sub => sub.channel === normalizedChannel && sub.id === normalizedId)) {
+    console.log(`[ws] Already subscribed to ${normalizedChannel}`);
     return;
   }
 
   // Handle different channel types
-  if (channel === 'v4_parent_subaccounts') {
-    subscribeToParentSubaccounts(ws, id, mockProvider);
-  } else if (channel === 'v4_subaccounts') {
-    subscribeToSubaccounts(ws, id, mockProvider);
-  } else if (channel === 'v4_markets') {
+  if (normalizedChannel === 'v4_parent_subaccounts') {
+    subscribeToParentSubaccounts(ws, normalizedId, mockProvider);
+  } else if (normalizedChannel === 'v4_subaccounts') {
+    subscribeToSubaccounts(ws, normalizedId, mockProvider);
+  } else if (normalizedChannel === 'v4_markets') {
     subscribeToMarkets(ws, mockProvider);
-  } else if (channel.startsWith('v4_orderbook/')) {
-    const ticker = channel.replace('v4_orderbook/', '');
-    subscribeToOrderbook(ws, ticker, mockProvider);
-  } else if (channel.startsWith('v4_trades/')) {
-    const ticker = channel.replace('v4_trades/', '');
-    subscribeToTrades(ws, ticker, mockProvider);
+  } else if (normalizedChannel === 'v4_orderbook') {
+    subscribeToOrderbook(ws, normalizedId, mockProvider);
+  } else if (normalizedChannel === 'v4_trades') {
+    subscribeToTrades(ws, normalizedId, mockProvider);
   } else {
-    console.warn(`[ws] Unknown channel: ${channel}`);
-    sendError(ws, `Unknown channel: ${channel}`);
+    console.warn(`[ws] Unknown channel: ${normalizedChannel}`);
+    sendError(ws, `Unknown channel: ${normalizedChannel}`);
   }
 }
 
 function handleUnsubscribe(ws: WebSocket, channel: string, id?: string) {
-  console.log(`[ws] Unsubscribe request: ${channel}${id ? ` (id: ${id})` : ''}`);
+  const { channel: normalizedChannel, id: normalizedId } = normalizeChannelAndId(channel, id);
+  console.log(`[ws] Unsubscribe request: ${normalizedChannel}${normalizedId ? ` (id: ${normalizedId})` : ''}`);
   
   const subscriptions = clientSubscriptions.get(ws) || [];
-  const subIndex = subscriptions.findIndex(sub => sub.channel === channel && sub.id === id);
+  const subIndex = subscriptions.findIndex(sub => sub.channel === normalizedChannel && sub.id === normalizedId);
   
   if (subIndex !== -1) {
     const subscription = subscriptions[subIndex];
@@ -458,8 +483,9 @@ function handleUnsubscribe(ws: WebSocket, channel: string, id?: string) {
     
     sendMessage(ws, {
       type: 'unsubscribed',
-      channel,
-      id,
+      channel: normalizedChannel,
+      id: normalizedId,
+      message_id: getNextMessageId(ws),
     });
   }
 }
@@ -490,7 +516,7 @@ function subscribeToParentSubaccounts(ws: WebSocket, id: string | undefined, moc
     channel: 'v4_parent_subaccounts',
     id,
     connection_id: `conn-${Date.now()}`,
-    message_id: 1,
+    message_id: getNextMessageId(ws),
   });
 
   // Send initial data immediately
@@ -524,7 +550,7 @@ function subscribeToSubaccounts(ws: WebSocket, id: string | undefined, mockProvi
     channel: 'v4_subaccounts',
     id,
     connection_id: `conn-${Date.now()}`,
-    message_id: 1,
+    message_id: getNextMessageId(ws),
   });
 
   sendSubaccountUpdate(ws, address, subaccountNumber, id, mockProvider);
@@ -547,7 +573,7 @@ function subscribeToMarkets(ws: WebSocket, mockProvider: MockDataProvider) {
     type: 'subscribed',
     channel: 'v4_markets',
     connection_id: `conn-${Date.now()}`,
-    message_id: 1,
+    message_id: getNextMessageId(ws),
   });
 
   sendMarketsUpdate(ws, mockProvider);
@@ -564,13 +590,18 @@ function subscribeToMarkets(ws: WebSocket, mockProvider: MockDataProvider) {
   clientSubscriptions.set(ws, subscriptions);
 }
 
-function subscribeToOrderbook(ws: WebSocket, ticker: string, mockProvider: MockDataProvider) {
+function subscribeToOrderbook(ws: WebSocket, ticker: string | undefined, mockProvider: MockDataProvider) {
+  if (!ticker) {
+    sendError(ws, 'v4_orderbook requires id (ticker)');
+    return;
+  }
+
   sendMessage(ws, {
     type: 'subscribed',
-    channel: `v4_orderbook/${ticker}`,
+    channel: 'v4_orderbook',
     id: ticker,
     connection_id: `conn-${Date.now()}`,
-    message_id: 1,
+    message_id: getNextMessageId(ws),
   });
 
   sendOrderbookUpdate(ws, ticker, mockProvider);
@@ -581,20 +612,25 @@ function subscribeToOrderbook(ws: WebSocket, ticker: string, mockProvider: MockD
 
   const subscriptions = clientSubscriptions.get(ws) || [];
   subscriptions.push({
-    channel: `v4_orderbook/${ticker}`,
+    channel: 'v4_orderbook',
     id: ticker,
     interval,
   });
   clientSubscriptions.set(ws, subscriptions);
 }
 
-function subscribeToTrades(ws: WebSocket, ticker: string, mockProvider: MockDataProvider) {
+function subscribeToTrades(ws: WebSocket, ticker: string | undefined, mockProvider: MockDataProvider) {
+  if (!ticker) {
+    sendError(ws, 'v4_trades requires id (ticker)');
+    return;
+  }
+
   sendMessage(ws, {
     type: 'subscribed',
-    channel: `v4_trades/${ticker}`,
+    channel: 'v4_trades',
     id: ticker,
     connection_id: `conn-${Date.now()}`,
-    message_id: 1,
+    message_id: getNextMessageId(ws),
   });
 
   sendTradesUpdate(ws, ticker, mockProvider);
@@ -605,7 +641,7 @@ function subscribeToTrades(ws: WebSocket, ticker: string, mockProvider: MockData
 
   const subscriptions = clientSubscriptions.get(ws) || [];
   subscriptions.push({
-    channel: `v4_trades/${ticker}`,
+    channel: 'v4_trades',
     id: ticker,
     interval,
   });
@@ -622,6 +658,7 @@ function sendParentSubaccountUpdate(ws: WebSocket, address: string, parentSubacc
       channel: 'v4_parent_subaccounts',
       id,
       version: '1.0',
+      message_id: getNextMessageId(ws),
       contents: data,
     });
   } catch (error) {
@@ -638,6 +675,7 @@ function sendSubaccountUpdate(ws: WebSocket, address: string, subaccountNumber: 
       channel: 'v4_subaccounts',
       id,
       version: '1.0',
+      message_id: getNextMessageId(ws),
       contents: data,
     });
   } catch (error) {
@@ -653,6 +691,7 @@ async function sendMarketsUpdate(ws: WebSocket, mockProvider: MockDataProvider) 
       type: 'channel_data',
       channel: 'v4_markets',
       version: '1.0',
+      message_id: getNextMessageId(ws),
       contents: markets,
     });
   } catch (error) {
@@ -666,9 +705,10 @@ function sendOrderbookUpdate(ws: WebSocket, ticker: string, mockProvider: MockDa
     
     sendMessage(ws, {
       type: 'channel_data',
-      channel: `v4_orderbook/${ticker}`,
+      channel: 'v4_orderbook',
       id: ticker,
       version: '1.0',
+      message_id: getNextMessageId(ws),
       contents: orderbook,
     });
   } catch (error) {
@@ -682,9 +722,10 @@ function sendTradesUpdate(ws: WebSocket, ticker: string, mockProvider: MockDataP
     
     sendMessage(ws, {
       type: 'channel_data',
-      channel: `v4_trades/${ticker}`,
+      channel: 'v4_trades',
       id: ticker,
       version: '1.0',
+      message_id: getNextMessageId(ws),
       contents: trades,
     });
   } catch (error) {
@@ -703,6 +744,7 @@ function sendError(ws: WebSocket, error: string) {
   sendMessage(ws, {
     type: 'error',
     message: error,
+    message_id: getNextMessageId(ws),
   });
 }
 
