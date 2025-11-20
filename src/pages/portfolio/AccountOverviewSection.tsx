@@ -8,8 +8,8 @@ import { STRING_KEYS } from '@/constants/localization';
 import { AppRoute } from '@/constants/routes';
 import { ColorToken } from '@/constants/styles/base';
 
-import { useAccountBalance } from '@/hooks/useAccountBalance';
 import { useBreakpoints } from '@/hooks/useBreakpoints';
+import { MarginHealthLevel, useEnhancedAccountBalance } from '@/hooks/useEnhancedAccountBalance';
 import { useLocaleSeparators } from '@/hooks/useLocaleSeparators';
 import { useStringGetter } from '@/hooks/useStringGetter';
 import { useLoadedVaultAccount, useLoadedVaultDetails } from '@/hooks/vaultsHooks';
@@ -20,7 +20,6 @@ import { Tag, TagSign, TagType } from '@/components/Tag';
 import { WithLabel } from '@/components/WithLabel';
 import { WithTooltip } from '@/components/WithTooltip';
 
-import { getSubaccountEquity, getSubaccountFreeCollateral } from '@/state/accountSelectors';
 import { useAppSelector } from '@/state/appTypes';
 import { getSelectedLocale } from '@/state/localizationSelectors';
 
@@ -67,13 +66,23 @@ export const AccountOverviewSection = () => {
   const navigate = useNavigate();
   const stringGetter = useStringGetter();
 
-  const equity = useAppSelector(getSubaccountEquity);
-  const freeCollateral = useAppSelector(getSubaccountFreeCollateral);
-  const { usdcBalance, isOffline, error } = useAccountBalance();
+  const {
+    totalUsdcBalance,
+    availableCollateral,
+    pendingOrdersMargin,
+    usedCollateral,
+    positionsCollateral,
+    marginHealthLevel,
+    marginUtilization,
+    equity,
+    isOffline,
+    error,
+    // freeCollateral,
+  } = useEnhancedAccountBalance();
 
   const { balanceUsdc: vaultBalance } = orEmptyObj(useLoadedVaultAccount().data);
   const depositVaultBalance = mapIfPresent(equity, (e) => e + (vaultBalance ?? 0));
-  const totalValue = (depositVaultBalance ?? 0) + usdcBalance;
+  const totalValue = (depositVaultBalance ?? 0) + totalUsdcBalance;
 
   const handleViewVault = useCallback(() => {
     track(AnalyticsEvents.ClickViewVaultFromOverview());
@@ -86,15 +95,24 @@ export const AccountOverviewSection = () => {
 
   const pieSections = [
     {
-      id: 'free-collateral',
-      label: stringGetter({ key: STRING_KEYS.FREE_COLLATERAL }),
-      amount: mapIfPresent(freeCollateral, (fc) => Math.max(fc, 0.0)),
+      id: 'available-collateral',
+      label: stringGetter({ key: STRING_KEYS.AVAILABLE_COLLATERAL }),
+      labelString: stringGetter({ key: STRING_KEYS.AVAILABLE_COLLATERAL }),
+      amount: availableCollateral,
       color: ColorToken.GrayPurple2,
+    },
+    {
+      id: 'pending-orders',
+      label: stringGetter({ key: STRING_KEYS.PENDING_ORDERS_MARGIN }),
+      labelString: stringGetter({ key: STRING_KEYS.PENDING_ORDERS_MARGIN }),
+      amount: pendingOrdersMargin,
+      color: ColorToken.Green2,
     },
     {
       id: 'open-positions',
       label: stringGetter({ key: STRING_KEYS.POSITION_MARGIN }),
-      amount: mapIfPresent(equity, freeCollateral, (e, f) => Math.max(e - Math.max(f, 0), 0)),
+      labelString: stringGetter({ key: STRING_KEYS.POSITION_MARGIN }),
+      amount: usedCollateral,
       color: ColorToken.Yellow1,
     },
     {
@@ -110,6 +128,18 @@ export const AccountOverviewSection = () => {
     },
   ];
 
+  const marginHealthTagCopy: Record<MarginHealthLevel, string> = {
+    [MarginHealthLevel.Healthy]: stringGetter({ key: STRING_KEYS.MARGIN_HEALTH_HEALTHY }),
+    [MarginHealthLevel.Warning]: stringGetter({ key: STRING_KEYS.MARGIN_HEALTH_WARNING }),
+    [MarginHealthLevel.Danger]: stringGetter({ key: STRING_KEYS.MARGIN_HEALTH_DANGER }),
+  };
+
+  const marginHealthTagSign: Record<MarginHealthLevel, TagSign> = {
+    [MarginHealthLevel.Healthy]: TagSign.Positive,
+    [MarginHealthLevel.Warning]: TagSign.Warning,
+    [MarginHealthLevel.Danger]: TagSign.Negative,
+  };
+
   const { decimal: decimalSeparator, group: groupSeparator } = useLocaleSeparators();
   const selectedLocale = useAppSelector(getSelectedLocale);
 
@@ -117,8 +147,23 @@ export const AccountOverviewSection = () => {
     <$AccountOverviewWrapper>
       <div tw="row w-full justify-between p-1">
         <$WithLabel label={stringGetter({ key: STRING_KEYS.PORTFOLIO_VALUE })}>
-          <div tw="row items-center gap-0.5">
+          <div tw="row items-center gap-0.75">
             <Output tw="font-extra-book" type={OutputType.Fiat} value={totalValue} />
+            {totalValue !== 0 && (
+              <Tag type={TagType.Number} sign={marginHealthTagSign[marginHealthLevel]}>
+                <span tw="text-color-text-0 font-tiny-book">
+                  {marginHealthTagCopy[marginHealthLevel]}
+                </span>
+              </Tag>
+            )}
+
+            {marginUtilization != null && (
+              <Output
+                type={OutputType.Percent}
+                value={marginUtilization / 100}
+                fractionDigits={0}
+              />
+            )}
             {isOffline && (
               <Tag type={TagType.Number} sign={TagSign.Negative}>
                 <span tw="text-color-text-0 font-tiny-book">Offline</span>
@@ -132,6 +177,11 @@ export const AccountOverviewSection = () => {
               </WithTooltip>
             )}
           </div>
+        </$WithLabel>
+      </div>
+      <div tw="row w-full gap-1 px-1 pb-0.5">
+        <$WithLabel label={stringGetter({ key: STRING_KEYS.TOTAL_USDC_BALANCE })}>
+          <Output type={OutputType.Fiat} value={totalUsdcBalance} fractionDigits={6} />
         </$WithLabel>
       </div>
       <div tw="row w-full gap-1 p-1">
@@ -208,6 +258,36 @@ export const AccountOverviewSection = () => {
           </div>
         )}
       </div>
+      {positionsCollateral.length > 0 && (
+        <div tw="column gap-0.5 px-1 pb-1">
+          <div tw="text-color-text-2 font-small-book">
+            {stringGetter({ key: STRING_KEYS.POSITION_MARGIN })}
+          </div>
+          <div tw="column gap-0.5">
+            {positionsCollateral.map((position) => (
+              <div tw="column gap-0.25" key={position.marketId}>
+                <div tw="row items-center justify-between">
+                  <span tw="text-color-text-0 font-small-book">{position.ticker}</span>
+                  <div tw="row items-center gap-0.5">
+                    <Output type={OutputType.Fiat} value={position.marginValue} />
+                    <Output
+                      type={OutputType.Percent}
+                      value={position.percentOfUsedCollateral}
+                      fractionDigits={0}
+                    />
+                  </div>
+                </div>
+                <div tw="row w-full">
+                  <$LineSegment
+                    $color={ColorToken.Yellow1}
+                    $widthPercent={position.percentOfUsedCollateral}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </$AccountOverviewWrapper>
   );
 };

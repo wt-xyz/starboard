@@ -3,5 +3,12 @@
   "BAKO_SAFE": "Bako Safe",
   "FUELET_WALLET": "Fuelet Wallet",
   "COPY_FUEL_WALLET_ADDRESS": "Copy Wallet Address",
-  "ONLY_SEND_ON_FUEL": "Only send assets on Fuel to this address"
+  "ONLY_SEND_ON_FUEL": "Only send assets on Fuel to this address",
+  "AVAILABLE_COLLATERAL": "Available Collateral",
+  "PENDING_ORDERS_MARGIN": "Pending Orders",
+  "MARGIN_HEALTH": "Margin Health",
+  "MARGIN_HEALTH_HEALTHY": "Healthy",
+  "MARGIN_HEALTH_WARNING": "Warning",
+  "MARGIN_HEALTH_DANGER": "Danger",
+  "TOTAL_USDC_BALANCE": "Total USDC Balance"
 }

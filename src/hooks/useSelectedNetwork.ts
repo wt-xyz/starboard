@@ -3,17 +3,52 @@ import { useCallback, useEffect } from 'react';
 import { useWallets } from '@privy-io/react-auth';
 
 import { LocalStorageKey } from '@/constants/localStorage';
-import { AVAILABLE_ENVIRONMENTS, DEFAULT_APP_ENVIRONMENT, DydxNetwork } from '@/constants/networks';
+import {
+  AVAILABLE_ENVIRONMENTS,
+  DEFAULT_APP_ENVIRONMENT,
+  DydxNetwork,
+  ENVIRONMENT_CONFIG_MAP,
+} from '@/constants/networks';
 
 import { setSelectedNetwork } from '@/state/app';
 import { getSelectedNetwork } from '@/state/appSelectors';
 import { useAppDispatch, useAppSelector } from '@/state/appTypes';
 
 import { validateAgainstAvailableEnvironments } from '@/lib/network';
+import { useMainnetSwitchWarning } from '@/hooks/useMainnetSwitchWarning';
 
 import { useAccounts } from './useAccounts';
-import { useEnvConfig } from './useEnvConfig';
 import { useLocalStorage } from './useLocalStorage';
+
+const getNetworkParamFromUrl = (): DydxNetwork | undefined => {
+  if (typeof window === 'undefined') return undefined;
+
+  const useHash = import.meta.env.VITE_ROUTER_TYPE === 'hash';
+  let search = '';
+
+  if (useHash) {
+    const hash = window.location.hash;
+    const idx = hash.indexOf('?');
+    if (idx !== -1) {
+      search = hash.substring(idx + 1);
+    }
+  } else {
+    search = window.location.search.startsWith('?')
+      ? window.location.search.slice(1)
+      : window.location.search;
+  }
+
+  if (!search) return undefined;
+
+  const params = new URLSearchParams(search);
+  const desiredNetwork = params.get('network');
+  if (!desiredNetwork) return undefined;
+
+  const normalized = desiredNetwork.toLowerCase();
+  return (AVAILABLE_ENVIRONMENTS.environments as DydxNetwork[]).find(
+    (network) => network.toLowerCase() === normalized
+  );
+};
 
 export const useSelectedNetwork = (): {
   switchNetwork: (network: DydxNetwork) => void;
@@ -22,8 +57,6 @@ export const useSelectedNetwork = (): {
   const dispatch = useAppDispatch();
   const { disconnect } = useAccounts();
   const selectedNetwork = useAppSelector(getSelectedNetwork);
-  const chainId = useEnvConfig('ethereumChainId');
-
   const { wallets } = useWallets();
   const privyWallet = wallets.find((wallet) => wallet.walletClientType === 'privy');
 
@@ -33,15 +66,25 @@ export const useSelectedNetwork = (): {
     validateFn: validateAgainstAvailableEnvironments,
   });
 
+  const { maybeWarnBeforeSwitch } = useMainnetSwitchWarning();
+
   const switchNetwork = useCallback(
     (network: DydxNetwork) => {
-      disconnect();
+      if (!(AVAILABLE_ENVIRONMENTS.environments as DydxNetwork[]).includes(network)) {
+        return;
+      }
 
-      setLocalStorageNetwork(network);
-      dispatch(setSelectedNetwork(network));
-      privyWallet?.switchChain(Number(chainId));
+      const targetConfig = ENVIRONMENT_CONFIG_MAP[network];
+      const targetChainId = Number(targetConfig.ethereumChainId);
+
+      maybeWarnBeforeSwitch(targetConfig.isMainnet, () => {
+        disconnect();
+        setLocalStorageNetwork(network);
+        dispatch(setSelectedNetwork(network));
+        privyWallet?.switchChain(targetChainId);
+      });
     },
-    [dispatch, disconnect, setLocalStorageNetwork, chainId]
+    [dispatch, disconnect, setLocalStorageNetwork, privyWallet, maybeWarnBeforeSwitch]
   );
 
   // Ensure the selected network is valid
@@ -50,6 +93,16 @@ export const useSelectedNetwork = (): {
       switchNetwork(DEFAULT_APP_ENVIRONMENT);
     }
   }, [selectedNetwork, switchNetwork]);
+
+  useEffect(() => {
+    const queryNetwork = getNetworkParamFromUrl();
+    if (!queryNetwork || queryNetwork === selectedNetwork) {
+      return;
+    }
+
+    setLocalStorageNetwork(queryNetwork);
+    dispatch(setSelectedNetwork(queryNetwork));
+  }, [dispatch, selectedNetwork, setLocalStorageNetwork]);
 
   return { switchNetwork, selectedNetwork };
 };
