@@ -16,14 +16,14 @@ if (require.main === module) {
         })
 }
 
-export async function setupTestnet(taskArgs: Record<string, string>) {
+export async function setupTestnet(taskArgs: Record<string, string | boolean>) {
     // eslint-disable-next-line no-console
     console.log("Setup asset configuration for the testnet")
 
     const [, USDCAssetId] = await deployTestnetToken({
         // [USDCAddress, USDCAssetId]
-        url: taskArgs.url,
-        privK: taskArgs.privK,
+        url: taskArgs.url as string,
+        privK: taskArgs.privK as string,
         name: "mckUSDC",
         symbol: "sUSDC",
         decimals: "6",
@@ -31,24 +31,24 @@ export async function setupTestnet(taskArgs: Record<string, string>) {
 
     await deployTestnetToken({
         // [BTCAddress, BTCAssetId]
-        url: taskArgs.url,
-        privK: taskArgs.privK,
+        url: taskArgs.url as string,
+        privK: taskArgs.privK as string,
         name: "mockBTC",
         symbol: "sbBTC",
         decimals: "9",
     })
     await deployTestnetToken({
         // [BNBAddress, BNBAssetId]
-        url: taskArgs.url,
-        privK: taskArgs.privK,
+        url: taskArgs.url as string,
+        privK: taskArgs.privK as string,
         name: "mockBNB",
         symbol: "sbBNB",
         decimals: "9",
     })
     await deployTestnetToken({
         // [ETHAddress, ETHAssetId]
-        url: taskArgs.url,
-        privK: taskArgs.privK,
+        url: taskArgs.url as string,
+        privK: taskArgs.privK as string,
         name: "mockETH",
         symbol: "sbETH",
         decimals: "9",
@@ -58,8 +58,8 @@ export async function setupTestnet(taskArgs: Record<string, string>) {
     console.log("usdc setup, asset_id", USDCAssetId)
     const [vaultAddress] = await deployStarboard({
         // [vaultAddress, pricefeedWrapperAddress]
-        url: taskArgs.url,
-        privK: taskArgs.privK,
+        url: taskArgs.url as string,
+        privK: taskArgs.privK as string,
         usdcAssetId: USDCAssetId,
         usdcPricefeedId: USDC_ASSET,
         usdcDecimals: "6",
@@ -67,8 +67,8 @@ export async function setupTestnet(taskArgs: Record<string, string>) {
     })
 
     // it is important to instantiate the wallet after deployment
-    const provider = new Provider(taskArgs.url)
-    const deployer = Wallet.fromPrivateKey(taskArgs.privK, provider)
+    const provider = new Provider(taskArgs.url as string)
+    const deployer = Wallet.fromPrivateKey(taskArgs.privK as string, provider)
     const vault = new VaultContract(vaultAddress, deployer)
 
     await call(vault.functions.set_asset_config(BTC_ASSET, 9))
