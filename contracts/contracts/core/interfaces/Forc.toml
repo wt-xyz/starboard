@@ -1,9 +1,9 @@
 [project]
-authors = ["@theausicist"]
+authors = ["ChartHouse Labs"]
 entry = "lib.sw"
 license = "Apache-2.0"
 name = "core_interfaces"
 
 [dependencies]
-pyth_interface = { git = "https://github.com/pyth-network/pyth-crosschain", tag = "pyth-lazer-agent-v0.4.1" }
 helpers = { path = "../../helpers" }
+

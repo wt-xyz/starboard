@@ -67,6 +67,15 @@ const useAccountsContext = () => {
     return geo != null && isBlockedGeo(geo) && checkForGeo;
   }, [geo, checkForGeo]);
 
+  useEffect(() => {
+    // We only want to set the source wallet address if the address changes
+    // OR when our connection state changes.
+    // The address can be cached via local storage, so it won't change when we reconnect
+    // But the hasSubAccount value will become true once you reconnect
+    // This allows us to trigger a state update
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sourceAccount.address, sourceAccount.chain]);
+
   // dYdXClient Onboarding & Account Helpers
   const { indexerClient } = useDydxClient();
   // dYdX subaccounts

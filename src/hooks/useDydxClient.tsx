@@ -105,8 +105,10 @@ const useDydxClientContext = () => {
 
   const getMegavaultHistoricalPnl = useCallback(
     async (resolution: PnlTickInterval = PnlTickInterval.day) => {
+      if (!indexerClient) return undefined;
       try {
-        return indexerClient?.vault.getMegavaultHistoricalPnl(resolution);
+        const result = await indexerClient.vault.getMegavaultHistoricalPnl(resolution);
+        return result;
       } catch (error) {
         log('useDydxClient/getMegavaultHistoricalPnl', error);
         return undefined;
@@ -116,8 +118,10 @@ const useDydxClientContext = () => {
   );
 
   const getMegavaultPositions = useCallback(async () => {
+    if (!indexerClient) return undefined;
     try {
-      return indexerClient?.vault.getMegavaultPositions();
+      const result = await indexerClient.vault.getMegavaultPositions();
+      return result;
     } catch (error) {
       log('useDydxClient/getMegavaultPositions', error);
       return undefined;
@@ -125,8 +129,10 @@ const useDydxClientContext = () => {
   }, [indexerClient]);
 
   const getVaultsHistoricalPnl = useCallback(async () => {
+    if (!indexerClient) return undefined;
     try {
-      return indexerClient?.vault.getVaultsHistoricalPnl();
+      const result = await indexerClient.vault.getVaultsHistoricalPnl();
+      return result;
     } catch (error) {
       log('useDydxClient/getVaultsHistoricalPnl', error);
       return undefined;
@@ -140,13 +146,15 @@ const useDydxClientContext = () => {
       recipientAddress: string,
       recipientSubaccountNumber: string
     ) => {
+      if (!indexerClient) return undefined;
       try {
-        return indexerClient?.account.getTransfersBetween(
+        const result = await indexerClient.account.getTransfersBetween(
           sourceAddress,
           sourceSubaccountNumber,
           recipientAddress,
           recipientSubaccountNumber
         );
+        return result;
       } catch (error) {
         log('useDydxClient/getAllAccountTransfersBetween', error);
         return undefined;

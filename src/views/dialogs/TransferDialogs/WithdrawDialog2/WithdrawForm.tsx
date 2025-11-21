@@ -41,7 +41,7 @@ export const WithdrawForm = ({
   setDestinationAddress,
   destinationChain,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onChainSelect,
+  onChainSelect: _onChainSelect,
   onWithdraw,
   onWithdrawBroadcastUpdate,
   onWithdrawSigned,
@@ -221,7 +221,6 @@ export const WithdrawForm = ({
         value={destinationAddress}
         onChange={setDestinationAddress}
         destinationChain={destinationChain}
-        // onDestinationClicked={onChainSelect}
       />
       <AmountInput value={amount} onChange={setAmount} />
       <TransferRouteOptions

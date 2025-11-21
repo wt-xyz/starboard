@@ -98,7 +98,7 @@ export const AccountMenu = () => {
     walletIcon = <Icon iconName={IconName.Warning} tw="text-[1.25rem] text-color-warning" />;
   } else if (
     onboardingState === OnboardingState.AccountConnected &&
-    walletInfo?.name === WalletType.Privy
+    walletInfo?.name === WalletType.FuelWallet
   ) {
     if (google) {
       walletIcon = <Icon iconComponent={GoogleIcon as ElementType} />;
@@ -107,7 +107,7 @@ export const AccountMenu = () => {
     } else if (twitter) {
       walletIcon = <Icon iconComponent={TwitterIcon as ElementType} />;
     } else {
-      walletIcon = <Icon iconComponent={wallets[WalletType.Privy].icon as ElementType} />;
+      walletIcon = <Icon iconComponent={wallets[WalletType.FuelWallet].icon as ElementType} />;
     }
   } else if (walletInfo) {
     walletIcon = <WalletIcon wallet={walletInfo} />;

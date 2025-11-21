@@ -91,12 +91,14 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
         assetId?: number;
         amount: number;
       }) => {
+        if (!compositeClient) return undefined;
         try {
-          return await compositeClient?.depositToSubaccount(
+          const result = await compositeClient.depositToSubaccount(
             subaccountClient,
             amount.toFixed(usdcDecimals),
             TransactionMemo.depositToSubaccount
           );
+          return result;
         } catch (error) {
           log('useSubaccount/depositToSubaccount', error);
           throw error;
@@ -110,13 +112,15 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
         subaccountClient: SubaccountClient;
         amount: number;
       }) => {
+        if (!compositeClient) return undefined;
         try {
-          return await compositeClient?.withdrawFromSubaccount(
+          const result = await compositeClient.withdrawFromSubaccount(
             subaccountClient,
             amount.toFixed(usdcDecimals),
             undefined,
             TransactionMemo.withdrawFromSubaccount
           );
+          return result;
         } catch (error) {
           log('useSubaccount/withdrawFromSubaccount', error);
           throw error;
@@ -133,31 +137,32 @@ const useSubaccountContext = ({ localDydxWallet }: { localDydxWallet?: LocalWall
         payload: string;
       }) => {
         if (!compositeClient) throw new Error('client not initialized');
+        const transaction = JSON.parse(payload);
+
+        const msg = compositeClient.withdrawFromSubaccountMessage(
+          subaccountClient,
+          amount.toFixed(usdcDecimals)
+        );
+        const ibcMsg: EncodeObject = {
+          typeUrl: transaction.msgTypeUrl,
+          value: {
+            ...transaction.msg,
+            timeoutTimestamp: transaction.msg.timeoutTimestamp
+              ? // Signer expects BigInt but the payload types the value as string
+                BigInt(Long.fromValue(transaction.msg.timeoutTimestamp).toString())
+              : undefined,
+          },
+        };
+
         try {
-          const transaction = JSON.parse(payload);
-
-          const msg = compositeClient.withdrawFromSubaccountMessage(
-            subaccountClient,
-            amount.toFixed(usdcDecimals)
-          );
-          const ibcMsg: EncodeObject = {
-            typeUrl: transaction.msgTypeUrl,
-            value: {
-              ...transaction.msg,
-              timeoutTimestamp: transaction.msg.timeoutTimestamp
-                ? // Signer expects BigInt but the payload types the value as string
-                  BigInt(Long.fromValue(transaction.msg.timeoutTimestamp).toString())
-                : undefined,
-            },
-          };
-
-          return await compositeClient.send(
+          const result = await compositeClient.send(
             subaccountClient.wallet,
             () => Promise.resolve([msg, ibcMsg]),
             false,
             undefined,
             TransactionMemo.withdrawFromAccount
           );
+          return result;
         } catch (error) {
           log('useSubaccount/sendSkipWithdrawFromSubaccount', error);
           throw error;

@@ -5,10 +5,12 @@
   "type": "module",
   "license": "AGPL-3.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   },
+  "packageManager": "pnpm@8.6.6",
   "scripts": {
-    "dev": "pnpm build:ts-sdk && cp ./template.html ./index.html && vite",
+    "preinstall": "npx only-allow pnpm",
+    "dev": "cp ./template.html ./index.html && vite",
     "dev:mainnet": "VITE_NETWORK_MODE=MAINNET pnpm run dev",
     "graph": "nx graph --groupByFolder",
     "build": "pnpm run build:ts-sdk && pnpm run build:set-last-commit-and-tag && pnpm run build:generate-entry-points && tsc && NODE_OPTIONS='--max-old-space-size=6144' vite build",
@@ -49,7 +51,6 @@
     "wdio": "wdio run ./wdio.conf.ts",
     "validate-mermaid": "node scripts/validate-mermaid-remark.js"
   },
-  "packageManager": "pnpm@8.6.6",
   "dependencies": {
     "@cosmjs/amino": "^0.32.1",
     "@cosmjs/crypto": "^0.32.1",
@@ -88,7 +89,6 @@
     "@radix-ui/react-use-rect": "^1.0.1",
     "@react-spring/web": "^9.7.2",
     "@react-stately/table": "^3.9.1",
-    "@react-types/table": "3.6.1",
     "@reduxjs/toolkit": "^2.2.5",
     "@skip-go/client": "1.1.7",
     "@solana/web3.js": "^1.93.0",
@@ -138,7 +138,10 @@
     "unionize": "^3.1.0",
     "use-latest": "^1.2.1",
     "viem": "^2.22.17",
-    "wagmi": "^2.14.9"
+    "wagmi": "^2.14.9",
+    "@keplr-wallet/types": "^0.12.188",
+    "@react-types/table": "^3.6.1",
+    "twin.macro": "^3.4.1"
   },
   "devDependencies": {
     "@apollo/server": "^4.9.5",
@@ -146,7 +149,6 @@
     "@babel/core": "^7.23.9",
     "@commitlint/cli": "^19.0.3",
     "@commitlint/config-conventional": "^19.0.3",
-    "@keplr-wallet/types": "^0.12.188",
     "@ladle/react": "^4.0.2",
     "@react-types/grid": "^3.1.8",
     "@react-types/shared": "^3.18.1",
@@ -248,7 +250,8 @@
       "@react-types/shared": "3.32.0",
       "@react-types/grid": "3.3.5",
       "@react-types/table": "3.6.1",
-      "@react-stately/table": "3.15.0"
+      "@react-stately/table": "3.15.0",
+      "graphql": "15.10.1"
     }
   },
   "babelMacros": {

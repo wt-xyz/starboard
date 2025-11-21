@@ -1,45 +1,36 @@
-import { task } from "hardhat/config";
-import { Provider, Wallet, WalletUnlocked } from "fuels"
-import { TestnetTokenFactory } from "../types/TestnetTokenFactory"
+import { Provider, Wallet } from "fuels"
+import { getArgs, call } from "./utils"
+import { TestnetTokenFactory } from "../types"
 
-const NETWORK = "https://testnet.fuel.network/v1/graphql" //testnet
-// const NETWORK = "http://127.0.0.1:4000/v1/graphql"  // local
-const PRIVATE_KEY = "" // testnet
-// const PRIVATE_KEY = "0x72dd6103daeaed398609a2ec3905f07ae4b5188a698fd1472306488b9e48245d"  // local
+if (require.main === module) {
+    deployTestnetToken(getArgs(["url", "privK", "name", "symbol", "decimals"]))
+}
 
-task("deploy-testnet-token", "Deploy a token for the testnet")
-  .addPositionalParam("name")
-  .addPositionalParam("symbol")
-  .setAction(async (taskArgs) => {
-    console.log(`Params: name: ${taskArgs.name} symbol: ${taskArgs.symbol}`);
+export async function deployTestnetToken(taskArgs: any) {
+    // eslint-disable-next-line no-console
+    console.log("Deploy a token for the testnet")
 
-    const provider = await Provider.create(NETWORK)
-    const deployer = Wallet.fromPrivateKey(PRIVATE_KEY, provider)
+    const provider = new Provider(taskArgs.url)
+    const deployer = Wallet.fromPrivateKey(taskArgs.privK, provider)
 
-    let tt = await deploy("TestnetToken", deployer, { NAME: taskArgs.name, SYMBOL: taskArgs.symbol })
-    console.log(`Token deployed to: ${tt.id.toString()} ${tt.id.toB256().toString()}`)
+    // eslint-disable-next-line no-console
+    console.log(`Deploying token named ${taskArgs.name} ${taskArgs.symbol} decimals: ${taskArgs.decimals}`)
+
+    const { waitForResult: waitForResultTestnetToken } = await TestnetTokenFactory.deploy(deployer, {
+        configurableConstants: {
+            NAME: taskArgs.name,
+            SYMBOL: taskArgs.symbol,
+            DECIMALS: taskArgs.decimals,
+        },
+    })
+    const { contract: tt } = await waitForResultTestnetToken()
+
+    const ttAssetId = (await tt.functions.get_asset_id().get()).value
+    // eslint-disable-next-line no-console
+    console.log(`Token deployed to: contractId: ${tt.id.toString()} assetId: ${ttAssetId.bits}`)
     await call(tt.functions.initialize())
+    // eslint-disable-next-line no-console
     console.log("Token initialized")
-}
-);
 
-async function deploy(contract: string, wallet: WalletUnlocked, configurables: any = undefined) {
-  const factory = require(`../types/${contract}Factory`)[`${contract}Factory`]
-  if (!factory) {
-      throw new Error(`Could not find factory for contract ${contract}`)
-  }
-
-  const { waitForResult } = await factory.deploy(wallet, configurables ? { configurableConstants: configurables } : undefined)
-  const { contract: contr } = await waitForResult()
-
-  return contr
-}
-
-async function call(fnCall: any) {
-  const { gasUsed } = await fnCall.getTransactionCost()
-  // console.log("gasUsed", gasUsed.toString())
-  const gasLimit = gasUsed.mul("6").div("5").toString()
-
-  const { waitForResult } = await fnCall.txParams({ gasLimit }).call()
-  return await waitForResult()
+    return [tt.id.toString(), ttAssetId.bits]
 }

@@ -151,6 +151,10 @@ export const HorizontalPanel = ({ isOpen = true, setIsOpen, handleStartResize }:
     ]
   );
 
+  // ordersTabItem removed - commented out in usage below
+
+  // orderHistoryTabItem removed - commented out in usage below
+
   const fillsTabItem = useMemo(
     () => ({
       asChild: true,

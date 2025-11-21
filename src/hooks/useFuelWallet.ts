@@ -108,7 +108,7 @@ export const useFuelWallet = () => {
 
         // Get all available connectors
         const connectors = await fuel.connectors();
-        
+
         // Map wallet type to connector name pattern
         let connectorNamePattern: string;
         if (walletType === WalletType.BakoSafe) {
@@ -119,16 +119,18 @@ export const useFuelWallet = () => {
           // Default to Fuel Wallet
           connectorNamePattern = 'Fuel Wallet';
         }
-        
+
         // Find the matching connector
         const targetConnector = connectors.find((connector) =>
           connector.name.includes(connectorNamePattern)
         );
-        
+
         if (!targetConnector) {
-          throw new Error(`Connector not found for ${walletType}. Please install the wallet extension.`);
+          throw new Error(
+            `Connector not found for ${walletType}. Please install the wallet extension.`
+          );
         }
-        
+
         // Select and connect using the connector's actual name
         await fuel.selectConnector(targetConnector.name);
         await fuel.connect();

@@ -82,9 +82,9 @@ export const useAccountBalance = (): {
 
   const isOffline =
     status === 'error' &&
-    (queryError?.message?.toLowerCase().includes('fetch') ||
-      queryError?.message?.toLowerCase().includes('network') ||
-      queryError?.name === 'TypeError');
+    (queryError.message.toLowerCase().includes('fetch') ||
+      queryError.message.toLowerCase().includes('network') ||
+      queryError.name === 'TypeError');
 
   return {
     balance,

@@ -498,7 +498,8 @@ const $Table = styled(Table)`
   }
 ` as typeof Table;
 
-const $Output = styled(Output)`
+const $Output = styled(Output)<{ isNegative?: boolean }>`
+  color: ${({ isNegative }) => (isNegative ? `var(--color-negative)` : `var(--color-positive)`)};
   color: var(--color-text-2);
 `;
 

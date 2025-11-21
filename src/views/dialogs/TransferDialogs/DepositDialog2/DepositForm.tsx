@@ -51,7 +51,7 @@ import { isInstantDeposit, useBalance, useDepositDeltas, useDepositRoutes } from
 
 export const DepositForm = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onTokenSelect,
+  onTokenSelect: _onTokenSelect,
   amount,
   setAmount,
   token,
