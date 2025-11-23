@@ -10,14 +10,14 @@ import {
   ENVIRONMENT_CONFIG_MAP,
 } from '@/constants/networks';
 
+import { useMainnetSwitchWarning } from '@/hooks/useMainnetSwitchWarning';
+
 import { setSelectedNetwork } from '@/state/app';
 import { getSelectedNetwork } from '@/state/appSelectors';
 import { useAppDispatch, useAppSelector } from '@/state/appTypes';
 
 import { validateAgainstAvailableEnvironments } from '@/lib/network';
-import { useMainnetSwitchWarning } from '@/hooks/useMainnetSwitchWarning';
 
-import { useAccounts } from './useAccounts';
 import { useLocalStorage } from './useLocalStorage';
 
 const getNetworkParamFromUrl = (): DydxNetwork | undefined => {
@@ -55,7 +55,6 @@ export const useSelectedNetwork = (): {
   selectedNetwork: DydxNetwork;
 } => {
   const dispatch = useAppDispatch();
-  const { disconnect } = useAccounts();
   const selectedNetwork = useAppSelector(getSelectedNetwork);
   const { wallets } = useWallets();
   const privyWallet = wallets.find((wallet) => wallet.walletClientType === 'privy');
@@ -78,13 +77,12 @@ export const useSelectedNetwork = (): {
       const targetChainId = Number(targetConfig.ethereumChainId);
 
       maybeWarnBeforeSwitch(targetConfig.isMainnet, () => {
-        disconnect();
         setLocalStorageNetwork(network);
         dispatch(setSelectedNetwork(network));
         privyWallet?.switchChain(targetChainId);
       });
     },
-    [dispatch, disconnect, setLocalStorageNetwork, privyWallet, maybeWarnBeforeSwitch]
+    [dispatch, setLocalStorageNetwork, privyWallet, maybeWarnBeforeSwitch]
   );
 
   // Ensure the selected network is valid
