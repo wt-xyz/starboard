@@ -13,12 +13,12 @@ export const MOCK_POSITION_COLLATERAL: MockPositionCollateral[] = [
   {
     marketId: 'mock-eth-usd',
     ticker: 'ETH-USD',
-    marginValue: 7500,
+    marginValue: 75000,
   },
   {
     marketId: 'mock-btc-usd',
     ticker: 'BTC-USD',
-    marginValue: 4200,
+    marginValue: 42000,
   },
   {
     marketId: 'mock-fuel-usd',
