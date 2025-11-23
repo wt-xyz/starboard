@@ -1009,7 +1009,7 @@ fn _add_liquidity(receiver: Identity) -> u64 {
         account: receiver,
         stable_asset_amount: asset_amount,
         lp_asset_amount: mint_amount,
-        fee_basis_points,
+        fee: asset_amount - amount_after_fees,
     });
 
     mint_amount
@@ -1064,7 +1064,7 @@ fn _remove_liquidity(receiver: Identity) -> u64 {
         account: receiver,
         stable_asset_amount: amount_out,
         lp_asset_amount: burn_amount_u64,
-        fee_basis_points,
+        fee: redemption_amount - amount_out,
     });
 
     _transfer_out(COLLATERAL_ASSET_ID, amount_out, receiver);

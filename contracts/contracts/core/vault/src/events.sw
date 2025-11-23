@@ -41,13 +41,13 @@ pub struct AddLiquidity {
     pub account: Identity,
     pub stable_asset_amount: u64,
     pub lp_asset_amount: u64,
-    pub fee_basis_points: u64,
+    pub fee: u64,
 }
 pub struct RemoveLiquidity {
     pub account: Identity,
     pub stable_asset_amount: u64,
     pub lp_asset_amount: u64,
-    pub fee_basis_points: u64,
+    pub fee: u64,
 }
 pub struct CollectSwapFees {
     pub fee_amount: u64,
