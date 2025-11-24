@@ -1,6 +1,6 @@
 import { forwardRef, useMemo } from 'react';
 
-import { BonsaiCore } from '@/bonsai/ontology';
+import { BonsaiCore, BonsaiHooks } from '@/bonsai/ontology';
 import {
   PerpetualMarketSummary,
   SubaccountOrder,
@@ -457,6 +457,8 @@ export const PositionsTable = forwardRef(
     const navigate = useNavigate();
     const { isSlTpLimitOrdersEnabled } = useEnvFeatures();
     const { isTablet } = useBreakpoints();
+
+    BonsaiHooks.useOraclePricePolling();
 
     // todo this uses the old subaccount id for now
     const isAccountViewOnly = useAppSelector(calculateIsAccountViewOnly);

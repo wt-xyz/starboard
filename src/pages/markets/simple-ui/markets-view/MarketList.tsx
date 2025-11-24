@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
-import { BonsaiCore } from '@/bonsai/ontology';
+import { BonsaiCore, BonsaiHooks } from '@/bonsai/ontology';
 import { SubaccountPosition } from '@/bonsai/types/summaryTypes';
 import type { Range } from '@tanstack/react-virtual';
 import { defaultRangeExtractor, useVirtualizer } from '@tanstack/react-virtual';
@@ -130,6 +130,8 @@ export const MarketList = ({
 }) => {
   const stringGetter = useStringGetter();
   const dispatch = useAppDispatch();
+
+  BonsaiHooks.useOraclePricePolling();
 
   // Filters and sort
   const filter: MarketFilters = useAppSelector(getMarketFilter);

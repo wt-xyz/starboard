@@ -81,6 +81,8 @@ function marketsWebsocketValueCreator(websocket: IndexerWebsocket) {
 
 const MarketsValueManager = makeWsValueManager(marketsWebsocketValueCreator);
 
+export const MARKETS_WEBSOCKET_ENABLED: boolean = false;
+
 export function setUpMarkets(store: RootStore) {
   let lastSetHadData: boolean = false;
   const setMarkets = (val: Loadable<MarketsData>) => {
@@ -131,10 +133,12 @@ export function setUpMarkets(store: RootStore) {
       // HACK: disable websockets temproarily
       if (hasData && !lastSetHadData) {
         setMarkets(val);
-      } else if (hasData && lastSetHadData) {
+      } else if (hasData && lastSetHadData && MARKETS_WEBSOCKET_ENABLED) {
         // Don't overwrite the transformed data with raw websocket data
         // Websocket received market updates, but keeping transformed data from REST call
         // Optionally, you could merge specific updates here instead of ignoring them completely
+        // When WebSocket is enabled, apply updates to oracle prices
+        // throttledSetMarkets(val);
       }
     });
 

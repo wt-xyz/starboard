@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { BonsaiCore, BonsaiHelpers } from '@/bonsai/ontology';
+import { BonsaiCore, BonsaiHelpers, BonsaiHooks } from '@/bonsai/ontology';
 import { orderBy } from 'lodash';
 
 import { ButtonAction, ButtonShape, ButtonSize } from '@/constants/buttons';
@@ -27,6 +27,9 @@ export const AssetPosition = () => {
   const dispatch = useAppDispatch();
   const stringGetter = useStringGetter();
   const [tab, setTab] = useState<'position' | 'orders'>('position');
+
+  BonsaiHooks.useOraclePricePolling();
+
   const positions = useAppSelector(BonsaiCore.account.parentSubaccountPositions.data);
   const openOrders = useAppSelector(BonsaiHelpers.currentMarket.account.openOrders);
   const currentMarketId = useAppSelector(BonsaiHelpers.currentMarket.stableMarketInfo)?.ticker;

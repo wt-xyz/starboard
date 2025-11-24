@@ -29,6 +29,7 @@ import {
   useHistoricalTradingRewardsWeekly,
   useTotalTradingRewards,
 } from './rest/historicalTradingRewards';
+import { useOraclePricePolling } from './rest/oraclePricePolling';
 import {
   StakingDelegationsResult,
   StakingRewards,
@@ -427,6 +428,7 @@ interface BonsaiHooksShape {
   useUnbondingDelegations: () => Loadable<UnbondingDelegation[]>;
   useStakingDelegations: () => Loadable<StakingDelegationsResult>;
   useFundingPayments: () => Loadable<IndexerFundingPaymentResponseObject[]>;
+  useOraclePricePolling: () => void;
 }
 
 export const BonsaiHooks: BonsaiHooksShape = {
@@ -441,6 +443,7 @@ export const BonsaiHooks: BonsaiHooksShape = {
   useTotalTradingRewards,
   useUnbondingDelegations,
   useStakingDelegations,
+  useOraclePricePolling,
 };
 
 export const BonsaiForms = {
