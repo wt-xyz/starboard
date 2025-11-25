@@ -4,6 +4,14 @@ import { call, getArgs } from "./utils"
 
 if (require.main === module) {
     faucet(getArgs(["url", "privK", "token"]))
+        .then(() => {
+            process.exit(0)
+        })
+        .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error)
+            process.exit(1)
+        })
 }
 
 async function faucet(taskArgs: any) {
