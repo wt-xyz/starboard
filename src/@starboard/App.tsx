@@ -243,6 +243,11 @@ const Content = () => {
   );
 };
 
+/**
+ * Run a one-time migration that applies the UI refresh and records it as seen.
+ *
+ * On first render where the local `HasSeenUiRefresh` flag is not set, this hook sets that flag to `true`. If the current app theme setting is `Classic`, it dispatches an action to change the theme setting to `Dark`.
+ */
 function useUiRefreshMigrations() {
   const themeSetting = useAppSelector(getAppThemeSetting);
   const dispatch = useAppDispatch();
@@ -260,6 +265,13 @@ function useUiRefreshMigrations() {
   }, [themeSetting, seenUiRefresh, dispatch, setSeenUiRefresh]);
 }
 
+/**
+ * Automatically opens the deposit dialog when a newly onboarded user with low equity is eligible.
+ *
+ * When the deposit feature gate is enabled, this hook checks whether the user completed onboarding
+ * this session and has a defined equity value less than 1. If those conditions are met, it marks
+ * onboarding as seen for the session and dispatches the action to open the deposit dialog exactly once.
+ */
 function useOpenDepositIfRelevant() {
   const hasOnboarded = useAppSelector((state) => state.account.onboardedThisSession);
   const equity = useAppSelector(BonsaiCore.account.parentSubaccountSummary.data)?.equity.toNumber();
@@ -316,7 +328,13 @@ const App = () => {
   );
 };
 
-// This implements the default behavior from styled-components v5
+/**
+ * Determine whether a prop should be forwarded to a styled-components target.
+ *
+ * @param propName - The name of the prop to test.
+ * @param target - The styled target (an HTML tag name or a component) that would receive the prop.
+ * @returns `true` if the prop should be forwarded to the target, `false` otherwise.
+ */
 function shouldForwardProp(propName: string, target: WebTarget): boolean {
   if (typeof target === 'string') {
     // For HTML elements, forward the prop if it is a valid HTML attribute
