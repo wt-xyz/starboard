@@ -281,6 +281,7 @@ type ElementProps = {
   columnWidths?: Partial<Record<FillsTableColumnKey, ColumnSize>>;
   currentMarket?: string;
   initialPageSize?: PageSize;
+  dataOverride?: SubaccountFill[];
 };
 
 type StyleProps = {
@@ -299,6 +300,7 @@ export const FillsTable = forwardRef(
       withGradientCardRows,
       withOuterBorder,
       withInnerBorders = true,
+      dataOverride,
     }: ElementProps & StyleProps,
     _ref
   ) => {
@@ -308,7 +310,7 @@ export const FillsTable = forwardRef(
 
     const marketFills = useAppSelector(BonsaiHelpers.currentMarket.account.fills);
     const allFills = useAppSelector(BonsaiCore.account.fills.data);
-    const fills = currentMarket ? marketFills : allFills;
+    const fills = dataOverride ?? (currentMarket ? marketFills : allFills);
 
     const marketSummaries = orEmptyRecord(useAppSelector(BonsaiCore.markets.markets.data));
 

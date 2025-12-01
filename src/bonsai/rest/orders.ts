@@ -16,6 +16,7 @@ import { queryResultToLoadable } from './lib/queryResultToLoadable';
 
 export function setUpOrdersQuery(store: RootStore) {
   const cleanupListener = refreshIndexerQueryOnAccountSocketRefresh(['account', 'orders']);
+  // const isLocalhost = window.location.href.includes('localhost');
   const cleanupEffect = createIndexerQueryStoreEffect(store, {
     name: 'orders',
     selector: selectParentSubaccountInfo,
@@ -24,6 +25,7 @@ export function setUpOrdersQuery(store: RootStore) {
       if (!isTruthy(data.wallet) || data.subaccount == null) {
         return null;
       }
+      // if (isLocalhost) return null;
       return () =>
         indexerClient.account.getParentSubaccountNumberOrders(
           data.wallet!,

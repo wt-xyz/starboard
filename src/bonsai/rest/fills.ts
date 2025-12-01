@@ -14,6 +14,8 @@ import { queryResultToLoadable } from './lib/queryResultToLoadable';
 
 export function setUpFillsQuery(store: RootStore) {
   const cleanupListener = refreshIndexerQueryOnAccountSocketRefresh(['account', 'fills']);
+  // Skip REST fetch on localhost/mock indexer where these endpoints return 404; data comes via GraphQL sockets.
+  // const isLocalhost = window.location.href.includes('localhost');
   const cleanupEffect = createIndexerQueryStoreEffect(store, {
     name: 'fills',
     selector: selectParentSubaccountInfo,
@@ -22,6 +24,9 @@ export function setUpFillsQuery(store: RootStore) {
       if (!isTruthy(data.wallet) || data.subaccount == null) {
         return null;
       }
+      // if (isLocalhost) {
+      //   return null;
+      // }
       return () =>
         indexerClient.account.getParentSubaccountNumberFills(data.wallet!, data.subaccount!);
     },

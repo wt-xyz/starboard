@@ -17,6 +17,7 @@ export function setUpBlockTradingRewardsQuery(store: RootStore) {
     'account',
     'blockTradingRewards',
   ]);
+  // const isLocalhost = window.location.href.includes('localhost');
 
   const cleanupEffect = createIndexerQueryStoreEffect(store, {
     name: 'blockTradingRewards',
@@ -26,6 +27,7 @@ export function setUpBlockTradingRewardsQuery(store: RootStore) {
       if (!isTruthy(data.wallet) || data.subaccount == null) {
         return null;
       }
+      // if (isLocalhost) return null;
       return () => indexerClient.account.getHistoricalBlockTradingRewards(data.wallet!);
     },
     onResult: (blockTradingRewards) => {

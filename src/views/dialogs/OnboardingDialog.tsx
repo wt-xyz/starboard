@@ -105,6 +105,12 @@ export const OnboardingDialog = ({
   };
 
   const onChooseWallet = (wallet: WalletInfo) => {
+    const isFuelWallet =
+      wallet.connectorType === ConnectorType.Fuel &&
+      (wallet.name === WalletType.FuelWallet ||
+        wallet.name === WalletType.BakoSafe ||
+        wallet.name === WalletType.Fuelet);
+
     if (wallet.connectorType === ConnectorType.DownloadWallet) {
       window.open(wallet.downloadLink, '_blank');
       return;
@@ -114,21 +120,15 @@ export const OnboardingDialog = ({
     }
 
     // For Fuel wallets (Fuel Wallet, Bako Safe, Fuelet), pass wallet type
-    if (
-      wallet.connectorType === ConnectorType.Fuel &&
-      (wallet.name === WalletType.FuelWallet ||
-        wallet.name === WalletType.BakoSafe ||
-        wallet.name === WalletType.Fuelet)
-    ) {
-      selectWallet(wallet.name, wallet);
+    if (isFuelWallet) {
+      selectWallet(wallet.name);
       // Close the dialog immediately for Fuel wallets
       // The connection and state changes will happen in the background
       setIsOpenFromDialog(false);
       return;
     }
 
-    // For all other wallets, pass the wallet info
-    selectWallet(undefined, wallet);
+    // For all other wallets, we do not have handlers wired in this flow yet
   };
 
   return (

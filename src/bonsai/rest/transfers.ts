@@ -15,6 +15,7 @@ import { queryResultToLoadable } from './lib/queryResultToLoadable';
 
 export function setUpTransfersQuery(store: RootStore) {
   const cleanupListener = refreshIndexerQueryOnAccountSocketRefresh(['account', 'transfers']);
+  // const isLocalhost = window.location.href.includes('localhost');
 
   const cleanupEffect = createIndexerQueryStoreEffect(store, {
     name: 'transfers',
@@ -24,6 +25,7 @@ export function setUpTransfersQuery(store: RootStore) {
       if (!isTruthy(data.wallet) || data.subaccount == null) {
         return null;
       }
+      // if (isLocalhost) return null;
       return async () => {
         try {
           const result = await indexerClient.account.getParentSubaccountNumberTransfers(

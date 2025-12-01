@@ -10,5 +10,14 @@
   "MARGIN_HEALTH_HEALTHY": "Healthy",
   "MARGIN_HEALTH_WARNING": "Warning",
   "MARGIN_HEALTH_DANGER": "Danger",
-  "TOTAL_USDC_BALANCE": "Total USDC Balance"
+  "TOTAL_USDC_BALANCE": "Total USDC Balance",
+  "TOTAL_PNL": "Total PnL",
+  "PAGE": "Page",
+  "PAGE_SIZE": "Page Size",
+  "START_TIME": "Start Time",
+  "END_TIME": "End Time",
+  "NEXT": "Next",
+  "PREV": "Prev",
+  "TRADE_HISTORY": "Trade History",
+  "TRADE_HISTORY_EMPTY_STATE": "No trades found. Once you make your first trade, it will appear here."
 }
