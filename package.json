@@ -43,7 +43,7 @@
     "tag": "node scripts/generate-tag.js",
     "test": "vitest run",
     "tsc": "tsc",
-    "postinstall": "tar -xzC public -f tradingview/tradingview.tgz; cp apps/indexer/.env.example apps/indexer/.env",
+    "postinstall": "tar -xzC public -f tradingview/tradingview.tgz; cp indexer/.env.example indexer/.env",
     "prepare": "ts-patch install && typia patch",
     "commitlint": "commitlint --edit",
     "wdio": "wdio run ./wdio.conf.ts",

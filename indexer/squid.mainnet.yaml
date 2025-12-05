@@ -1,0 +1,40 @@
+manifestVersion: subsquid.io/v0.1
+name: starboard-mainnet
+version: 1
+description: "Starboard Indexer - Mainnet"
+
+build:
+  node_version: "20"
+  package_manager: "pnpm"
+  install:
+    cmd:
+      - pnpm
+      - install
+      - --no-frozen-lockfile
+
+deploy:
+  addons:
+    postgres:
+    rpc:
+      - eth.http
+  processor:
+    cmd:
+      - node
+      - -r
+      - dotenv/config
+      - lib/main.js
+  api:
+    cmd:
+      - npx
+      - squid-graphql-server
+  env:
+    # SQD_DEBUG: "*"
+    GATEWAY_URL: https://v2.archive.subsquid.io/network/fuel-mainnet
+    GRAPHQL_URL: https://mainnet.fuel.network/v1/graphql
+    VAULT_ADDRESS: "0x8002f2e86302ef9421558d0ae25a68cdfdbec5d27915cc2db49eded220799ecc"
+    VAULT_PRICEFEED_ADDRESS: "0x3dfcb460ee3cd6dc2ac4be1fbe73c97ce9b4962aa429f4ebdbbfa8dd1d584b78"
+
+scale:
+  dedicated: true
+  processor:
+    profile: small

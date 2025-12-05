@@ -1,0 +1,41 @@
+manifestVersion: subsquid.io/v0.1
+name: starboard-testnet
+version: 1
+description: "Starboard Indexer - Testnet"
+
+build:
+  node_version: "20"
+  package_manager: "pnpm"
+  install:
+    cmd:
+      - pnpm
+      - install
+      - --no-frozen-lockfile
+
+deploy:
+  addons:
+    postgres:
+    rpc:
+      - eth.http
+  processor:
+    cmd:
+      - node
+      - -r
+      - dotenv/config
+      - lib/main.js
+  api:
+    cmd:
+      - npx
+      - squid-graphql-server
+  env:
+    # SQD_DEBUG: "*"
+    GATEWAY_URL: https://v2.archive.subsquid.io/network/fuel-testnet
+    GRAPHQL_URL: https://testnet.fuel.network/v1/graphql
+    VAULT_ADDRESS: "0x4a0ba139fbea5af20369bd22bc83c5a9f23484193e56124c57e6f9bd1e7605fd"
+    VAULT_PRICEFEED_ADDRESS: "0xcb4b0de860b5a51eb55b45437cfda46390ab335b9aa4af8da8e6ed2a69c54931"
+    FROM_BLOCK: "42335475"
+
+scale:
+  dedicated: true
+  processor:
+    profile: small
