@@ -9,6 +9,21 @@ export * as validation from './lib/validation';
 
 export { CompositeClient } from './clients/composite-client';
 export { FaucetClient } from './clients/faucet-client';
+export {
+  GraphQLIndexerClient,
+  GraphQLIndexerConfig,
+  OrderSide as GraphQLOrderSide,
+  TradeType as GraphQLTradeType,
+  PositionSide as GraphQLPositionSide,
+  PositionStatus as GraphQLPositionStatus,
+} from './clients/graphql-indexer-client';
+export type {
+  GraphQLTrade,
+  GraphQLPosition,
+  GraphQLMarket,
+  GraphQLAccount,
+  GraphQLPayment,
+} from './clients/graphql-indexer-client';
 export { IndexerClient } from './clients/indexer-client';
 export { default as LocalWallet } from './clients/modules/local-wallet';
 export { NobleClient } from './clients/noble-client';

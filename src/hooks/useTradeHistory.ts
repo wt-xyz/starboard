@@ -1,20 +1,33 @@
 import { useMemo } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
-
 import { MarginMode } from '@/bonsai/forms/trade/types';
 import { SubaccountFill, SubaccountFillType } from '@/bonsai/types/summaryTypes';
-import { useAccounts } from '@/hooks/useAccounts';
-import { useGraphQLClient } from '@/lib/graphqlClient';
 import { MOCK_TRADE_FILLS } from '@/mocks/tradeHistoryMocks';
-import {
-  GET_ALL_TRADES_QUERY,
-  GraphQLOrderSide,
-  GraphQLTrade,
-  GraphQLTradesResponse,
-} from '@/types/indexer/tradeTypes';
+import { useQuery } from '@tanstack/react-query';
 
 import { IndexerLiquidity, IndexerOrderSide } from '@/types/indexer/indexerApiGen';
+
+import { useAccounts } from '@/hooks/useAccounts';
+
+import { useGraphQLIndexerClient } from '@/lib/graphqlClient';
+
+// Trade type returned by ts-sdk GraphQLIndexerClient
+interface GraphQLTrade {
+  id: string;
+  createdAt?: string | null;
+  createdAtHeight?: number | null;
+  side?: 'BUY' | 'SELL' | null;
+  price?: string | null;
+  size?: string | null;
+  tradeType?: string | null;
+  market?: { id: string; ticker: string; oraclePrice?: string | null } | null;
+  position?: {
+    id: string;
+    side?: string | null;
+    ticker?: string | null;
+    account?: { id: string; address?: string | null; subaccountNumber?: number } | null;
+  } | null;
+}
 
 export type TradeHistoryFilter = {
   ticker?: string;
@@ -35,8 +48,7 @@ export type TradeHistoryFilter = {
  */
 const mapGraphQLTradeToFill = (trade: GraphQLTrade): SubaccountFill => {
   // Map GraphQL OrderSide to IndexerOrderSide
-  const side =
-    trade.side === GraphQLOrderSide.BUY ? IndexerOrderSide.BUY : IndexerOrderSide.SELL;
+  const side = trade.side === 'BUY' ? IndexerOrderSide.BUY : IndexerOrderSide.SELL;
 
   return {
     id: trade.id,
@@ -65,7 +77,7 @@ const mapGraphQLTradeToFill = (trade: GraphQLTrade): SubaccountFill => {
 
 export const useTradeHistory = (filters: TradeHistoryFilter) => {
   const { address } = useAccounts();
-  const graphqlClient = useGraphQLClient();
+  const indexerClient = useGraphQLIndexerClient();
 
   const { page = 1, pageSize = 25, ticker, startTime, endTime, side } = filters;
 
@@ -79,16 +91,7 @@ export const useTradeHistory = (filters: TradeHistoryFilter) => {
   const enableMock = false;
 
   const query = useQuery({
-    queryKey: [
-      'trade-history-graphql',
-      address,
-      ticker,
-      startTime,
-      endTime,
-      side,
-      page,
-      pageSize,
-    ],
+    queryKey: ['trade-history-graphql', address, ticker, startTime, endTime, side, page, pageSize],
     enabled: true,
     staleTime: 30_000, // 30 seconds
     queryFn: async () => {
@@ -102,35 +105,30 @@ export const useTradeHistory = (filters: TradeHistoryFilter) => {
       }
 
       try {
-        // Fetch trades from GraphQL
-        // We fetch more than needed to allow client-side filtering by address
-        const response = await graphqlClient.request<GraphQLTradesResponse>(
-          GET_ALL_TRADES_QUERY,
-          {
-            limit: pageSize * 2, // Fetch extra for filtering
-            offset: 0, // Start from beginning, filter client-side
-          }
-        );
+        // Use ts-sdk GraphQLIndexerClient methods
+        let trades: GraphQLTrade[];
 
-        const trades = response.trades ?? [];
+        if (address) {
+          console.log('calling indexer in useTradeHistory with address:', address);
+          // Use server-side filtering by account address for efficiency
+          trades = await indexerClient.getAccountTrades(address, pageSize, offset);
+        } else {
+          console.log('calling indexer in useTradeHistory with no address');
+          // No address - fetch all trades (for admin/demo views)
+          trades = await indexerClient.getAllTrades(pageSize, offset);
+        }
 
-        // Filter by connected wallet address
-        let filteredTrades = address
-          ? trades.filter(
-              (trade) =>
-                trade.position?.account?.address?.toLowerCase() === address.toLowerCase()
-            )
-          : trades;
+        // Apply additional client-side filters (side, ticker, date range)
+        // Note: These could be moved to server-side if the indexer supports them
+        let filteredTrades = trades;
 
-        // Apply additional filters
         if (side) {
           filteredTrades = filteredTrades.filter((trade) => trade.side === side);
         }
 
         if (ticker) {
           filteredTrades = filteredTrades.filter(
-            (trade) =>
-              trade.market?.ticker === ticker || trade.position?.ticker === ticker
+            (trade) => trade.market?.ticker === ticker || trade.position?.ticker === ticker
           );
         }
 
@@ -148,18 +146,14 @@ export const useTradeHistory = (filters: TradeHistoryFilter) => {
           );
         }
 
-        // Calculate total before pagination
-        const totalResults = filteredTrades.length;
-
-        // Apply pagination
-        const paginatedTrades = filteredTrades.slice(offset, offset + pageSize);
-
         // Map to SubaccountFill format
-        const fills = paginatedTrades.map(mapGraphQLTradeToFill);
+        const fills = filteredTrades.map(mapGraphQLTradeToFill);
 
+        // Note: totalResults is approximate since we're paginating server-side
+        // For exact count, we'd need a separate count query or use tradesConnection
         return {
           fills,
-          totalResults,
+          totalResults: fills.length < pageSize ? offset + fills.length : offset + pageSize + 1,
         };
       } catch (error) {
         // On error, fall back to mock data in localhost
@@ -182,6 +176,7 @@ export const useTradeHistory = (filters: TradeHistoryFilter) => {
       totalResults: query.data?.totalResults ?? 0,
       isLoading: query.isLoading,
       error: query.error as Error | null,
+      refetch: query.refetch,
     }),
     [query.data, query.isLoading, query.error]
   );

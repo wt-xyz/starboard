@@ -1,41 +1,33 @@
 import { useMemo } from 'react';
 
-import { GraphQLClient } from 'graphql-request';
+import { GraphQLIndexerClient, GraphQLIndexerConfig } from 'starboard-client-js';
 
 import { useEndpointsConfig } from '@/hooks/useEndpointsConfig';
 
 /**
- * Creates a GraphQL client connected to the indexer's GraphQL endpoint.
- * The endpoint is determined by the current network configuration.
+ * Creates a GraphQL indexer client connected to the Squid indexer.
+ * Uses the ts-sdk's GraphQLIndexerClient for consistency.
  *
  * Endpoints:
  * - Localhost: http://localhost:4350/graphql
  * - Testnet: https://indexer.v4testnet.dydx.exchange/graphql
  */
-export const useGraphQLClient = () => {
+export const useGraphQLIndexerClient = () => {
   const { indexer } = useEndpointsConfig();
 
   const client = useMemo(() => {
-    const endpoint = `${indexer.api}/graphql`;
-    return new GraphQLClient(endpoint, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const config = new GraphQLIndexerConfig(indexer.api);
+    return new GraphQLIndexerClient(config);
   }, [indexer.api]);
 
   return client;
 };
 
 /**
- * Creates a standalone GraphQL client for use outside of React components.
+ * Creates a standalone GraphQL indexer client for use outside of React components.
  * @param indexerApiUrl - The base URL of the indexer API
  */
-export const createGraphQLClient = (indexerApiUrl: string) => {
-  return new GraphQLClient(`${indexerApiUrl}/graphql`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+export const createGraphQLIndexerClient = (indexerApiUrl: string) => {
+  const config = new GraphQLIndexerConfig(indexerApiUrl);
+  return new GraphQLIndexerClient(config);
 };
-
