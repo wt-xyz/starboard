@@ -120,7 +120,7 @@ export const OnboardingDialog = ({
         wallet.name === WalletType.BakoSafe ||
         wallet.name === WalletType.Fuelet)
     ) {
-      selectWallet(wallet.name, wallet);
+      selectWallet(wallet.name);
       // Close the dialog immediately for Fuel wallets
       // The connection and state changes will happen in the background
       setIsOpenFromDialog(false);
@@ -128,7 +128,7 @@ export const OnboardingDialog = ({
     }
 
     // For all other wallets, pass the wallet info
-    selectWallet(undefined, wallet);
+    selectWallet(undefined);
   };
 
   return (

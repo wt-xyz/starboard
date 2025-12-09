@@ -1,10 +1,6 @@
 import { useMemo } from 'react';
 
-import {
-  ConnectorType,
-  WalletInfo,
-  WalletType,
-} from '@/constants/wallets';
+import { ConnectorType, WalletInfo, WalletType } from '@/constants/wallets';
 
 import { isTruthy } from '@/lib/isTruthy';
 

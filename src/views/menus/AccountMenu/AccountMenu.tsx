@@ -11,7 +11,7 @@ import { STRING_KEYS } from '@/constants/localization';
 import { isDev } from '@/constants/networks';
 import { SMALL_ETH_DECIMALS, USD_DECIMALS } from '@/constants/numbers';
 import { StatsigFlags } from '@/constants/statsig';
-import { DydxChainAsset, wallets, WalletType } from '@/constants/wallets';
+import { DydxChainAsset, WalletType } from '@/constants/wallets';
 
 import { useAccountBalance } from '@/hooks/useAccountBalance';
 import { useAccounts } from '@/hooks/useAccounts';
@@ -106,8 +106,6 @@ export const AccountMenu = () => {
       walletIcon = <Icon iconComponent={DiscordIcon as ElementType} />;
     } else if (twitter) {
       walletIcon = <Icon iconComponent={TwitterIcon as ElementType} />;
-    } else {
-      walletIcon = <Icon iconComponent={wallets[WalletType.Privy].icon as ElementType} />;
     }
   } else if (walletInfo) {
     walletIcon = <WalletIcon wallet={walletInfo} />;

@@ -6,11 +6,9 @@ import { STRING_KEYS } from '@/constants/localization';
 
 import {
   BakoSafeIcon,
-  CoinbaseIcon,
   FueletIcon,
   FuelWalletIcon,
   GenericWalletIcon,
-  OkxWalletIcon,
   WalletConnectIcon,
 } from '@/icons';
 
@@ -104,7 +102,10 @@ export type WalletInfo =
     }
   | { connectorType: ConnectorType.Test; name: WalletType.TestWallet }
   | { connectorType: ConnectorType.DownloadWallet; name: string; downloadLink: string }
-  | { connectorType: ConnectorType.Fuel; name: WalletType.FuelWallet | WalletType.BakoSafe | WalletType.Fuelet }
+  | {
+      connectorType: ConnectorType.Fuel;
+      name: WalletType.FuelWallet | WalletType.BakoSafe | WalletType.Fuelet;
+    }
   | { connectorType: ConnectorType.Coinbase; name: WalletType.CoinbaseWallet };
 
 type WalletConfig = {
