@@ -32,6 +32,7 @@ import { TradeFormAlertContent } from '../TradeFormMessages/TradeFormAlertConten
 import { TradeFormMessages } from '../TradeFormMessages/TradeFormMessages';
 import { TradeSideTabs } from '../TradeSideTabs';
 import { AdvancedTradeOptions } from './TradeForm/AdvancedTradeOptions';
+import { FundingCostPreview } from './TradeForm/FundingCostPreview';
 import { MarginAndLeverageButtons } from './TradeForm/MarginAndLeverageButtons';
 import { PlaceOrderButtonAndReceipt } from './TradeForm/PlaceOrderButtonAndReceipt';
 import { PositionPreview } from './TradeForm/PositionPreview';
@@ -183,6 +184,7 @@ export const TradeForm = ({
       <$InputsColumn>
         <TradeFormInputs />
         <TradeSizeInputs />
+        <FundingCostPreview />
         <AdvancedTradeOptions />
         <TradeFormMessages
           isErrorShownInOrderStatusToast={isErrorShownInOrderStatusToast}

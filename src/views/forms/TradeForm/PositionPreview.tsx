@@ -16,6 +16,8 @@ import { getCurrentSelectedFormPositionSummary } from '@/state/tradeFormSelector
 
 import { orEmptyObj } from '@/lib/typeUtils';
 
+import { FundingCostPreview } from './FundingCostPreview';
+
 type ElementProps = {
   showNarrowVariation?: boolean;
 };
@@ -59,6 +61,7 @@ export const PositionPreview = ({ showNarrowVariation }: ElementProps) => {
         tickSizeDecimals={tickSizeDecimals}
         showNarrowVariation={showNarrowVariation}
       />
+      <FundingCostPreview />
     </$PositionPreviewContainer>
   );
 };

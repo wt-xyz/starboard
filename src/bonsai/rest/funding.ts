@@ -13,6 +13,8 @@ import { MustBigNumber } from '@/lib/numbers';
 import { orEmptyObj } from '@/lib/typeUtils';
 
 import {
+  filterHistoricalFundingByDays,
+  getDateNDaysAgoISO,
   getDirectionFromFundingRate,
   HistoricalFundingObject,
   mapFundingChartObject,
@@ -24,14 +26,16 @@ import { selectCurrentMarketInfo } from '../selectors/summary';
 import { queryResultToLoadable } from './lib/queryResultToLoadable';
 import { useIndexerClient } from './lib/useIndexer';
 
-export const useCurrentMarketHistoricalFunding = (): Loadable<HistoricalFundingObject[]> => {
+export const useCurrentMarketHistoricalFunding = ({
+  limitTo90Days = false,
+}: { limitTo90Days?: boolean } = {}): Loadable<HistoricalFundingObject[]> => {
   const { indexerClient, key: indexerKey } = useIndexerClient();
   const currentMarketId = useAppSelector(getCurrentMarketIdIfTradeable);
   const { nextFundingRate } = orEmptyObj(useAppSelector(selectCurrentMarketInfo));
 
   const historicalFundingQuery = useQuery({
     enabled: Boolean(currentMarketId) && Boolean(indexerClient),
-    queryKey: ['historicalFunding', currentMarketId, indexerKey],
+    queryKey: ['historicalFunding', currentMarketId, indexerKey, limitTo90Days],
     queryFn: wrapAndLogBonsaiError(async () => {
       if (!currentMarketId) {
         throw new Error('Invalid marketId found');
@@ -39,19 +43,31 @@ export const useCurrentMarketHistoricalFunding = (): Loadable<HistoricalFundingO
         throw new Error('Indexer client not found');
       }
 
+      const effectiveBeforeOrAt = limitTo90Days ? getDateNDaysAgoISO(90) ?? undefined : undefined;
+
       const result: IndexerHistoricalFundingResponse =
-        await indexerClient.markets.getPerpetualMarketHistoricalFunding(currentMarketId);
+        // SDK typings do not yet expose query params for this endpoint
+        await (
+          indexerClient.markets.getPerpetualMarketHistoricalFunding as (
+            marketId: string,
+            params?: { effectiveBeforeOrAt?: string }
+          ) => Promise<IndexerHistoricalFundingResponse>
+        )(currentMarketId, { effectiveBeforeOrAt });
 
-      const transformedData = result.historicalFunding.map(mapFundingChartObject);
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      const transformedData = result.historicalFunding?.map(mapFundingChartObject) ?? [];
+      const filteredData = limitTo90Days
+        ? filterHistoricalFundingByDays(transformedData, 90)
+        : transformedData;
 
-      return transformedData;
+      return filteredData;
     }, 'currentMarketHistoricalFunding'),
     refetchInterval: timeUnits.hour,
     staleTime: timeUnits.hour,
   });
 
   const data = useMemo(() => {
-    return [
+    const combined = [
       ...(historicalFundingQuery.data ?? []),
       nextFundingRate != null && {
         fundingRate: MustBigNumber(nextFundingRate).toNumber(),
@@ -59,7 +75,9 @@ export const useCurrentMarketHistoricalFunding = (): Loadable<HistoricalFundingO
         direction: getDirectionFromFundingRate(nextFundingRate),
       },
     ].filter(isTruthy);
-  }, [historicalFundingQuery.data, nextFundingRate]);
+
+    return limitTo90Days ? filterHistoricalFundingByDays(combined, 90) : combined;
+  }, [historicalFundingQuery.data, limitTo90Days, nextFundingRate]);
 
   return mapLoadableData(queryResultToLoadable(historicalFundingQuery), () => data);
 };
