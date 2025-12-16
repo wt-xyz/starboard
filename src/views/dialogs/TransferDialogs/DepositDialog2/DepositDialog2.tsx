@@ -125,7 +125,6 @@ export const DepositDialog2 = ({ setIsOpen }: DialogProps<DepositDialog2Props>) 
                 amount={amount}
                 setAmount={setAmount}
                 token={token}
-                onTokenSelect={() => setFormState('token-select')}
               />
             </div>
 
