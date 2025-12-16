@@ -1,5 +1,6 @@
 import { ElementType } from 'react';
 
+import { useFuelExplorerBase } from '@/@starboard/hooks/useFuelExplorerBase';
 import { useMfaEnrollment, usePrivy } from '@privy-io/react-auth';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
@@ -72,6 +73,7 @@ export const AccountMenu = () => {
     hdKey,
   } = useAccounts();
   const { registerAffiliate } = useSubaccount();
+  const fuelExplorerBase = useFuelExplorerBase();
 
   let displayAddress: string | undefined;
   if (walletInfo?.name === WalletType.Phantom) {
@@ -133,7 +135,7 @@ export const AccountMenu = () => {
             <WithTooltip tooltipString="Fuel Block Explorer">
               <$IconButton
                 action={ButtonAction.Base}
-                href={`https://app.fuel.network/account/${address}/transactions`}
+                href={`${fuelExplorerBase}/account/${address}/transactions`}
                 iconName={IconName.LinkOut}
                 shape={ButtonShape.Square}
                 type={ButtonType.Link}

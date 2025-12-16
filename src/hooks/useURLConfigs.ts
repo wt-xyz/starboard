@@ -4,6 +4,7 @@ import { getSelectedDydxChainId } from '@/state/appSelectors';
 import { useAppSelector } from '@/state/appTypes';
 
 const FALLBACK_URL = 'https://help.dydx.exchange/';
+const FALLBACK_FUEL_EXPLORER_BASE = 'https://app.fuel.network';
 
 export interface LinksConfigs {
   accountExportLearnMore?: string;
@@ -25,6 +26,7 @@ export interface LinksConfigs {
   newMarketProposalLearnMore: string;
   adjustTargetLeverageLearnMore: string;
   privacy: string;
+  fuelExplorerBase?: string;
   reduceOnlyLearnMore?: string;
   statusPage: string;
   stakingLearnMore?: string;
@@ -55,8 +57,8 @@ export interface LinksConfigs {
 }
 
 export const useURLConfigs = (): LinksConfigs => {
-  const selectedDydxChainId = useAppSelector(getSelectedDydxChainId);
-  const linksConfigs = LINKS_CONFIG_MAP[selectedDydxChainId] as LinksConfigs;
+  const selectedFuelChain = useAppSelector(getSelectedDydxChainId);
+  const linksConfigs = LINKS_CONFIG_MAP[selectedFuelChain] as LinksConfigs;
 
   return {
     accountExportLearnMore: linksConfigs.accountExportLearnMore ?? FALLBACK_URL,
@@ -74,6 +76,7 @@ export const useURLConfigs = (): LinksConfigs => {
     isolatedMarginLearnMore: linksConfigs.isolatedMarginLearnMore ?? FALLBACK_URL,
     keplrDashboard: linksConfigs.keplrDashboard ?? FALLBACK_URL,
     launchIncentive: linksConfigs.launchIncentive ?? FALLBACK_URL,
+    fuelExplorerBase: linksConfigs.fuelExplorerBase ?? FALLBACK_FUEL_EXPLORER_BASE,
     mintscan: linksConfigs.mintscan,
     mintscanBase: linksConfigs.mintscanBase,
     newMarketProposalLearnMore: linksConfigs.newMarketProposalLearnMore ?? FALLBACK_URL,
