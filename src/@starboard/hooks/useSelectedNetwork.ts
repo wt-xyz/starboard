@@ -1,62 +1,99 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 
-import { CosmosChainId, CosmosChainIdList } from '@/constants/graz';
+import { LocalStorageKey } from '@/constants/localStorage';
+import {
+  AVAILABLE_ENVIRONMENTS,
+  DEFAULT_APP_ENVIRONMENT,
+  DydxNetwork,
+  ENVIRONMENT_CONFIG_MAP,
+} from '@/constants/networks';
 
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useMainnetSwitchWarning } from '@/hooks/useMainnetSwitchWarning';
+
+import { setSelectedNetwork } from '@/state/app';
 import { getSelectedNetwork } from '@/state/appSelectors';
 import { useAppDispatch, useAppSelector } from '@/state/appTypes';
-import { getShouldShowNetworkSwitcher } from '@/state/appUiConfigsSelectors';
-import { setSelectedNetwork } from '@/state/appUiConfigsSlice';
 
-import { useNetworkSwitcher } from './useNetworkSwitcher';
-import { useStringGetter } from './useStringGetter';
+import { validateAgainstAvailableEnvironments } from '@/lib/network';
 
-export const getNetworkParamFromUrl = () => {
+const getNetworkParamFromUrl = (): DydxNetwork | undefined => {
   if (typeof window === 'undefined') return undefined;
 
-  // Fallback for hash-based routing
-  if (window.location.hash?.includes('?')) {
-    return new URLSearchParams(window.location.hash.split('?')?.[1])?.get('network') ?? undefined;
+  const useHash = import.meta.env.VITE_ROUTER_TYPE === 'hash';
+  let search = '';
+
+  if (useHash) {
+    const hash = window.location.hash;
+    const idx = hash.indexOf('?');
+    if (idx !== -1) {
+      search = hash.substring(idx + 1);
+    }
+  } else {
+    search = window.location.search.startsWith('?')
+      ? window.location.search.slice(1)
+      : window.location.search;
   }
 
-  return new URLSearchParams(window.location.search)?.get('network') ?? undefined;
+  if (!search) return undefined;
+
+  const params = new URLSearchParams(search);
+  const desiredNetwork = params.get('network');
+  if (!desiredNetwork) return undefined;
+
+  const normalized = desiredNetwork.toLowerCase();
+  return (AVAILABLE_ENVIRONMENTS.environments as DydxNetwork[]).find(
+    (network) => network.toLowerCase() === normalized
+  );
 };
 
 export const useSelectedNetwork = (): {
-  switchNetwork: (network: CosmosChainId) => Promise<void>;
-  showNetworkSwitcher: boolean;
-  selectedNetwork: CosmosChainId;
+  switchNetwork: (network: DydxNetwork) => void;
+  selectedNetwork: DydxNetwork;
 } => {
   const dispatch = useAppDispatch();
-  const stringGetter = useStringGetter();
-  const { switchNetwork } = useNetworkSwitcher();
   const selectedNetwork = useAppSelector(getSelectedNetwork);
 
-  const networkParam = useMemo(() => getNetworkParamFromUrl(), []);
+  const [, setLocalStorageNetwork] = useLocalStorage<DydxNetwork>({
+    key: LocalStorageKey.SelectedNetwork,
+    defaultValue: DEFAULT_APP_ENVIRONMENT,
+    validateFn: validateAgainstAvailableEnvironments,
+  });
+
+  const { maybeWarnBeforeSwitch } = useMainnetSwitchWarning();
+
+  const switchNetwork = useCallback(
+    (network: DydxNetwork) => {
+      if (!(AVAILABLE_ENVIRONMENTS.environments as DydxNetwork[]).includes(network)) {
+        return;
+      }
+
+      const targetConfig = ENVIRONMENT_CONFIG_MAP[network];
+      maybeWarnBeforeSwitch(targetConfig.isMainnet, () => {
+        setLocalStorageNetwork(network);
+        dispatch(setSelectedNetwork(network));
+        // Intentionally do not switch Privy chain here for backcompat safety.
+      });
+    },
+    [dispatch, setLocalStorageNetwork, maybeWarnBeforeSwitch]
+  );
+
+  // Ensure the selected network is valid
+  useEffect(() => {
+    if (!AVAILABLE_ENVIRONMENTS.environments.includes(selectedNetwork)) {
+      switchNetwork(DEFAULT_APP_ENVIRONMENT);
+    }
+  }, [selectedNetwork, switchNetwork]);
 
   useEffect(() => {
-    if (!networkParam) return;
-
-    const isValidNetwork = CosmosChainIdList.includes(networkParam as CosmosChainId);
-    if (!isValidNetwork) {
-      switchNetwork({
-        network: selectedNetwork,
-        confirmationModalMessage: stringGetter({
-          key: 'unknownNetwork',
-        }),
-      });
+    const queryNetwork = getNetworkParamFromUrl();
+    if (!queryNetwork || queryNetwork === selectedNetwork) {
       return;
     }
 
-    if (selectedNetwork === networkParam) return;
+    setLocalStorageNetwork(queryNetwork);
+    dispatch(setSelectedNetwork(queryNetwork));
+  }, [dispatch, selectedNetwork, setLocalStorageNetwork]);
 
-    dispatch(setSelectedNetwork({ selectedNetwork: networkParam as CosmosChainId }));
-  }, [dispatch, networkParam, selectedNetwork, stringGetter, switchNetwork]);
-
-  const showNetworkSwitcher = useAppSelector(getShouldShowNetworkSwitcher);
-
-  return {
-    switchNetwork,
-    showNetworkSwitcher,
-    selectedNetwork,
-  };
+  return { switchNetwork, selectedNetwork };
 };

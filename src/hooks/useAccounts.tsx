@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
+import { useFuelWallet } from '@starboard/hooks/useFuelWallet';
 import { type Subaccount } from 'starboard-client-js';
 
 import { OnboardingGuard, OnboardingState } from '@/constants/account';
@@ -15,7 +16,6 @@ import { isBlockedGeo } from '@/lib/compliance';
 
 import { useDydxClient } from './useDydxClient';
 import { useEnvFeatures } from './useEnvFeatures';
-import { useFuelWallet } from './useFuelWallet';
 import { useLocalStorage } from './useLocalStorage';
 
 const AccountsContext = createContext<ReturnType<typeof useAccountsContext> | undefined>(undefined);

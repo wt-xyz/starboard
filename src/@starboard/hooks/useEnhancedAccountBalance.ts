@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { BonsaiCore } from '@/bonsai/ontology';
 import { MOCK_POSITION_COLLATERAL } from '@/mocks/mockPositions';
 
+import { useAccountBalance } from '@/hooks/useAccountBalance';
+
 import {
   getOpenPositions,
   getSubaccountEquity,
@@ -13,8 +15,6 @@ import { useAppSelector } from '@/state/appTypes';
 
 import { BIG_NUMBERS, MaybeBigNumber } from '@/lib/numbers';
 import { orEmptyRecord } from '@/lib/typeUtils';
-
-import { useAccountBalance } from './useAccountBalance';
 
 export enum MarginHealthLevel {
   Healthy = 'healthy',

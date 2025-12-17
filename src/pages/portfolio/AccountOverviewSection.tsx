@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
 
+import {
+  MarginHealthLevel,
+  useEnhancedAccountBalance,
+} from '@starboard/hooks/useEnhancedAccountBalance';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,7 +13,6 @@ import { AppRoute } from '@/constants/routes';
 import { ColorToken } from '@/constants/styles/base';
 
 import { useBreakpoints } from '@/hooks/useBreakpoints';
-import { MarginHealthLevel, useEnhancedAccountBalance } from '@/hooks/useEnhancedAccountBalance';
 import { useLocaleSeparators } from '@/hooks/useLocaleSeparators';
 import { useStringGetter } from '@/hooks/useStringGetter';
 import { useLoadedVaultAccount, useLoadedVaultDetails } from '@/hooks/vaultsHooks';

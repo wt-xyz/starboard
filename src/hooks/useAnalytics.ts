@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { useSelectedNetwork } from '@starboard/hooks/useSelectedNetwork';
 import { useLocation } from 'react-router-dom';
 
 import {
@@ -25,7 +26,6 @@ import { useApiState } from './useApiState';
 import { useBreakpoints } from './useBreakpoints';
 import { useDydxClient } from './useDydxClient';
 import { useReferredBy } from './useReferredBy';
-import { useSelectedNetwork } from './useSelectedNetwork';
 import { useSimpleUiEnabled } from './useSimpleUiEnabled';
 import { useAllStatsigGateValues } from './useStatsig';
 import { useWalletConnection } from './useWalletConnection';
