@@ -1,5 +1,10 @@
 import { lazy, useCallback, useEffect, useState } from 'react';
 
+import {
+  findConnectorByWalletTypePattern,
+  getConnectorMeta,
+  type FuelConnectorMeta,
+} from '@/@starboard/constants/fuelWallets';
 import { BakoSafeConnector, FuelWalletConnector, FueletWalletConnector } from '@fuels/connectors';
 import { Fuel, type FuelConnector } from 'fuels';
 
@@ -10,12 +15,9 @@ import { setOnboardingState } from '@/state/account';
 import { useAppDispatch } from '@/state/appTypes';
 import { clearSourceAccount, setSourceAddress, setWalletInfo } from '@/state/wallet';
 
-export interface FuelWalletInfo {
+export type FuelWalletInfo = FuelConnectorMeta & {
   connectorType: ConnectorType.Fuel;
-  name: WalletType.FuelWallet | WalletType.BakoSafe | WalletType.Fuelet;
-  icon: `data:image/${string}`;
-  rdns: string;
-}
+};
 
 export const useFuelWallet = () => {
   const dispatch = useAppDispatch();
@@ -56,24 +58,7 @@ export const useFuelWallet = () => {
       );
 
       // Determine which wallet is connected based on connector name
-      const connectorName = connection.name;
-      let walletType: WalletType.FuelWallet | WalletType.BakoSafe | WalletType.Fuelet;
-      let rdns: string;
-      let icon: string;
-
-      if (connectorName.includes('Bako')) {
-        walletType = WalletType.BakoSafe;
-        rdns = 'bako-safe';
-        icon = 'bako.svg';
-      } else if (connectorName.includes('Fuelet')) {
-        walletType = WalletType.Fuelet;
-        rdns = 'fuelet-wallet';
-        icon = 'fuelet.svg';
-      } else {
-        walletType = WalletType.FuelWallet;
-        rdns = 'fuel-wallet';
-        icon = 'fuel-wallet.svg';
-      }
+      const { walletType, rdns, icon } = getConnectorMeta(connection.name);
 
       dispatch(
         setWalletInfo({
@@ -93,7 +78,7 @@ export const useFuelWallet = () => {
     return () => {
       fuelInstance.off(fuelInstance.events.currentConnector, handleConnectorChange);
     };
-  }, []);
+  }, [dispatch]);
 
   const connect = useCallback(
     async (walletType?: WalletType.FuelWallet | WalletType.BakoSafe | WalletType.Fuelet) => {
@@ -109,21 +94,8 @@ export const useFuelWallet = () => {
         // Get all available connectors
         const connectors = await fuel.connectors();
 
-        // Map wallet type to connector name pattern
-        let connectorNamePattern: string;
-        if (walletType === WalletType.BakoSafe) {
-          connectorNamePattern = 'Bako';
-        } else if (walletType === WalletType.Fuelet) {
-          connectorNamePattern = 'Fuelet';
-        } else {
-          // Default to Fuel Wallet
-          connectorNamePattern = 'Fuel Wallet';
-        }
-
         // Find the matching connector
-        const targetConnector = connectors.find((connector) =>
-          connector.name.includes(connectorNamePattern)
-        );
+        const targetConnector = findConnectorByWalletTypePattern(connectors, walletType);
 
         if (!targetConnector) {
           throw new Error(
@@ -142,7 +114,7 @@ export const useFuelWallet = () => {
         setIsConnecting(false);
       }
     },
-    [fuel, dispatch]
+    [fuel]
   );
 
   const disconnect = useCallback(async () => {
