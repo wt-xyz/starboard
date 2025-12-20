@@ -1,7 +1,11 @@
-import * as Account from './src/account';
+import * as Markets from './src/markets';
 import * as Positions from './src/positions';
 
-export { Account, Positions };
+export { Markets, Positions };
 
-export type { MarketConfig } from './shared/types';
-export { MarketConfigSchema } from './shared/types';
+export {
+  createTradingModule,
+  tradingReducer,
+  type TradingModule,
+  type TradingThunkExtras,
+} from './di';
