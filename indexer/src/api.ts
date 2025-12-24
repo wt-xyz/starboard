@@ -4,7 +4,7 @@ import PgPubsub from '@graphile/pg-pubsub';
 import express from 'express';
 import { NodePlugin } from 'graphile-build';
 import type * as pg from 'pg';
-import { gql, makeExtendSchemaPlugin, postgraphile, Plugin, makePluginHook } from 'postgraphile';
+import { Plugin, gql, makeExtendSchemaPlugin, makePluginHook, postgraphile } from 'postgraphile';
 import FilterPlugin from 'postgraphile-plugin-connection-filter';
 
 const app = express();
