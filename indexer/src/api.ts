@@ -106,6 +106,5 @@ app.use(
 );
 
 app.listen(process.env.GRAPHQL_SERVER_PORT, () => {
-  // eslint-disable-next-line no-console
   console.log(`Squid API listening on port ${process.env.GRAPHQL_SERVER_PORT}`);
 });

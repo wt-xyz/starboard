@@ -1,6 +1,7 @@
 {
   "name": "@starboard/indexer",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "build": "rm -rf lib && tsc",
     "gen:model": "squid-typeorm-codegen",
@@ -9,8 +10,8 @@
     "start": "ts-node -r dotenv/config src/main.ts",
     "start:e2e": "ts-node -r dotenv/config src/main.ts dotenv_config_path=.env.indexer-e2e",
     "test:e2e": "vitest --mode indexer-e2e run",
-    "lint": "eslint --ext .ts,.tsx src/ e2e/",
-    "fix-lint": "eslint --fix --ext .ts,.tsx src/ e2e/"
+    "lint": "eslint src/ e2e/",
+    "lint:fix": "eslint --fix src/ e2e/"
   },
   "dependencies": {
     "@graphile-contrib/pg-simplify-inflector": "^6.1.0",
