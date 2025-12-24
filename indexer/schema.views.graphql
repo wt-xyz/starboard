@@ -60,4 +60,3 @@ type CandleD1 @entity {
   highPrice: BigInt!
   closePrice: BigInt!
 }
-

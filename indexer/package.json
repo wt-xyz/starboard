@@ -10,7 +10,7 @@
     "start:e2e": "ts-node -r dotenv/config src/main.ts dotenv_config_path=.env.indexer-e2e",
     "test:e2e": "vitest --mode indexer-e2e run",
     "lint": "eslint .",
-    "fix-lint": "eslint --fix ."
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@graphile-contrib/pg-simplify-inflector": "^6.1.0",
@@ -26,11 +26,11 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.1",
     "fuels": "0.101.3",
+    "graphile-build": "^4.14.1",
     "pg": "^8.13.0",
     "postgraphile": "^4.14.1",
-    "graphile-build": "^4.14.1",
-    "typeorm": "^0.3.20",
-    "postgraphile-plugin-connection-filter": "^2.3.0"
+    "postgraphile-plugin-connection-filter": "^2.3.0",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@subsquid/typeorm-codegen": "^2.0.2",

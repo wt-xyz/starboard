@@ -1,5 +1,4 @@
 import type { GraphQLClient } from 'graphql-request';
-
 import type { PositionRepository } from '../port';
 import { getPositions } from './operations/get-positions';
 import { getPositionsByAccount } from './operations/get-positions-by-account';
