@@ -8,26 +8,23 @@ if (require.main === module) {
             process.exit(0)
         })
         .catch((error) => {
-             
             console.error(error)
             process.exit(1)
         })
 }
 
 async function deployStorkMock(taskArgs: any) {
-     
     console.log("Deploy a stork mock")
 
     const provider = new Provider(taskArgs.url)
     const deployer = Wallet.fromPrivateKey(taskArgs.privK, provider)
 
-     
     console.log(`Deploying mocked stork contract`)
     const { waitForResult: waitForResultMockStorkContract } = await StorkMockFactory.deploy(deployer, {
         salt: "0x8000000000000000000000000000000000000000000000000000000000000000",
     })
     const { contract: mockStorkContract } = await waitForResultMockStorkContract()
-     
+
     console.log(`Mocked Stork deployed to: contractId: ${mockStorkContract.id.toString()}`)
 
     return [mockStorkContract.id.toString()]
