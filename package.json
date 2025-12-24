@@ -17,7 +17,7 @@
     "build:frontend": "pnpm --filter frontend run build",
     "build:indexer": "pnpm --filter indexer run build",
     "build:contracts": "pnpm --filter contracts run build",
-    "test": "pnpm --filter frontend run test && pnpm --filter contracts run test",
+    "test": "pnpm --filter fuel-ts-sdk run test && pnpm --filter frontend run test && pnpm --filter contracts run test",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",
