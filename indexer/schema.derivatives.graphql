@@ -60,3 +60,11 @@ type CandleD1 @entity {
   highPrice: BigInt!
   closePrice: BigInt!
 }
+
+type CurrentPrice @entity {
+  id: ID!
+  asset: String! @index
+  timestamp: Int! @index
+  price: BigInt!
+}
+

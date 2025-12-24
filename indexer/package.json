@@ -9,12 +9,13 @@
     "start": "ts-node -r dotenv/config src/main.ts",
     "start:e2e": "ts-node -r dotenv/config src/main.ts dotenv_config_path=.env.indexer-e2e",
     "test:e2e": "vitest --mode indexer-e2e run",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "eslint --ext .ts,.tsx src/ e2e/",
+    "fix-lint": "eslint --fix --ext .ts,.tsx src/ e2e/"
   },
   "dependencies": {
     "@graphile-contrib/pg-simplify-inflector": "^6.1.0",
     "@graphile/pg-aggregates": "^0.1.1",
+    "@graphile/pg-pubsub": "^4.14.1",
     "@subsquid/batch-processor": "^0.0.0",
     "@subsquid/cli": "^3.2.3",
     "@subsquid/fuel-objects": "^0.0.4",
@@ -30,14 +31,19 @@
     "pg": "^8.13.0",
     "postgraphile": "^4.14.1",
     "postgraphile-plugin-connection-filter": "^2.3.0",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "vitest": "1.4.0"
   },
   "devDependencies": {
     "@subsquid/typeorm-codegen": "^2.0.2",
     "@types/express": "^4.17.21",
     "@types/node": "^22.7.5",
     "ts-node": "^10.9.2",
-    "typescript": "~5.9.3",
-    "vitest": "^3.0.9"
+    "typescript": "~5.6.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "graphql": "15.10.1"
+    }
   }
 }

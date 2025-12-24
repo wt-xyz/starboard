@@ -1,12 +1,15 @@
 // Re-export positions as a namespace
-// Re-export candles as a namespace
-import * as Candles from './src/candles';
 import * as Positions from './src/positions';
-// Re-export prices as a namespace
-import * as Prices from './src/prices';
-
 export { Positions };
 
+// Re-export prices as a namespace
+import * as Prices from './src/prices';
 export { Prices };
 
+// Re-export candles as a namespace
+import * as Candles from './src/candles';
 export { Candles };
+
+// Re-export current prices as a namespace
+import * as CurrentPrices from './src/current-prices';
+export { CurrentPrices };
