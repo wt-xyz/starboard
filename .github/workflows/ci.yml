@@ -8,41 +8,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up pnpm
-      uses: dydxprotocol/setup-pnpm@v2.0.0
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
 
-    - name: Install forc
-      shell: bash
-      run: |
-        curl https://install.fuel.network | sh
-        echo "$HOME/.fuelup/bin:${GITHUB_PATH}" >> $GITHUB_PATH
-        export PATH="${HOME}/.fuelup/bin:${PATH}"
-        fuelup update
-        fuelup toolchain install mainnet
-        fuelup default mainnet
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
 
-    - name: Set up Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: pnpm
+      - name: Install forc
+        shell: bash
+        run: |
+          curl https://install.fuel.network | sh
+          echo "$HOME/.fuelup/bin:${GITHUB_PATH}" >> $GITHUB_PATH
+          export PATH="${HOME}/.fuelup/bin:${PATH}"
+          fuelup update
+          fuelup toolchain install mainnet
+          fuelup default mainnet
 
-    - name: Run contracts tests
-      run: |
-        pnpm install --ignore-scripts --frozen-lockfile
-        pnpm run build:ts-sdk
-        pnpm --filter starboard/contracts build
-        pnpm --filter starboard/contracts gen:types
-        pnpm --filter starboard/contracts test
+      - name: Install dependencies and build
+        run: |
+          pnpm install --ignore-scripts --frozen-lockfile
+          pnpm run build:ts-sdk
+          pnpm --filter starboard/contracts build
+          pnpm --filter starboard/contracts gen:types
 
-    - name: Test fuel-ts-sdk
-      run: |
-        pnpm --filter fuel-ts-sdk test
-
-    - name: Postinstall script
-      run: |
-        tar -xzC public -f tradingview/tradingview.tgz # manually inline postinstall script
-
-    - run: pnpm exec vitest run
+      - name: Run tests
+        run: pnpm test

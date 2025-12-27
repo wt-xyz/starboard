@@ -8,7 +8,6 @@ if (require.main === module) {
             process.exit(0)
         })
         .catch((error) => {
-            // eslint-disable-next-line no-console
             console.error(error)
             process.exit(1)
         })
@@ -28,7 +27,7 @@ export async function deployStarboard(taskArgs: any) {
         salt: "0x8000000000000000000000000000000000000000000000000000000000000000",
     })
     const { contract: pricefeedWrapper } = await waitForResultPricefeedWrapper()
-    // eslint-disable-next-line no-console
+
     console.log(`PricefeedWrapper deployed to: ${pricefeedWrapper.id.toString()} ${pricefeedWrapper.id.toB256().toString()}`)
 
     const { waitForResult: waitForResultVault } = await VaultFactory.deploy(deployer, {
@@ -41,15 +40,15 @@ export async function deployStarboard(taskArgs: any) {
         salt: "0x8000000000000000000000000000000000000000000000000000000000000001",
     })
     const { contract: vault } = await waitForResultVault()
-    // eslint-disable-next-line no-console
+
     console.log(`Vault deployed to: ${vault.id.toString()} ${vault.id.toB256().toString()}`)
     await call(vault.functions.initialize(deployerIdendity))
-    // eslint-disable-next-line no-console
+
     console.log("Vault initialized")
 
     await call(vault.functions.set_liquidator(deployerIdendity, true))
     await call(vault.functions.set_asset_config(taskArgs.usdcPricefeedId, taskArgs.usdcDecimals))
-    // eslint-disable-next-line no-console
+
     console.log("Deployment done")
 
     return [vault.id.toString(), pricefeedWrapper.id.toString()]

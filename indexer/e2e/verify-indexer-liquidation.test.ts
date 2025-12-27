@@ -1,7 +1,6 @@
 import pg from 'pg';
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-
-import { expandDecimals, USER_0_ADDRESS, USER_1_ADDRESS, BTC_ASSET, ETH_ASSET } from './utils';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { BTC_ASSET, ETH_ASSET, USER_0_ADDRESS, USER_1_ADDRESS, expandDecimals } from './utils';
 
 const { Client } = pg;
 
@@ -281,32 +280,41 @@ describe('Verify Liquidation', () => {
   });
 
   describe('API tests', () => {
-    function getGraphQLURL(query: string) {
-      return `http://localhost:${process.env.VITE_GRAPHQL_SERVER_PORT}/graphql?query=query{${query}}`;
+    function getGraphQLURL() {
+      return `http://localhost:${process.env.VITE_GRAPHQL_SERVER_PORT}/graphql`;
+    }
+
+    async function graphQLPost(query: string) {
+      const response = await fetch(getGraphQLURL(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `query{${query}}`,
+        }),
+      });
+      if (!response.ok) {
+        const responseText = await response.text();
+        throw new Error(`GraphQL request failed: ${response.status}: ${responseText}`);
+      }
+      return response.json();
     }
 
     it('should store correct number of liquidation events', async () => {
-      const liquidationsURL = getGraphQLURL(`positions(where:{change_eq:LIQUIDATE}){id}`);
-      const liquidationsResponse = await fetch(liquidationsURL);
-      if (!liquidationsResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationsResponse.status}`);
-      }
-      const liquidationsData = await liquidationsResponse.json();
-      expect(liquidationsData.data.positions.length).toBe(3); // 3 liquidations: user0 BTC long, user1 BTC short, user0 ETH long
+      const liquidationsData = await graphQLPost(
+        `positions(condition:{change:"LIQUIDATE"}){nodes{id}}`
+      );
+      expect(liquidationsData.data.positions.nodes.length).toBe(3); // 3 liquidations: user0 BTC long, user1 BTC short, user0 ETH long
     });
 
     it('should have liquidated positions with zero collateral and size', async () => {
-      const liquidationsURL = getGraphQLURL(
-        `positions(where:{change_eq:LIQUIDATE}){id,collateralAmount,size}`
+      const liquidationsData = await graphQLPost(
+        `positions(condition:{change:"LIQUIDATE"}){nodes{id,collateralAmount,size}}`
       );
-      const liquidationsResponse = await fetch(liquidationsURL);
-      if (!liquidationsResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationsResponse.status}`);
-      }
-      const liquidationsData = await liquidationsResponse.json();
-      expect(liquidationsData.data.positions.length).toBeGreaterThan(0);
+      expect(liquidationsData.data.positions.nodes.length).toBeGreaterThan(0);
 
-      liquidationsData.data.positions.forEach((position: any) => {
+      liquidationsData.data.positions.nodes.forEach((position: any) => {
         expect(BigInt(position.collateralAmount)).toBe(BigInt(0));
         expect(BigInt(position.size)).toBe(BigInt(0));
       });
@@ -314,28 +322,18 @@ describe('Verify Liquidation', () => {
 
     it('should store correct liquidation for user0 BTC long position', async () => {
       // First get the position key for USER_0_ADDRESS and BTC_ASSET (long)
-      const positionKeyURL = getGraphQLURL(
-        `positionKeys(where:{account_eq:"${USER_0_ADDRESS}",indexAssetId_eq:"${BTC_ASSET}",isLong_eq:true}){id}`
+      const positionKeyData = await graphQLPost(
+        `positionKeys(condition:{account:"${USER_0_ADDRESS}",indexAssetId:"${BTC_ASSET}",isLong:true}){nodes{id}}`
       );
-      const positionKeyResponse = await fetch(positionKeyURL);
-      if (!positionKeyResponse.ok) {
-        throw new Error(`GraphQL request failed: ${positionKeyResponse.status}`);
-      }
-      const positionKeyData = await positionKeyResponse.json();
-      expect(positionKeyData.data.positionKeys.length).toBe(1);
-      const positionKeyId = positionKeyData.data.positionKeys[0].id;
+      expect(positionKeyData.data.positionKeys.nodes.length).toBe(1);
+      const positionKeyId = positionKeyData.data.positionKeys.nodes[0].id;
 
       // Then get liquidation position for this key
-      const liquidationURL = getGraphQLURL(
-        `positions(where:{positionKey:{id_eq:"${positionKeyId}"},change_eq:LIQUIDATE}){id,collateralAmount,size,latest,positionFee,collateralTransferred}`
+      const liquidationData = await graphQLPost(
+        `positions(condition:{positionKeyId:"${positionKeyId}",change:"LIQUIDATE"}){nodes{id,collateralAmount,size,latest,positionFee,collateralTransferred}}`
       );
-      const liquidationResponse = await fetch(liquidationURL);
-      if (!liquidationResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationResponse.status}`);
-      }
-      const liquidationData = await liquidationResponse.json();
-      expect(liquidationData.data.positions.length).toBe(1);
-      const liquidation = liquidationData.data.positions[0];
+      expect(liquidationData.data.positions.nodes.length).toBe(1);
+      const liquidation = liquidationData.data.positions.nodes[0];
 
       expect(liquidation.collateralAmount).toBe('0');
       expect(liquidation.size).toBe('0');
@@ -346,28 +344,18 @@ describe('Verify Liquidation', () => {
 
     it('should store correct liquidation for user1 BTC short position', async () => {
       // First get the position key for USER_1_ADDRESS and BTC_ASSET (short)
-      const positionKeyURL = getGraphQLURL(
-        `positionKeys(where:{account_eq:"${USER_1_ADDRESS}",indexAssetId_eq:"${BTC_ASSET}",isLong_eq:false}){id}`
+      const positionKeyData = await graphQLPost(
+        `positionKeys(condition:{account:"${USER_1_ADDRESS}",indexAssetId:"${BTC_ASSET}",isLong:false}){nodes{id}}`
       );
-      const positionKeyResponse = await fetch(positionKeyURL);
-      if (!positionKeyResponse.ok) {
-        throw new Error(`GraphQL request failed: ${positionKeyResponse.status}`);
-      }
-      const positionKeyData = await positionKeyResponse.json();
-      expect(positionKeyData.data.positionKeys.length).toBe(1);
-      const positionKeyId = positionKeyData.data.positionKeys[0].id;
+      expect(positionKeyData.data.positionKeys.nodes.length).toBe(1);
+      const positionKeyId = positionKeyData.data.positionKeys.nodes[0].id;
 
       // Then get liquidation position for this key
-      const liquidationURL = getGraphQLURL(
-        `positions(where:{positionKey:{id_eq:"${positionKeyId}"},change_eq:LIQUIDATE}){id,collateralAmount,size,latest,positionFee,collateralTransferred}`
+      const liquidationData = await graphQLPost(
+        `positions(condition:{positionKeyId:"${positionKeyId}",change:"LIQUIDATE"}){nodes{id,collateralAmount,size,latest,positionFee,collateralTransferred}}`
       );
-      const liquidationResponse = await fetch(liquidationURL);
-      if (!liquidationResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationResponse.status}`);
-      }
-      const liquidationData = await liquidationResponse.json();
-      expect(liquidationData.data.positions.length).toBe(1);
-      const liquidation = liquidationData.data.positions[0];
+      expect(liquidationData.data.positions.nodes.length).toBe(1);
+      const liquidation = liquidationData.data.positions.nodes[0];
 
       expect(liquidation.collateralAmount).toBe('0');
       expect(liquidation.size).toBe('0');
@@ -378,28 +366,18 @@ describe('Verify Liquidation', () => {
 
     it('should store correct liquidation for user0 ETH long position', async () => {
       // First get the position key for USER_0_ADDRESS and ETH_ASSET (long)
-      const positionKeyURL = getGraphQLURL(
-        `positionKeys(where:{account_eq:"${USER_0_ADDRESS}",indexAssetId_eq:"${ETH_ASSET}",isLong_eq:true}){id}`
+      const positionKeyData = await graphQLPost(
+        `positionKeys(condition:{account:"${USER_0_ADDRESS}",indexAssetId:"${ETH_ASSET}",isLong:true}){nodes{id}}`
       );
-      const positionKeyResponse = await fetch(positionKeyURL);
-      if (!positionKeyResponse.ok) {
-        throw new Error(`GraphQL request failed: ${positionKeyResponse.status}`);
-      }
-      const positionKeyData = await positionKeyResponse.json();
-      expect(positionKeyData.data.positionKeys.length).toBe(1);
-      const positionKeyId = positionKeyData.data.positionKeys[0].id;
+      expect(positionKeyData.data.positionKeys.nodes.length).toBe(1);
+      const positionKeyId = positionKeyData.data.positionKeys.nodes[0].id;
 
       // Then get liquidation position for this key
-      const liquidationURL = getGraphQLURL(
-        `positions(where:{positionKey:{id_eq:"${positionKeyId}"},change_eq:LIQUIDATE}){id,collateralAmount,size,latest,positionFee,collateralTransferred}`
+      const liquidationData = await graphQLPost(
+        `positions(condition:{positionKeyId:"${positionKeyId}",change:"LIQUIDATE"}){nodes{id,collateralAmount,size,latest,positionFee,collateralTransferred}}`
       );
-      const liquidationResponse = await fetch(liquidationURL);
-      if (!liquidationResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationResponse.status}`);
-      }
-      const liquidationData = await liquidationResponse.json();
-      expect(liquidationData.data.positions.length).toBe(1);
-      const liquidation = liquidationData.data.positions[0];
+      expect(liquidationData.data.positions.nodes.length).toBe(1);
+      const liquidation = liquidationData.data.positions.nodes[0];
 
       expect(liquidation.collateralAmount).toBe('0');
       expect(liquidation.size).toBe('0');
@@ -410,81 +388,48 @@ describe('Verify Liquidation', () => {
 
     it('should have only one latest record per position key after liquidation', async () => {
       // User0 BTC long - should have latest = true only for liquidation
-      const user0BtcLongKeyURL = getGraphQLURL(
-        `positionKeys(where:{account_eq:"${USER_0_ADDRESS}",indexAssetId_eq:"${BTC_ASSET}",isLong_eq:true}){id}`
+      const user0BtcLongKeyData = await graphQLPost(
+        `positionKeys(condition:{account:"${USER_0_ADDRESS}",indexAssetId:"${BTC_ASSET}",isLong:true}){nodes{id}}`
       );
-      const user0BtcLongKeyResponse = await fetch(user0BtcLongKeyURL);
-      if (!user0BtcLongKeyResponse.ok) {
-        throw new Error(`GraphQL request failed: ${user0BtcLongKeyResponse.status}`);
-      }
-      const user0BtcLongKeyData = await user0BtcLongKeyResponse.json();
-      if (user0BtcLongKeyData.data.positionKeys.length > 0) {
-        const positionKeyId = user0BtcLongKeyData.data.positionKeys[0].id;
-        const latestPositionsURL = getGraphQLURL(
-          `positions(where:{positionKey:{id_eq:"${positionKeyId}"},latest_eq:true}){id}`
+      if (user0BtcLongKeyData.data.positionKeys.nodes.length > 0) {
+        const positionKeyId = user0BtcLongKeyData.data.positionKeys.nodes[0].id;
+        const latestPositionsData = await graphQLPost(
+          `positions(condition:{positionKeyId:"${positionKeyId}",latest:true}){nodes{id}}`
         );
-        const latestPositionsResponse = await fetch(latestPositionsURL);
-        if (!latestPositionsResponse.ok) {
-          throw new Error(`GraphQL request failed: ${latestPositionsResponse.status}`);
-        }
-        const latestPositionsData = await latestPositionsResponse.json();
-        expect(latestPositionsData.data.positions.length).toBe(1);
+        expect(latestPositionsData.data.positions.nodes.length).toBe(1);
       }
 
       // User1 BTC short - should have latest = true only for liquidation
-      const user1BtcShortKeyURL = getGraphQLURL(
-        `positionKeys(where:{account_eq:"${USER_1_ADDRESS}",indexAssetId_eq:"${BTC_ASSET}",isLong_eq:false}){id}`
+      const user1BtcShortKeyData = await graphQLPost(
+        `positionKeys(condition:{account:"${USER_1_ADDRESS}",indexAssetId:"${BTC_ASSET}",isLong:false}){nodes{id}}`
       );
-      const user1BtcShortKeyResponse = await fetch(user1BtcShortKeyURL);
-      if (!user1BtcShortKeyResponse.ok) {
-        throw new Error(`GraphQL request failed: ${user1BtcShortKeyResponse.status}`);
-      }
-      const user1BtcShortKeyData = await user1BtcShortKeyResponse.json();
-      if (user1BtcShortKeyData.data.positionKeys.length > 0) {
-        const positionKeyId = user1BtcShortKeyData.data.positionKeys[0].id;
-        const latestPositionsURL = getGraphQLURL(
-          `positions(where:{positionKey:{id_eq:"${positionKeyId}"},latest_eq:true}){id}`
+      if (user1BtcShortKeyData.data.positionKeys.nodes.length > 0) {
+        const positionKeyId = user1BtcShortKeyData.data.positionKeys.nodes[0].id;
+        const latestPositionsData = await graphQLPost(
+          `positions(condition:{positionKeyId:"${positionKeyId}",latest:true}){nodes{id}}`
         );
-        const latestPositionsResponse = await fetch(latestPositionsURL);
-        if (!latestPositionsResponse.ok) {
-          throw new Error(`GraphQL request failed: ${latestPositionsResponse.status}`);
-        }
-        const latestPositionsData = await latestPositionsResponse.json();
-        expect(latestPositionsData.data.positions.length).toBe(1);
+        expect(latestPositionsData.data.positions.nodes.length).toBe(1);
       }
 
       // User0 ETH long - should have latest = true only for liquidation
-      const user0EthLongKeyURL = getGraphQLURL(
-        `positionKeys(where:{account_eq:"${USER_0_ADDRESS}",indexAssetId_eq:"${ETH_ASSET}",isLong_eq:true}){id}`
+      const user0EthLongKeyData = await graphQLPost(
+        `positionKeys(condition:{account:"${USER_0_ADDRESS}",indexAssetId:"${ETH_ASSET}",isLong:true}){nodes{id}}`
       );
-      const user0EthLongKeyResponse = await fetch(user0EthLongKeyURL);
-      if (!user0EthLongKeyResponse.ok) {
-        throw new Error(`GraphQL request failed: ${user0EthLongKeyResponse.status}`);
-      }
-      const user0EthLongKeyData = await user0EthLongKeyResponse.json();
-      if (user0EthLongKeyData.data.positionKeys.length > 0) {
-        const positionKeyId = user0EthLongKeyData.data.positionKeys[0].id;
-        const latestPositionsURL = getGraphQLURL(
-          `positions(where:{positionKey:{id_eq:"${positionKeyId}"},latest_eq:true}){id}`
+      if (user0EthLongKeyData.data.positionKeys.nodes.length > 0) {
+        const positionKeyId = user0EthLongKeyData.data.positionKeys.nodes[0].id;
+        const latestPositionsData = await graphQLPost(
+          `positions(condition:{positionKeyId:"${positionKeyId}",latest:true}){nodes{id}}`
         );
-        const latestPositionsResponse = await fetch(latestPositionsURL);
-        if (!latestPositionsResponse.ok) {
-          throw new Error(`GraphQL request failed: ${latestPositionsResponse.status}`);
-        }
-        const latestPositionsData = await latestPositionsResponse.json();
-        expect(latestPositionsData.data.positions.length).toBe(1);
+        expect(latestPositionsData.data.positions.nodes.length).toBe(1);
       }
     });
 
     it('should store correct liquidation timestamps', async () => {
-      const liquidationsURL = getGraphQLURL(`positions(where:{change_eq:LIQUIDATE}){timestamp}`);
-      const liquidationsResponse = await fetch(liquidationsURL);
-      if (!liquidationsResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationsResponse.status}`);
-      }
-      const liquidationsData = await liquidationsResponse.json();
+      const liquidationsData = await graphQLPost(
+        `positions(condition:{change:"LIQUIDATE"}){nodes{timestamp}}`
+      );
 
-      const timestamps = liquidationsData.data.positions.map(
+      const timestamps = liquidationsData.data.positions.nodes.map(
         (p: { timestamp: number }) => p.timestamp
       );
       const minTimestamp = Math.min(...timestamps);
@@ -503,29 +448,19 @@ describe('Verify Liquidation', () => {
 
     it('should store liquidation events with correct position progression', async () => {
       // Check User0 BTC long position progression
-      const user0BtcLongKeyURL = getGraphQLURL(
-        `positionKeys(where:{account_eq:"${USER_0_ADDRESS}",indexAssetId_eq:"${BTC_ASSET}",isLong_eq:true}){id}`
+      const user0BtcLongKeyData = await graphQLPost(
+        `positionKeys(condition:{account:"${USER_0_ADDRESS}",indexAssetId:"${BTC_ASSET}",isLong:true}){nodes{id}}`
       );
-      const user0BtcLongKeyResponse = await fetch(user0BtcLongKeyURL);
-      if (!user0BtcLongKeyResponse.ok) {
-        throw new Error(`GraphQL request failed: ${user0BtcLongKeyResponse.status}`);
-      }
-      const user0BtcLongKeyData = await user0BtcLongKeyResponse.json();
 
-      if (user0BtcLongKeyData.data.positionKeys.length > 0) {
-        const positionKeyId = user0BtcLongKeyData.data.positionKeys[0].id;
-        const positionsURL = getGraphQLURL(
-          `positions(where:{positionKey:{id_eq:"${positionKeyId}"}}){change,collateralAmount,size,timestamp}`
+      if (user0BtcLongKeyData.data.positionKeys.nodes.length > 0) {
+        const positionKeyId = user0BtcLongKeyData.data.positionKeys.nodes[0].id;
+        const positionsData = await graphQLPost(
+          `positions(condition:{positionKeyId:"${positionKeyId}"}){nodes{change,collateralAmount,size,timestamp}}`
         );
-        const positionsResponse = await fetch(positionsURL);
-        if (!positionsResponse.ok) {
-          throw new Error(`GraphQL request failed: ${positionsResponse.status}`);
-        }
-        const positionsData = await positionsResponse.json();
-        expect(positionsData.data.positions.length).toBeGreaterThan(0);
+        expect(positionsData.data.positions.nodes.length).toBeGreaterThan(0);
 
         // Sort by timestamp ASC
-        const sortedPositions = positionsData.data.positions.sort(
+        const sortedPositions = positionsData.data.positions.nodes.sort(
           (a: { timestamp: number }, b: { timestamp: number }) => a.timestamp - b.timestamp
         );
 
@@ -545,17 +480,12 @@ describe('Verify Liquidation', () => {
     });
 
     it('should store liquidation fees correctly', async () => {
-      const liquidationsURL = getGraphQLURL(
-        `positions(where:{change_eq:LIQUIDATE}){collateralTransferred,positionFee}`
+      const liquidationsData = await graphQLPost(
+        `positions(condition:{change:"LIQUIDATE"}){nodes{collateralTransferred,positionFee}}`
       );
-      const liquidationsResponse = await fetch(liquidationsURL);
-      if (!liquidationsResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationsResponse.status}`);
-      }
-      const liquidationsData = await liquidationsResponse.json();
-      expect(liquidationsData.data.positions.length).toBe(3);
+      expect(liquidationsData.data.positions.nodes.length).toBe(3);
 
-      liquidationsData.data.positions.forEach((position: any) => {
+      liquidationsData.data.positions.nodes.forEach((position: any) => {
         // collateralTransferred should be the liquidation fee (at least 5 USDC)
         expect(BigInt(position.collateralTransferred)).toBeGreaterThanOrEqual(
           BigInt(expandDecimals(5))
@@ -566,17 +496,12 @@ describe('Verify Liquidation', () => {
     });
 
     it('should store PnL and funding rate for liquidations', async () => {
-      const liquidationsURL = getGraphQLURL(
-        `positions(where:{change_eq:LIQUIDATE}){pnlDelta,fundingRate}`
+      const liquidationsData = await graphQLPost(
+        `positions(condition:{change:"LIQUIDATE"}){nodes{pnlDelta,fundingRate}}`
       );
-      const liquidationsResponse = await fetch(liquidationsURL);
-      if (!liquidationsResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationsResponse.status}`);
-      }
-      const liquidationsData = await liquidationsResponse.json();
-      expect(liquidationsData.data.positions.length).toBe(3);
+      expect(liquidationsData.data.positions.nodes.length).toBe(3);
 
-      liquidationsData.data.positions.forEach((position: any) => {
+      liquidationsData.data.positions.nodes.forEach((position: any) => {
         // PnL delta and funding rate should be stored (can be positive or negative)
         expect(position.pnlDelta).toBeDefined();
         expect(position.fundingRate).toBeDefined();
@@ -584,17 +509,12 @@ describe('Verify Liquidation', () => {
     });
 
     it('should store realized PnL and funding rate for liquidations', async () => {
-      const liquidationsURL = getGraphQLURL(
-        `positions(where:{change_eq:LIQUIDATE}){realizedPnl,realizedFundingRate}`
+      const liquidationsData = await graphQLPost(
+        `positions(condition:{change:"LIQUIDATE"}){nodes{realizedPnl,realizedFundingRate}}`
       );
-      const liquidationsResponse = await fetch(liquidationsURL);
-      if (!liquidationsResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationsResponse.status}`);
-      }
-      const liquidationsData = await liquidationsResponse.json();
-      expect(liquidationsData.data.positions.length).toBe(3);
+      expect(liquidationsData.data.positions.nodes.length).toBe(3);
 
-      liquidationsData.data.positions.forEach((position: any) => {
+      liquidationsData.data.positions.nodes.forEach((position: any) => {
         // Realized values should be stored
         expect(position.realizedPnl).toBeDefined();
         expect(position.realizedFundingRate).toBeDefined();
@@ -602,47 +522,34 @@ describe('Verify Liquidation', () => {
     });
 
     it('should have liquidation events marked as latest for closed positions', async () => {
-      const liquidationsURL = getGraphQLURL(`positions(where:{change_eq:LIQUIDATE}){latest}`);
-      const liquidationsResponse = await fetch(liquidationsURL);
-      if (!liquidationsResponse.ok) {
-        throw new Error(`GraphQL request failed: ${liquidationsResponse.status}`);
-      }
-      const liquidationsData = await liquidationsResponse.json();
-      expect(liquidationsData.data.positions.length).toBe(3);
+      const liquidationsData = await graphQLPost(
+        `positions(condition:{change:"LIQUIDATE"}){nodes{latest}}`
+      );
+      expect(liquidationsData.data.positions.nodes.length).toBe(3);
 
-      liquidationsData.data.positions.forEach((position: any) => {
+      liquidationsData.data.positions.nodes.forEach((position: any) => {
         expect(position.latest).toBe(true);
       });
     });
 
     it('should update total positions correctly after liquidations', async () => {
       // Check BTC long total position (should decrease after user0 liquidation)
-      const btcLongTotalURL = getGraphQLURL(
-        `totalPositions(where:{indexAssetId_eq:"${BTC_ASSET}",isLong_eq:true}){collateralAmount,size}`
+      const btcLongTotalData = await graphQLPost(
+        `totalPositions(condition:{indexAssetId:"${BTC_ASSET}",isLong:true}){nodes{collateralAmount,size}}`
       );
-      const btcLongTotalResponse = await fetch(btcLongTotalURL);
-      if (!btcLongTotalResponse.ok) {
-        throw new Error(`GraphQL request failed: ${btcLongTotalResponse.status}`);
-      }
-      const btcLongTotalData = await btcLongTotalResponse.json();
-      if (btcLongTotalData.data.totalPositions.length > 0) {
-        const total = btcLongTotalData.data.totalPositions[0];
+      if (btcLongTotalData.data.totalPositions.nodes.length > 0) {
+        const total = btcLongTotalData.data.totalPositions.nodes[0];
         // After liquidation, total should reflect the removed position
         expect(BigInt(total.collateralAmount)).toBeGreaterThanOrEqual(0);
         expect(BigInt(total.size)).toBeGreaterThanOrEqual(0);
       }
 
       // Check BTC short total position (should decrease after user1 liquidation)
-      const btcShortTotalURL = getGraphQLURL(
-        `totalPositions(where:{indexAssetId_eq:"${BTC_ASSET}",isLong_eq:false}){collateralAmount,size}`
+      const btcShortTotalData = await graphQLPost(
+        `totalPositions(condition:{indexAssetId:"${BTC_ASSET}",isLong:false}){nodes{collateralAmount,size}}`
       );
-      const btcShortTotalResponse = await fetch(btcShortTotalURL);
-      if (!btcShortTotalResponse.ok) {
-        throw new Error(`GraphQL request failed: ${btcShortTotalResponse.status}`);
-      }
-      const btcShortTotalData = await btcShortTotalResponse.json();
-      if (btcShortTotalData.data.totalPositions.length > 0) {
-        const total = btcShortTotalData.data.totalPositions[0];
+      if (btcShortTotalData.data.totalPositions.nodes.length > 0) {
+        const total = btcShortTotalData.data.totalPositions.nodes[0];
         // After liquidation, total should reflect the removed position
         expect(BigInt(total.collateralAmount)).toBeGreaterThanOrEqual(0);
         expect(BigInt(total.size)).toBeGreaterThanOrEqual(0);

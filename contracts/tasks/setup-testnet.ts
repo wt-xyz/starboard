@@ -10,14 +10,12 @@ if (require.main === module) {
             process.exit(0)
         })
         .catch((error) => {
-            // eslint-disable-next-line no-console
             console.error(error)
             process.exit(1)
         })
 }
 
 export async function setupTestnet(taskArgs: Record<string, string | boolean>) {
-    // eslint-disable-next-line no-console
     console.log("Setup asset configuration for the testnet")
 
     const [, USDCAssetId] = await deployTestnetToken({
@@ -54,7 +52,6 @@ export async function setupTestnet(taskArgs: Record<string, string | boolean>) {
         decimals: "9",
     })
 
-    // eslint-disable-next-line no-console
     console.log("usdc setup, asset_id", USDCAssetId)
     const [vaultAddress] = await deployStarboard({
         // [vaultAddress, pricefeedWrapperAddress]
@@ -75,6 +72,5 @@ export async function setupTestnet(taskArgs: Record<string, string | boolean>) {
     await call(vault.functions.set_asset_config(BNB_ASSET, 9))
     await call(vault.functions.set_asset_config(ETH_ASSET, 9))
 
-    // eslint-disable-next-line no-console
     console.log("Setup complete")
 }

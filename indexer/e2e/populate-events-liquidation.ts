@@ -1,75 +1,74 @@
 import { Provider, Wallet, createAssetId } from 'fuels';
-
-// eslint-disable-next-line import/no-relative-packages
-import { StorkMock, Vault, TestnetToken } from '../../contracts/types';
+import { StorkMock, TestnetToken, Vault } from '../../contracts/types';
 import {
+  BTC_ASSET,
+  BTC_MAX_LEVERAGE,
+  DEFAULT_SUB_ID,
+  DEPLOYER_PK,
+  ETH_ASSET,
+  ETH_MAX_LEVERAGE,
+  LIQUIDATOR_PK,
+  USDC_ASSET,
+  USER_0_PK,
+  USER_1_PK,
   call,
-  getArgs,
+  expandDecimals,
+  getBtcConfig,
+  getEthConfig,
+  getUsdcConfig,
   moveBlockchainTime,
   toPrice,
   walletToAddressIdentity,
-  expandDecimals,
-  DEFAULT_SUB_ID,
-  USDC_ASSET,
-  BTC_ASSET,
-  ETH_ASSET,
-  BTC_MAX_LEVERAGE,
-  getUsdcConfig,
-  getBtcConfig,
-  getEthConfig,
-  ETH_MAX_LEVERAGE,
 } from './utils';
-
-// priv keys are hardcoded, taken form the fuel node starting script
-const deployerPK = '0x9e42fa83bda35cbc769c4b058c721adef68011d7945d0b30165397ec6d05a53a'; // 0x0a0da2e1d4d201cc73cd500dfd64a732f1b94e5fb2d86657ab43ff620acaefd6
-const user0PK = '0x366079294383ed426ef94b9e86a8e448876a92c1ead9bbf75e6e205a6f4f570d'; // 0xc2833c4eae8a3b056a6f21a04d1a176780d5dc9df621270c41bec86a90c3d770"
-const user1PK = '0xb978aa71a1487dc9c1f996493af73f0427cf78f560b606224e7f0089bae04c41'; // 0x7ab1e9d9fd10909aead61cbfd4a5ec2d80bb304f34cfa2b5a9446398e284e92c"
-const liquidatorPK = '0xa5675fc7eb0657940fc73f6ec6c5265c045065ddac62e12e1174da030f3868b3'; // 0xad000576cc6dc12183a0306d8809c24f897fbbccfd3f179c571db6659218c088"
 
 // graphql url is hardcoded, taken form the fuel node starting script
 const graphQLUrl = 'http://127.0.0.1:4000/v1/graphql';
 
 if (require.main === module) {
-  populateEvents(
-    getArgs(['mockPricefeedAddress', 'vaultAddress', 'pricefeedWrapperAddress', 'usdcAddress'])
-  )
+  populateEvents()
     .then(() => {
       process.exit(0);
     })
     .catch((error) => {
-      // eslint-disable-next-line no-console
       console.error(error);
       process.exit(1);
     });
 }
 
-async function populateEvents(taskArgs: any) {
+async function populateEvents() {
+  const mockPricefeedAddress = process.env.MOCK_STORK_CONTRACT;
+  const vaultAddress = process.env.VAULT_CONTRACT;
+  const pricefeedWrapperAddress = process.env.PRICEFEED_WRAPPER_CONTRACT;
+  const usdcAddress = process.env.USDC_CONTRACT;
+
+  if (!mockPricefeedAddress || !vaultAddress || !pricefeedWrapperAddress || !usdcAddress) {
+    throw new Error(
+      'Missing required environment variables: MOCK_STORK_CONTRACT, VAULT_CONTRACT, PRICEFEED_WRAPPER_CONTRACT, USDC_CONTRACT'
+    );
+  }
+
   const provider = new Provider(graphQLUrl);
 
   // preparation, usually the same for all the populate scripts
-  const deployerWallet = Wallet.fromPrivateKey(deployerPK, provider);
-  const user0Wallet = Wallet.fromPrivateKey(user0PK, provider);
-  const user1Wallet = Wallet.fromPrivateKey(user1PK, provider);
-  const liquidatorWallet = Wallet.fromPrivateKey(liquidatorPK, provider);
+  const deployerWallet = Wallet.fromPrivateKey(DEPLOYER_PK, provider);
+  const user0Wallet = Wallet.fromPrivateKey(USER_0_PK, provider);
+  const user1Wallet = Wallet.fromPrivateKey(USER_1_PK, provider);
+  const liquidatorWallet = Wallet.fromPrivateKey(LIQUIDATOR_PK, provider);
 
   const user0Identity = walletToAddressIdentity(user0Wallet);
   const user1Identity = walletToAddressIdentity(user1Wallet);
   const liquidatorIdentity = walletToAddressIdentity(liquidatorWallet);
 
-  const storkMockDeployer = new StorkMock(taskArgs.mockPricefeedAddress, deployerWallet);
-  const vaultDeployer = new Vault(taskArgs.vaultAddress, deployerWallet);
-  const vaultUser0 = new Vault(taskArgs.vaultAddress, user0Wallet);
-  const vaultUser1 = new Vault(taskArgs.vaultAddress, user1Wallet);
-  const vaultLiquidator = new Vault(taskArgs.vaultAddress, liquidatorWallet);
-  const usdcUser0 = new TestnetToken(taskArgs.usdcAddress, user0Wallet);
-  const usdcUser1 = new TestnetToken(taskArgs.usdcAddress, user1Wallet);
+  const storkMockDeployer = new StorkMock(mockPricefeedAddress, deployerWallet);
+  const vaultDeployer = new Vault(vaultAddress, deployerWallet);
+  const vaultUser0 = new Vault(vaultAddress, user0Wallet);
+  const vaultUser1 = new Vault(vaultAddress, user1Wallet);
+  const vaultLiquidator = new Vault(vaultAddress, liquidatorWallet);
+  const usdcUser0 = new TestnetToken(usdcAddress, user0Wallet);
+  const usdcUser1 = new TestnetToken(usdcAddress, user1Wallet);
 
-  const attachedContracts = [
-    taskArgs.vaultAddress,
-    taskArgs.pricefeedWrapperAddress,
-    taskArgs.mockPricefeedAddress,
-  ];
-  const USDC_ASSET_ID = createAssetId(taskArgs.usdcAddress, DEFAULT_SUB_ID).bits;
+  const attachedContracts = [vaultAddress, pricefeedWrapperAddress, mockPricefeedAddress];
+  const USDC_ASSET_ID = createAssetId(usdcAddress, DEFAULT_SUB_ID).bits;
 
   // Setup vault configuration
   await call(vaultDeployer.functions.set_liquidator(liquidatorIdentity, true));

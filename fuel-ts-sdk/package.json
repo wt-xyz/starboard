@@ -17,9 +17,12 @@
     "build": "pnpm codegen && tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "codegen": "graphql-codegen --config ./codegen.yml",
-    "postinstall": "pnpm codegen"
+    "postinstall": "pnpm codegen",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",
@@ -33,6 +36,6 @@
     "@graphql-codegen/typescript-graphql-request": "^6.3.0",
     "@graphql-codegen/typescript-operations": "^5.0.1",
     "tsup": "^8.5.1",
-    "vitest": "^1.4.0"
+    "vitest": "^3.0.9"
   }
 }

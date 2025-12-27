@@ -1,19 +1,18 @@
 import { run } from '@subsquid/batch-processor';
-import { augmentBlock, Block, Receipt } from '@subsquid/fuel-objects';
+import { Block, Receipt, augmentBlock } from '@subsquid/fuel-objects';
 import { DataSourceBuilder } from '@subsquid/fuel-stream';
 import { TypeormDatabase } from '@subsquid/typeorm-store';
-import { Interface, BN, DateTime } from 'fuels';
-
+import { BN, DateTime, Interface } from 'fuels';
 import priceOracleAbi from './abis/stork-mock-abi.json';
 import vaultAbi from './abis/vault-abi.json';
 import {
-  Price,
-  PositionKey,
-  Position,
-  TotalPosition,
   Liquidity,
-  TotalLiquidity,
+  Position,
   PositionChange,
+  PositionKey,
+  Price,
+  TotalLiquidity,
+  TotalPosition,
 } from './model/generated';
 
 export const priceOracleInterface = new Interface(priceOracleAbi);
@@ -25,7 +24,6 @@ export const GRAPHQL_URL = process.env.GRAPHQL_URL ?? '';
 export const VAULT_PRICEFEED_ADDRESS = process.env.VAULT_PRICEFEED_ADDRESS ?? '';
 export const VAULT_ADDRESS = process.env.VAULT_ADDRESS ?? '';
 export const FROM_BLOCK = process.env.FROM_BLOCK ?? '';
-export const E2E_TEST_LOG = (process.env.E2E_TEST_LOG ?? '0') === '1'; // 0 - no log, 1 - log
 
 const LOG_TYPE_SET_PRICE = 'enum stork_sway_sdk::events::StorkEvent';
 const LOG_TYPE_ADD_LIQUIDITY = 'struct events::AddLiquidity';
@@ -532,16 +530,9 @@ async function handleLiquidatePosition(
 }
 
 run(dataSource, database, async (ctx) => {
-  if (E2E_TEST_LOG) {
-    // E2E test log indicating that the indexer started successfully
-    // eslint-disable-next-line no-console
-    console.log('Indexer run started');
-  }
   const blocks = ctx.blocks.map(augmentBlock);
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const block of blocks) {
-    // eslint-disable-next-line no-restricted-syntax
     for (const receipt of block.receipts) {
       if (receipt.contract === undefined) {
         // something went wrong
@@ -556,7 +547,6 @@ run(dataSource, database, async (ctx) => {
         }
         // events::SetPrice
         if (logType === LOG_TYPE_SET_PRICE) {
-          // eslint-disable-next-line no-await-in-loop
           await handlePriceUpdate(receipt, block, ctx);
         } else {
           // drop unsupported event
@@ -572,27 +562,21 @@ run(dataSource, database, async (ctx) => {
         }
         // events::AddLiquidity
         if (logType === LOG_TYPE_ADD_LIQUIDITY) {
-          // eslint-disable-next-line no-await-in-loop
           await handleAddLiquidity(receipt, block, ctx);
           // events::RemoveLiquidity
         } else if (logType === LOG_TYPE_REMOVE_LIQUIDITY) {
-          // eslint-disable-next-line no-await-in-loop
           await handleRemoveLiquidity(receipt, block, ctx);
           // events::IncreasePosition
         } else if (logType === LOG_TYPE_INCREASE_POSITION) {
-          // eslint-disable-next-line no-await-in-loop
           await handleIncreasePosition(receipt, block, ctx);
           // events::DecreasePosition
         } else if (logType === LOG_TYPE_DECREASE_POSITION) {
-          // eslint-disable-next-line no-await-in-loop
           await handleDecreasePosition(receipt, block, ctx);
           // events::ClosePosition
         } else if (logType === LOG_TYPE_CLOSE_POSITION) {
-          // eslint-disable-next-line no-await-in-loop
           await handleClosePosition(receipt, block, ctx);
           // events::LiquidatePosition
         } else if (logType === LOG_TYPE_LIQUIDATE_POSITION) {
-          // eslint-disable-next-line no-await-in-loop
           await handleLiquidatePosition(receipt, block, ctx);
         } else {
           // drop unsupported event

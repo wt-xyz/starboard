@@ -7,11 +7,11 @@ export const GET_POSITIONS_QUERY = gql`
     $where: PositionWhereInput
     $orderBy: [PositionOrderByInput!]
   ) {
-    positions(limit: $limit, offset: $offset, where: $where, orderBy: $orderBy) {
+    positions(offset: $offset, where: $where, orderBy: $orderBy, limit: $limit) {
       id
       positionKey {
-        id
         account
+        id
         indexAssetId
         isLong
       }

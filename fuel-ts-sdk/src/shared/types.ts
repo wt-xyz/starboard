@@ -25,10 +25,24 @@ export const safeAssetId = (str: string): AssetId | undefined => {
 /**
  * PositionId - Unique position identifier
  */
-export const PositionIdSchema = z.string().min(1, 'Position ID cannot be empty').brand<'PositionId'>();
+export const PositionIdSchema = z
+  .string()
+  .min(1, 'Position ID cannot be empty')
+  .brand<'PositionId'>();
 export type PositionId = z.infer<typeof PositionIdSchema>;
 export const positionId = (str: string): PositionId => PositionIdSchema.parse(str);
 export const safePositionId = (str: string): PositionId | undefined => {
   const result = PositionIdSchema.safeParse(str);
+  return result.success ? result.data : undefined;
+};
+
+/**
+ * PriceId - Unique price identifier
+ */
+export const PriceIdSchema = z.string().min(1, 'Price ID cannot be empty').brand<'PriceId'>();
+export type PriceId = z.infer<typeof PriceIdSchema>;
+export const priceId = (str: string): PriceId => PriceIdSchema.parse(str);
+export const safePriceId = (str: string): PriceId | undefined => {
+  const result = PriceIdSchema.safeParse(str);
   return result.success ? result.data : undefined;
 };

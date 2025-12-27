@@ -1,0 +1,1 @@
+export { createGraphQLCurrentPriceRepository } from './repository';

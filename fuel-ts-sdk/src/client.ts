@@ -1,6 +1,6 @@
-import { createTradingModule } from '@/trading';
 import { GraphQLClient } from 'graphql-request';
 
+import { createTradingModule } from '@/trading';
 import { createStore } from './shared/lib/redux';
 import { createStoreService } from './shared/lib/store-service';
 

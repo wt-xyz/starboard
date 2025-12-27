@@ -1,14 +1,13 @@
 # Starboard - Indexer
 
-
 ## Getting started
 
 Review `.env` file.
 
 ### Prerequisites
 
-* Node.js (version 20.x and above)
-* Docker
+- Node.js (version 20.x and above)
+- Docker
 
 ### Run indexer
 
@@ -27,16 +26,27 @@ pnpm apply:migration
 
 # Run indexer
 node -r dotenv/config lib/main.js
+# or (this does not require the project to be build)
+pnpm start
 
-# Run API
-npx squid-graphql-server
+# Run API, update db connection params,
+# for the production consult postgres docs for safer configuration
+pnpm postgraphile -c "postgres://postgres:postgres@localhost:23751/postgres" --enhance-graphiql
 
 # Erase the indexer data
 docker compose down -v
 
-# Checkout indexed logs
-docker exec "$(basename "$(pwd)")-db-1" psql -U postgres \
-  -c "SELECT id, logs_count, found_at FROM contract ORDER BY logs_count desc LIMIT 10"
+# Checkout the indexer
+docker exec "indexer-db-1" psql -U postgres \
+  -c "select * from migrations"
+
+# Checkout out recent prices
+docker exec "indexer-db-1" psql -U postgres \
+  -c "select * from price order by timestamp desc limit 12"
+
+# Checkout out recent positions
+docker exec "indexer-db-1" psql -U postgres \
+  -c "select * from position order by timestamp desc limit 12;"
 ```
 
 ## E2E Tests
@@ -48,6 +58,7 @@ starts up the indexer, waits for the indexer to process the events
 and shuts everything down. The database and the fuel node have to run separately.
 
 Build contracts
+
 ```shell
 pnpm --filter starboard/contracts build
 pnpm --filter starboard/contracts gen:types
@@ -58,10 +69,11 @@ To build the Docker image `starboard/fuel-core` refer to the `docker/README.md` 
 Run the database and the fuel node.
 
 ```shell
-pnpm sqd up:local
+pnpm sqd up:e2e
 ```
 
 Run an example test
+
 ```shell
 ./e2e/run.sh e2e/populate-events-price.ts e2e/verify-indexer-price.test.ts
 ```
@@ -69,11 +81,12 @@ Run an example test
 Shut down the database and the fuel node.
 
 ```shell
-pnpm sqd down:local
+pnpm sqd down:e2e
 ```
 
-The interactive mode simply waits for Ctrl-C to initialize the shutdown 
+The interactive mode simply waits for Ctrl-C to initialize the shutdown
 to enable the infrastructure for other test purposes
+
 ```shell
 ./e2e/run.sh e2e/populate-events-price.ts e2e/verify-indexer-price.test.ts i
 ```
@@ -90,3 +103,13 @@ It is also possible to send additional transactions that emit events,
 but an additional code to watch the indexer sync would be required.
 The script is vitest compatible. It is excluded in a normal run.
 Here a dedicated mode `indexer-e2e` is used to execute the script with vitest.
+
+## Migrations
+
+**NOTICE.** Important when changing the schema and generating migrations scripts.
+
+Some functionalities are enable through db views.
+Views are not generated from the schema, they are provided with custom migrations scripts.
+See `db/migrations/1762648930785-Data.js` for instance.
+Such scripts are marked with the comment `// NON GENERATED MIGRATION`.
+In case the schema is changed, views may need to be updated as well - it must be done manually.
