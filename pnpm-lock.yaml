@@ -186,12 +186,21 @@ importers:
 
   fuel-ts-sdk:
     dependencies:
+      '@reduxjs/toolkit':
+        specifier: ^2.2.7
+        version: 2.11.2(react-redux@9.2.0)(react@19.2.0)
+      '@types/lodash':
+        specifier: ^4.17.21
+        version: 4.17.21
       graphql:
         specifier: ^15.10.1
         version: 15.10.1
       graphql-request:
         specifier: ^7.3.5
         version: 7.3.5(graphql@15.10.1)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       zod:
         specifier: ^3.24.1
         version: 3.25.76
