@@ -1,10 +1,10 @@
 import { Provider, Wallet } from "fuels"
-import { Vault as VaultContract } from "../types/Vault"
-import { call, getArgs, USDC_ASSET, BTC_ASSET, BNB_ASSET, ETH_ASSET } from "./utils"
-import { deployTestnetToken } from "./deploy-testnet-token"
-import { deployStarboard } from "./deploy-starboard"
+import { Vault as VaultContract } from "../types/Vault.js"
+import { deployStarboard } from "./deploy-starboard.js"
+import { deployTestnetToken } from "./deploy-testnet-token.js"
+import { BNB_ASSET, BTC_ASSET, call, ETH_ASSET, getArgs, USDC_ASSET } from "./utils.js"
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     setupTestnet(getArgs(["url", "privK", "storkContractAddress"]))
         .then(() => {
             process.exit(0)

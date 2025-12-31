@@ -1,8 +1,8 @@
 import { Provider, Wallet } from "fuels"
-import { getArgs } from "./utils"
-import { StorkMockFactory } from "../types/StorkMockFactory"
+import { getArgs } from "./utils.js"
+import { StorkMockFactory } from "../types/StorkMockFactory.js"
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     deployStorkMock(getArgs(["url", "privK"]))
         .then(() => {
             process.exit(0)
@@ -12,6 +12,8 @@ if (require.main === module) {
             process.exit(1)
         })
 }
+
+export { deployStorkMock }
 
 async function deployStorkMock(taskArgs: any) {
     console.log("Deploy a stork mock")

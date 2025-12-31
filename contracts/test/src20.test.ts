@@ -1,28 +1,28 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest"
-import { AbstractContract, WalletUnlocked, AssetId } from "fuels"
-import { launchNode, getNodeWallets } from "./node"
+import { AbstractContract, AssetId, WalletUnlocked } from "fuels"
+import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
+import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import {
-    call,
+    Fungible,
+    FungibleFactory,
+    PricefeedWrapper,
+    PricefeedWrapperFactory,
+    StorkMock,
+    StorkMockFactory,
+    Vault,
+    VaultFactory,
+} from "../types/index.js"
+import { getNodeWallets, launchNode } from "./node.js"
+import {
     AddressIdentity,
-    walletToAddressIdentity,
-    expandDecimals,
     COLLATERAL_ASSET,
     USDC_ASSET,
+    call,
+    expandDecimals,
+    getAssetId,
     getBtcConfig,
     getUsdcConfig,
-    getAssetId,
-} from "./utils"
-import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
-import {
-    FungibleFactory,
-    PricefeedWrapperFactory,
-    StorkMockFactory,
-    VaultFactory,
-    Vault,
-    StorkMock,
-    PricefeedWrapper,
-    Fungible,
-} from "../types"
+    walletToAddressIdentity,
+} from "./utils.js"
 
 describe("Vault SRC20", () => {
     let attachedContracts: AbstractContract[]

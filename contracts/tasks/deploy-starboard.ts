@@ -1,8 +1,8 @@
 import { Provider, Wallet } from "fuels"
-import { call, getArgs } from "./utils"
-import { PricefeedWrapperFactory, VaultFactory } from "../types"
+import { PricefeedWrapperFactory, VaultFactory } from "../types/index.js"
+import { call, getArgs } from "./utils.js"
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     deployStarboard(getArgs(["url", "privK", "usdcAssetId", "usdcPricefeedId", "usdcDecimals", "storkContract"]))
         .then(() => {
             process.exit(0)
