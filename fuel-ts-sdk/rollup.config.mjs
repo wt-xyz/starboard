@@ -16,6 +16,7 @@ export default [
       index: 'src/index.ts',
       client: 'src/client.ts',
       'trading/index': 'src/trading/index.ts',
+      'wallet/index': 'src/wallet/index.ts',
     },
     output: {
       dir: 'dist',
@@ -41,6 +42,7 @@ export default [
       index: 'src/index.ts',
       client: 'src/client.ts',
       'trading/index': 'src/trading/index.ts',
+      'wallet/index': 'src/wallet/index.ts',
     },
     output: {
       dir: 'dist',

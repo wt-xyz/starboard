@@ -2,6 +2,7 @@ import { Link, Outlet } from 'react-router';
 import { NetworkSwitchContext } from '@/contexts/network-switch/network-switch.context';
 import { useRequiredContext } from '@/lib/use-required-context.hook';
 import { NETWORKS, type Network } from '@/models/network';
+import { WalletConnector } from '@/components/Wallet';
 import * as styles from './dashboard-layout.css';
 
 export function DashboardLayout() {
@@ -27,18 +28,22 @@ export function DashboardLayout() {
           </nav>
         </div>
 
-        <div css={styles.networkSection}>
-          <span css={styles.networkLabel}>Network</span>
-          <div css={styles.networkSelector}>
-            {NETWORKS.map((network) => (
-              <button
-                onClick={() => switchTo(network)}
-                key={network}
-                css={currentNetwork === network ? styles.buttonActive : styles.button}
-              >
-                {NETWORK_DISPLAY_VALUES[network]}
-              </button>
-            ))}
+        <div css={styles.headerRight}>
+          <WalletConnector />
+
+          <div css={styles.networkSection}>
+            <span css={styles.networkLabel}>Network</span>
+            <div css={styles.networkSelector}>
+              {NETWORKS.map((network) => (
+                <button
+                  onClick={() => switchTo(network)}
+                  key={network}
+                  css={currentNetwork === network ? styles.buttonActive : styles.button}
+                >
+                  {NETWORK_DISPLAY_VALUES[network]}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </header>

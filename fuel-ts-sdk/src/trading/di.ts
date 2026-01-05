@@ -5,10 +5,12 @@ import * as Domain from './src/domain-services';
 import * as Markets from './src/markets';
 import * as Positions from './src/positions';
 
-export const tradingReducer = combineReducers({
+export const tradingReducerMap = {
   ...Markets.marketsReducer,
   ...Positions.positionsReducer,
-});
+};
+
+export const tradingReducer = combineReducers(tradingReducerMap);
 
 export const createTradingModule = (graphqlClient: GraphQLClient) => {
   return {

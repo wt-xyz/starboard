@@ -26,6 +26,12 @@ export const headerLeft = style({
   gap: '2rem',
 });
 
+export const headerRight = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1.5rem',
+});
+
 export const logo = style({
   fontSize: '1.5rem',
   fontWeight: '700',

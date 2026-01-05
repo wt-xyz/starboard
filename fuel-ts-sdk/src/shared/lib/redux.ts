@@ -1,6 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { marketsMiddleware, positionsMiddleware } from '@/trading';
-import { type TradingThunkExtras, tradingReducer } from '@/trading/di';
+import { type TradingThunkExtras, tradingReducerMap } from '@/trading/di';
+import { walletReducer } from '@/wallet';
 
 export type RequestStatus = 'uninitialized' | 'pending' | 'fulfilled' | 'rejected';
 
@@ -41,9 +42,14 @@ const serializeForDevTools = (state: any): any => {
   return state;
 };
 
+const rootReducer = combineReducers({
+  ...tradingReducerMap,
+  wallet: walletReducer,
+});
+
 export const createStore = (extraArgument: StoreThunkExtraArgument) => {
   return configureStore({
-    reducer: tradingReducer,
+    reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         thunk: {

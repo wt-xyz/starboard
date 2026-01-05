@@ -18,6 +18,10 @@
     "./cross-domain": {
       "types": "./dist/cross-domain/index.d.ts",
       "import": "./dist/cross-domain/index.js"
+    },
+    "./wallet": {
+      "types": "./dist/wallet/index.d.ts",
+      "import": "./dist/wallet/index.js"
     }
   },
   "files": [
