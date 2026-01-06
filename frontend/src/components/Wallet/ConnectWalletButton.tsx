@@ -1,6 +1,6 @@
 import { useConnectUI } from '@fuels/react';
 import type { FC } from 'react';
-import { Button } from '@/components/ui/Button';
+import { walletButton } from './Wallet.css';
 
 interface ConnectWalletButtonProps {
   className?: string;
@@ -10,15 +10,14 @@ export const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({ className })
   const { connect, isConnecting } = useConnectUI();
 
   return (
-    <Button
-      variant="primary"
-      size="small"
+    <button
+      type="button"
+      className={`${walletButton} ${className ?? ''}`}
       onClick={() => connect()}
       disabled={isConnecting}
-      className={className}
     >
       {isConnecting ? 'Connecting...' : 'Connect Wallet'}
-    </Button>
+    </button>
   );
 };
 

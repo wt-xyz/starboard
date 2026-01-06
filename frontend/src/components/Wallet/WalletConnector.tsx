@@ -9,11 +9,6 @@ interface WalletConnectorProps {
   className?: string;
 }
 
-/**
- * Main wallet component that shows either:
- * - ConnectWalletButton when disconnected
- * - WalletStatus when connected
- */
 export const WalletConnector: FC<WalletConnectorProps> = ({ className }) => {
   const isConnected = useSdkQuery(selectIsWalletConnected);
 

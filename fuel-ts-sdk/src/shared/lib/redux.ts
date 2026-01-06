@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { marketsMiddleware, positionsMiddleware } from '@/trading';
-import { type TradingThunkExtras, tradingReducerMap } from '@/trading/di';
+import { marketsMiddleware, positionsMiddleware, marketsReducer, positionsReducer } from '@/trading';
+import { type TradingThunkExtras } from '@/trading/di';
 import { walletReducer } from '@/wallet';
 
 export type RequestStatus = 'uninitialized' | 'pending' | 'fulfilled' | 'rejected';
@@ -42,8 +42,12 @@ const serializeForDevTools = (state: any): any => {
   return state;
 };
 
+// Root reducer combines all bounded contexts
+// Trading context keys are spread at root level (markets, trading, candlesApi, positionsApi)
+// Wallet is a separate bounded context with its own key
 const rootReducer = combineReducers({
-  ...tradingReducerMap,
+  ...marketsReducer,
+  ...positionsReducer,
   wallet: walletReducer,
 });
 

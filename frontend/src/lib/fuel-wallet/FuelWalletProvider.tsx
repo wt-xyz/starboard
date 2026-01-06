@@ -6,7 +6,7 @@ import { useMemo, useContext, useState } from 'react';
 import { NetworkSwitchContext } from '@/contexts/network-switch';
 import { useWalletSync } from './useWalletSync';
 
-// Fuel network configurations
+// TODO: Get network URLs from SDK config (issue #6)
 const FUEL_NETWORKS = {
   local: 'http://127.0.0.1:4000/v1/graphql',
   testnet: 'https://testnet.fuel.network/v1/graphql',
@@ -16,7 +16,7 @@ interface FuelWalletProviderProps {
   children: ReactNode;
 }
 
-const WalletSyncWrapper: FC<{ children: ReactNode }> = ({ children }) => {
+const WalletSyncBridge: FC<{ children: ReactNode }> = ({ children }) => {
   useWalletSync();
   return <>{children}</>;
 };
@@ -39,7 +39,7 @@ export const FuelWalletProvider: FC<FuelWalletProviderProps> = ({ children }) =>
   return (
     <QueryClientProvider client={queryClient}>
       <FuelProvider fuelConfig={fuelConfig} networks={[{ url: networkUrl, chainId: 0 }]}>
-        <WalletSyncWrapper>{children}</WalletSyncWrapper>
+        <WalletSyncBridge>{children}</WalletSyncBridge>
       </FuelProvider>
     </QueryClientProvider>
   );

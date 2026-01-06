@@ -12,15 +12,6 @@ interface WalletStatusProps {
   className?: string;
 }
 
-/**
- * Truncates a wallet address for display
- * e.g., "0x1234...5678"
- */
-function truncateAddress(address: string): string {
-  if (address.length <= 12) return address;
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
-
 export const WalletStatus: FC<WalletStatusProps> = ({ className }) => {
   const address = useSdkQuery(selectWalletAddress);
   const { disconnect, isPending } = useDisconnect();
@@ -41,4 +32,9 @@ export const WalletStatus: FC<WalletStatusProps> = ({ className }) => {
     </div>
   );
 };
+
+function truncateAddress(address: string): string {
+  if (address.length <= 12) return address;
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
 
