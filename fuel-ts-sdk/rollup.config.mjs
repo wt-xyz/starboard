@@ -7,7 +7,16 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const external = ['graphql', 'graphql-request', 'zod', '@reduxjs/toolkit', 'immer', 'lodash'];
+const external = [
+  'graphql',
+  'graphql-request',
+  'zod',
+  '@reduxjs/toolkit',
+  'immer',
+  'lodash',
+  'fuels',
+  '@fuels/connectors',
+];
 
 export default [
   // JS build
