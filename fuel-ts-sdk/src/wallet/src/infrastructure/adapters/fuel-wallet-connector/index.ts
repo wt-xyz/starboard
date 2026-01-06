@@ -1,0 +1,2 @@
+export { createFuelWalletConnectorRepository } from './di';
+

@@ -7,7 +7,6 @@ import App from './App.tsx';
 import { NetworkSwitchContextProvider } from './contexts/network-switch';
 import { getIndexerUrl } from './lib/env';
 import { FuelTsSdkProvider } from './lib/fuel-ts-sdk';
-import { FuelWalletProvider } from './lib/fuel-wallet';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -18,11 +17,9 @@ createRoot(document.getElementById('root')!).render(
           key={networkSwitch.getCurrentNetwork()}
         >
           <Theme appearance="dark">
-            <FuelWalletProvider>
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
-            </FuelWalletProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
           </Theme>
         </FuelTsSdkProvider>
       )}

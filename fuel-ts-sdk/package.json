@@ -39,7 +39,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@fuels/connectors": "^0.36.1",
     "@reduxjs/toolkit": "^2.2.7",
+    "fuels": "^0.100.0",
     "@types/lodash": "^4.17.21",
     "graphql": "^16.8.1",
     "graphql-request": "^7.3.5",

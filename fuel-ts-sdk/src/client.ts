@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { createTradingModule } from '@/trading/di';
-import { createWalletModule } from '@/wallet';
+import { createWalletModule } from '@/wallet/di';
 import type { RootState } from './shared/lib/redux';
 import { createStore } from './shared/lib/redux';
 import { createStoreService } from './shared/lib/store-service';
@@ -18,12 +18,16 @@ export const createStarboardClient = (config: StarboardClientConfig) => {
   const tradingModule = createTradingModule(graphqlClient);
   const walletModule = createWalletModule();
 
-  const starboardStore = createStore(tradingModule.getThunkExtras());
+  // Get thunk extras from each module
+  const tradingThunkExtras = tradingModule.getThunkExtras();
+  const walletThunkExtras = walletModule.getThunkExtras();
+
+  const starboardStore = createStore(tradingThunkExtras);
   const storeService = createStoreService(starboardStore);
 
   return {
     trading: tradingModule.createCommandsAndQueries(storeService),
-    wallet: walletModule.createCommandsAndQueries(storeService),
+    wallet: walletModule.createCommandsAndQueries(storeService, walletThunkExtras),
     store: starboardStore,
   };
 };

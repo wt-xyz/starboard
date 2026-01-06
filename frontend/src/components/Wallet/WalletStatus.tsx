@@ -1,6 +1,6 @@
-import { useDisconnect } from '@fuels/react';
 import type { FC } from 'react';
-import { useSdkQuery } from '@/lib/fuel-ts-sdk';
+import { useCallback, useState } from 'react';
+import { useSdk, useSdkQuery } from '@/lib/fuel-ts-sdk';
 import { selectWalletAddress } from 'fuel-ts-sdk/wallet';
 import {
   walletStatusContainer,
@@ -13,8 +13,18 @@ interface WalletStatusProps {
 }
 
 export const WalletStatus: FC<WalletStatusProps> = ({ className }) => {
+  const sdk = useSdk();
   const address = useSdkQuery(selectWalletAddress);
-  const { disconnect, isPending } = useDisconnect();
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+
+  const handleDisconnect = useCallback(async () => {
+    setIsDisconnecting(true);
+    try {
+      await sdk.wallet.disconnect();
+    } finally {
+      setIsDisconnecting(false);
+    }
+  }, [sdk.wallet]);
 
   if (!address) return null;
 
@@ -23,11 +33,11 @@ export const WalletStatus: FC<WalletStatusProps> = ({ className }) => {
       <span className={walletAddressStyle}>{truncateAddress(address)}</span>
       <button
         className={disconnectButton}
-        onClick={() => disconnect()}
-        disabled={isPending}
+        onClick={handleDisconnect}
+        disabled={isDisconnecting}
         type="button"
       >
-        {isPending ? '...' : 'Disconnect'}
+        {isDisconnecting ? '...' : 'Disconnect'}
       </button>
     </div>
   );
