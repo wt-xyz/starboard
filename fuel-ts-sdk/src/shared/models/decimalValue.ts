@@ -2,6 +2,12 @@ export type DecimalValueCtor<T extends DecimalValue = DecimalValue> = {
   new (value: bigint): T;
   decimals: bigint;
 };
+export type DecimalValueCtorWithMethods<T extends DecimalValue = DecimalValue> = {
+  new (value: bigint): T;
+  decimals: bigint;
+  fromFloat<T>(floatValue: number): T;
+  fromBigInt<T>(value: bigint): T;
+};
 
 export abstract class DecimalValue {
   static decimals: bigint;
