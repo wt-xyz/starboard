@@ -9,8 +9,9 @@ export const button = style({
   fontWeight: '600',
   cursor: 'pointer',
   transition: 'all 0.2s',
-  marginTop: '16px',
-  textTransform: 'uppercase',
+  marginTop: '0.5rem',
+  textTransform: 'capitalize',
+  letterSpacing: '0.01em',
 });
 
 export const disabledButton = style({

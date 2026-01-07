@@ -1,6 +1,17 @@
-import { AbstractContract, AssetId, WalletUnlocked } from "fuels"
+import { describe, it, expect, beforeEach, afterEach } from "vitest"
+import { AbstractContract, WalletUnlocked, AssetId } from "fuels"
+import { launchNode, getNodeWallets } from "./node.js"
+import {
+    call,
+    AddressIdentity,
+    walletToAddressIdentity,
+    expandDecimals,
+    BASE_ASSET,
+    USDC_ASSET,
+    getBtcConfig,
+    getAssetId,
+} from "./utils.js"
 import { DeployContractConfig, LaunchTestNodeReturn } from "fuels/test-utils"
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import {
     Fungible,
     FungibleFactory,
@@ -12,18 +23,6 @@ import {
     VaultFactory,
     SimpleProxyFactory,
 } from "../types/index.js"
-import { getNodeWallets, launchNode } from "./node.js"
-import {
-    AddressIdentity,
-    COLLATERAL_ASSET,
-    USDC_ASSET,
-    call,
-    expandDecimals,
-    getAssetId,
-    getBtcConfig,
-    getUsdcConfig,
-    walletToAddressIdentity,
-} from "./utils.js"
 
 describe("Vault SRC20", () => {
     let attachedContracts: AbstractContract[]
@@ -68,9 +67,9 @@ describe("Vault SRC20", () => {
 
         const { waitForResult: waitForResultVaultImpl } = await VaultFactory.deploy(deployer, {
             configurableConstants: {
-                COLLATERAL_ASSET_ID: { bits: USDC_ASSET_ID },
-                COLLATERAL_ASSET,
-                COLLATERAL_ASSET_DECIMALS: 9,
+                BASE_ASSET_ID: { bits: USDC_ASSET_ID },
+                BASE_ASSET,
+                BASE_ASSET_DECIMALS: 9,
                 PRICEFEED_WRAPPER: { bits: pricefeedWrapper.id.b256Address },
             },
         })
@@ -96,15 +95,14 @@ describe("Vault SRC20", () => {
 
         await call(
             vault.functions.set_fees(
-                30, // mint_burn_fee_basis_points
-                10, // margin_fee_basis_points
-                expandDecimals(5), // liquidation_fee_usd
+                30, // liquidity_fee_basis_points
+                10, // position_fee_basis_points
+                expandDecimals(5), // liquidation_fee
             ),
         )
 
         await call(storkMock.functions.update_price(USDC_ASSET, expandDecimals(1, 18)))
 
-        await call(vault.functions.set_asset_config(...getUsdcConfig()))
         await call(vault.functions.set_asset_config(...getBtcConfig()))
     })
 
@@ -148,7 +146,7 @@ describe("Vault SRC20", () => {
     })
 
     describe("decimals", () => {
-        it("should return 9 (collateral asset decimals) for LP asset", async () => {
+        it("should return 9 (base asset decimals) for LP asset", async () => {
             const lpAssetId: AssetId = { bits: LP_ASSET_ID }
             const decimalsResult = (await vault.functions.decimals(lpAssetId).get()).value
 

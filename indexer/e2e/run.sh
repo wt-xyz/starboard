@@ -24,7 +24,7 @@ populate_events() {
       echo "Skipping population of events"
   else
       echo "Populating events"
-      ts-node $1
+      pnpm exec tsx $1
       if [ $? -ne 0 ]; then
           echo "Failed to execute the script"
           exit 1
@@ -51,6 +51,18 @@ do
     fi
     ii=$(($ii+1))
 done
+
+# ensure the fuel node is up
+ii=0
+while [ $ii -lt 10 ] && ! curl --fail http://localhost:4000/v1/health > /dev/null 2>&1; do
+    echo "Waiting for the fuel node to be up"
+    sleep 1
+    ii=$(($ii+1))
+done
+if [ $ii -eq 10 ]; then
+    echo "Fuel node did not start within timeout"
+    exit 1
+fi
 
 echo "Deploying Mocked Stork contract" && \
 pnpm --filter starboard/contracts deploy:stork-mock --url="http://127.0.0.1:4000/v1/graphql" --privK="0x9e42fa83bda35cbc769c4b058c721adef68011d7945d0b30165397ec6d05a53a" --salt="${SALT}" && \
@@ -93,6 +105,7 @@ else
             fi
         fi
         sleep 1
+        echo "Waiting until the indexer reaches the fuel node height"
         ii=$(($ii+1))
     done
     if [ $ii -eq 20 ]; then

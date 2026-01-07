@@ -1,4 +1,5 @@
 import alias from '@rollup/plugin-alias';
+import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import path from 'path';
 import dts from 'rollup-plugin-dts';
@@ -39,7 +40,8 @@ export default [
       alias({
         entries: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
       }),
-      resolve({ extensions: ['.ts', '.js'] }),
+      json(),
+      resolve({ extensions: ['.ts', '.js', '.json'] }),
       esbuild({
         target: 'esnext',
         tsconfig: './tsconfig.build.json',

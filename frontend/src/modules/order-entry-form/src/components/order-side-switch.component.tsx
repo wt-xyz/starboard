@@ -1,4 +1,4 @@
-import * as Tabs from '@radix-ui/react-tabs';
+import { Tabs } from 'radix-ui';
 import { useController } from 'react-hook-form';
 import { useRequiredContext } from '@/lib/use-required-context.hook';
 import { OrderEntryFormApiContext } from '../contexts';
@@ -14,7 +14,7 @@ export function OrderSideSwitch() {
       <Tabs.List css={styles.tabsList}>
         {ORDER_SIDES.map((side) => (
           <Tabs.Trigger key={side} value={side} css={styles.tabsTrigger} data-side={side}>
-            {side.toUpperCase()}
+            {side.charAt(0).toUpperCase() + side.slice(1)}
           </Tabs.Trigger>
         ))}
       </Tabs.List>
