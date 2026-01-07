@@ -1,8 +1,9 @@
-import type { FuelConnector } from 'fuels';
+import type { Fuel } from 'fuels';
 import type { ConnectorInfo } from '../../../domain';
 
 export const getAvailableConnectors =
-  (connectors: FuelConnector[]) => async (): Promise<ConnectorInfo[]> => {
+  (fuel: Fuel) => async (): Promise<ConnectorInfo[]> => {
+    const connectors = await fuel.connectors();
     const infos: ConnectorInfo[] = [];
 
     for (const connector of connectors) {
@@ -20,4 +21,3 @@ export const getAvailableConnectors =
 
     return infos;
   };
-

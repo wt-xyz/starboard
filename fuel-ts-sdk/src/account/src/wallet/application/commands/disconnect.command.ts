@@ -1,6 +1,6 @@
 import type { StoreService } from '@/shared/lib/store-service';
 import type { WalletConnectorRepository } from '../../domain';
-import { selectWalletConnectorId, setDisconnected } from '../../infrastructure';
+import { setDisconnected } from '../../infrastructure';
 
 /**
  * Disconnect command always updates local state regardless of remote errors.
@@ -9,13 +9,8 @@ import { selectWalletConnectorId, setDisconnected } from '../../infrastructure';
  */
 export const createDisconnectCommand =
   (store: StoreService, repository: WalletConnectorRepository) => async (): Promise<void> => {
-    const state = store.getState();
-    const connectorId = selectWalletConnectorId(state);
-
     try {
-      if (connectorId) {
-        await repository.disconnect(connectorId);
-      }
+      await repository.disconnect();
     } finally {
       // Always clear local state - user intent to disconnect is honored
       store.dispatch(setDisconnected());

@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 import { useCallback, useState } from 'react';
-import { selectWalletAddress } from 'fuel-ts-sdk/wallet';
-import { useSdk, useSdkQuery } from '@/lib/fuel-ts-sdk';
+import { useSdk, useWalletState } from '@/lib/fuel-ts-sdk';
 import {
   disconnectButton,
   walletAddress as walletAddressStyle,
@@ -14,7 +13,7 @@ interface WalletStatusProps {
 
 export const WalletStatus: FC<WalletStatusProps> = ({ className }) => {
   const sdk = useSdk();
-  const address = useSdkQuery(selectWalletAddress);
+  const { address } = useWalletState();
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const handleDisconnect = useCallback(async () => {

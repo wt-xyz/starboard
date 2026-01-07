@@ -1,107 +1,89 @@
 import type { FC, ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { defaultConnectors } from '@fuels/connectors';
-import { assetId, safeAddress } from 'fuel-ts-sdk';
-import { Fuel } from 'fuels';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { safeAddress } from 'fuel-ts-sdk';
+import { walletAdapters } from 'fuel-ts-sdk/wallet';
+import type { Network as FuelsNetwork } from 'fuels';
 import { WalletContext, type WalletContextType } from './wallet.context';
 
 type WalletContextProviderProps = {
   children: ReactNode;
 };
 
+/**
+ * WalletContextProvider - Thin wrapper around SDK wallet repository
+ *
+ * Uses the same wallet repository factory that the SDK uses,
+ * ensuring a single Fuel instance with consistent wallet list.
+ */
 export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children }) => {
-  const [_isUserConnected, setIsUserConnected] = useState<boolean>();
+  const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  const fuelSdk = useMemo(
-    () =>
-      new Fuel({
-        connectors: defaultConnectors({
-          devMode: true,
-        }),
-      }),
-    []
-  );
+  // Create repository once - uses the same Fuel instance as SDK
+  const repositoryRef = useRef(walletAdapters.createFuelWalletConnectorRepository());
+  const repository = repositoryRef.current;
 
+  // Subscribe to connection changes
   useEffect(() => {
-    if (_isUserConnected === undefined) {
-      fuelSdk.isConnected().then(setIsUserConnected);
-    }
-  }, [fuelSdk, _isUserConnected]);
+    const unsubscribe = repository.onConnectionChange((connected) => {
+      setIsConnected(connected);
+    });
+    return unsubscribe;
+  }, [repository]);
 
-  useEffect(() => {
-    const listener = (isConnected: boolean) => {
-      setIsUserConnected(isConnected);
-    };
-    fuelSdk.on(fuelSdk.events.connection, listener);
-    return () => {
-      fuelSdk.off(fuelSdk.events.connection, listener);
-    };
-  }, [fuelSdk]);
-
-  const isUserConnected = useCallback(() => _isUserConnected ?? false, [_isUserConnected]);
-
-  const connectedSdk = useMemo(() => {
-    if (_isUserConnected) return fuelSdk;
-    return undefined;
-  }, [_isUserConnected, fuelSdk]);
-
-  const getUserWalletReference = useCallback(async () => {
-    const acc = await connectedSdk?.currentAccount();
-    if (!acc) return;
-    return await fuelSdk.getWallet(acc);
-  }, [connectedSdk, fuelSdk]);
+  const isUserConnected = useCallback(() => isConnected, [isConnected]);
 
   const establishConnection = useCallback(async () => {
-    await fuelSdk.connect();
-  }, [fuelSdk]);
+    // Get available connectors and connect to the first installed one
+    const connectors = await repository.getAvailableConnectors();
+    const installed = connectors.find((c) => c.installed);
+    if (installed) {
+      await repository.connect(installed.id);
+    }
+  }, [repository]);
 
   const disconnect = useCallback(async () => {
-    await fuelSdk.disconnect();
-  }, [fuelSdk]);
+    await repository.disconnect();
+  }, [repository]);
 
   const getUserAddress = useCallback(async () => {
-    const currentAccount = await connectedSdk?.currentAccount();
-
-    return safeAddress(currentAccount?.toLowerCase());
-  }, [connectedSdk]);
+    const account = await repository.getWalletAccount();
+    if (!account) return undefined;
+    return safeAddress(account.address.toB256().toLowerCase());
+  }, [repository]);
 
   const getUserBalances = useCallback(async () => {
-    const wallet = await getUserWalletReference();
-    if (!wallet) return {};
+    return await repository.getUserBalances();
+  }, [repository]);
 
-    const { balances } = await wallet.getBalances();
-    return balances.reduce(
-      (acc, b) => ({
-        ...acc,
-        [assetId(b.assetId)]: BigInt(b.amount.toString()),
-      }),
-      {}
-    );
-  }, [getUserWalletReference]);
+  const getUserWalletReference = useCallback(async () => {
+    return await repository.getWalletAccount();
+  }, [repository]);
 
   const getCurrentNetwork = useCallback(async () => {
-    return await fuelSdk.currentNetwork();
-  }, [fuelSdk]);
+    return await repository.getCurrentNetwork();
+  }, [repository]);
 
   const changeNetwork = useCallback(
-    async (network: Parameters<WalletContextType['changeNetwork']>[0]) => {
-      await fuelSdk.selectNetwork(network);
+    async (network: FuelsNetwork) => {
+      await repository.changeNetwork(network);
     },
-    [fuelSdk]
+    [repository]
   );
 
   const registerNetworkChangeObserver = useCallback(
-    (listener: Parameters<WalletContextType['registerNetworkChangeObserver']>[0]) => {
-      fuelSdk.on(fuelSdk.events.currentNetwork, listener);
+    (listener: (network: FuelsNetwork) => void) => {
+      repository.onNetworkChange(listener);
     },
-    [fuelSdk]
+    [repository]
   );
 
   const unregisterNetworkChangeObserver = useCallback(
-    (listener: Parameters<WalletContextType['unregisterNetworkChangeObserver']>[0]) => {
-      fuelSdk.off(fuelSdk.events.currentNetwork, listener);
+    (_listener: (network: FuelsNetwork) => void) => {
+      // Note: The repository returns unsubscribe function from onNetworkChange,
+      // but this interface doesn't support it. For now, this is a no-op.
+      // Consider refactoring the interface to return unsubscribe functions.
     },
-    [fuelSdk]
+    []
   );
 
   const contextValue = useMemo<WalletContextType>(

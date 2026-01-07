@@ -63,12 +63,6 @@ export const navLinkActive = style({
   backgroundColor: '#1f2937',
 });
 
-export const headerRight = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1rem',
-});
-
 export const networkSection = style({
   display: 'flex',
   alignItems: 'center',

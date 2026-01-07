@@ -1,31 +1,62 @@
-import { FuelWalletConnector, FueletWalletConnector } from '@fuels/connectors';
-import type { FuelConnector } from 'fuels';
+import {
+  BakoSafeConnector,
+  FuelWalletConnector,
+  FueletWalletConnector,
+} from '@fuels/connectors';
+import { Fuel, type FuelConnector } from 'fuels';
 import type { WalletConnectorRepository } from '../../../domain';
 import { connect } from './connect';
 import { disconnect } from './disconnect';
 import { getAvailableConnectors } from './get-available-connectors';
+import { getUserBalances } from './get-user-balances';
+import { getWalletAccount } from './get-wallet-account';
+import { getCurrentNetwork, changeNetwork } from './network';
 
 /**
  * Creates default Fuel wallet connectors
  * Lazily initialized to avoid issues in non-browser environments
  */
-let defaultConnectors: FuelConnector[] | null = null;
+let fuelInstance: Fuel | null = null;
 
-const getDefaultConnectors = (): FuelConnector[] => {
-  if (!defaultConnectors) {
-    defaultConnectors = [new FuelWalletConnector(), new FueletWalletConnector()];
+const getFuelInstance = (): Fuel => {
+  if (!fuelInstance) {
+    fuelInstance = new Fuel({
+      connectors: [
+        new FuelWalletConnector(),
+        new FueletWalletConnector(),
+        new BakoSafeConnector() as unknown as FuelConnector,
+      ],
+    });
   }
-  return defaultConnectors;
+  return fuelInstance;
 };
 
 /**
- * Creates a WalletConnectorRepository implementation using Fuel connectors
+ * Creates a WalletConnectorRepository implementation using the Fuel SDK
  */
 export const createFuelWalletConnectorRepository = (
-  connectors: FuelConnector[] = getDefaultConnectors()
+  fuel: Fuel = getFuelInstance()
 ): WalletConnectorRepository => ({
-  getAvailableConnectors: getAvailableConnectors(connectors),
-  connect: connect(connectors),
-  disconnect: disconnect(connectors),
-});
+  // Connection management
+  getAvailableConnectors: getAvailableConnectors(fuel),
+  connect: connect(fuel),
+  disconnect: disconnect(fuel),
 
+  // Account data
+  getUserBalances: getUserBalances(fuel),
+  getWalletAccount: getWalletAccount(fuel),
+
+  // Network management
+  getCurrentNetwork: getCurrentNetwork(fuel),
+  changeNetwork: changeNetwork(fuel),
+
+  // Event subscriptions
+  onConnectionChange: (listener) => {
+    fuel.on(fuel.events.connection, listener);
+    return () => fuel.off(fuel.events.connection, listener);
+  },
+  onNetworkChange: (listener) => {
+    fuel.on(fuel.events.currentNetwork, listener);
+    return () => fuel.off(fuel.events.currentNetwork, listener);
+  },
+});

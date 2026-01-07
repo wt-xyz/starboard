@@ -35,7 +35,14 @@ export const NetworkSwitchContextProvider: FC<NetworkSwitchContextProviderProps>
   useEffect(
     function initializeNetwork() {
       if (!currentNetwork) {
-        wallet.getCurrentNetwork().then((n) => setCurrentNetwork(getNetworkByRpcUrl(n.url)));
+        wallet.getCurrentNetwork().then((n) => {
+          // If wallet not connected, n.url will be empty - use fallback
+          if (n.url) {
+            setCurrentNetwork(getNetworkByRpcUrl(n.url));
+          } else {
+            setCurrentNetwork(getFallbackNetwork());
+          }
+        });
       }
     },
     [currentNetwork, wallet]

@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
+import { WalletConnector } from '@/components/Wallet';
 import { NetworkSwitchContext } from '@/contexts/network-switch/network-switch.context';
-import { WalletContext } from '@/contexts/wallet/wallet.context';
 import { useRequiredContext } from '@/lib/use-required-context.hook';
 import { NETWORKS, type Network } from '@/models/network';
 import { dashboardButton } from '../../styles/dashboard-button.css';
@@ -8,19 +8,11 @@ import { AssetSelect } from './components/asset-select.component';
 import * as styles from './dashboard-layout.css';
 
 export function DashboardLayout() {
-  const wallet = useRequiredContext(WalletContext);
-  const isWalletConnected = wallet.isUserConnected();
-
   const networkSwitch = useRequiredContext(NetworkSwitchContext);
   const currentNetwork = networkSwitch.getCurrentNetwork();
 
   function switchTo(network: Network) {
     networkSwitch.changeNetwork(network);
-  }
-
-  async function handleWalletClick() {
-    if (!wallet.isUserConnected()) await wallet.establishConnection();
-    else wallet.disconnect();
   }
 
   return (
@@ -48,12 +40,7 @@ export function DashboardLayout() {
             </div>
           </div>
 
-          <button
-            onClick={handleWalletClick}
-            css={isWalletConnected ? styles.walletConnected : styles.walletButton}
-          >
-            {isWalletConnected ? 'Wallet Connected' : 'Connect Wallet'}
-          </button>
+          <WalletConnector />
         </div>
       </header>
 

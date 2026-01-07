@@ -1,3 +1,5 @@
+import type { Account, Network as FuelsNetwork } from 'fuels';
+import type { AssetId } from '@/shared/types';
 import type { ConnectorInfo, WalletConnection } from './wallet-connection.entity';
 
 /**
@@ -8,10 +10,21 @@ import type { ConnectorInfo, WalletConnection } from './wallet-connection.entity
  * Infrastructure adapters implement this interface.
  */
 export interface WalletConnectorRepository {
+  // Connection management
   getAvailableConnectors(): Promise<ConnectorInfo[]>;
-
   connect(connectorId: string): Promise<WalletConnection>;
+  disconnect(): Promise<void>;
 
-  disconnect(connectorId: string): Promise<void>;
+  // Account data
+  getUserBalances(): Promise<Record<AssetId, bigint>>;
+  getWalletAccount(): Promise<Account | undefined>;
+
+  // Network management
+  getCurrentNetwork(): Promise<FuelsNetwork>;
+  changeNetwork(network: FuelsNetwork): Promise<void>;
+
+  // Event subscriptions (returns unsubscribe function)
+  onConnectionChange(listener: (connected: boolean) => void): () => void;
+  onNetworkChange(listener: (network: FuelsNetwork) => void): () => void;
 }
 

@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 import { useCallback, useState } from 'react';
-import { selectIsWalletConnecting } from 'fuel-ts-sdk/wallet';
-import { useSdkQuery } from '@/lib/fuel-ts-sdk';
+import { useWalletState } from '@/lib/fuel-ts-sdk';
 import { walletButton } from './Wallet.css';
 import { WalletConnectorModal } from './WalletConnectorModal';
 
@@ -11,7 +10,7 @@ interface ConnectWalletButtonProps {
 
 export const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({ className }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const isConnecting = useSdkQuery(selectIsWalletConnecting);
+  const { isConnecting } = useWalletState();
 
   const openModal = useCallback(() => setIsModalOpen(true), []);
   const closeModal = useCallback(() => setIsModalOpen(false), []);

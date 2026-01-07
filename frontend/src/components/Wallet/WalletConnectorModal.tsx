@@ -1,8 +1,7 @@
 import type { FC } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { selectIsWalletConnecting, selectWalletError } from 'fuel-ts-sdk/wallet';
 import type { ConnectorInfo } from 'fuel-ts-sdk/wallet';
-import { useSdk, useSdkQuery } from '@/lib/fuel-ts-sdk';
+import { useSdk, useWalletState } from '@/lib/fuel-ts-sdk';
 import {
   connectorArrow,
   connectorIcon,
@@ -37,11 +36,11 @@ const WalletConnectorModalContent: FC<{
   onClose: () => void;
 }> = ({ onClose }) => {
   const sdk = useSdk();
-  const isConnecting = useSdkQuery(selectIsWalletConnecting);
-  const error = useSdkQuery(selectWalletError);
+  const { isConnecting } = useWalletState();
   const [connectors, setConnectors] = useState<ConnectorInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [connectingId, setConnectingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch connectors on mount
   useEffect(() => {
@@ -60,11 +59,13 @@ const WalletConnectorModalContent: FC<{
   const handleConnect = useCallback(
     async (connectorId: string) => {
       setConnectingId(connectorId);
+      setError(null);
       try {
         await sdk.account.wallet.establishConnection(connectorId);
         onClose();
-      } catch {
+      } catch (err) {
         setConnectingId(null);
+        setError(err instanceof Error ? err.message : 'Connection failed');
       }
     },
     [sdk.account.wallet, onClose]
