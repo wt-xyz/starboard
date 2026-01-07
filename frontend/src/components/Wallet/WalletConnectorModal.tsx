@@ -31,10 +31,11 @@ interface WalletConnectorModalProps {
   onClose: () => void;
 }
 
-export const WalletConnectorModal: FC<WalletConnectorModalProps> = ({
-  isOpen,
-  onClose,
-}) => {
+// Inner component that only renders when modal is open
+// This ensures state resets naturally on unmount/remount
+const WalletConnectorModalContent: FC<{
+  onClose: () => void;
+}> = ({ onClose }) => {
   const sdk = useSdk();
   const isConnecting = useSdkQuery(selectIsWalletConnecting);
   const error = useSdkQuery(selectWalletError);
@@ -42,16 +43,19 @@ export const WalletConnectorModal: FC<WalletConnectorModalProps> = ({
   const [loading, setLoading] = useState(true);
   const [connectingId, setConnectingId] = useState<string | null>(null);
 
+  // Fetch connectors on mount
   useEffect(() => {
-    if (isOpen) {
-      setLoading(true);
-      setConnectingId(null);
-      sdk.wallet.getAvailableConnectors().then((list) => {
+    let cancelled = false;
+    sdk.wallet.getAvailableConnectors().then((list) => {
+      if (!cancelled) {
         setConnectors(list);
         setLoading(false);
-      });
-    }
-  }, [isOpen, sdk.wallet]);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [sdk.wallet]);
 
   const handleConnect = useCallback(
     async (connectorId: string) => {
@@ -83,8 +87,6 @@ export const WalletConnectorModal: FC<WalletConnectorModalProps> = ({
     },
     [onClose, isConnecting]
   );
-
-  if (!isOpen) return null;
 
   return (
     <div 
@@ -186,5 +188,15 @@ export const WalletConnectorModal: FC<WalletConnectorModalProps> = ({
       </div>
     </div>
   );
+};
+
+// Outer component controls visibility
+// Inner component handles all state - resets on remount
+export const WalletConnectorModal: FC<WalletConnectorModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  if (!isOpen) return null;
+  return <WalletConnectorModalContent onClose={onClose} />;
 };
 
