@@ -20,61 +20,57 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children
 
   // Create repository once - uses the same Fuel instance as SDK
   const repositoryRef = useRef(walletAdapters.createFuelWalletConnectorRepository());
-  const repository = repositoryRef.current;
 
   // Subscribe to connection changes
   useEffect(() => {
-    const unsubscribe = repository.onConnectionChange((connected) => {
+    const unsubscribe = repositoryRef.current.onConnectionChange((connected) => {
       setIsConnected(connected);
     });
     return unsubscribe;
-  }, [repository]);
+  }, []);
 
   const isUserConnected = useCallback(() => isConnected, [isConnected]);
 
   const establishConnection = useCallback(async () => {
     // Get available connectors and connect to the first installed one
-    const connectors = await repository.getAvailableConnectors();
+    const connectors = await repositoryRef.current.getAvailableConnectors();
     const installed = connectors.find((c) => c.installed);
     if (installed) {
-      await repository.connect(installed.id);
+      await repositoryRef.current.connect(installed.id);
     }
-  }, [repository]);
+  }, []);
 
   const disconnect = useCallback(async () => {
-    await repository.disconnect();
-  }, [repository]);
+    await repositoryRef.current.disconnect();
+  }, []);
 
   const getUserAddress = useCallback(async () => {
-    const account = await repository.getWalletAccount();
+    const account = await repositoryRef.current.getWalletAccount();
     if (!account) return undefined;
     return safeAddress(account.address.toB256().toLowerCase());
-  }, [repository]);
+  }, []);
 
   const getUserBalances = useCallback(async () => {
-    return await repository.getUserBalances();
-  }, [repository]);
+    return await repositoryRef.current.getUserBalances();
+  }, []);
 
   const getUserWalletReference = useCallback(async () => {
-    return await repository.getWalletAccount();
-  }, [repository]);
+    return await repositoryRef.current.getWalletAccount();
+  }, []);
 
   const getCurrentNetwork = useCallback(async () => {
-    return await repository.getCurrentNetwork();
-  }, [repository]);
+    return await repositoryRef.current.getCurrentNetwork();
+  }, []);
 
-  const changeNetwork = useCallback(
-    async (network: FuelsNetwork) => {
-      await repository.changeNetwork(network);
-    },
-    [repository]
-  );
+  const changeNetwork = useCallback(async (network: FuelsNetwork) => {
+    await repositoryRef.current.changeNetwork(network);
+  }, []);
 
   const registerNetworkChangeObserver = useCallback(
     (listener: (network: FuelsNetwork) => void) => {
-      repository.onNetworkChange(listener);
+      repositoryRef.current.onNetworkChange(listener);
     },
-    [repository]
+    []
   );
 
   const unregisterNetworkChangeObserver = useCallback(

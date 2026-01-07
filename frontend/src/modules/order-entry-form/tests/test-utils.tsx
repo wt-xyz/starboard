@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
+import type { FieldErrors } from 'react-hook-form';
 import type { OrderEntryFormMetaContextType } from '../src/contexts';
+import type { OrderEntryFormModel } from '../src/models/order-entry-form.model';
 import { OrderEntryFormApiContextProvider, OrderEntryFormMetaContext } from '../src/contexts';
 
 const defaultMockContext: OrderEntryFormMetaContextType = {
@@ -18,8 +20,8 @@ export function OrderEntryFormTestWrapper({
 }: {
   children: ReactNode;
   context?: OrderEntryFormMetaContextType;
-  onSubmitSuccessful?: (data: any) => void;
-  onSubmitFailure?: (errors: any) => void;
+  onSubmitSuccessful?: (data: OrderEntryFormModel) => void;
+  onSubmitFailure?: (errors: FieldErrors<OrderEntryFormModel>) => void;
 }) {
   return (
     <OrderEntryFormMetaContext.Provider value={context}>
