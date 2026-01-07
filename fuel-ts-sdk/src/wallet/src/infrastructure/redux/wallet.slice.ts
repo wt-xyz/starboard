@@ -1,4 +1,4 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import type { WalletState } from './wallet.types';
 
 const initialState: WalletState = {
@@ -19,10 +19,7 @@ export const walletSlice = createSlice({
         state.error = null;
       }
     },
-    setConnected: (
-      state,
-      action: PayloadAction<{ address: string; connectorId: string }>
-    ) => {
+    setConnected: (state, action: PayloadAction<{ address: string; connectorId: string }>) => {
       state.address = action.payload.address;
       state.connectorId = action.payload.connectorId;
       state.isConnected = true;
@@ -42,7 +39,5 @@ export const walletSlice = createSlice({
   },
 });
 
-export const { setConnecting, setConnected, setDisconnected, setError } =
-  walletSlice.actions;
+export const { setConnecting, setConnected, setDisconnected, setError } = walletSlice.actions;
 export const walletReducer = walletSlice.reducer;
-

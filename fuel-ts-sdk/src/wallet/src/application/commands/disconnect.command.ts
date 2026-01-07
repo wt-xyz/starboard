@@ -1,10 +1,9 @@
 import type { StoreService } from '@/shared/lib/store-service';
 import type { WalletConnectorRepository } from '../../domain';
-import { setDisconnected, selectWalletConnectorId } from '../../infrastructure';
+import { selectWalletConnectorId, setDisconnected } from '../../infrastructure';
 
 export const createDisconnectCommand =
-  (store: StoreService, repository: WalletConnectorRepository) =>
-  async (): Promise<void> => {
+  (store: StoreService, repository: WalletConnectorRepository) => async (): Promise<void> => {
     const state = store.getState();
     const connectorId = selectWalletConnectorId(state);
 
@@ -14,4 +13,3 @@ export const createDisconnectCommand =
 
     store.dispatch(setDisconnected());
   };
-

@@ -1,7 +1,7 @@
 import type { StoreService } from '@/shared/lib/store-service';
 import type { WalletConnectorRepository } from '../../domain';
-import { createEstablishConnectionCommand } from './establish-connection.command';
 import { createDisconnectCommand } from './disconnect.command';
+import { createEstablishConnectionCommand } from './establish-connection.command';
 
 export const createWalletCommands = (
   storeService: StoreService,
@@ -12,4 +12,3 @@ export const createWalletCommands = (
 });
 
 export type WalletCommands = ReturnType<typeof createWalletCommands>;
-

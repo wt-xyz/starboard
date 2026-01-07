@@ -28,4 +28,3 @@ export const createFuelWalletConnectorRepository = (
   connect: connect(connectors),
   disconnect: disconnect(connectors),
 });
-

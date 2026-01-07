@@ -20,4 +20,3 @@ export const getAvailableConnectors =
 
     return infos;
   };
-

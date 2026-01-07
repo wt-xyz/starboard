@@ -14,4 +14,3 @@ export interface WalletConnectorRepository {
 
   disconnect(connectorId: string): Promise<void>;
 }
-

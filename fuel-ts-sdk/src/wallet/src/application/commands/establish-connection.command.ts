@@ -1,6 +1,6 @@
 import type { StoreService } from '@/shared/lib/store-service';
 import type { WalletConnectorRepository } from '../../domain';
-import { setConnecting, setConnected, setError } from '../../infrastructure';
+import { setConnected, setConnecting, setError } from '../../infrastructure';
 
 export const createEstablishConnectionCommand =
   (store: StoreService, repository: WalletConnectorRepository) =>
@@ -22,4 +22,3 @@ export const createEstablishConnectionCommand =
       throw error;
     }
   };
-

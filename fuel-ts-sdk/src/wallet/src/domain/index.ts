@@ -11,4 +11,3 @@ export {
   ConnectorInfoSchema,
   ConnectorInfoArraySchema,
 } from './wallet-connection.schemas';
-

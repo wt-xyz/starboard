@@ -1,5 +1,10 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { marketsMiddleware, positionsMiddleware, marketsReducer, positionsReducer } from '@/trading';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import {
+  marketsMiddleware,
+  marketsReducer,
+  positionsMiddleware,
+  positionsReducer,
+} from '@/trading';
 import { type TradingThunkExtras } from '@/trading/di';
 import { walletReducer } from '@/wallet';
 

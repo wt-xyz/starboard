@@ -1,11 +1,11 @@
 import type { FC } from 'react';
 import { useCallback, useState } from 'react';
-import { useSdk, useSdkQuery } from '@/lib/fuel-ts-sdk';
 import { selectWalletAddress } from 'fuel-ts-sdk/wallet';
+import { useSdk, useSdkQuery } from '@/lib/fuel-ts-sdk';
 import {
-  walletStatusContainer,
-  walletAddress as walletAddressStyle,
   disconnectButton,
+  walletAddress as walletAddressStyle,
+  walletStatusContainer,
 } from './Wallet.css';
 
 interface WalletStatusProps {
@@ -47,4 +47,3 @@ function truncateAddress(address: string): string {
   if (address.length <= 12) return address;
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
-

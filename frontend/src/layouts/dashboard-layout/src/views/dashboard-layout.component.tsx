@@ -1,8 +1,8 @@
 import { Link, Outlet } from 'react-router';
+import { WalletConnector } from '@/components/Wallet';
 import { NetworkSwitchContext } from '@/contexts/network-switch/network-switch.context';
 import { useRequiredContext } from '@/lib/use-required-context.hook';
 import { NETWORKS, type Network } from '@/models/network';
-import { WalletConnector } from '@/components/Wallet';
 import * as styles from './dashboard-layout.css';
 
 export function DashboardLayout() {

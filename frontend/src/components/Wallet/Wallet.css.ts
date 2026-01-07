@@ -122,11 +122,11 @@ export const modalContent = style({
   animation: 'slideUp 0.3s ease-out',
   '@keyframes': {
     slideUp: {
-      from: { 
+      from: {
         opacity: 0,
         transform: 'translateY(20px) scale(0.98)',
       },
-      to: { 
+      to: {
         opacity: 1,
         transform: 'translateY(0) scale(1)',
       },
@@ -262,7 +262,8 @@ export const loadingContainer = style({
 
 export const loadingSkeleton = style({
   height: '76px',
-  background: 'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 100%)',
+  background:
+    'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 100%)',
   backgroundSize: '200% 100%',
   borderRadius: '14px',
   animation: 'shimmer 1.5s ease-in-out infinite',
@@ -311,4 +312,3 @@ export const modalFooterLink = style({
     },
   },
 });
-

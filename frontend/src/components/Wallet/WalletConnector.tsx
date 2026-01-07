@@ -1,9 +1,9 @@
 import type { FC } from 'react';
-import { useSdkQuery } from '@/lib/fuel-ts-sdk';
 import { selectIsWalletConnected } from 'fuel-ts-sdk/wallet';
+import { useSdkQuery } from '@/lib/fuel-ts-sdk';
 import { ConnectWalletButton } from './ConnectWalletButton';
-import { WalletStatus } from './WalletStatus';
 import { walletContainer } from './Wallet.css';
+import { WalletStatus } from './WalletStatus';
 
 interface WalletConnectorProps {
   className?: string;
@@ -18,4 +18,3 @@ export const WalletConnector: FC<WalletConnectorProps> = ({ className }) => {
     </div>
   );
 };
-

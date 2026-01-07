@@ -1,29 +1,29 @@
 import type { FC } from 'react';
-import { useEffect, useState, useCallback } from 'react';
-import { useSdk, useSdkQuery } from '@/lib/fuel-ts-sdk';
+import { useCallback, useEffect, useState } from 'react';
 import { selectIsWalletConnecting, selectWalletError } from 'fuel-ts-sdk/wallet';
 import type { ConnectorInfo } from 'fuel-ts-sdk/wallet';
+import { useSdk, useSdkQuery } from '@/lib/fuel-ts-sdk';
 import {
-  modalOverlay,
-  modalContent,
-  modalHeader,
-  modalTitle,
-  modalSubtitle,
-  modalClose,
-  connectorList,
-  connectorItem,
-  connectorIconWrapper,
+  connectorArrow,
   connectorIcon,
+  connectorIconWrapper,
   connectorInfo,
+  connectorItem,
+  connectorList,
   connectorName,
   connectorStatus,
-  connectorArrow,
   loadingContainer,
   loadingSkeleton,
+  modalClose,
+  modalContent,
   modalError,
   modalFooter,
-  modalFooterText,
   modalFooterLink,
+  modalFooterText,
+  modalHeader,
+  modalOverlay,
+  modalSubtitle,
+  modalTitle,
 } from './Wallet.css';
 
 interface WalletConnectorModalProps {
@@ -89,8 +89,8 @@ const WalletConnectorModalContent: FC<{
   );
 
   return (
-    <div 
-      className={modalOverlay} 
+    <div
+      className={modalOverlay}
       onClick={handleOverlayClick}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -103,9 +103,7 @@ const WalletConnectorModalContent: FC<{
             <h2 id="wallet-modal-title" className={modalTitle}>
               Connect Wallet
             </h2>
-            <p className={modalSubtitle}>
-              Choose your preferred wallet
-            </p>
+            <p className={modalSubtitle}>Choose your preferred wallet</p>
           </div>
           <button
             className={modalClose}
@@ -128,7 +126,7 @@ const WalletConnectorModalContent: FC<{
             {connectors.map((connector) => {
               const isThisConnecting = connectingId === connector.id;
               const isDisabled = isConnecting || !connector.installed;
-              
+
               return (
                 <button
                   key={connector.id}
@@ -139,11 +137,7 @@ const WalletConnectorModalContent: FC<{
                 >
                   <div className={connectorIconWrapper}>
                     {connector.icon ? (
-                      <img
-                        src={connector.icon}
-                        alt=""
-                        className={connectorIcon}
-                      />
+                      <img src={connector.icon} alt="" className={connectorIcon} />
                     ) : (
                       <span style={{ fontSize: '20px' }}>🔗</span>
                     )}
@@ -192,11 +186,7 @@ const WalletConnectorModalContent: FC<{
 
 // Outer component controls visibility
 // Inner component handles all state - resets on remount
-export const WalletConnectorModal: FC<WalletConnectorModalProps> = ({
-  isOpen,
-  onClose,
-}) => {
+export const WalletConnectorModal: FC<WalletConnectorModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
   return <WalletConnectorModalContent onClose={onClose} />;
 };
-
