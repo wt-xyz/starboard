@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import type { FieldErrors } from 'react-hook-form';
 import type { OrderEntryFormMetaContextType } from '../src/contexts';
-import type { OrderEntryFormModel } from '../src/models/order-entry-form.model';
 import { OrderEntryFormApiContextProvider, OrderEntryFormMetaContext } from '../src/contexts';
+import type { OrderEntryFormModel } from '../src/models/order-entry-form.model';
 
 const defaultMockContext: OrderEntryFormMetaContextType = {
   baseAssetName: 'BTC',

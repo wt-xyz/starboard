@@ -6,4 +6,3 @@ export const createChangeNetworkCommand =
   async (network: FuelsNetwork): Promise<void> => {
     await repository.changeNetwork(network);
   };
-

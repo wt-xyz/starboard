@@ -3,4 +3,3 @@ import { selectIsWalletConnected } from '../../infrastructure';
 
 export const createGetIsConnected = (storeService: StoreService) => (): boolean =>
   selectIsWalletConnected(storeService.getState());
-

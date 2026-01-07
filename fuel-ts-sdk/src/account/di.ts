@@ -39,4 +39,3 @@ export const createAccountModule = () => {
 };
 
 export type AccountModule = ReturnType<typeof createAccountModule>;
-

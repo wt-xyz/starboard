@@ -14,4 +14,3 @@ export {
   selectWalletError,
 } from './wallet.selectors';
 export type { WalletState } from './wallet.types';
-

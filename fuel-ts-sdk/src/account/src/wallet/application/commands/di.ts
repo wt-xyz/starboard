@@ -17,4 +17,3 @@ export const createWalletCommands = (
 });
 
 export type WalletCommands = ReturnType<typeof createWalletCommands>;
-

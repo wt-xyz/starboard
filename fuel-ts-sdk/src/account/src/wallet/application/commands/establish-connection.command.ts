@@ -22,4 +22,3 @@ export const createEstablishConnectionCommand =
       throw error;
     }
   };
-

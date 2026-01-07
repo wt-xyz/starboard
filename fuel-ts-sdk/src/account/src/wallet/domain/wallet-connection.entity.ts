@@ -12,4 +12,3 @@ export interface ConnectorInfo {
   installed: boolean;
   icon?: string;
 }
-

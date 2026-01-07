@@ -41,4 +41,3 @@ export const walletSlice = createSlice({
 
 export const { setConnecting, setConnected, setDisconnected, setError } = walletSlice.actions;
 export const walletReducer = walletSlice.reducer;
-

@@ -27,4 +27,3 @@ export interface WalletConnectorRepository {
   onConnectionChange(listener: (connected: boolean) => void): () => void;
   onNetworkChange(listener: (network: FuelsNetwork) => void): () => void;
 }
-

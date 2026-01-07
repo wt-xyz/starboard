@@ -10,4 +10,3 @@ export const selectWalletConnectorId = (state: RootState): string | null =>
   state.wallet.connectorId;
 
 export const selectWalletError = (state: RootState): string | null => state.wallet.error;
-

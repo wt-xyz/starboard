@@ -1,8 +1,4 @@
-import {
-  BakoSafeConnector,
-  FuelWalletConnector,
-  FueletWalletConnector,
-} from '@fuels/connectors';
+import { BakoSafeConnector, FuelWalletConnector, FueletWalletConnector } from '@fuels/connectors';
 import { Fuel, type FuelConnector } from 'fuels';
 import type { WalletConnectorRepository } from '../../../domain';
 import { connect } from './connect';
@@ -10,7 +6,7 @@ import { disconnect } from './disconnect';
 import { getAvailableConnectors } from './get-available-connectors';
 import { getUserBalances } from './get-user-balances';
 import { getWalletAccount } from './get-wallet-account';
-import { getCurrentNetwork, changeNetwork } from './network';
+import { changeNetwork, getCurrentNetwork } from './network';
 
 /**
  * Creates default Fuel wallet connectors

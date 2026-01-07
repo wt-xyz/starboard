@@ -29,4 +29,3 @@ export const createWalletQueries = (
 });
 
 export type WalletQueries = ReturnType<typeof createWalletQueries>;
-

@@ -66,12 +66,9 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children
     await repositoryRef.current.changeNetwork(network);
   }, []);
 
-  const registerNetworkChangeObserver = useCallback(
-    (listener: (network: FuelsNetwork) => void) => {
-      repositoryRef.current.onNetworkChange(listener);
-    },
-    []
-  );
+  const registerNetworkChangeObserver = useCallback((listener: (network: FuelsNetwork) => void) => {
+    repositoryRef.current.onNetworkChange(listener);
+  }, []);
 
   const unregisterNetworkChangeObserver = useCallback(
     (_listener: (network: FuelsNetwork) => void) => {

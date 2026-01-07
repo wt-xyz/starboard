@@ -5,4 +5,3 @@ export interface WalletState {
   connectorId: string | null;
   error: string | null;
 }
-

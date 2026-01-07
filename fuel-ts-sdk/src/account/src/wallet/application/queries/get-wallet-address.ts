@@ -3,4 +3,3 @@ import { selectWalletAddress } from '../../infrastructure';
 
 export const createGetWalletAddress = (storeService: StoreService) => (): string | null =>
   selectWalletAddress(storeService.getState());
-

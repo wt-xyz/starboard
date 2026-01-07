@@ -20,4 +20,3 @@ export const ConnectorInfoSchema = z.object({
 });
 
 export const ConnectorInfoArraySchema = z.array(ConnectorInfoSchema);
-
