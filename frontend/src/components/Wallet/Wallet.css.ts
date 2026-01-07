@@ -1,4 +1,26 @@
-import { style } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
+
+// Keyframes definitions
+const fadeIn = keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
+const slideUp = keyframes({
+  from: {
+    opacity: 0,
+    transform: 'translateY(20px) scale(0.98)',
+  },
+  to: {
+    opacity: 1,
+    transform: 'translateY(0) scale(1)',
+  },
+});
+
+const shimmer = keyframes({
+  '0%': { backgroundPosition: '200% 0' },
+  '100%': { backgroundPosition: '-200% 0' },
+});
 
 export const walletContainer = style({
   display: 'flex',
@@ -97,13 +119,7 @@ export const modalOverlay = style({
   alignItems: 'center',
   justifyContent: 'center',
   zIndex: 1000,
-  animation: 'fadeIn 0.2s ease-out',
-  '@keyframes': {
-    fadeIn: {
-      from: { opacity: 0 },
-      to: { opacity: 1 },
-    },
-  },
+  animation: `${fadeIn} 0.2s ease-out`,
 });
 
 export const modalContent = style({
@@ -119,19 +135,7 @@ export const modalContent = style({
     0 8px 40px rgba(0, 0, 0, 0.5),
     0 0 80px rgba(99, 102, 241, 0.1)
   `,
-  animation: 'slideUp 0.3s ease-out',
-  '@keyframes': {
-    slideUp: {
-      from: {
-        opacity: 0,
-        transform: 'translateY(20px) scale(0.98)',
-      },
-      to: {
-        opacity: 1,
-        transform: 'translateY(0) scale(1)',
-      },
-    },
-  },
+  animation: `${slideUp} 0.3s ease-out`,
 });
 
 export const modalHeader = style({
@@ -266,13 +270,7 @@ export const loadingSkeleton = style({
     'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 100%)',
   backgroundSize: '200% 100%',
   borderRadius: '14px',
-  animation: 'shimmer 1.5s ease-in-out infinite',
-  '@keyframes': {
-    shimmer: {
-      '0%': { backgroundPosition: '200% 0' },
-      '100%': { backgroundPosition: '-200% 0' },
-    },
-  },
+  animation: `${shimmer} 1.5s ease-in-out infinite`,
 });
 
 export const modalError = style({
