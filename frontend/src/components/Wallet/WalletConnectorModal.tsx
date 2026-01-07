@@ -46,7 +46,7 @@ const WalletConnectorModalContent: FC<{
   // Fetch connectors on mount
   useEffect(() => {
     let cancelled = false;
-    sdk.wallet.getAvailableConnectors().then((list) => {
+    sdk.account.wallet.getAvailableConnectors().then((list) => {
       if (!cancelled) {
         setConnectors(list);
         setLoading(false);
@@ -55,19 +55,19 @@ const WalletConnectorModalContent: FC<{
     return () => {
       cancelled = true;
     };
-  }, [sdk.wallet]);
+  }, [sdk.account.wallet]);
 
   const handleConnect = useCallback(
     async (connectorId: string) => {
       setConnectingId(connectorId);
       try {
-        await sdk.wallet.establishConnection(connectorId);
+        await sdk.account.wallet.establishConnection(connectorId);
         onClose();
       } catch {
         setConnectingId(null);
       }
     },
-    [sdk.wallet, onClose]
+    [sdk.account.wallet, onClose]
   );
 
   const handleOverlayClick = useCallback(

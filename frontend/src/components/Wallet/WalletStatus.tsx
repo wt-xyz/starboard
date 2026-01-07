@@ -20,11 +20,11 @@ export const WalletStatus: FC<WalletStatusProps> = ({ className }) => {
   const handleDisconnect = useCallback(async () => {
     setIsDisconnecting(true);
     try {
-      await sdk.wallet.disconnect();
+      await sdk.account.wallet.disconnect();
     } finally {
       setIsDisconnecting(false);
     }
-  }, [sdk.wallet]);
+  }, [sdk.account.wallet]);
 
   if (!address) return null;
 

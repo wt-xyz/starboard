@@ -16,6 +16,11 @@ export function useTradingSdk() {
   return client.trading;
 }
 
+export function useAccountSdk() {
+  const client = useSdk();
+  return client.account;
+}
+
 export function useSdkQuery<T>(selector: (state: RootState) => T): T {
   return useSelector(selector);
 }

@@ -19,9 +19,13 @@
       "types": "./dist/cross-domain/index.d.ts",
       "import": "./dist/cross-domain/index.js"
     },
+    "./account": {
+      "types": "./dist/account/index.d.ts",
+      "import": "./dist/account/index.js"
+    },
     "./wallet": {
-      "types": "./dist/wallet/index.d.ts",
-      "import": "./dist/wallet/index.js"
+      "types": "./dist/account/src/wallet/index.d.ts",
+      "import": "./dist/account/src/wallet/index.js"
     }
   },
   "files": [

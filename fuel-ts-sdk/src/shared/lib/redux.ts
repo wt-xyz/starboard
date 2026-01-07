@@ -1,4 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { accountReducer } from '@/account';
 import {
   marketsMiddleware,
   marketsReducer,
@@ -6,7 +7,6 @@ import {
   positionsReducer,
 } from '@/trading';
 import { type TradingThunkExtras } from '@/trading/di';
-import { walletReducer } from '@/wallet';
 
 export type RequestStatus = 'uninitialized' | 'pending' | 'fulfilled' | 'rejected';
 
@@ -49,11 +49,11 @@ const serializeForDevTools = (state: any): any => {
 
 // Root reducer combines all bounded contexts
 // Trading context keys are spread at root level (markets, trading, candlesApi, positionsApi)
-// Wallet is a separate bounded context with its own key
+// Account is a bounded context with wallet (and future balances) as aggregates
 const rootReducer = combineReducers({
   ...marketsReducer,
   ...positionsReducer,
-  wallet: walletReducer,
+  ...accountReducer,
 });
 
 export const createStore = (extraArgument: StoreThunkExtraArgument) => {
