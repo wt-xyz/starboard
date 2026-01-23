@@ -51,3 +51,17 @@ export const positionCards = style({
   flexDirection: 'column',
   gap: '0.5rem',
 });
+
+export const emptyState = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '2rem 1rem',
+  minHeight: '4rem',
+});
+
+export const emptyStateText = style({
+  fontSize: '0.875rem',
+  color: colors.dustyGrey,
+  textAlign: 'center',
+});

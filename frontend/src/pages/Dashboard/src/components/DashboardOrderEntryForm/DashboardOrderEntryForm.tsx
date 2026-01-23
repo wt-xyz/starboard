@@ -8,6 +8,7 @@ import {
   LeverageInput,
   OrderEntryFormApiContextProvider,
   type OrderEntryFormModel,
+  type OrderSide,
   OrderSideSwitch,
   PositionSizeInputs,
 } from '@/modules/OrderEntryForm';
@@ -23,7 +24,15 @@ import { SubmitPositionButton } from './components/SubmitPositionButton';
 
 type TransactionState = 'idle' | 'pending' | 'success' | 'error';
 
-export const DashboardOrderEntryForm: FC = () => {
+export type DashboardOrderEntryFormProps = {
+  defaultOrderSide?: OrderSide;
+  hideSideSwitch?: boolean;
+};
+
+export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
+  defaultOrderSide = 'long',
+  hideSideSwitch = false,
+}) => {
   const tradingSdk = useTradingSdk();
   const wallet = useRequiredContext(WalletContext);
 
@@ -81,8 +90,9 @@ export const DashboardOrderEntryForm: FC = () => {
           onSubmitSuccessful={handleOrderSubmission}
           onSubmitFailure={handleValidationError}
           skipValidation={!isWalletConnected}
+          defaultOrderSide={defaultOrderSide}
         >
-          <OrderSideSwitch />
+          {!hideSideSwitch && <OrderSideSwitch />}
           <PositionSizeInputs />
           <LeverageInput />
           {isWalletConnected ? (

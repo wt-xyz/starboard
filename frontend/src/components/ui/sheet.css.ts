@@ -1,4 +1,5 @@
 import { keyframes, style } from '@vanilla-extract/css';
+import { colors } from '../../styles/colors';
 
 // Animation keyframes
 const fadeIn = keyframes({
@@ -76,7 +77,7 @@ const contentBase = style({
   gap: '1rem',
   boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
   transition: 'ease-in-out',
-  backgroundColor: '#111827',
+  backgroundColor: colors.gluonGrey,
   selectors: {
     '&[data-state="open"]': {
       animationDuration: '0.5s',
@@ -165,7 +166,8 @@ export const contentBottom = style([
     left: 0,
     right: 0,
     bottom: 0,
-    height: 'auto',
+    height: '80vh',
+    maxHeight: '80vh',
     borderTop: '1px solid #374151',
     selectors: {
       '&[data-state="open"]': {

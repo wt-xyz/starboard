@@ -34,9 +34,11 @@ function SheetContent({
   className,
   children,
   side = 'right',
+  showClose = true,
   ...props
 }: React.ComponentProps<typeof Dialog.Content> & {
   side?: 'top' | 'right' | 'bottom' | 'left';
+  showClose?: boolean;
 }) {
   const contentClass = React.useMemo(() => {
     switch (side) {
@@ -62,10 +64,12 @@ function SheetContent({
         {...props}
       >
         {children}
-        <Dialog.Close className={styles.close}>
-          <Cross2Icon className={styles.icon} />
-          <span className={styles.srOnly}>Close</span>
-        </Dialog.Close>
+        {showClose && (
+          <Dialog.Close className={styles.close}>
+            <Cross2Icon className={styles.icon} />
+            <span className={styles.srOnly}>Close</span>
+          </Dialog.Close>
+        )}
       </Dialog.Content>
     </SheetPortal>
   );

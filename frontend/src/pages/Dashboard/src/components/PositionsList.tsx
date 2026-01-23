@@ -1,14 +1,27 @@
-import { type FC, useCallback } from 'react';
+import { type FC, useCallback, useMemo } from 'react';
 import { $decimalValue } from 'fuel-ts-sdk';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { usePolling } from '@/lib/usePolling';
 import { PositionCard } from './PositionCard';
 import * as styles from './PositionsList.css';
 
-export const PositionsList: FC = () => {
+type PositionsListProps = {
+  filterBySide?: 'long' | 'short';
+};
+
+export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
   const trading = useTradingSdk();
   const userAddress = useSdkQuery((sdk) => sdk.accounts.getCurrentUserAddress());
-  const positions = useSdkQuery(() => trading.getCurrentAccountOpenPositions());
+
+  const allPositions = useSdkQuery(() => trading.getAccountOpenPositions(userAddress));
+
+  const positions = useMemo(() => {
+    if (!filterBySide) return allPositions;
+    return allPositions.filter((position) => {
+      const isLong = position.positionKey.isLong;
+      return filterBySide === 'long' ? isLong : !isLong;
+    });
+  }, [allPositions, filterBySide]);
 
   const totalExposure = useSdkQuery(trading.getCurrentAccountTotalExposure);
 
