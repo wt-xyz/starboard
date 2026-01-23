@@ -24,11 +24,13 @@ export const tabsTrigger = style({
   selectors: {
     '&[data-state="active"][data-side="long"]': {
       color: colors.success,
+      backgroundColor: 'rgba(34, 197, 94, 0.2)',
       borderBottomColor: colors.success,
       fontWeight: '600',
     },
     '&[data-state="active"][data-side="short"]': {
       color: colors.error,
+      backgroundColor: 'rgba(239, 68, 68, 0.2)',
       borderBottomColor: colors.error,
       fontWeight: '600',
     },

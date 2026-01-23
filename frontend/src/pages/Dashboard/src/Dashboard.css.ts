@@ -59,9 +59,9 @@ export const chartSection = style({
   position: 'relative',
   '@media': {
     '(max-width: 1024px)': {
-      flex: '0 0 55vh',
-      height: '55vh',
-      minWidth: '640px',
+      flex: 1,
+      minWidth: 0,
+      width: '100%',
     },
   },
 });
@@ -86,9 +86,7 @@ export const rightSection = style({
   },
   '@media': {
     '(max-width: 1024px)': {
-      display: 'flex',
-      flex: '0 0 auto',
-      width: '100%',
+      display: 'none',
     },
   },
 });
@@ -133,9 +131,7 @@ export const bottomMenu = style({
   right: 0,
   zIndex: 40,
   display: 'none',
-  backgroundColor: colors.darkVoidAlpha[80],
-  backdropFilter: 'blur(20px)',
-  WebkitBackdropFilter: 'blur(20px)',
+  backgroundColor: colors.gluonGrey,
   borderTop: `1px solid ${colors.whiteAlpha[10]}`,
   padding: 0,
   paddingBottom: 'env(safe-area-inset-bottom)',
@@ -192,22 +188,33 @@ export const menuSeparator = style({
 });
 
 export const sheetContentWrapper = style({
-  padding: '1rem',
   flex: 1,
   overflow: 'auto',
   display: 'flex',
   flexDirection: 'column',
+  gap: '1.5rem',
   minHeight: 0,
   position: 'relative', // Create positioning context for dropdowns
+});
+
+export const sheetTabsWrapper = style({
+  padding: 0,
+});
+
+export const sheetBodyWrapper = style({
+  padding: '1rem',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1.5rem',
+  minHeight: 0,
 });
 
 export const sheetMenuSelector = style({
   display: 'flex',
   gap: 0,
-  marginBottom: '1rem',
   backgroundColor: colors.gluonGrey,
-  borderRadius: '0.5rem',
-  padding: '0.25rem',
+  borderRadius: 0,
+  padding: 0,
 });
 
 export const sheetMenuButton = style({
@@ -216,7 +223,7 @@ export const sheetMenuButton = style({
   padding: '0.625rem 1rem',
   backgroundColor: 'transparent',
   border: 'none',
-  borderRadius: '0.375rem',
+  borderRadius: 0,
   color: colors.dustyGrey,
   fontSize: '0.875rem',
   fontWeight: 500,
@@ -230,10 +237,24 @@ export const sheetMenuButton = style({
     transform: 'scale(0.98)',
   },
   selectors: {
-    '&[data-active="true"]': {
-      color: colors.liquidLava,
-      backgroundColor: colors.liquidLavaAlpha[20],
+    '&[data-state="active"][data-tab="long"]': {
+      color: colors.success,
+      backgroundColor: 'rgba(34, 197, 94, 0.2)',
+      borderBottom: `2px solid ${colors.success}`,
+      fontWeight: 600,
+    },
+    '&[data-state="active"][data-tab="short"]': {
+      color: colors.error,
+      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+      borderBottom: `2px solid ${colors.error}`,
       fontWeight: 600,
     },
   },
+});
+
+export const tabContent = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1.5rem',
+  outline: 'none',
 });

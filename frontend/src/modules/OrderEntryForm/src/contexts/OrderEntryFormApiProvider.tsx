@@ -1,9 +1,9 @@
 import type { FC, ReactNode } from 'react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type SubmitErrorHandler, useForm } from 'react-hook-form';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import type { OrderEntryFormModel } from '../models';
+import type { OrderEntryFormModel, OrderSide } from '../models';
 import { createOrderEntryFormSchema, nullOrderEntryForm } from '../models';
 import {
   OrderEntryFormApiContext,
@@ -16,6 +16,7 @@ export type OrderEntryFormApiContextProviderProps = {
   onSubmitSuccessful: (data: OrderEntryFormModel) => void;
   onSubmitFailure?: SubmitErrorHandler<OrderEntryFormModel>;
   skipValidation?: boolean;
+  defaultOrderSide?: OrderSide;
 };
 
 export const OrderEntryFormApiContextProvider: FC<OrderEntryFormApiContextProviderProps> = ({
@@ -23,11 +24,15 @@ export const OrderEntryFormApiContextProvider: FC<OrderEntryFormApiContextProvid
   onSubmitSuccessful,
   onSubmitFailure,
   skipValidation,
+  defaultOrderSide = 'long',
 }) => {
   const meta = useRequiredContext(OrderEntryFormMetaContext);
 
   const form = useForm<OrderEntryFormModel>({
-    defaultValues: nullOrderEntryForm,
+    defaultValues: {
+      ...nullOrderEntryForm,
+      orderSide: defaultOrderSide,
+    },
     mode: 'all',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
@@ -35,6 +40,15 @@ export const OrderEntryFormApiContextProvider: FC<OrderEntryFormApiContextProvid
       resolver: zodResolver(createOrderEntryFormSchema(meta)),
     }),
   });
+
+  // Reset form when defaultOrderSide changes
+  useEffect(() => {
+    form.reset({
+      ...nullOrderEntryForm,
+      orderSide: defaultOrderSide,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultOrderSide]);
 
   const contextValue = useMemo<OrderEntryFormApiContextType>(
     () => ({
