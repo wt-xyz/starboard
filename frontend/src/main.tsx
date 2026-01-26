@@ -12,6 +12,7 @@ import { FuelTsSdkProvider } from './lib/fuel-ts-sdk';
 import './lib/pipe';
 import './lib/toBigInt';
 import './styles/toastify.css';
+import './styles/radix-overrides.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
