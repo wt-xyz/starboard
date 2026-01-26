@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { Outlet } from 'react-router';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import logoStarboard from '@/assets/logo-starboard.png';
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { envs } from '@/lib/env';
 import { useRequiredContext } from '@/lib/useRequiredContext';
