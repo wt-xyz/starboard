@@ -9,17 +9,21 @@ export const container = style({
 });
 
 export const connectWalletButton = style({
-  marginTop: 15,
+  marginTop: "20px",
   width: '100%',
-  backgroundColor: `${colors.liquidLava} !important`,
-  color: `${colors.snow} !important`,
-  border: 'none !important',
-  boxShadow: 'none !important',
+  padding: '0.5rem 1.25rem',
+  backgroundColor: colors.liquidLava,
+  color: colors.snow,
+  borderRadius: '0.375rem',
+  border: 'none',
+  fontSize: '0.875rem',
+  fontWeight: '600',
+  cursor: 'pointer',
+  transition: 'all 0.15s',
+  whiteSpace: 'nowrap',
+  boxShadow: 'none',
   ':hover': {
-    backgroundColor: '#E05D0A !important', // Slightly darker Liquid Lava
-  },
-  ':active': {
-    backgroundColor: '#CC5209 !important', // Even darker for active state
+    backgroundColor: '#E05D0A', // Slightly darker Liquid Lava
   },
 });
 
