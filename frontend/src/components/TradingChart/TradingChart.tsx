@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import type {
   ChartingLibraryFeatureset,
@@ -13,6 +13,10 @@ import { createDatafeed } from './TradingChart.utils';
 export interface TradingChartProps {
   symbol: string;
   candlesGetter: (interval: CandleInterval) => Promise<Candle[]>;
+}
+
+export interface TradingChartHandle {
+  setWidgetbarVisible: (visible: boolean) => void;
 }
 
 function createTradingViewCustomCssUrl(): string {
@@ -79,10 +83,26 @@ html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4 {
   return URL.createObjectURL(new Blob([css], { type: 'text/css' }));
 }
 
-export function TradingChart({ symbol, candlesGetter }: TradingChartProps) {
+export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(function TradingChart(
+  { symbol, candlesGetter }: TradingChartProps,
+  ref
+) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<IChartingLibraryWidget | null>(null);
   const customCssUrlRef = useRef<string | null>(null);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      setWidgetbarVisible: (visible: boolean) => {
+        widgetRef.current
+          ?.widgetbar()
+          .then((widgetbar) => widgetbar.changeWidgetBarVisibility(visible))
+          .catch(() => {});
+      },
+    }),
+    []
+  );
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -129,7 +149,11 @@ export function TradingChart({ symbol, candlesGetter }: TradingChartProps) {
         'use_localstorage_for_settings' as ChartingLibraryFeatureset,
         'show_right_widgets_panel_by_default' as ChartingLibraryFeatureset,
       ],
-      enabled_features: ['iframe_loading_same_origin' as ChartingLibraryFeatureset],
+      enabled_features: [
+        'iframe_loading_same_origin' as ChartingLibraryFeatureset,
+        // Hide the left drawing toolbar on initial load (user can still toggle it back on).
+        'hide_left_toolbar_by_default' as ChartingLibraryFeatureset,
+      ],
       load_last_chart: false,
       theme: 'Dark',
       fullscreen: false,
@@ -145,6 +169,14 @@ export function TradingChart({ symbol, candlesGetter }: TradingChartProps) {
     widget.onChartReady(() => {
       // Force-apply overrides after the chart is initialized (helps when defaults/local settings win on first paint).
       widget.applyOverrides(lavaOverrides);
+
+      // Hide the right sidebar by default.
+      // Note: this API is Trading Platform/Advanced Charts specific; if unavailable it will reject safely.
+      widget
+        .widgetbar()
+        .then((widgetbar) => widgetbar.changeWidgetBarVisibility(false))
+        .catch(() => {});
+
       widgetRef.current = widget;
     });
 
@@ -161,4 +193,4 @@ export function TradingChart({ symbol, candlesGetter }: TradingChartProps) {
   }, [candlesGetter, symbol]);
 
   return <div ref={containerRef} css={styles.container} />;
-}
+});
