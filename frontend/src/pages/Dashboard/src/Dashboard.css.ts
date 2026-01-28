@@ -41,7 +41,7 @@ export const container = style({
     '(max-width: 1024px)': {
       flexDirection: 'column',
       height: 'auto',
-      overflowX: 'auto',
+      overflowX: 'hidden',
       overflowY: 'auto',
       WebkitOverflowScrolling: 'touch',
     },
