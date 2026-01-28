@@ -1,5 +1,6 @@
 import { type FC, useCallback, useMemo } from 'react';
-import { $decimalValue } from 'fuel-ts-sdk';
+import { $decimalValue, BigIntMath, DecimalCalculator, UsdValue, zero } from 'fuel-ts-sdk';
+import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { usePolling } from '@/lib/usePolling';
 import { PositionCard } from './PositionCard';
@@ -13,17 +14,24 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
   const trading = useTradingSdk();
   const userAddress = useSdkQuery((sdk) => sdk.accounts.getCurrentUserAddress());
 
-  const accountOpenPositions = useSdkQuery(() => trading.getAccountOpenPositions(userAddress));
+  const accountOpenPositions = useSdkQuery(() => trading.getCurrentAccountOpenPositions());
 
   const filteredOpenPositions = useMemo(() => {
     if (!filterBySide) return accountOpenPositions;
     return accountOpenPositions.filter((openPosition) => {
-      const isLong = openPosition.positionKey.isLong;
+      const isLong = openPosition.side === PositionSide.LONG;
       return filterBySide === 'long' ? isLong : !isLong;
     });
   }, [accountOpenPositions, filterBySide]);
 
-  const totalExposure = useSdkQuery(trading.getCurrentAccountTotalExposure);
+  const totalExposure = useMemo(() => {
+    return filteredOpenPositions.reduce((total, position) => {
+      const positionNotional = DecimalCalculator.value(BigIntMath.abs(position.size)).calculate(
+        UsdValue
+      );
+      return DecimalCalculator.first(total).add(positionNotional).calculate(UsdValue);
+    }, zero(UsdValue));
+  }, [filteredOpenPositions]);
 
   usePolling(
     useCallback(() => {
