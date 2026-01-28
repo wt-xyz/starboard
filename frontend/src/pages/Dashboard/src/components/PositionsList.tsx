@@ -13,15 +13,15 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
   const trading = useTradingSdk();
   const userAddress = useSdkQuery((sdk) => sdk.accounts.getCurrentUserAddress());
 
-  const allPositions = useSdkQuery(() => trading.getAccountOpenPositions(userAddress));
+  const accountOpenPositions = useSdkQuery(() => trading.getAccountOpenPositions(userAddress));
 
-  const positions = useMemo(() => {
-    if (!filterBySide) return allPositions;
-    return allPositions.filter((position) => {
-      const isLong = position.positionKey.isLong;
+  const filteredOpenPositions = useMemo(() => {
+    if (!filterBySide) return accountOpenPositions;
+    return accountOpenPositions.filter((openPosition) => {
+      const isLong = openPosition.positionKey.isLong;
       return filterBySide === 'long' ? isLong : !isLong;
     });
-  }, [allPositions, filterBySide]);
+  }, [accountOpenPositions, filterBySide]);
 
   const totalExposure = useSdkQuery(trading.getCurrentAccountTotalExposure);
 
@@ -31,12 +31,12 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
     }, [trading, userAddress])
   );
 
-  if (positions.length === 0) return null;
+  if (filteredOpenPositions.length === 0) return null;
 
   return (
     <div css={styles.positionsContainer}>
       <div css={styles.header}>
-        <span css={styles.headerTitle}>Open Positions ({positions.length})</span>
+        <span css={styles.headerTitle}>Open Positions ({filteredOpenPositions.length})</span>
         <div css={styles.headerStats}>
           <div css={styles.statItem}>
             <span css={styles.statLabel}>Exposure</span>
@@ -50,8 +50,8 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
         </div>
       </div>
       <div css={styles.positionCards}>
-        {positions.map((position) => (
-          <PositionCard key={position.revisionId} position={position} />
+        {filteredOpenPositions.map((openPosition) => (
+          <PositionCard key={openPosition.revisionId} position={openPosition} />
         ))}
       </div>
     </div>
