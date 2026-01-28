@@ -133,6 +133,22 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       'paneProperties.legendProperties.showLegend': false,
     };
 
+    const formatCompactPrice = (price: number): string => {
+      const abs = Math.abs(price);
+      const sign = price < 0 ? '-' : '';
+
+      if (abs >= 1_000_000_000) {
+        return sign + (abs / 1_000_000_000).toFixed(2) + 'B';
+      }
+      if (abs >= 1_000_000) {
+        return sign + (abs / 1_000_000).toFixed(2) + 'M';
+      }
+      if (abs >= 1_000) {
+        return sign + (abs / 1_000).toFixed(2) + 'K';
+      }
+      return sign + abs.toFixed(2);
+    };
+
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol,
       datafeed: createDatafeed(candlesGetter),
@@ -140,6 +156,11 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       container: containerRef.current,
       library_path: '/tradingview/',
       locale: 'en',
+      custom_formatters: {
+        priceFormatterFactory: () => ({
+          format: (price: number) => formatCompactPrice(price),
+        }),
+      },
       // Global TradingView theming (toolbars, side panels, dialogs, etc.)
       // This is loaded by TradingView (typically inside its chart iframe), and is the most reliable way
       // to eliminate default blue accents.
