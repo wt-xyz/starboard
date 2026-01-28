@@ -3,6 +3,7 @@ import { Button, Flex } from '@radix-ui/themes';
 import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import { TradingChart, type TradingChartHandle } from '@/components/TradingChart';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
+import * as styles from '../Dashboard.css';
 
 export const DashboardTradingChart: FC = () => {
   const tradingSdk = useTradingSdk();
@@ -30,6 +31,7 @@ export const DashboardTradingChart: FC = () => {
         <Button
           variant="soft"
           color="gray"
+          className={styles.showPanelButton}
           onClick={() => {
             setIsWidgetbarOpen((prev) => {
               const next = !prev;
@@ -41,7 +43,11 @@ export const DashboardTradingChart: FC = () => {
           {isWidgetbarOpen ? 'Hide panels' : 'Show panels'}
         </Button>
       </Flex>
-      <TradingChart ref={tradingChartRef} symbol={asset?.symbol ?? '?'} candlesGetter={getOrFetchCandles} />
+      <TradingChart
+        ref={tradingChartRef}
+        symbol={asset?.symbol ?? '?'}
+        candlesGetter={getOrFetchCandles}
+      />
     </Flex>
   );
 };
