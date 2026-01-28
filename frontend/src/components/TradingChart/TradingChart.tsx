@@ -128,6 +128,11 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       'scalesProperties.axisLineToolLabelBackgroundColorActive': colors.liquidLava,
     };
 
+    const mobileOverridesBase: ChartingLibraryWidgetOptions['overrides'] = {
+      // Reduce clutter on small screens.
+      'paneProperties.legendProperties.showLegend': false,
+    };
+
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol,
       datafeed: createDatafeed(candlesGetter),
@@ -147,7 +152,24 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       disabled_features: [
         'trading_account_manager' as ChartingLibraryFeatureset,
         'use_localstorage_for_settings' as ChartingLibraryFeatureset,
-        'show_right_widgets_panel_by_default' as ChartingLibraryFeatureset,
+        ...(window.matchMedia('(max-width: 550px)').matches
+          ? ([
+              // Mobile: remove header clutter (common set from TradingView integrations).
+              'header_saveload',
+              'header_fullscreen_button',
+              'header_compare',
+              'header_symbol_search',
+              'header_quick_search',
+              'header_undo_redo',
+              'symbol_search_hot_key',
+              'allow_arbitrary_symbol_search_input',
+              'show_interval_dialog_on_key_press',
+              'popup_hints',
+              'right_bar_stays_on_scroll',
+              'symbol_info',
+              'display_market_status',
+            ] as ChartingLibraryFeatureset[])
+          : []),
       ],
       enabled_features: [
         'iframe_loading_same_origin' as ChartingLibraryFeatureset,
@@ -170,6 +192,59 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       // Force-apply overrides after the chart is initialized (helps when defaults/local settings win on first paint).
       widget.applyOverrides(lavaOverrides);
 
+      const compactMq = window.matchMedia('(max-width: 640px)');
+      const coarseMq = window.matchMedia('(pointer: coarse)');
+
+      const setBarSpacingSafely = (barSpacing: number) => {
+        try {
+          // TradingView Charting Library API:
+          // widget.activeChart().getTimeScale().setBarSpacing(number)
+          (widget as unknown as any)?.activeChart?.()?.getTimeScale?.()?.setBarSpacing?.(barSpacing);
+        } catch {
+          // noop
+        }
+      };
+
+      const applyResponsiveDensity = () => {
+        const dpr = typeof window !== 'undefined' && window.devicePixelRatio ? window.devicePixelRatio : 1;
+        const isCompact = compactMq.matches || coarseMq.matches;
+
+        const mobileScaleFontSize = dpr >= 3 ? 8 : dpr >= 2 ? 9 : 10;
+
+        // `barSpacing` is pixel-based; keep the chart feeling "zoomed out" on high-DPR phones.
+        const mobileBarSpacing = dpr >= 3 ? 2 : 3;
+
+        if (isCompact) {
+          widget.applyOverrides({
+            ...lavaOverrides,
+            ...mobileOverridesBase,
+            'scalesProperties.fontSize': mobileScaleFontSize,
+          });
+          // Default is ~6; smaller = more candles visible ("zoomed out").
+          setBarSpacingSafely(mobileBarSpacing);
+        } else {
+          widget.applyOverrides(lavaOverrides);
+          setBarSpacingSafely(6);
+        }
+      };
+
+      // Ensure the main pane is auto-scaled (helps when mobile layouts look "too zoomed").
+      try {
+        (widget as unknown as any)
+          ?.activeChart?.()
+          ?.getPanes?.()
+          ?.at?.(0)
+          ?.getMainSourcePriceScale?.()
+          ?.setAutoScale?.(true);
+      } catch {
+        // noop
+      }
+
+      applyResponsiveDensity();
+      compactMq.addEventListener?.('change', applyResponsiveDensity);
+      coarseMq.addEventListener?.('change', applyResponsiveDensity);
+      window.addEventListener('resize', applyResponsiveDensity);
+
       // Hide the right sidebar by default.
       // Note: this API is Trading Platform/Advanced Charts specific; if unavailable it will reject safely.
       widget
@@ -178,10 +253,24 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
         .catch(() => {});
 
       widgetRef.current = widget;
+
+      // Clean up the media query listener when the widget is removed.
+      // (TradingView doesn't own the listener lifecycle.)
+      const removeListener = () => {
+        compactMq.removeEventListener?.('change', applyResponsiveDensity);
+        coarseMq.removeEventListener?.('change', applyResponsiveDensity);
+        window.removeEventListener('resize', applyResponsiveDensity);
+      };
+      (widgetRef.current as unknown as any).__sbRemoveMqListener = removeListener;
     });
 
     return () => {
       if (widgetRef.current) {
+        try {
+          (widgetRef.current as unknown as any).__sbRemoveMqListener?.();
+        } catch {
+          // noop
+        }
         widgetRef.current.remove();
         widgetRef.current = null;
       }
