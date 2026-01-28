@@ -258,3 +258,11 @@ export const tabContent = style({
   gap: '1.5rem',
   outline: 'none',
 });
+
+export const showPanelButton = style({
+  '@media': {
+    '(max-width: 599px)': {
+      display: 'none',
+    },
+  },
+});
