@@ -1,19 +1,21 @@
 import type { FC } from 'react';
 import { Slider } from 'radix-ui';
+import { useRequiredContext } from '@/lib/useRequiredContext';
+import { FormContext } from '../contexts/FormContext';
 import * as $ from './SizeSlider.css';
 
-export interface SizeSliderProps {
-  valueInPercents: string;
-  onValueChange: (nextValInPercents: string) => void;
-}
+export const SizeSlider: FC = () => {
+  const { getSizeDeltaAsPercentage, updateSizeDeltaFromPercentage } =
+    useRequiredContext(FormContext);
 
-export const SizeSlider: FC<SizeSliderProps> = ({ onValueChange, valueInPercents }) => {
+  const valueInPercents = getSizeDeltaAsPercentage();
+
   const handlePercentageClick = (percentage: number) => {
-    onValueChange(String(percentage));
+    updateSizeDeltaFromPercentage(String(percentage));
   };
 
   const handleSliderSlide = ([value]: number[]) => {
-    onValueChange(String(value));
+    updateSizeDeltaFromPercentage(String(value));
   };
 
   return (
