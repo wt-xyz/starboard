@@ -106,7 +106,7 @@ For contract constants (decimals, precision), check `contracts/contracts/core/va
 **Code splitting levels:**
 
 1. **Single file**: General to detail, functions below component, styles in `$` namespace
-2. **Nested files**: Extract to `Component.utils.ts`, `Component.styles.ts` (import via parent, not directly)
+2. **Nested files**: Extract to `Component.utils.ts`, `Component.css.ts` (import as $)
 3. **Submodules**: Folder per component when children need own helpers
 
 **Module navigation:**
