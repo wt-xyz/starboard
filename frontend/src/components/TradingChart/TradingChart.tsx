@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { colors } from '@/styles/colors';
 import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import type {
   ChartingLibraryFeatureset,
@@ -6,7 +6,7 @@ import type {
   IChartingLibraryWidget,
   ResolutionString,
 } from 'public/tradingview/charting_library';
-import { colors } from '@/styles/colors';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import * as styles from './TradingChart.css';
 import { createDatafeed } from './TradingChart.utils';
 
@@ -20,8 +20,6 @@ export interface TradingChartHandle {
 }
 
 function createTradingViewCustomCssUrl(): string {
-  // Keep the existing TradingView theme file intact, but layer our Starboard overrides after it.
-  // This avoids editing any CSS files and avoids runtime DOM injection into the iframe.
   const css = `
 @import url("/tradingview/custom-styles.css");
 
@@ -61,22 +59,27 @@ html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4 {
   }
 }
 
-/* Starboard: use Liquid Lava as TradingView active accent (fixes blue active widgetbar icon). */
+/* Starboard: use Liquid Lava as TradingView active accent. */
 :root, html, body {
   --color-accent: ${colors.liquidLava} !important;
-
-  /* Starboard: remove the subtle bluish frame/padding around the chart (use gluonGrey). */
   --tv-color-platform-background: ${colors.gluonGrey} !important;
   --tv-color-pane-background: ${colors.gluonGrey} !important;
-
   --tv-color-toolbar-button-background-active: ${colors.liquidLava} !important;
   --tv-color-toolbar-button-background-active-hover: ${colors.liquidLava} !important;
   --tv-color-toolbar-button-text-active: ${colors.snow} !important;
   --tv-color-toolbar-button-text-active-hover: ${colors.snow} !important;
-
   --tv-color-popup-element-background-active: ${colors.liquidLava} !important;
   --tv-color-popup-element-toolbox-background-active-hover: ${colors.liquidLava} !important;
   --tv-color-item-active-text: ${colors.snow} !important;
+}
+
+/* Remove left padding/margin from chart */
+.chart-markup-table {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+.layout__area--left {
+  display: none !important;
 }
 `;
 
@@ -108,44 +111,34 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
     if (!containerRef.current) return;
     if (!customCssUrlRef.current) customCssUrlRef.current = createTradingViewCustomCssUrl();
 
-    const lavaOverrides: ChartingLibraryWidgetOptions['overrides'] = {
-      // Canvas / pane background
+    // Detect mobile/touch devices
+    const isMobile = window.matchMedia('(max-width: 640px)').matches || 
+                     window.matchMedia('(pointer: coarse)').matches;
+
+    const themeOverrides: ChartingLibraryWidgetOptions['overrides'] = {
       'paneProperties.backgroundType': 'solid',
-      'paneProperties.background': colors.darkVoid,
-      'paneProperties.backgroundGradientStartColor': colors.darkVoid,
-      'paneProperties.backgroundGradientEndColor': colors.darkVoid,
-      // Make grid lines visible (higher contrast on darkVoid)
+      'paneProperties.background': colors.gluonGrey,
+      'paneProperties.backgroundGradientStartColor': colors.gluonGrey,
+      'paneProperties.backgroundGradientEndColor': colors.gluonGrey,
       'paneProperties.vertGridProperties.color': colors.whiteAlpha[8],
       'paneProperties.horzGridProperties.color': colors.whiteAlpha[8],
       'paneProperties.vertGridProperties.style': 0,
       'paneProperties.horzGridProperties.style': 0,
-      // Pane separators (between main pane and volume/indicators)
       'paneProperties.separatorColor': colors.darkVoidAlpha[20],
-
-      // Scale highlight defaults are blue; align them with the design system.
       'scalesProperties.axisHighlightColor': colors.liquidLavaAlpha[15],
       'scalesProperties.axisLineToolLabelBackgroundColorCommon': colors.liquidLava,
       'scalesProperties.axisLineToolLabelBackgroundColorActive': colors.liquidLava,
+      // Consistent font sizes: smaller on mobile, normal on desktop
+      'scalesProperties.fontSize': isMobile ? 6 : 11,
     };
 
-    const mobileOverridesBase: ChartingLibraryWidgetOptions['overrides'] = {
-      // Reduce clutter on small screens.
-      'paneProperties.legendProperties.showLegend': false,
-    };
-
+    // Compact price formatter for mobile (shows 84.0K instead of 84000)
     const formatCompactPrice = (price: number): string => {
       const abs = Math.abs(price);
       const sign = price < 0 ? '-' : '';
-
-      if (abs >= 1_000_000_000) {
-        return sign + (abs / 1_000_000_000).toFixed(2) + 'B';
-      }
-      if (abs >= 1_000_000) {
-        return sign + (abs / 1_000_000).toFixed(2) + 'M';
-      }
-      if (abs >= 1_000) {
-        return sign + (abs / 1_000).toFixed(2) + 'K';
-      }
+      if (abs >= 1_000_000_000) return sign + (abs / 1_000_000_000).toFixed(1) + 'B';
+      if (abs >= 1_000_000) return sign + (abs / 1_000_000).toFixed(1) + 'M';
+      if (abs >= 1_000) return sign + (abs / 1_000).toFixed(1) + 'K';
       return sign + abs.toFixed(2);
     };
 
@@ -156,45 +149,25 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       container: containerRef.current,
       library_path: '/tradingview/',
       locale: 'en',
-      custom_formatters: {
-        priceFormatterFactory: () => ({
-          format: (price: number) => formatCompactPrice(price),
-        }),
-      },
-      // Global TradingView theming (toolbars, side panels, dialogs, etc.)
-      // This is loaded by TradingView (typically inside its chart iframe), and is the most reliable way
-      // to eliminate default blue accents.
       custom_css_url: customCssUrlRef.current,
+      // Use compact formatter on mobile to prevent Y-axis cutoff
+      ...(isMobile ? {
+        custom_formatters: {
+          priceFormatterFactory: () => ({
+            format: (price: number) => formatCompactPrice(price),
+          }),
+        },
+      } : {}),
       loading_screen: {
-        backgroundColor: colors.darkVoid,
+        backgroundColor: colors.gluonGrey,
         foregroundColor: colors.liquidLava,
       },
-      // Prevent chart properties from being pulled from localStorage and overriding our theme/overrides.
       disabled_features: [
         'trading_account_manager' as ChartingLibraryFeatureset,
         'use_localstorage_for_settings' as ChartingLibraryFeatureset,
-        ...(window.matchMedia('(max-width: 550px)').matches
-          ? ([
-              // Mobile: remove header clutter (common set from TradingView integrations).
-              'header_saveload',
-              'header_fullscreen_button',
-              'header_compare',
-              'header_symbol_search',
-              'header_quick_search',
-              'header_undo_redo',
-              'symbol_search_hot_key',
-              'allow_arbitrary_symbol_search_input',
-              'show_interval_dialog_on_key_press',
-              'popup_hints',
-              'right_bar_stays_on_scroll',
-              'symbol_info',
-              'display_market_status',
-            ] as ChartingLibraryFeatureset[])
-          : []),
       ],
       enabled_features: [
         'iframe_loading_same_origin' as ChartingLibraryFeatureset,
-        // Hide the left drawing toolbar on initial load (user can still toggle it back on).
         'hide_left_toolbar_by_default' as ChartingLibraryFeatureset,
       ],
       load_last_chart: false,
@@ -203,95 +176,26 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       autosize: true,
       studies_overrides: {},
       overrides: {
-        ...lavaOverrides,
+        ...themeOverrides,
       },
     };
 
     const widget = new window.TradingView.widget(widgetOptions);
 
     widget.onChartReady(() => {
-      // Force-apply overrides after the chart is initialized (helps when defaults/local settings win on first paint).
-      widget.applyOverrides(lavaOverrides);
+      widget.applyOverrides(themeOverrides);
 
-      const compactMq = window.matchMedia('(max-width: 640px)');
-      const coarseMq = window.matchMedia('(pointer: coarse)');
-
-      const setBarSpacingSafely = (barSpacing: number) => {
-        try {
-          // TradingView Charting Library API:
-          // widget.activeChart().getTimeScale().setBarSpacing(number)
-          (widget as unknown as any)?.activeChart?.()?.getTimeScale?.()?.setBarSpacing?.(barSpacing);
-        } catch {
-          // noop
-        }
-      };
-
-      const applyResponsiveDensity = () => {
-        const dpr = typeof window !== 'undefined' && window.devicePixelRatio ? window.devicePixelRatio : 1;
-        const isCompact = compactMq.matches || coarseMq.matches;
-
-        const mobileScaleFontSize = dpr >= 3 ? 7 : dpr >= 2 ? 8 : 9;
-
-        // `barSpacing` is pixel-based; keep the chart feeling "zoomed out" on high-DPR phones.
-        const mobileBarSpacing = dpr >= 3 ? 2 : 3;
-
-        if (isCompact) {
-          widget.applyOverrides({
-            ...lavaOverrides,
-            ...mobileOverridesBase,
-            'scalesProperties.fontSize': mobileScaleFontSize,
-          });
-          // Default is ~6; smaller = more candles visible ("zoomed out").
-          setBarSpacingSafely(mobileBarSpacing);
-        } else {
-          widget.applyOverrides(lavaOverrides);
-          setBarSpacingSafely(6);
-        }
-      };
-
-      // Ensure the main pane is auto-scaled (helps when mobile layouts look "too zoomed").
-      try {
-        (widget as unknown as any)
-          ?.activeChart?.()
-          ?.getPanes?.()
-          ?.at?.(0)
-          ?.getMainSourcePriceScale?.()
-          ?.setAutoScale?.(true);
-      } catch {
-        // noop
-      }
-
-      applyResponsiveDensity();
-      compactMq.addEventListener?.('change', applyResponsiveDensity);
-      coarseMq.addEventListener?.('change', applyResponsiveDensity);
-      window.addEventListener('resize', applyResponsiveDensity);
-
-      // Hide the right sidebar by default.
-      // Note: this API is Trading Platform/Advanced Charts specific; if unavailable it will reject safely.
+      // Hide the right sidebar by default
       widget
         .widgetbar()
         .then((widgetbar) => widgetbar.changeWidgetBarVisibility(false))
         .catch(() => {});
 
       widgetRef.current = widget;
-
-      // Clean up the media query listener when the widget is removed.
-      // (TradingView doesn't own the listener lifecycle.)
-      const removeListener = () => {
-        compactMq.removeEventListener?.('change', applyResponsiveDensity);
-        coarseMq.removeEventListener?.('change', applyResponsiveDensity);
-        window.removeEventListener('resize', applyResponsiveDensity);
-      };
-      (widgetRef.current as unknown as any).__sbRemoveMqListener = removeListener;
     });
 
     return () => {
       if (widgetRef.current) {
-        try {
-          (widgetRef.current as unknown as any).__sbRemoveMqListener?.();
-        } catch {
-          // noop
-        }
         widgetRef.current.remove();
         widgetRef.current = null;
       }
