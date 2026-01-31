@@ -7,6 +7,7 @@ import { usePolling } from '@/lib/usePolling';
 import * as styles from './Dashboard.css';
 import { DashboardOrderEntryForm } from './components/DashboardOrderEntryForm';
 import { DashboardTradingChart } from './components/DashboardTradingChart';
+import { MobileMarketHeader } from './components/MobileMarketHeader';
 import { PositionsList } from './components/PositionsList';
 
 type SheetType = 'long' | 'short';
@@ -32,6 +33,8 @@ export function Dashboard() {
   return (
     <>
       <div css={styles.page}>
+        {isCompactLayout && <MobileMarketHeader />}
+
         <div css={styles.container}>
           <div css={styles.chartSection}>
             <DashboardTradingChart />

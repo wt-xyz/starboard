@@ -65,10 +65,6 @@ export function DashboardLayout() {
 
               <div css={styles.mobileMenuContent}>
                 <div css={styles.mobileMenuSection}>
-                  <DashboardHeader />
-                </div>
-
-                <div css={styles.mobileMenuSection}>
                   {envs.isDev() && isWalletConnected && <MintButton />}
                   {isWalletConnected && <WalletCollateralCard />}
 
