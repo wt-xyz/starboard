@@ -5,11 +5,11 @@ export const container = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: '0.75rem 1rem',
+  padding: '0.5rem 0.75rem',
   backgroundColor: colors.gluonGrey,
   borderRadius: '0.5rem',
   marginBottom: '0.5rem',
-  gap: '1rem',
+  gap: '0.5rem',
 });
 
 export const assetSection = style({

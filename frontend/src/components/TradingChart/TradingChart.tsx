@@ -230,7 +230,7 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
         const dpr = typeof window !== 'undefined' && window.devicePixelRatio ? window.devicePixelRatio : 1;
         const isCompact = compactMq.matches || coarseMq.matches;
 
-        const mobileScaleFontSize = dpr >= 3 ? 8 : dpr >= 2 ? 9 : 10;
+        const mobileScaleFontSize = dpr >= 3 ? 7 : dpr >= 2 ? 8 : 9;
 
         // `barSpacing` is pixel-based; keep the chart feeling "zoomed out" on high-DPR phones.
         const mobileBarSpacing = dpr >= 3 ? 2 : 3;
