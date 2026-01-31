@@ -55,7 +55,7 @@ function calculatePriceChange(
   if (!currentPrice || !candles || candles.length === 0) return null;
 
   const current = $decimalValue(currentPrice.value).toFloat();
-  const openCandle = candles[candles.length - 1]; // oldest candle (24h ago)
+  const openCandle = candles[0]; // oldest candle (24h ago) - candles are ordered oldest-first
   const open = $decimalValue(OraclePrice.fromBigIntString(openCandle.openPrice)).toFloat();
 
   if (open === 0) return null;
