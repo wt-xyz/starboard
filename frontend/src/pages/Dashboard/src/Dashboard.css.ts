@@ -11,7 +11,8 @@ export const page = style({
   padding: '1rem',
   '@media': {
     '(max-width: 1024px)': {
-      paddingBottom: '1rem',
+      padding: '0.5rem',
+      paddingBottom: '0.5rem',
       overflowY: 'auto',
       overflowX: 'hidden',
     },
