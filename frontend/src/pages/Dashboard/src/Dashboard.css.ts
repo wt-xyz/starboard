@@ -12,7 +12,6 @@ export const page = style({
   '@media': {
     '(max-width: 1024px)': {
       padding: '0.5rem',
-      paddingBottom: '0.5rem',
       overflowY: 'auto',
       overflowX: 'hidden',
     },
@@ -260,10 +259,3 @@ export const tabContent = style({
   outline: 'none',
 });
 
-export const showPanelButton = style({
-  '@media': {
-    '(max-width: 599px)': {
-      display: 'none',
-    },
-  },
-});

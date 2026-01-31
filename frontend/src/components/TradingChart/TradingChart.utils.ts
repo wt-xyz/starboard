@@ -46,7 +46,7 @@ export function createDatafeed(
           exchange: 'Starboard',
           listed_exchange: 'Starboard',
           minmov: 1,
-          pricescale: 100000,
+          pricescale: 100,
           has_intraday: true,
           has_daily: true,
           has_weekly_and_monthly: false,
@@ -105,7 +105,7 @@ export function createDatafeed(
       // You can subscribe to Redux store changes and call onTick with new bars
     },
 
-    unsubscribeBars: (_listenerGuid: string) => {},
+    unsubscribeBars: (_listenerGuid: string) => { },
   };
 }
 
