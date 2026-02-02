@@ -8,6 +8,11 @@ dependencies = [
 ]
 
 [[package]]
+name = "eth-faucet-predicate"
+source = "member"
+dependencies = ["std"]
+
+[[package]]
 name = "fungible"
 source = "member"
 dependencies = [

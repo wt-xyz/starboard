@@ -1,6 +1,6 @@
+import { NETWORKS, type Network } from '@/models/Network';
 import { ContractIdSchema } from 'fuel-ts-sdk';
 import zod from 'zod';
-import { NETWORKS, type Network } from '@/models/Network';
 
 export type EnvConfig = zod.infer<typeof EnvConfigSchema>;
 
@@ -12,6 +12,8 @@ export const EnvConfigSchema = zod.object({
   chainIds: jsonStringSchema(networkRecordSchema(zod.coerce.number())),
   defaultNetwork: zod.enum(NETWORKS),
   env: zod.enum(['dev', 'prod']),
+  /** Optional 32-byte hex (0x...) for the eth faucet predicate PIN. When set, used for Get testnet ETH and Fund faucet. */
+  ethFaucetPin: zod.string().optional(),
 });
 
 function networkRecordSchema<T extends zod.ZodTypeAny>(valueSchema: T) {
