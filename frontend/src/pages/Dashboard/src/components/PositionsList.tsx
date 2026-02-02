@@ -1,8 +1,8 @@
-import { type FC, useCallback, useMemo } from 'react';
-import { $decimalValue, BigIntMath, DecimalCalculator, UsdValue, zero } from 'fuel-ts-sdk';
-import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { usePolling } from '@/lib/usePolling';
+import { $decimalValue, BigIntMath, DecimalCalculator, UsdValue, zero } from 'fuel-ts-sdk';
+import { PositionSide } from 'fuel-ts-sdk/trading';
+import { useCallback, useMemo, type FC } from 'react';
 import { PositionCard } from './PositionCard';
 import * as styles from './PositionsList.css';
 
@@ -39,7 +39,15 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
     }, [trading, userAddress])
   );
 
-  if (filteredOpenPositions.length === 0) return null;
+  if (filteredOpenPositions.length === 0) {
+    return (
+      <div css={styles.positionsContainer}>
+        <div style={{ textAlign: 'center', color: '#878787', padding: '3rem 1rem' }}>
+          No open positions
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div css={styles.positionsContainer}>
