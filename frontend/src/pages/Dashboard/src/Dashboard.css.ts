@@ -8,7 +8,7 @@ export const page = style({
   display: 'flex',
   flexDirection: 'column',
   overflow: 'hidden',
-  padding: '1rem',
+  padding: '1rem 1rem 0.5rem 1rem', // Further reduced bottom padding
   '@media': {
     '(max-width: 1024px)': {
       padding: '0.5rem',
@@ -20,8 +20,9 @@ export const page = style({
 
 export const container = style({
   display: 'flex',
+  flexDirection: 'column',
   flex: 1,
-  gap: '1rem',
+  gap: '0.5rem', // Further reduced gap
   overflow: 'hidden',
   minHeight: 0,
   width: '100%',
@@ -39,11 +40,36 @@ export const container = style({
   },
   '@media': {
     '(max-width: 1024px)': {
-      flexDirection: 'column',
       height: 'auto',
       overflowX: 'hidden',
       overflowY: 'auto',
       WebkitOverflowScrolling: 'touch',
+    },
+  },
+});
+
+export const topSection = style({
+  display: 'flex',
+  flex: 1,
+  gap: '0.5rem', // Further reduced gap
+  overflow: 'hidden',
+  minHeight: 0,
+  '@media': {
+    '(max-width: 1024px)': {
+      flexDirection: 'column',
+      flex: '0 0 auto',
+      overflow: 'visible',
+    },
+  },
+});
+
+export const bottomSection = style({
+  flex: '0 0 280px', // Reduced height to give more room to chart
+  minHeight: 0,
+  overflow: 'hidden',
+  '@media': {
+    '(max-width: 1024px)': {
+      flex: '0 0 400px',
     },
   },
 });
@@ -66,14 +92,32 @@ export const chartSection = style({
   },
 });
 
-export const rightSection = style({
+export const orderEntrySection = style({
   flex: '0 0 400px',
   minWidth: 0,
   display: 'flex',
   flexDirection: 'column',
-  gap: '1rem',
-  overflow: 'auto',
+  overflow: 'hidden',
   minHeight: 0,
+  '@media': {
+    '(max-width: 1024px)': {
+      display: 'none',
+    },
+  },
+});
+
+export const orderEntryContainer = style({
+  flex: '1 1 auto',
+  backgroundColor: colors.gluonGrey,
+  borderRadius: '0.5rem',
+  padding: '1rem',
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  maxWidth: '100%',
+  boxSizing: 'border-box',
+  minWidth: 0,
+  overflow: 'auto',
   '::-webkit-scrollbar': {
     width: '4px',
   },
@@ -86,25 +130,8 @@ export const rightSection = style({
   },
   '@media': {
     '(max-width: 1024px)': {
-      display: 'none',
-    },
-  },
-});
-
-export const orderEntryContainer = style({
-  flex: '0 0 auto',
-  backgroundColor: colors.gluonGrey,
-  borderRadius: '0.5rem',
-  padding: '1rem',
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  maxWidth: '100%',
-  boxSizing: 'border-box',
-  minWidth: 0,
-  '@media': {
-    '(max-width: 1024px)': {
       minWidth: '640px',
+      flex: '0 0 auto',
     },
   },
 });

@@ -5,7 +5,6 @@ export const positionsContainer = style({
   display: 'flex',
   flexDirection: 'column',
   gap: '0.75rem',
-  flex: '0 0 auto',
 });
 
 export const header = style({

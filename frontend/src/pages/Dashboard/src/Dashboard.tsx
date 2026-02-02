@@ -1,14 +1,15 @@
-import { useState } from 'react';
-import { Tabs } from 'radix-ui';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useMediaQuery } from '@/lib/useMediaQuery';
 import { usePolling } from '@/lib/usePolling';
+import { Tabs } from 'radix-ui';
+import { useState } from 'react';
 import * as styles from './Dashboard.css';
 import { DashboardOrderEntryForm } from './components/DashboardOrderEntryForm';
 import { DashboardTradingChart } from './components/DashboardTradingChart';
 import { MobileMarketHeader } from './components/MobileMarketHeader';
 import { PositionsList } from './components/PositionsList';
+import { PositionsTradeHistoryTabs } from './components/PositionsTradeHistoryTabs';
 
 type SheetType = 'long' | 'short';
 
@@ -36,21 +37,24 @@ export function Dashboard() {
         {isCompactLayout && <MobileMarketHeader />}
 
         <div css={styles.container}>
-          <div css={styles.chartSection}>
-            <DashboardTradingChart />
-          </div>
+          <div css={styles.topSection}>
+            <div css={styles.chartSection}>
+              <DashboardTradingChart />
+            </div>
 
-          {!isCompactLayout && (
-            <div css={styles.rightSection}>
+            <div css={styles.orderEntrySection}>
               <div css={styles.orderEntryContainer}>
                 <h2 css={styles.orderEntryTitle}>Order Entry</h2>
                 <div css={styles.orderEntryFormWrapper}>
                   <DashboardOrderEntryForm />
                 </div>
               </div>
-              <PositionsList />
             </div>
-          )}
+          </div>
+
+          <div css={styles.bottomSection}>
+            <PositionsTradeHistoryTabs />
+          </div>
         </div>
       </div>
 
