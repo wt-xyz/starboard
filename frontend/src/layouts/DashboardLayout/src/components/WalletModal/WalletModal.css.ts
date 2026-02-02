@@ -119,3 +119,179 @@ export const skeleton = style({
     },
   },
 });
+
+// Burner Wallet section (dev / in-browser wallet)
+export const burnerSection = style({
+  marginBottom: '1.5rem',
+  padding: '0.75rem',
+  backgroundColor: colors.liquidLavaAlpha[10],
+  borderRadius: '0.75rem',
+  border: `1px solid ${colors.liquidLavaAlpha[30]}`,
+});
+
+export const burnerNotice = style({
+  fontSize: '0.8125rem',
+  color: colors.dustyGrey,
+  lineHeight: 1.4,
+  marginBottom: '0.75rem',
+});
+
+export const burnerMintButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  height: '2.5rem',
+  padding: '0 1rem',
+  backgroundColor: colors.liquidLava,
+  color: colors.snow,
+  borderRadius: '0.5rem',
+  border: 'none',
+  fontSize: '0.875rem',
+  fontWeight: '600',
+  cursor: 'pointer',
+  transition: 'all 0.15s',
+  ':hover': {
+    backgroundColor: '#E05D0A',
+  },
+  ':disabled': {
+    opacity: 0.6,
+    cursor: 'not-allowed',
+  },
+});
+
+export const getTestnetEthSection = style({
+  marginBottom: '1.5rem',
+});
+
+export const getTestnetEthButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  height: '2.5rem',
+  padding: '0 1rem',
+  backgroundColor: 'transparent',
+  color: colors.snow,
+  borderRadius: '0.5rem',
+  border: `1px solid ${colors.whiteAlpha[20]}`,
+  fontSize: '0.875rem',
+  fontWeight: '500',
+  cursor: 'pointer',
+  transition: 'all 0.15s',
+  ':hover': {
+    backgroundColor: colors.whiteAlpha[10],
+    borderColor: colors.whiteAlpha[30],
+  },
+  ':disabled': {
+    opacity: 0.6,
+    cursor: 'not-allowed',
+  },
+});
+
+// Advanced panel (collapsible; contains fund faucet)
+export const advancedPanel = style({
+  marginBottom: '1.5rem',
+  borderRadius: '0.75rem',
+  border: `1px solid ${colors.whiteAlpha[10]}`,
+  overflow: 'hidden',
+});
+
+export const advancedTrigger = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '100%',
+  padding: '0.75rem 1rem',
+  backgroundColor: colors.slateGrey,
+  border: 'none',
+  color: colors.dustyGrey,
+  fontSize: '0.8125rem',
+  fontWeight: '600',
+  textTransform: 'uppercase',
+  letterSpacing: '0.03em',
+  cursor: 'pointer',
+  transition: 'background-color 0.15s',
+  ':hover': {
+    backgroundColor: colors.whiteAlpha[10],
+    color: colors.snow,
+  },
+});
+
+export const advancedChevron = style({
+  width: '1rem',
+  height: '1rem',
+  flexShrink: 0,
+  transition: 'transform 0.2s',
+});
+
+// Fund faucet applet (deploy/fund predicate with web wallet)
+export const fundFaucetSection = style({
+  padding: '0.75rem 1rem',
+  paddingTop: 0,
+  backgroundColor: colors.slateGrey,
+  borderTop: `1px solid ${colors.whiteAlpha[10]}`,
+});
+
+export const fundFaucetTitle = style({
+  fontSize: '0.8125rem',
+  fontWeight: '600',
+  color: colors.dustyGrey,
+  marginBottom: '0.5rem',
+  textTransform: 'uppercase',
+  letterSpacing: '0.03em',
+});
+
+export const fundFaucetAddressRow = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  marginBottom: '0.75rem',
+});
+
+export const fundFaucetAddressText = style({
+  flex: 1,
+  fontSize: '0.8125rem',
+  fontFamily: 'monospace',
+  color: colors.snow,
+  wordBreak: 'break-all',
+});
+
+export const fundFaucetAmountInput = style({
+  width: '100%',
+  height: '2.25rem',
+  padding: '0 0.5rem',
+  marginBottom: '0.5rem',
+  backgroundColor: colors.gluonGrey,
+  border: `1px solid ${colors.whiteAlpha[20]}`,
+  borderRadius: '0.375rem',
+  color: colors.snow,
+  fontSize: '0.875rem',
+  ':focus': {
+    outline: 'none',
+    borderColor: colors.whiteAlpha[30],
+  },
+});
+
+export const fundFaucetButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  height: '2.25rem',
+  backgroundColor: colors.liquidLava,
+  color: colors.snow,
+  borderRadius: '0.5rem',
+  border: 'none',
+  fontSize: '0.875rem',
+  fontWeight: '600',
+  cursor: 'pointer',
+  transition: 'all 0.15s',
+  ':hover': {
+    backgroundColor: '#E05D0A',
+  },
+  ':disabled': {
+    opacity: 0.6,
+    cursor: 'not-allowed',
+  },
+});

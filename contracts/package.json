@@ -26,7 +26,10 @@
         "deploy:stork-mock": "tsx tasks/deploy-stork-mock.ts",
         "setup:testnet": "tsx tasks/setup-testnet.ts",
         "prices:feed": "tsx tasks/prices-feed.ts",
-        "faucet": "tsx tasks/faucet.ts"
+        "faucet": "tsx tasks/faucet.ts",
+        "build:eth-faucet-predicate": "forc build --path contracts/testnet/eth-faucet-predicate",
+        "gen:eth-faucet-artifact": "node scripts/write-eth-faucet-artifact.mjs",
+        "fund:eth-faucet-predicate": "tsx tasks/fund-eth-faucet-predicate.ts"
     },
     "devDependencies": {
         "@types/node": "20.3.1",

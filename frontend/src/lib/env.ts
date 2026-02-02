@@ -30,6 +30,12 @@ export const envs = {
   isDev() {
     return ENV.env === 'dev';
   },
+
+  /** Eth faucet predicate PIN (32-byte hex). When set, used for testnet ETH faucet. */
+  getEthFaucetPin(): string | undefined {
+    const v = ENV.ethFaucetPin;
+    return v && v.trim().length > 0 ? v.trim() : undefined;
+  },
 };
 
 const ENV = EnvConfigSchema.parse({
@@ -40,4 +46,5 @@ const ENV = EnvConfigSchema.parse({
   chainIds: import.meta.env.VITE_CHAIN_IDS,
   defaultNetwork: import.meta.env.VITE_DEFAULT_ENVIRONMENT,
   env: import.meta.env.VITE_ENV,
+  ethFaucetPin: import.meta.env.VITE_ETH_FAUCET_PIN,
 });
