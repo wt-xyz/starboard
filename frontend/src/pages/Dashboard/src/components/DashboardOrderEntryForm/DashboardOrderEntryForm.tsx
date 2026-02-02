@@ -1,6 +1,7 @@
-import { type FC, useCallback, useState } from 'react';
+import { type FC, useCallback } from 'react';
 import { Button } from '@radix-ui/themes';
-import { CollateralAmount, DecimalValue, type RequestStatus } from 'fuel-ts-sdk';
+import { CollateralAmount, DecimalValue } from 'fuel-ts-sdk';
+import { toast } from 'react-toastify';
 import { WalletContext } from '@/contexts/WalletContext';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
@@ -22,10 +23,6 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
 }) => {
   const tradingSdk = useTradingSdk();
   const wallet = useRequiredContext(WalletContext);
-
-  const [transactionStatus, setTransactionStatus] = useState<RequestStatus>('uninitialized');
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [showValidationError, setShowValidationError] = useState(false);
 
   const isWalletConnected = wallet.isUserConnected();
 
@@ -52,22 +49,26 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
 
   const handleOrderSubmission = useCallback(
     async (formData: IncreasePositionFormModel) => {
-      setTransactionStatus('pending');
-      setErrorMessage('');
+      const toastId = toast.info(
+        'Your transaction is being submitted to the blockchain. Please wait...',
+        { autoClose: false }
+      );
 
       try {
         await processOrder(formData);
-        setTransactionStatus('fulfilled');
+        toast.dismiss(toastId);
+        toast.success('Your order has been submitted successfully!');
       } catch (err) {
-        setTransactionStatus('rejected');
-        setErrorMessage(err instanceof Error ? err.message : 'Transaction failed');
+        toast.dismiss(toastId);
+        const message = err instanceof Error ? err.message : 'Transaction failed';
+        toast.error(message || 'An error occurred while submitting your transaction. Please try again.');
       }
     },
     [processOrder]
   );
 
   const handleValidationError = useCallback(() => {
-    setShowValidationError(true);
+    toast.error('Please fill out all fields correctly before submitting.');
   }, []);
 
   return (
@@ -91,26 +92,6 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
           )}
         </IncreasePositionForm.KernelProvider>
       </IncreasePositionForm.OptionsProvider>
-
-      <IncreasePositionForm.ValidationErrorDialog
-        open={showValidationError}
-        onOpenChange={(open: boolean) => !open && setShowValidationError(false)}
-      />
-
-      <IncreasePositionForm.ProcessingTransactionDialog open={transactionStatus === 'pending'} />
-
-      <IncreasePositionForm.TransactionSuccessDialog
-        open={transactionStatus === 'fulfilled'}
-        onOpenChange={(open: boolean) => !open && setTransactionStatus('uninitialized')}
-      />
-
-      <IncreasePositionForm.TransactionErrorDialog
-        open={transactionStatus === 'rejected'}
-        onOpenChange={(open: boolean) => !open && setTransactionStatus('uninitialized')}
-        description={
-          errorMessage || 'An error occurred while submitting your transaction. Please try again.'
-        }
-      />
     </div>
   );
 };
