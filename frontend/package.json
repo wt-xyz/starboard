@@ -19,14 +19,18 @@
   },
   "dependencies": {
     "@fuels/connectors": "^0.43.2",
+    "@fuels/react": "^0.43.2",
     "@hookform/resolvers": "^3.10.0",
     "@preact/signals-react": "^3.6.1",
+    "@privy-io/react-auth": "^3.13.0",
+    "@privy-io/wagmi": "^4.0.1",
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/themes": "^3.2.1",
     "@react-router/node": "^7.11.0",
     "@react-router/serve": "^7.11.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-query": "^5.90.20",
     "@vanilla-extract/css": "^1.18.0",
     "@vanilla-extract/recipes": "^0.5.7",
     "@vanilla-extract/vite-plugin": "^5.1.4",
@@ -43,7 +47,9 @@
     "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.18",
     "usehooks-ts": "^3.1.1",
+    "viem": "^2.45.1",
     "vite-envs": "^4.6.2",
+    "wagmi": "^3.4.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
