@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/sheet';
 import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { envs } from '@/lib/env';
+import { useAutoFaucet } from '@/lib/hooks/useAutoFaucet';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import { useAccount } from '@fuels/react';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
@@ -55,6 +56,9 @@ export function DashboardLayout() {
   const walletAddress = account ?? '';
   const displayAddress = walletAddress ? truncateAddress(walletAddress) : '';
   const avatarGradient = walletAddress ? getAddressGradient(walletAddress) : '';
+
+  // Auto-faucet for burner wallets with 0 ETH
+  useAutoFaucet(walletAddress);
 
   function handleWalletButtonClick() {
     if (isWalletConnected && walletAddress) {
