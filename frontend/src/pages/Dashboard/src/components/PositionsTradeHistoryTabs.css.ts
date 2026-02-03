@@ -52,7 +52,7 @@ export const tabsTrigger = style({
 export const tabsContent = style({
   flex: 1,
   overflow: 'auto',
-  padding: '1rem',
+  padding: '0.75rem 1rem 1rem 1rem',
   minHeight: 0,
   WebkitOverflowScrolling: 'touch',
   '::-webkit-scrollbar': {

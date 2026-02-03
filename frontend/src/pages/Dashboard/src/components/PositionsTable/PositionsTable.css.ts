@@ -12,6 +12,7 @@ export const headerRow = style({
   position: 'sticky',
   top: 0,
   zIndex: 1,
+  backgroundColor: colors.gluonGrey,
 });
 
 export const headerCell = style({
@@ -22,6 +23,6 @@ export const headerCell = style({
   color: colors.dustyGrey,
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
-  backgroundColor: 'transparent',
+  backgroundColor: colors.gluonGrey,
   borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
 });
