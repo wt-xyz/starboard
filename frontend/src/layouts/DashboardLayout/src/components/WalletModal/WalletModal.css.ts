@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
 import { colors } from '../../../../../styles/colors';
 
 export const addressRow = style({
@@ -106,18 +106,17 @@ export const disconnectButton = style({
   },
 });
 
+const pulseAnimation = keyframes({
+  '0%, 100%': { opacity: 1 },
+  '50%': { opacity: 0.5 },
+});
+
 export const skeleton = style({
   height: '1rem',
   width: '4rem',
   backgroundColor: colors.whiteAlpha[10],
   borderRadius: '0.25rem',
-  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-  '@keyframes': {
-    pulse: {
-      '0%, 100%': { opacity: 1 },
-      '50%': { opacity: 0.5 },
-    },
-  },
+  animation: `${pulseAnimation} 2s cubic-bezier(0.4, 0, 0.6, 1) infinite`,
 });
 
 // Burner Wallet section (dev / in-browser wallet)

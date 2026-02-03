@@ -1,4 +1,3 @@
-import predicateArtifacts from '@/assets/eth-faucet-predicate.json';
 import {
     Dialog,
     DialogBody,
@@ -25,8 +24,6 @@ import type { FC } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as styles from './WalletModal.css';
-
-const MAX_FAUCET_AMOUNT = (predicateArtifacts as { maxFaucetAmount: number }).maxFaucetAmount;
 
 type WalletModalProps = {
   open: boolean;
@@ -197,7 +194,7 @@ export const WalletModal: FC<WalletModalProps> = ({
       const baseAssetId = await account.provider.getBaseAssetId();
       const tx = await account.transfer(
         predicateAddress,
-        amountBase,
+        Number(amountBase),
         baseAssetId,
         { gasLimit: 15_000 }
       );
