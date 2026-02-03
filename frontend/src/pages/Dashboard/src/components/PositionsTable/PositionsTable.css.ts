@@ -6,7 +6,6 @@ export const table = style({
   borderCollapse: 'separate',
   borderSpacing: '0 0.125rem',
   fontSize: '0.75rem',
-  marginTop: '0.25rem',
 });
 
 export const headerRow = style({
