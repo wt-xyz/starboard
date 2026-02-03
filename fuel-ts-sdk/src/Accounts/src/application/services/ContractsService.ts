@@ -12,7 +12,7 @@ export interface ContractsService {
 
 export interface ContractsServiceDependencies {
   walletGetter: WalletGetterFn;
-  vaultContractId: ContractId;
+  vaultContractId?: ContractId;
   testnetTokenContractId?: ContractId;
 }
 
@@ -30,6 +30,7 @@ export const createContractsService = ({
     async getVaultContract() {
       const wallet = await walletGetter();
       if (!wallet) throw new Error('Wallet is not connected');
+      if (!vaultContractId) throw new Error('Vault contract ID is not configured');
 
       return new Contract(vaultContractId, vaultAbi, wallet);
     },

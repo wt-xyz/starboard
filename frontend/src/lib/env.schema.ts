@@ -6,7 +6,7 @@ export type EnvConfig = zod.infer<typeof EnvConfigSchema>;
 
 export const EnvConfigSchema = zod.object({
   indexerUrls: jsonStringSchema(networkRecordSchema(zod.string().url())),
-  vaultContractIds: jsonStringSchema(networkRecordSchema(ContractIdSchema)),
+  vaultContractIds: jsonStringSchema(networkRecordSchema(ContractIdSchema.optional())),
   testnetTokenContractIds: jsonStringSchema(networkRecordSchema(ContractIdSchema.optional())),
   rpcUrls: jsonStringSchema(networkRecordSchema(zod.string().url())),
   chainIds: jsonStringSchema(networkRecordSchema(zod.coerce.number())),

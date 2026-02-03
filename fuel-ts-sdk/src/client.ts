@@ -15,7 +15,7 @@ export type StarboardClient = ReturnType<typeof createStarboardClient>;
 
 export interface StarboardClientConfig {
   indexerUrl: string;
-  vaultContractId: ContractId;
+  vaultContractId?: ContractId;
   testnetTokenContractId?: ContractId;
   accountGetter: () => Promise<Account | null>;
 }
