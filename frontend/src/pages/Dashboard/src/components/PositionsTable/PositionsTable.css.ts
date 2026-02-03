@@ -4,8 +4,8 @@ import { style } from '@vanilla-extract/css';
 export const table = style({
   width: '100%',
   borderCollapse: 'separate',
-  borderSpacing: '0 0.25rem',
-  fontSize: '0.8125rem',
+  borderSpacing: '0 0.125rem',
+  fontSize: '0.75rem',
 });
 
 export const headerRow = style({
@@ -15,9 +15,9 @@ export const headerRow = style({
 });
 
 export const headerCell = style({
-  padding: '0.75rem',
+  padding: '0.5rem 0.625rem',
   textAlign: 'left',
-  fontSize: '0.6875rem',
+  fontSize: '0.625rem',
   fontWeight: '600',
   color: colors.dustyGrey,
   textTransform: 'uppercase',
