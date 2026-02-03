@@ -10,8 +10,8 @@ export const tableRow = style({
 });
 
 export const cell = style({
-  padding: '0.75rem',
-  fontSize: '0.8125rem',
+  padding: '0.5rem 0.625rem',
+  fontSize: '0.75rem',
   color: colors.snow,
   borderTop: `1px solid ${colors.whiteAlpha[10]}`,
   borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
@@ -33,7 +33,7 @@ export const cell = style({
 export const cellContent = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '0.125rem',
+  gap: '0.0625rem',
 });
 
 export const cellValue = style({
@@ -42,16 +42,16 @@ export const cellValue = style({
 });
 
 export const cellSecondary = style({
-  fontSize: '0.6875rem',
+  fontSize: '0.625rem',
   color: colors.dustyGrey,
   fontFamily: 'monospace',
 });
 
 export const side = style({
   display: 'inline-block',
-  padding: '0.125rem 0.375rem',
-  borderRadius: '0.25rem',
-  fontSize: '0.625rem',
+  padding: '0.0625rem 0.3125rem',
+  borderRadius: '0.1875rem',
+  fontSize: '0.5625rem',
   fontWeight: '700',
   letterSpacing: '0.05em',
   textTransform: 'uppercase',
@@ -74,7 +74,7 @@ export const assetInfo = style({
 });
 
 export const assetSymbol = style({
-  fontSize: '0.8125rem',
+  fontSize: '0.75rem',
   fontWeight: '600',
   color: colors.snow,
 });
@@ -95,12 +95,12 @@ export const iconButton = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: '1.75rem',
-  height: '1.75rem',
+  width: '1.5rem',
+  height: '1.5rem',
   padding: 0,
   backgroundColor: colors.whiteAlpha[5],
   border: `1px solid ${colors.whiteAlpha[10]}`,
-  borderRadius: '0.375rem',
+  borderRadius: '0.3125rem',
   color: colors.snow,
   cursor: 'pointer',
   transition: 'all 0.2s',
