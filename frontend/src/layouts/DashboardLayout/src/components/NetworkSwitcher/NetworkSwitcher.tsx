@@ -1,12 +1,12 @@
-import type { FC } from 'react';
-import { useState } from 'react';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
-import { Select } from 'radix-ui';
 import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext';
 import { envs } from '@/lib/env';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import type { Network } from '@/models/Network';
 import { NETWORKS } from '@/models/Network';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { Select } from 'radix-ui';
+import type { FC } from 'react';
+import { useState } from 'react';
 import * as $ from './NetworkSwitcher.css';
 
 const NETWORK_LABELS: Record<Network, string> = {
