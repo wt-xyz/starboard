@@ -70,6 +70,7 @@ export const bottomSection = style({
   '@media': {
     '(max-width: 1024px)': {
       flex: '0 0 400px',
+      paddingBottom: '80px', // Add space for fixed bottom menu
     },
   },
 });

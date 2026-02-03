@@ -1,10 +1,10 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import type {
-  ChartingLibraryFeatureset,
-  ChartingLibraryWidgetOptions,
-  IChartingLibraryWidget,
-  ResolutionString,
+    ChartingLibraryFeatureset,
+    ChartingLibraryWidgetOptions,
+    IChartingLibraryWidget,
+    ResolutionString,
 } from 'public/tradingview/charting_library';
 import { colors } from '@/styles/colors';
 import * as styles from './TradingChart.css';
@@ -80,6 +80,24 @@ html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4 {
 }
 .layout__area--left {
   display: none !important;
+}
+
+/* Ensure time scale (X-axis) is fully visible */
+.chart-container {
+  padding-bottom: 2px !important;
+}
+.time-axis {
+  overflow: visible !important;
+}
+
+/* Mobile: ensure X-axis labels are fully visible */
+@media (max-width: 1024px) {
+  .chart-container {
+    padding-bottom: 6px !important;
+  }
+  .chart-widget {
+    margin-bottom: 4px !important;
+  }
 }
 `;
 
@@ -168,6 +186,7 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       disabled_features: [
         'trading_account_manager' as ChartingLibraryFeatureset,
         'use_localstorage_for_settings' as ChartingLibraryFeatureset,
+        'timeframes_toolbar' as ChartingLibraryFeatureset,
       ],
       enabled_features: [
         'iframe_loading_same_origin' as ChartingLibraryFeatureset,

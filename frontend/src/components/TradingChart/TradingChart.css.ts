@@ -6,4 +6,10 @@ export const container = style({
   minHeight: '500px',
   position: 'relative',
   flex: 1,
+  paddingBottom: '4px',
+  '@media': {
+    '(max-width: 1024px)': {
+      paddingBottom: '8px',
+    },
+  },
 });

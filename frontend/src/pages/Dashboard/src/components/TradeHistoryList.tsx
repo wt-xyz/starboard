@@ -9,10 +9,10 @@ export const TradeHistoryList: FC = () => {
   const trading = useTradingSdk();
   const userAddress = useSdkQuery((sdk) => sdk.accounts.getCurrentUserAddress());
 
-  // Fetch all positions (not just latest) to get trade history
+  // Fetch all positions (all revisions) so trade history shows full list; force refetch so we don't use cached open-only result
   usePolling(
     useCallback(() => {
-      if (userAddress) trading.fetchPositionsByAccount(userAddress, false);
+      if (userAddress) trading.fetchPositionsByAccount(userAddress, true);
     }, [trading, userAddress]),
     5000 // Poll every 5 seconds (less frequent than open positions)
   );
