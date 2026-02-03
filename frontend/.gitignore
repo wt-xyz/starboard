@@ -26,3 +26,5 @@ dist-ssr
 # Environment files (generated from .example)
 .env
 .env.test
+.env.staging
+.env.production
