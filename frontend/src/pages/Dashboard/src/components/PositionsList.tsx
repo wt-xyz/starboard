@@ -1,6 +1,5 @@
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { usePolling } from '@/lib/usePolling';
-import { $decimalValue, BigIntMath, DecimalCalculator, UsdValue, zero } from 'fuel-ts-sdk';
 import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useCallback, useMemo, type FC } from 'react';
 import { PositionCard } from './PositionCard';
@@ -25,15 +24,6 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
     });
   }, [accountOpenPositions, filterBySide]);
 
-  const totalExposure = useMemo(() => {
-    return filteredOpenPositions.reduce((total, position) => {
-      const positionNotional = DecimalCalculator.value(BigIntMath.abs(position.size)).calculate(
-        UsdValue
-      );
-      return DecimalCalculator.first(total).add(positionNotional).calculate(UsdValue);
-    }, zero(UsdValue));
-  }, [filteredOpenPositions]);
-
   usePolling(
     useCallback(() => {
       if (userAddress) trading.fetchPositionsByAccount(userAddress, true);
@@ -52,21 +42,6 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
 
   return (
     <div css={styles.positionsContainer}>
-      <div css={styles.header}>
-        <span css={styles.headerTitle}>Open Positions ({filteredOpenPositions.length})</span>
-        <div css={styles.headerStats}>
-          <div css={styles.statItem}>
-            <span css={styles.statLabel}>Exposure</span>
-            <span css={styles.statValue}>
-              $
-              {$decimalValue(totalExposure)
-                .toFloat()
-                .toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
-          </div>
-        </div>
-      </div>
-      
       {/* Desktop: Table view */}
       <div css={styles.desktopView}>
         <PositionsTable positions={filteredOpenPositions} />
