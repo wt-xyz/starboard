@@ -79,7 +79,7 @@ function createFuelConnectors() {
   if (import.meta.env.DEV) {
     connectors.push(
       new FuelWalletDevelopmentConnector(),
-      new BurnerWalletConnector({ chainId })
+      new BurnerWalletConnector({ chainId }) as any
     );
   }
 
@@ -88,9 +88,9 @@ function createFuelConnectors() {
     connectors.push(
       new WalletConnectConnector({
         projectId: WALLETCONNECT_PROJECT_ID,
-        wagmiConfig,
+        wagmiConfig: wagmiConfig as any,
         chainId,
-      })
+      }) as any
     );
   }
 

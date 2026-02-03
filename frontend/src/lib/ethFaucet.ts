@@ -12,7 +12,7 @@ const STORAGE_KEY_PREFIX = 'starboard_eth_faucet_';
 
 type Artifact = {
   bytecodeHex: string;
-  abi: Parameters<typeof Predicate>[0]['abi'];
+  abi: any; // JSON ABI from artifact
   pin: string;
   maxFaucetAmount: number;
 };
@@ -77,7 +77,7 @@ export function getPredicateAddress(
 function createPredicate(
   provider: Provider,
   config: FaucetConfig
-): InstanceType<typeof Predicate> {
+): any {
   const art = getArtifact();
   const bytecode =
     art.bytecodeHex.startsWith('0x') ? art.bytecodeHex : `0x${art.bytecodeHex}`;
@@ -91,7 +91,7 @@ function createPredicate(
       MAX_FAUCET_AMOUNT: config.maxFaucetAmount,
     },
     data: [pin],
-  });
+  } as any);
 }
 
 /**
@@ -113,7 +113,7 @@ export async function requestTestnetEth(
     const baseAssetId = await provider.getBaseAssetId();
     const tx = await predicate.transfer(
       recipientAddress,
-      BigInt(effectiveConfig.maxFaucetAmount),
+      effectiveConfig.maxFaucetAmount,
       baseAssetId
     );
     await tx.waitForResult();
