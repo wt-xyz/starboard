@@ -64,9 +64,10 @@ export const topSection = style({
 });
 
 export const bottomSection = style({
-  flex: '0 0 280px', // Reduced height to give more room to chart
+  flex: '0 0 380px', // Increased to accommodate more positions
   minHeight: 0,
-  overflow: 'hidden',
+  display: 'flex',
+  flexDirection: 'column',
   '@media': {
     '(max-width: 1024px)': {
       flex: '0 0 400px',
