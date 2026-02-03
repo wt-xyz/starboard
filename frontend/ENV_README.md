@@ -76,11 +76,6 @@ For contracts not yet deployed, use a zero address:
 0x0000000000000000000000000000000000000000000000000000000000000000
 ```
 
-### Authentication & Wallet
-
-- **`VITE_PRIVY_APP_ID`**: Privy application ID for EVM wallet support (optional)
-- **`VITE_WALLETCONNECT_PROJECT_ID`**: WalletConnect project ID (required if using Privy)
-
 ### Testnet/Local Only
 
 - **`VITE_ETH_FAUCET_PIN`**: 32-byte hex PIN for the ETH faucet predicate (testnet/local only)
@@ -94,7 +89,7 @@ For contracts not yet deployed, use a zero address:
    cp .env.example .env
    ```
 
-2. Fill in your personal values (Privy ID, WalletConnect ID, etc.)
+2. Fill in your personal values (faucet PIN, contract IDs, etc.)
 
 3. Start the dev server:
    ```bash
