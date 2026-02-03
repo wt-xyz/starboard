@@ -8,7 +8,7 @@ export const container = style({
   height: '100%',
   backgroundColor: colors.gluonGrey,
   borderRadius: '0.5rem',
-  overflow: 'hidden',
+  overflow: 'visible',
 });
 
 export const tabsList = style({

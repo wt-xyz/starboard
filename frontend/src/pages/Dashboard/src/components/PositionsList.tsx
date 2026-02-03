@@ -5,6 +5,7 @@ import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useCallback, useMemo, type FC } from 'react';
 import { PositionCard } from './PositionCard';
 import * as styles from './PositionsList.css';
+import { PositionsTable } from './PositionsTable';
 
 type PositionsListProps = {
   filterBySide?: 'long' | 'short';
@@ -65,10 +66,19 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
           </div>
         </div>
       </div>
-      <div css={styles.positionCards}>
-        {filteredOpenPositions.map((openPosition) => (
-          <PositionCard key={openPosition.revisionId} position={openPosition} />
-        ))}
+      
+      {/* Desktop: Table view */}
+      <div css={styles.desktopView}>
+        <PositionsTable positions={filteredOpenPositions} />
+      </div>
+
+      {/* Mobile: Card view */}
+      <div css={styles.mobileView}>
+        <div css={styles.positionCards}>
+          {filteredOpenPositions.map((openPosition) => (
+            <PositionCard key={openPosition.revisionId} position={openPosition} />
+          ))}
+        </div>
       </div>
     </div>
   );
