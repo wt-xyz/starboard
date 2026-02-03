@@ -6,17 +6,18 @@ export const table = style({
   borderCollapse: 'separate',
   borderSpacing: '0 0.125rem',
   fontSize: '0.75rem',
+  marginTop: '0.25rem',
 });
 
 export const headerRow = style({
   position: 'sticky',
-  top: 0,
+  top: -1,
   zIndex: 1,
   backgroundColor: colors.gluonGrey,
 });
 
 export const headerCell = style({
-  padding: '0.5rem 0.625rem',
+  padding: '0.625rem 0.625rem 0.5rem 0.625rem',
   textAlign: 'left',
   fontSize: '0.625rem',
   fontWeight: '600',
