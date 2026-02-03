@@ -77,11 +77,9 @@ export const NetworkSwitchContextProvider: FC<NetworkSwitchContextProviderProps>
     [changeNetwork, getCurrentNetwork]
   );
 
-  const childrenMemoized = useMemo(() => children(contextValue), [children, contextValue]);
-
   return (
     <NetworkSwitchContext.Provider value={contextValue}>
-      {childrenMemoized}
+      {children(contextValue)}
     </NetworkSwitchContext.Provider>
   );
 };
