@@ -1,6 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Network as FuelNetwork } from 'fuels';
+import { toast } from 'react-toastify';
 import { envs } from '@/lib/env';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import type { Network } from '@/models/Network';
@@ -20,9 +21,25 @@ export const NetworkSwitchContextProvider: FC<NetworkSwitchContextProviderProps>
   const [currentNetwork, setCurrentNetwork] = useState<Network>('testnet');
 
   const changeNetwork = useCallback(
-    (network: Network) => {
-      const networkRpcInfo = getNetworkRpcInfo(network);
-      wallet.changeNetwork(networkRpcInfo);
+    async (network: Network) => {
+      try {
+        const networkRpcInfo = getNetworkRpcInfo(network);
+        await wallet.changeNetwork(networkRpcInfo);
+        toast.success(`Switched to ${network}`);
+      } catch (error) {
+        console.error('Failed to change network:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        
+        // Check if it's a local network access issue
+        if (network === 'local' && errorMessage.includes('not implemented')) {
+          toast.error('Local network is only available in development mode');
+        } else {
+          toast.error(`Failed to switch network: ${errorMessage}`);
+        }
+        
+        // Revert to current network on error
+        throw error;
+      }
     },
     [wallet]
   );

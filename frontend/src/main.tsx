@@ -60,6 +60,14 @@ function getSupportedNetworks() {
     });
   }
 
+  // Add mainnet if configured
+  if (rpcUrls.mainnet) {
+    networks.push({
+      chainId: envs.getChainIdByNetwork('mainnet'),
+      url: rpcUrls.mainnet,
+    });
+  }
+
   return networks;
 }
 
@@ -75,12 +83,14 @@ function createFuelConnectors() {
     new FueletWalletConnector(),
   ];
 
-  // Development connectors
+  // Development-only connectors
   if (import.meta.env.DEV) {
-    connectors.push(
-      new FuelWalletDevelopmentConnector(),
-      new BurnerWalletConnector({ chainId }) as any
-    );
+    connectors.push(new FuelWalletDevelopmentConnector());
+  }
+
+  // Burner wallet available on testnet and local (not on mainnet)
+  if (defaultNetwork === 'testnet' || defaultNetwork === 'local') {
+    connectors.push(new BurnerWalletConnector({ chainId }) as any);
   }
 
   // EVM wallet support via WalletConnect

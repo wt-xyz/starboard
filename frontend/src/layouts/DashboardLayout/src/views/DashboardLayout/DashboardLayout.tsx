@@ -15,6 +15,7 @@ import { useAccount } from '@fuels/react';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { Outlet } from 'react-router';
+import { NetworkSwitcher } from '../../components/NetworkSwitcher';
 import { WalletCollateralCard } from '../../components/WalletCollateralCard';
 import { WalletModal } from '../../components/WalletModal';
 import * as styles from './DashboardLayout.css';
@@ -81,6 +82,7 @@ export function DashboardLayout() {
 
         <div css={styles.headerRight}>
           <div css={styles.desktopOnly}>
+            <NetworkSwitcher />
             {envs.isDev() && isWalletConnected && <MintButton />}
             {isWalletConnected && <WalletCollateralCard />}
             <button
@@ -111,6 +113,10 @@ export function DashboardLayout() {
               </SheetHeader>
 
               <div css={styles.mobileMenuContent}>
+                <div css={styles.mobileMenuSection}>
+                  <NetworkSwitcher />
+                </div>
+                
                 <div css={styles.mobileMenuSection}>
                   {envs.isDev() && isWalletConnected && <MintButton />}
                   {isWalletConnected && <WalletCollateralCard />}

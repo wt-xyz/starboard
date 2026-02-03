@@ -5,7 +5,7 @@ import { type WalletGetterFn, createContractsService } from './src/application';
 
 export type AccountsModuleDependencies = {
   walletGetter: WalletGetterFn;
-  vaultContractId: ContractId;
+  vaultContractId?: ContractId;
   testnetTokenContractId?: ContractId;
 };
 

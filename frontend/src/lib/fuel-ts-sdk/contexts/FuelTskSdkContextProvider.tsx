@@ -65,5 +65,6 @@ function WalletBalancesInitializer() {
 function getNetworkAssets(network: Network) {
   if (network === 'local') return localAssets as AssetEntity[];
   if (network === 'testnet') return testnetAssets as AssetEntity[];
+  if (network === 'mainnet') return [] as AssetEntity[]; // TODO: Add mainnet assets when available
   throw new Error(`Unsupported Network:  ${network}`);
 }
