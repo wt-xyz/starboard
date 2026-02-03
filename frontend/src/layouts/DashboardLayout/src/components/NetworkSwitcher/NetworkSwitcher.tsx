@@ -1,10 +1,12 @@
-import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext/NetworkSwitchContext';
+import type { FC } from 'react';
+import { useState } from 'react';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { Select } from 'radix-ui';
+import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext';
 import { envs } from '@/lib/env';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import type { Network } from '@/models/Network';
 import { NETWORKS } from '@/models/Network';
-import type { ChangeEvent, FC } from 'react';
-import { useState } from 'react';
 import * as $ from './NetworkSwitcher.css';
 
 const NETWORK_LABELS: Record<Network, string> = {
@@ -30,16 +32,14 @@ export const NetworkSwitcher: FC = () => {
   const [isChanging, setIsChanging] = useState(false);
   const availableNetworks = getAvailableNetworks();
 
-  const handleNetworkChange = async (event: ChangeEvent<HTMLSelectElement>) => {
-    const network = event.target.value as Network;
+  const handleNetworkChange = async (network: Network) => {
     if (network !== currentNetwork && !isChanging) {
       setIsChanging(true);
       try {
         await networkSwitch.changeNetwork(network);
       } catch (error) {
         // Error is already handled in the context provider
-        // Reset the select to the current network
-        event.target.value = currentNetwork;
+        // Select will revert to current value automatically since we don't update state on error
       } finally {
         setIsChanging(false);
       }
@@ -47,20 +47,35 @@ export const NetworkSwitcher: FC = () => {
   };
 
   return (
-    <div css={$.container}>
-      <span css={$.label}>Network</span>
-      <select
-        css={$.select}
+    <div css={$.networkSwitcherContainer}>
+      <span css={$.networkLabel}>Network</span>
+      <Select.Root
         value={currentNetwork}
-        onChange={handleNetworkChange}
+        onValueChange={handleNetworkChange}
         disabled={isChanging}
       >
-        {availableNetworks.map((network) => (
-          <option key={network} value={network}>
-            {NETWORK_LABELS[network]}
-          </option>
-        ))}
-      </select>
+        <Select.Trigger className={$.selectTrigger()}>
+          <Select.Value>{NETWORK_LABELS[currentNetwork]}</Select.Value>
+          <Select.Icon className={$.triggerIcon}>
+            <ChevronDownIcon />
+          </Select.Icon>
+        </Select.Trigger>
+        <Select.Portal>
+          <Select.Content className={$.selectContent} position="popper">
+            <Select.Viewport>
+              {availableNetworks.map((network) => (
+                <Select.Item
+                  key={network}
+                  value={network}
+                  className={$.selectItem()}
+                >
+                  <Select.ItemText>{NETWORK_LABELS[network]}</Select.ItemText>
+                </Select.Item>
+              ))}
+            </Select.Viewport>
+          </Select.Content>
+        </Select.Portal>
+      </Select.Root>
     </div>
   );
 };

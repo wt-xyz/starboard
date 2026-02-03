@@ -7,7 +7,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext/NetworkSwitchContext';
 import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { useAutoFaucet } from '@/lib/hooks/useAutoFaucet';
 import { useRequiredContext } from '@/lib/useRequiredContext';
@@ -48,7 +47,6 @@ function getAddressGradient(address: string): string {
 
 export function DashboardLayout() {
   const wallet = useRequiredContext(WalletContext);
-  const networkSwitch = useRequiredContext(NetworkSwitchContext);
   const { account } = useAccount();
   const isWalletConnected = wallet.isUserConnected();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

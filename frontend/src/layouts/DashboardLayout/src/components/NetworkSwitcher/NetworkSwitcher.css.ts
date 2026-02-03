@@ -1,13 +1,14 @@
 import { colors } from '@/styles/colors';
+import { recipe } from '@vanilla-extract/recipes';
 import { style } from '@vanilla-extract/css';
 
-export const container = style({
+export const networkSwitcherContainer = style({
   display: 'flex',
   alignItems: 'center',
   gap: '0.75rem',
 });
 
-export const label = style({
+export const networkLabel = style({
   fontSize: '0.75rem',
   color: colors.dustyGrey,
   textTransform: 'uppercase',
@@ -15,33 +16,102 @@ export const label = style({
   letterSpacing: '0.05em',
 });
 
-export const select = style({
-  padding: '0.5rem 2rem 0.5rem 0.75rem',
-  backgroundColor: colors.slateGrey,
-  color: colors.snow,
-  border: `1px solid ${colors.whiteAlpha[20]}`,
-  borderRadius: '0.375rem',
-  fontSize: '0.875rem',
-  fontWeight: '600',
-  cursor: 'pointer',
-  transition: 'all 0.15s',
+export const selectTrigger = recipe({
+  base: {
+    all: 'unset',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '0.5rem',
+    backgroundColor: colors.slateGrey,
+    color: colors.snow,
+    padding: '0.5rem 0.75rem',
+    minWidth: '8rem',
+    lineHeight: 1,
+    borderRadius: '0.375rem',
+    border: `1px solid ${colors.whiteAlpha[20]}`,
+    cursor: 'pointer',
+    transition: 'all 0.15s ease',
+    fontWeight: '600',
+    fontSize: '0.875rem',
+    ':hover': {
+      backgroundColor: colors.gluonGrey,
+      borderColor: colors.whiteAlpha[30],
+    },
+    ':focus': {
+      outline: 'none',
+      borderColor: colors.liquidLava,
+      boxShadow: `0 0 0 2px ${colors.liquidLavaAlpha[20]}`,
+    },
+    selectors: {
+      '&[data-state="open"]': {
+        borderColor: colors.liquidLava,
+      },
+      '&[data-disabled]': {
+        opacity: 0.5,
+        cursor: 'not-allowed',
+      },
+    },
+  },
+});
+
+export const triggerIcon = style({
+  color: colors.dustyGrey,
+  transition: 'transform 0.2s ease',
+  selectors: {
+    '[data-state="open"] &': {
+      transform: 'rotate(180deg)',
+    },
+  },
+});
+
+export const selectContent = style({
+  backgroundColor: colors.gluonGrey,
+  border: `1px solid ${colors.slateGrey}`,
+  borderRadius: '0.5rem',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+  maxHeight: 'var(--radix-select-content-available-height)',
   minWidth: '8rem',
-  appearance: 'none',
-  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FBFBFB' d='M2 4l4 4 4-4'/%3E%3C/svg%3E")`,
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'right 0.75rem center',
-  backgroundSize: '12px',
-  ':hover': {
-    backgroundColor: colors.gluonGrey,
-    borderColor: colors.whiteAlpha[30],
-  },
-  ':focus': {
+  overflow: 'hidden',
+  padding: '0.25rem',
+  zIndex: 50,
+});
+
+export const selectItem = recipe({
+  base: {
+    all: 'unset',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    lineHeight: 1,
+    color: colors.snow,
+    borderRadius: '0.25rem',
+    display: 'flex',
+    alignItems: 'center',
+    height: '2rem',
+    padding: '0 0.75rem',
+    position: 'relative',
+    cursor: 'pointer',
+    userSelect: 'none',
     outline: 'none',
-    borderColor: colors.liquidLava,
-    boxShadow: `0 0 0 2px ${colors.liquidLavaAlpha[20]}`,
-  },
-  ':disabled': {
-    opacity: 0.5,
-    cursor: 'not-allowed',
+    transition: 'all 0.15s ease',
+    ':hover': {
+      backgroundColor: colors.slateGrey,
+    },
+    ':focus': {
+      backgroundColor: colors.slateGrey,
+    },
+    selectors: {
+      '&[data-highlighted]': {
+        backgroundColor: colors.slateGrey,
+      },
+      '&[data-state="checked"]': {
+        backgroundColor: colors.slateGrey,
+      },
+      '&[data-disabled]': {
+        color: colors.dustyGrey,
+        cursor: 'not-allowed',
+        opacity: 0.5,
+      },
+    },
   },
 });
