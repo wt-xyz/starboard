@@ -7,8 +7,8 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
+import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext/NetworkSwitchContext';
 import { WalletContext } from '@/contexts/WalletContext/WalletContext';
-import { envs } from '@/lib/env';
 import { useAutoFaucet } from '@/lib/hooks/useAutoFaucet';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import { useAccount } from '@fuels/react';
@@ -20,7 +20,6 @@ import { WalletCollateralCard } from '../../components/WalletCollateralCard';
 import { WalletModal } from '../../components/WalletModal';
 import * as styles from './DashboardLayout.css';
 import { DashboardHeader } from './components/DashboardHeader';
-import { MintButton } from './components/DashboardHeader/components/MintButton';
 
 /**
  * Truncates an address to show first 6 and last 4 characters
@@ -49,6 +48,7 @@ function getAddressGradient(address: string): string {
 
 export function DashboardLayout() {
   const wallet = useRequiredContext(WalletContext);
+  const networkSwitch = useRequiredContext(NetworkSwitchContext);
   const { account } = useAccount();
   const isWalletConnected = wallet.isUserConnected();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -83,7 +83,6 @@ export function DashboardLayout() {
         <div css={styles.headerRight}>
           <div css={styles.desktopOnly}>
             <NetworkSwitcher />
-            {envs.isDev() && isWalletConnected && <MintButton />}
             {isWalletConnected && <WalletCollateralCard />}
             <button
               onClick={handleWalletButtonClick}
@@ -118,7 +117,6 @@ export function DashboardLayout() {
                 </div>
                 
                 <div css={styles.mobileMenuSection}>
-                  {envs.isDev() && isWalletConnected && <MintButton />}
                   {isWalletConnected && <WalletCollateralCard />}
 
                   <SheetClose asChild>

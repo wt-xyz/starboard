@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import type { ContractId } from '@sdk/shared/types';
 import * as Wallet from './src/Wallet';
-import { type WalletGetterFn, createContractsService } from './src/application';
+import { createContractsService, type WalletGetterFn } from './src/application';
 
 export type AccountsModuleDependencies = {
   walletGetter: WalletGetterFn;

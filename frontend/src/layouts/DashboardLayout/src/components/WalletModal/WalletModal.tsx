@@ -63,8 +63,8 @@ export const WalletModal: FC<WalletModalProps> = ({
 
   const isBurnerWallet = currentConnector?.name === BURNER_WALLET_CONNECTOR_NAME;
   const showBurnerUI = isBurnerWallet && envs.isDev();
-  const showGetTestnetEth =
-    currentNetwork === 'testnet' || currentNetwork === 'local';
+  const showTestnetTools = currentNetwork === 'testnet' || currentNetwork === 'local';
+  const showGetTestnetEth = showTestnetTools;
 
   const baseAsset = useSdkQuery(() => trading.getBaseAsset());
   const collateral = useSdkQuery((sdk) =>
@@ -258,6 +258,19 @@ export const WalletModal: FC<WalletModalProps> = ({
                 disabled={isMinting}
               >
                 {isMinting ? 'Minting...' : 'Mint USDC'}
+              </button>
+            </div>
+          )}
+
+          {showTestnetTools && !showBurnerUI && (
+            <div css={styles.getTestnetEthSection}>
+              <button
+                type="button"
+                css={styles.getTestnetEthButton}
+                onClick={handleMint}
+                disabled={isMinting}
+              >
+                {isMinting ? 'Minting...' : 'Mint test USDC'}
               </button>
             </div>
           )}
