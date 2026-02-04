@@ -1,5 +1,6 @@
-export const ORDER_SIDES = ['long', 'short'] as const;
-export type OrderSide = (typeof ORDER_SIDES)[number];
+import { ORDER_SIDES, type OrderSide } from '@/modules/PositionForm';
+
+export { ORDER_SIDES, type OrderSide };
 
 export interface OrderEntryFormModel {
   orderSide: OrderSide;

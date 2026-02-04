@@ -1,12 +1,12 @@
+import { use } from 'react';
 import { Tabs } from 'radix-ui';
 import { useController } from 'react-hook-form';
-import { useRequiredContext } from '@/lib/useRequiredContext';
-import { OrderEntryFormApiContext } from '../contexts';
+import { KernelContext } from '../contexts';
 import { ORDER_SIDES } from '../models';
 import * as styles from './OrderSideSwitch.css';
 
 export function OrderSideSwitch() {
-  const { control } = useRequiredContext(OrderEntryFormApiContext);
+  const { control } = use(KernelContext)!;
   const { field } = useController({ control, name: 'orderSide' });
 
   return (

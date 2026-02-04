@@ -1,30 +1,40 @@
-import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type FC, use, useCallback, useEffect, useRef, useState } from 'react';
 import { $decimalValue, DecimalCalculator, DecimalValue, Usdc } from 'fuel-ts-sdk';
 import { useController, useWatch } from 'react-hook-form';
-import { useRequiredContext } from '@/lib/useRequiredContext';
-import { OrderEntryFormApiContext, OrderEntryFormMetaContext } from '../../contexts';
+import { SizeInput } from '@/modules/PositionForm';
+import { KernelContext, OptionsContext } from '../../contexts';
 import type { OrderEntryFormModel } from '../../models';
-import { AssetSizeInput } from './components/AssetSizeInput';
 
 export const PositionSizeInputs: FC = () => {
-  const { control } = useRequiredContext(OrderEntryFormApiContext);
-  const { currentQuoteAssetPrice, currentBaseAssetPrice, quoteAssetName, userBalanceInBaseAsset } =
-    useRequiredContext(OrderEntryFormMetaContext);
+  const { control } = use(KernelContext)!;
+  const {
+    currentQuoteAssetPrice,
+    currentBaseAssetPrice,
+    quoteAssetSymbol,
+    userBalanceInBaseAsset,
+  } = use(OptionsContext)!;
   const collateralSize = useController({ control, name: 'collateralSize' });
   const positionSize = useController({ control, name: 'positionSize' });
   const leverage = useWatch({ control, name: 'leverage', compute: (v) => +(v ?? 10) });
   const orderSide = useWatch({ control, name: 'orderSide' });
 
+  const collateralRef = useRef<HTMLInputElement>(null);
+  const positionRef = useRef<HTMLInputElement>(null);
   const [focusedField, setFocusedField] = useState<keyof OrderEntryFormModel>();
 
-  const baseAssetUsdValue = useMemo(
-    () => +(collateralSize.field.value ?? 0) * currentBaseAssetPrice.value,
-    [collateralSize.field.value, currentBaseAssetPrice.value]
-  );
-  const quoteAssetUsdValue = useMemo(
-    () => +(positionSize.field.value ?? 0) * currentQuoteAssetPrice.value,
-    [currentQuoteAssetPrice.value, positionSize.field.value]
-  );
+  useEffect(() => {
+    const collateralEl = collateralRef.current;
+    const positionEl = positionRef.current;
+    const handleCollateralFocus = () => setFocusedField('collateralSize');
+    const handlePositionFocus = () => setFocusedField('positionSize');
+
+    collateralEl?.addEventListener('focus', handleCollateralFocus);
+    positionEl?.addEventListener('focus', handlePositionFocus);
+    return () => {
+      collateralEl?.removeEventListener('focus', handleCollateralFocus);
+      positionEl?.removeEventListener('focus', handlePositionFocus);
+    };
+  }, []);
 
   const updateCollateralSize = useCallback(
     (val: string) => {
@@ -100,30 +110,39 @@ export const PositionSizeInputs: FC = () => {
 
   return (
     <>
-      <AssetSizeInput
-        assetName="USDC"
+      <SizeInput
+        ref={collateralRef}
+        fieldName="collateralSize"
         label="Pay"
-        onFocus={() => setFocusedField('collateralSize')}
-        onSizeChange={updateCollateralSize}
-        size={collateralSize.field.value}
-        usdPrice={baseAssetUsdValue}
-        error={collateralSize.fieldState.error?.message}
+        assetSymbol="USDC"
+        assetPrice={currentBaseAssetPrice.value}
         onHalf={handleHalfIn}
         onMax={handleAllIn}
-        focused={focusedField === 'collateralSize'}
+        calculateUsdValue={calculateCollateralUsdValue}
       />
-      <AssetSizeInput
-        onMax={handleAllIn}
-        assetName={quoteAssetName}
+      <SizeInput
+        ref={positionRef}
+        fieldName="positionSize"
         label={orderSide}
-        onFocus={() => setFocusedField('positionSize')}
-        focused={focusedField === 'positionSize'}
-        onSizeChange={updatePositionSize}
-        size={positionSize.field.value}
-        usdPrice={quoteAssetUsdValue}
-        leverage={leverage}
-        error={positionSize.fieldState.error?.message}
+        assetSymbol={quoteAssetSymbol}
+        assetPrice={currentQuoteAssetPrice.value}
+        showLeverage
+        onMax={handleAllIn}
+        calculateUsdValue={calculatePositionUsdValue}
       />
     </>
   );
 };
+
+function calculateCollateralUsdValue(fieldValue: string) {
+  return fieldValue || null;
+}
+
+function calculatePositionUsdValue(fieldValue: string, assetPrice: number) {
+  if (!fieldValue) return null;
+  return $decimalValue(
+    DecimalCalculator.value(DecimalValue.fromDecimalString(fieldValue))
+      .multiplyBy(DecimalValue.fromFloat(assetPrice))
+      .calculate(DecimalValue)
+  ).toDecimalString();
+}

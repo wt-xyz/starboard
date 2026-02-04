@@ -1,10 +1,10 @@
+import { use } from 'react';
 import { useFormState, useWatch } from 'react-hook-form';
-import { useRequiredContext } from '@/lib/useRequiredContext';
-import { OrderEntryFormApiContext } from '../contexts';
+import { KernelContext } from '../contexts';
 import * as styles from './SubmitButton.css';
 
 export function SubmitButton() {
-  const { control, submitHandler } = useRequiredContext(OrderEntryFormApiContext);
+  const { control, submit } = use(KernelContext)!;
   const orderSide = useWatch({ control, name: 'orderSide' });
 
   const formState = useFormState({ control });
@@ -17,7 +17,7 @@ export function SubmitButton() {
         orderSide === 'long' ? styles.buyButton : styles.sellButton,
         !formState.isValid && styles.disabledButton,
       ]}
-      onClick={submitHandler}
+      onClick={submit}
     >
       Open Position
     </button>
