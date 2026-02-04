@@ -76,8 +76,8 @@ RUN export PNPM_HOME="/root/.local/share/pnpm" && \
     pnpm --filter starboard/contracts build && \
     pnpm --filter starboard/contracts gen:types && \
     pnpm --filter @starboard/indexer build && \
-    pnpm --filter fuel-ts-sdk build && \
-    pnpm --filter frontend build
+    pnpm --filter fuel-ts-sdk build #&& \
+    #pnpm --filter frontend build
 
 # Copy contract setup script
 RUN if [ -f docker/starboard/setup_starboard_contracts.sh ]; then \

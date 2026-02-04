@@ -107,8 +107,8 @@ dependencies = ["std"]
 
 [[package]]
 name = "std"
-version = "0.69.1"
-source = "registry+std?0.69.1#QmbPunScay4xpfHKpxQ71dFKXSiyJuPP8P8YhgX5Dkmzm9!"
+version = "0.70.2"
+source = "registry+std?0.70.2#QmWuWwmjn2vVDup2672LpToek8N58PYGJt2eH55M7ZzY2Y!"
 
 [[package]]
 name = "stork-mock"
