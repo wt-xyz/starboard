@@ -1,5 +1,18 @@
 {
   "workbench.editor.customLabels.patterns": {
+    // Modules: ModuleName filename [layer]
+    "**/modules/*/src/contexts/*.ts": "${dirname(2)} ${filename} [context]",
+    "**/modules/*/src/components/*.css.ts": "${dirname(2)} ${filename} [styles]",
+    "**/modules/*/src/components/*/*.css.ts": "${dirname(3)} ${filename} [styles]",
+    "**/modules/*/src/components/*.tsx": "${dirname(2)} ${filename} [component]",
+    "**/modules/*/src/components/*/*.tsx": "${dirname(3)} ${filename} [component]",
+    "**/modules/*/src/models/*.ts": "${dirname(2)} ${filename} [model]",
+    "**/modules/*/src/utils/*.ts": "${dirname(2)} ${filename} [util]",
+    "**/modules/*/tests/*.ts": "${dirname(2)} ${filename} [test]",
+    "**/modules/*/tests/*.tsx": "${dirname(2)} ${filename} [test]",
+    "**/modules/*/tests/*/*.ts": "${dirname(3)} ${filename} [test]",
+    "**/modules/*/tests/*/*.tsx": "${dirname(3)} ${filename} [test]",
+
     // fuel-ts-sdk: [type] filename (BC > Aggregate)
 
     // BC-level Application Services (Trading/src/application)
@@ -80,6 +93,6 @@
       "self_closing_tag": true
     }
   },
-  "cSpell.words": ["monomemo", "multimemo", "Promiseable"],
+  "cSpell.words": ["monomemo", "multimemo", "Promiseable", "propify"],
   "typescript.tsdk": "node_modules/typescript/lib"
 }

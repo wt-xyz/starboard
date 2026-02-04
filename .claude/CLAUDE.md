@@ -115,6 +115,21 @@ For contract constants (decimals, precision), check `contracts/contracts/core/va
 - Code should read top-to-bottom like prose
 - Enable directed graph traversal through imports
 
+### Module Imports
+
+- **Namespace** (`import * as Module`): Components, Providers, Contexts, Context Types, Utils
+- **Direct**: Types/Models, Schemas only (fully-qualified: `OrderEntryFormModel`, `DecreasePositionFormSchema`)
+- **Styles**: Always `import * as $`
+- **No barrel** at `@/modules/index.ts` - kills code splitting
+
+### Module Contexts
+
+- **`OptionsContext`**: External configurables (inputs)
+- **`KernelContext`**: Internal state/controls (outputs)
+- **Short names**: `OptionsContext`, `KernelContext` (accessed via `Module.KernelContext`)
+- **Separation**: Context definitions in `contexts/`, Providers in `components/`
+- **Inheritance**: Child modules cast base context with stricter generic types
+
 ## Code Review
 
 Use [Conventional Comments](https://conventionalcomments.org/) format:
