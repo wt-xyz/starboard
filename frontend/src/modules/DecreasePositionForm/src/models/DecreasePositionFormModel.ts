@@ -1,21 +1,13 @@
-import z from 'zod';
+import type z from 'zod';
+import { PositionFormSchema, parseDecimal } from '@/modules/PositionForm';
 
-export interface DecreasePositionFormModel {
-  totalSizeNumeric: string;
-  sizeDeltaNumeric: string;
-}
+export const DecreasePositionFormSchema = PositionFormSchema.pick({
+  sizeDelta: true,
+  totalSize: true,
+  leverage: true,
+}).refine((data) => parseDecimal(data.sizeDelta) <= parseDecimal(data.totalSize), {
+  message: 'Decrease amount cannot exceed total size',
+  path: ['sizeDelta'],
+});
 
-const positiveNumericString = z
-  .string()
-  .refine((val) => val !== '' && !isNaN(Number(val)) && Number(val) > 0, {
-    message: 'Must be a positive number',
-  });
-
-export const DecreasePositionFormSchema = z
-  .object({
-    totalSizeNumeric: z.string(),
-    sizeDeltaNumeric: positiveNumericString,
-  })
-  .refine((data) => Number(data.sizeDeltaNumeric) <= Number(data.totalSizeNumeric), {
-    message: 'Decrease amount cannot exceed total size',
-  }) satisfies z.ZodType<DecreasePositionFormModel>;
+export type DecreasePositionFormModel = z.infer<typeof DecreasePositionFormSchema>;

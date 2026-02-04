@@ -1,24 +1,22 @@
-import type { FC } from 'react';
-import { useContext } from 'react';
+import { type FC, use } from 'react';
 import { $decimalValue, DecimalCalculator } from 'fuel-ts-sdk';
 import { PositionSize } from 'fuel-ts-sdk/trading';
-import { useRequiredContext } from '@/lib/useRequiredContext';
+import { useWatch } from 'react-hook-form';
 import { formatNumber } from '@/lib/formatCurrency';
-import { FormContext } from '../contexts/FormContext';
-import { MetaContext } from '../contexts/MetaContext';
+import { KernelContext, OptionsContext } from '../contexts';
 import * as $ from './Summary.css';
 
 export const Summary: FC = () => {
-  const { getFormData } = useRequiredContext(FormContext);
-  const { quoteAssetSymbol } = useContext(MetaContext);
+  const { control } = use(KernelContext)!;
+  const { quoteAssetSymbol } = use(OptionsContext);
 
-  const { totalSizeNumeric, sizeDeltaNumeric } = getFormData();
+  const [sizeDelta, totalSize] = useWatch({ control, name: ['sizeDelta', 'totalSize'] });
 
   const remainingSize = (() => {
-    if (!sizeDeltaNumeric) return totalSizeNumeric;
+    if (!sizeDelta) return totalSize ?? '';
 
-    const total = PositionSize.fromDecimalString(totalSizeNumeric);
-    const decrease = PositionSize.fromDecimalString(sizeDeltaNumeric);
+    const total = PositionSize.fromDecimalString(totalSize ?? '');
+    const decrease = PositionSize.fromDecimalString(sizeDelta);
     const remaining = DecimalCalculator.value(total).subtractBy(decrease).calculate(PositionSize);
 
     return $decimalValue(remaining).toDecimalString();
@@ -29,7 +27,7 @@ export const Summary: FC = () => {
       <div className={$.summaryRow}>
         <span className={$.summaryLabel}>Decrease Amount</span>
         <span className={$.summaryValue}>
-          {formatNumber(sizeDeltaNumeric)} {quoteAssetSymbol}
+          {formatNumber(sizeDelta ?? '')} {quoteAssetSymbol}
         </span>
       </div>
       <div className={$.summaryRow}>
