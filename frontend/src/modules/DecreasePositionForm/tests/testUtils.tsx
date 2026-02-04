@@ -1,30 +1,29 @@
 import type { FC, ReactNode } from 'react';
-import { FormContextProvider, type FormContextProviderProps } from '../src/contexts/FormContext.Provider';
-import { MetaContext, type MetaContextType } from '../src/contexts/MetaContext';
+import * as DecreasePositionForm from '@/modules/DecreasePositionForm';
 
 export interface TestWrapperProps {
-  formProps: Omit<FormContextProviderProps, 'children'>;
-  meta?: Partial<MetaContextType>;
+  formProps: Omit<DecreasePositionForm.KernelProviderProps, 'children'>;
+  options?: Partial<DecreasePositionForm.OptionsContextType>;
   children: ReactNode;
 }
 
-export const TestWrapper: FC<TestWrapperProps> = ({
-  formProps,
-  meta = {},
-  children,
-}) => {
-  const metaValue: MetaContextType = {
-    baseAssetSymbol: meta.baseAssetSymbol ?? 'BTC',
-    quoteAssetSymbol: meta.quoteAssetSymbol ?? 'USDC',
+export const TestWrapper: FC<TestWrapperProps> = ({ formProps, options = {}, children }) => {
+  const optionsValue: DecreasePositionForm.OptionsContextType = {
+    baseAssetSymbol: options.baseAssetSymbol ?? 'BTC',
+    quoteAssetSymbol: options.quoteAssetSymbol ?? 'USDC',
   };
 
   return (
-    <MetaContext.Provider value={metaValue}>
-      <FormContextProvider {...formProps}>{children}</FormContextProvider>
-    </MetaContext.Provider>
+    <DecreasePositionForm.OptionsContext.Provider value={optionsValue}>
+      <DecreasePositionForm.KernelProvider {...formProps}>
+        {children}
+      </DecreasePositionForm.KernelProvider>
+    </DecreasePositionForm.OptionsContext.Provider>
   );
 };
 
-export const defaultFormProps: Omit<FormContextProviderProps, 'children' | 'onSubmit'> = {
+export const defaultFormProps: Omit<DecreasePositionForm.KernelProviderProps, 'children'> = {
   totalSize: '1000',
+  leverage: '1',
+  onSubmitFulfilled: () => {},
 };

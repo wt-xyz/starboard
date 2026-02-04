@@ -42,11 +42,7 @@ describe('Actions', () => {
     render(
       <TestWrapper formProps={{ ...defaultFormProps, onSubmit: vi.fn() }}>
         <Actions />
-        <input
-          data-testid="size-trigger"
-          onChange={() => {}}
-          onFocus={() => {}}
-        />
+        <input data-testid="size-trigger" onChange={() => {}} onFocus={() => {}} />
       </TestWrapper>
     );
 

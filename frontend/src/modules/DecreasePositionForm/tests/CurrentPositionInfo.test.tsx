@@ -6,7 +6,7 @@ import { TestWrapper } from './testUtils';
 describe('CurrentPositionInfo', () => {
   it('renders current size label and value', () => {
     render(
-      <TestWrapper formProps={{ totalSize: '1000', onSubmit: vi.fn() }}>
+      <TestWrapper formProps={{ totalSize: '1000', leverage: '1', onSubmitFulfilled: vi.fn() }}>
         <CurrentPositionInfo />
       </TestWrapper>
     );
@@ -15,11 +15,11 @@ describe('CurrentPositionInfo', () => {
     expect(screen.getByText(/1,000/)).toBeInTheDocument();
   });
 
-  it('renders asset label and symbol from meta context', () => {
+  it('renders asset label and symbol from options context', () => {
     render(
       <TestWrapper
-        formProps={{ totalSize: '1000', onSubmit: vi.fn() }}
-        meta={{ baseAssetSymbol: 'BTC' }}
+        formProps={{ totalSize: '1000', leverage: '1', onSubmitFulfilled: vi.fn() }}
+        options={{ baseAssetSymbol: 'BTC' }}
       >
         <CurrentPositionInfo />
       </TestWrapper>
@@ -32,8 +32,8 @@ describe('CurrentPositionInfo', () => {
   it('displays quote asset symbol with size', () => {
     render(
       <TestWrapper
-        formProps={{ totalSize: '500', onSubmit: vi.fn() }}
-        meta={{ quoteAssetSymbol: 'USDC' }}
+        formProps={{ totalSize: '500', leverage: '1', onSubmitFulfilled: vi.fn() }}
+        options={{ quoteAssetSymbol: 'USDC' }}
       >
         <CurrentPositionInfo />
       </TestWrapper>
@@ -44,7 +44,9 @@ describe('CurrentPositionInfo', () => {
 
   it('formats large numbers with commas', () => {
     render(
-      <TestWrapper formProps={{ totalSize: '1234567.89', onSubmit: vi.fn() }}>
+      <TestWrapper
+        formProps={{ totalSize: '1234567.89', leverage: '1', onSubmitFulfilled: vi.fn() }}
+      >
         <CurrentPositionInfo />
       </TestWrapper>
     );
@@ -52,14 +54,14 @@ describe('CurrentPositionInfo', () => {
     expect(screen.getByText(/1,234,567/)).toBeInTheDocument();
   });
 
-  it('uses default meta values when not provided', () => {
+  it('uses default options values when not provided', () => {
     render(
-      <TestWrapper formProps={{ totalSize: '100', onSubmit: vi.fn() }}>
+      <TestWrapper formProps={{ totalSize: '100', leverage: '1', onSubmitFulfilled: vi.fn() }}>
         <CurrentPositionInfo />
       </TestWrapper>
     );
 
-    // Default values from MetaContext are empty strings
+    // Default values from OptionsContext are empty strings
     expect(screen.getByText('Current Size')).toBeInTheDocument();
     expect(screen.getByText('Asset')).toBeInTheDocument();
   });
