@@ -41,6 +41,6 @@
     "dependencies": {
         "bn.js": "^5.2.0",
         "concat": "^1.0.3",
-        "fuels": "0.101.3"
+        "fuels": "0.103.0"
     }
 }

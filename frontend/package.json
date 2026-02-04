@@ -32,7 +32,7 @@
     "@vanilla-extract/vite-plugin": "^5.1.4",
     "clsx": "^2.1.1",
     "fuel-ts-sdk": "workspace:*",
-    "fuels": "0.101.3",
+    "fuels": "0.103.0",
     "isbot": "^5.1.32",
     "radix-ui": "^1.4.3",
     "react": "^19.2.0",

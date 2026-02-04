@@ -43,7 +43,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@starboard/indexer": "workspace:*",
     "@types/lodash": "^4.17.21",
-    "fuels": "0.101.3",
+    "fuels": "0.103.0",
     "graphql": "^16.8.1",
     "graphql-request": "^7.3.5",
     "graphql-ws": "^6.0.6",

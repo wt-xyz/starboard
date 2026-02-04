@@ -1,5 +1,5 @@
 [toolchain]
-channel = "mainnet"
+channel = "testnet"
 
 [components]
-forc="0.69.1"
+forc = "0.70.2"
