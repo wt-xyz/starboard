@@ -1,23 +1,21 @@
-import type { FC } from 'react';
-import { useContext } from 'react';
-import { useRequiredContext } from '@/lib/useRequiredContext';
+import { type FC, use } from 'react';
+import { useWatch } from 'react-hook-form';
 import { formatNumber } from '@/lib/formatCurrency';
-import { FormContext } from '../contexts/FormContext';
-import { MetaContext } from '../contexts/MetaContext';
+import { KernelContext, OptionsContext } from '../contexts';
 import * as $ from './CurrentPositionInfo.css';
 
 export const CurrentPositionInfo: FC = () => {
-  const { getFormData } = useRequiredContext(FormContext);
-  const { baseAssetSymbol, quoteAssetSymbol } = useContext(MetaContext);
+  const { control } = use(KernelContext)!;
+  const { baseAssetSymbol, quoteAssetSymbol } = use(OptionsContext);
 
-  const currentSize = getFormData().totalSizeNumeric;
+  const totalSize = useWatch({ control, name: 'totalSize' });
 
   return (
     <div css={$.positionInfo}>
       <div>
         <div css={$.positionInfoLabel}>Current Size</div>
         <div css={$.positionInfoValue}>
-          {formatNumber(currentSize)} {quoteAssetSymbol}
+          {formatNumber(totalSize ?? '')} {quoteAssetSymbol}
         </div>
       </div>
       <div tw="text-right">

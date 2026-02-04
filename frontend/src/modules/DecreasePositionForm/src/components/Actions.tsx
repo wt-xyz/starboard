@@ -1,34 +1,41 @@
-import type { FC } from 'react';
+import { type FC, use } from 'react';
+import { useFormState, useWatch } from 'react-hook-form';
 import { useBoolean } from 'usehooks-ts';
-import { useRequiredContext } from '@/lib/useRequiredContext';
-import { FormContext } from '../contexts/FormContext';
+import { calculateSliderPercentage } from '@/modules/PositionForm';
+import { KernelContext } from '../contexts';
 import * as $ from './Actions.css';
 
 export interface ActionsProps {
+  onCancel?: () => void;
   submitTitleFn?: (percentage: string) => string;
 }
 
-export const Actions: FC<ActionsProps> = ({ submitTitleFn = () => 'Decrease Position' }) => {
-  const { submitForm, isFormValid, getSizeDeltaAsPercentage } = useRequiredContext(FormContext);
+export const Actions: FC<ActionsProps> = ({
+  onCancel,
+  submitTitleFn = () => 'Decrease Position',
+}) => {
+  const { control, submit } = use(KernelContext)!;
+  const { isValid } = useFormState({ control });
+  const [sizeDelta, totalSize] = useWatch({ control, name: ['sizeDelta', 'totalSize'] });
   const isLocked = useBoolean(false);
 
-  const percentage = getSizeDeltaAsPercentage();
+  const percentage = calculateSliderPercentage(sizeDelta ?? '', totalSize ?? '');
   const submitTitle = submitTitleFn(percentage);
 
-  const handleClick = async () => {
+  const handleSubmit = async () => {
     isLocked.setTrue();
     try {
-      await submitForm();
+      await submit();
     } finally {
       isLocked.setFalse();
     }
   };
 
-  const isInteractive = isLocked.value === false && isFormValid();
+  const isInteractive = !isLocked.value && isValid;
 
   return (
     <div className={$.buttonGroup}>
-      <button type="button" className={$.cancelButton}>
+      <button type="button" className={$.cancelButton} onClick={onCancel}>
         Cancel
       </button>
 
@@ -36,7 +43,7 @@ export const Actions: FC<ActionsProps> = ({ submitTitleFn = () => 'Decrease Posi
         type="button"
         className={$.decreaseButton}
         disabled={!isInteractive}
-        onClick={handleClick}
+        onClick={handleSubmit}
       >
         {submitTitle}
       </button>
