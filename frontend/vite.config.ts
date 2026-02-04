@@ -5,6 +5,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import { viteEnvs } from 'vite-envs';
 import { cssTwTransformPlugin } from './plugins/css-tw-transform.js';
+import { useContextAssertPlugin } from './plugins/use-context-assert.js';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,6 +14,7 @@ export default defineConfig({
       declarationFile: '.env.example',
     }),
     cssTwTransformPlugin(), // Must run first (before react plugin)
+    useContextAssertPlugin(), // Transform use(Context)! to useRequiredContext(Context)
     vanillaExtractPlugin(),
     tailwindcss(),
     react({
