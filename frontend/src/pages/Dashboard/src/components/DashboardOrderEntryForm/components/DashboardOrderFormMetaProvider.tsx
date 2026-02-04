@@ -2,7 +2,7 @@ import { type FC, type ReactNode, useCallback, useMemo } from 'react';
 import { $decimalValue } from 'fuel-ts-sdk';
 import type { AssetEntity } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useSdkQuerySignal, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import { OrderEntryFormMetaContext } from '@/modules/OrderEntryForm';
+import * as OrderEntryForm from '@/modules/OrderEntryForm';
 
 type DashboardOrderFormMetaProviderProps = {
   children: ReactNode;
@@ -42,7 +42,7 @@ export const DashboardOrderFormMetaProvider: FC<DashboardOrderFormMetaProviderPr
 
   const metaContextValue = useMemo(
     () => ({
-      quoteAssetName: quoteAsset?.name ?? '?',
+      quoteAssetSymbol: quoteAsset?.name ?? '?',
       userBalanceInBaseAsset: getAssetBalance(baseAsset),
       currentBaseAssetPrice: baseAssetPriceSignal,
       currentQuoteAssetPrice: quoteAssetPriceSignal,
@@ -54,8 +54,8 @@ export const DashboardOrderFormMetaProvider: FC<DashboardOrderFormMetaProviderPr
   );
 
   return (
-    <OrderEntryFormMetaContext.Provider value={metaContextValue}>
+    <OrderEntryForm.OptionsContext.Provider value={metaContextValue}>
       {children}
-    </OrderEntryFormMetaContext.Provider>
+    </OrderEntryForm.OptionsContext.Provider>
   );
 };
