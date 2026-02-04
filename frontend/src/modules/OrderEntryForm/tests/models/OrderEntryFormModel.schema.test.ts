@@ -1,11 +1,11 @@
 import { signal } from '@preact/signals-react';
 import { describe, expect, it } from 'vitest';
-import type { OrderEntryFormMetaContextType } from '../../src/contexts';
+import * as OrderEntryForm from '@/modules/OrderEntryForm';
 import { createOrderEntryFormSchema } from '../../src/models/OrderEntryFormModel.schema';
 
 describe('orderEntryFormSchema', () => {
-  const mockContext: OrderEntryFormMetaContextType = {
-    quoteAssetName: 'BTC',
+  const mockOptions: OrderEntryForm.OptionsContextType = {
+    quoteAssetSymbol: 'BTC',
     userBalanceInBaseAsset: 10000,
     currentQuoteAssetPrice: signal(50000),
     currentBaseAssetPrice: signal(1),
@@ -16,7 +16,7 @@ describe('orderEntryFormSchema', () => {
     initialMarginFraction: 0.01,
   };
 
-  const schema = createOrderEntryFormSchema(mockContext);
+  const schema = createOrderEntryFormSchema(mockOptions);
 
   describe('orderSide validation', () => {
     it('accepts long side', () => {

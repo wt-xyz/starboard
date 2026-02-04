@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react';
 import { signal } from '@preact/signals-react';
-import type { OrderEntryFormMetaContextType } from '../src/contexts';
-import { OrderEntryFormApiContextProvider, OrderEntryFormMetaContext } from '../src/contexts';
+import * as OrderEntryForm from '@/modules/OrderEntryForm';
 
-const defaultMockContext: OrderEntryFormMetaContextType = {
-  quoteAssetName: 'USD',
+const defaultMockContext: OrderEntryForm.OptionsContextType = {
+  quoteAssetSymbol: 'USD',
   userBalanceInBaseAsset: 0.5,
   currentQuoteAssetPrice: signal(50000),
   currentBaseAssetPrice: signal(50000),
@@ -17,18 +16,18 @@ export function OrderEntryFormTestWrapper({
   onSubmitFailure = () => {},
 }: {
   children: ReactNode;
-  context?: OrderEntryFormMetaContextType;
+  context?: OrderEntryForm.OptionsContextType;
   onSubmitSuccessful?: (data: any) => void;
   onSubmitFailure?: (errors: any) => void;
 }) {
   return (
-    <OrderEntryFormMetaContext.Provider value={context}>
-      <OrderEntryFormApiContextProvider
+    <OrderEntryForm.OptionsContext.Provider value={context}>
+      <OrderEntryForm.KernelProvider
         onSubmitSuccessful={onSubmitSuccessful}
         onSubmitFailure={onSubmitFailure}
       >
         {children}
-      </OrderEntryFormApiContextProvider>
-    </OrderEntryFormMetaContext.Provider>
+      </OrderEntryForm.KernelProvider>
+    </OrderEntryForm.OptionsContext.Provider>
   );
 }
