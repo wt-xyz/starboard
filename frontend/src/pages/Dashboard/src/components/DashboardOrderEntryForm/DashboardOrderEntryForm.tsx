@@ -4,15 +4,9 @@ import { CollateralAmount, DecimalValue } from 'fuel-ts-sdk';
 import { WalletContext } from '@/contexts/WalletContext';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import {
-  LeverageInput,
-  OrderEntryFormApiContextProvider,
-  type OrderEntryFormModel,
-  type OrderSide,
-  OrderSideSwitch,
-  PositionSizeInputs,
-} from '@/modules/OrderEntryForm';
-import * as styles from './DashboardOrderEntryForm.css';
+import type { OrderEntryFormModel } from '@/modules/OrderEntryForm';
+import * as OrderEntryForm from '@/modules/OrderEntryForm';
+import * as $ from './DashboardOrderEntryForm.css';
 import { DashboardOrderFormMetaProvider } from './components/DashboardOrderFormMetaProvider';
 import {
   ProcessingTransactionDialog,
@@ -25,12 +19,10 @@ import { SubmitPositionButton } from './components/SubmitPositionButton';
 type TransactionState = 'idle' | 'pending' | 'success' | 'error';
 
 export type DashboardOrderEntryFormProps = {
-  defaultOrderSide?: OrderSide;
   hideSideSwitch?: boolean;
 };
 
 export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
-  defaultOrderSide = 'long',
   hideSideSwitch = false,
 }) => {
   const tradingSdk = useTradingSdk();
@@ -84,25 +76,24 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
   }, []);
 
   return (
-    <div css={styles.container}>
+    <div css={$.container}>
       <DashboardOrderFormMetaProvider>
-        <OrderEntryFormApiContextProvider
+        <OrderEntryForm.KernelProvider
           onSubmitSuccessful={handleOrderSubmission}
           onSubmitFailure={handleValidationError}
-          skipValidation={!isWalletConnected}
-          defaultOrderSide={defaultOrderSide}
+          {...(!isWalletConnected && { resolver: null })}
         >
-          {!hideSideSwitch && <OrderSideSwitch />}
-          <PositionSizeInputs />
-          <LeverageInput />
+          {!hideSideSwitch && <OrderEntryForm.OrderSideSwitch />}
+          <OrderEntryForm.PositionSizeInputs />
+          <OrderEntryForm.LeverageInput />
           {isWalletConnected ? (
             <SubmitPositionButton />
           ) : (
-            <Button size="3" onClick={wallet.establishConnection} css={styles.connectWalletButton}>
+            <Button size="3" onClick={wallet.establishConnection} css={$.connectWalletButton}>
               Connect Wallet
             </Button>
           )}
-        </OrderEntryFormApiContextProvider>
+        </OrderEntryForm.KernelProvider>
       </DashboardOrderFormMetaProvider>
 
       <ValidationErrorDialog

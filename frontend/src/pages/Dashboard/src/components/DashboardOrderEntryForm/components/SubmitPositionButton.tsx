@@ -1,13 +1,12 @@
-import type { FC } from 'react';
+import { type FC, use } from 'react';
 import { useFormState, useWatch } from 'react-hook-form';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import { useRequiredContext } from '@/lib/useRequiredContext';
-import { OrderEntryFormApiContext } from '@/modules/OrderEntryForm';
+import * as OrderEntryForm from '@/modules/OrderEntryForm';
 import * as $ from './SubmitPositionButton.css';
 
 export const SubmitPositionButton: FC = () => {
   const tradingSdk = useTradingSdk();
-  const { control, submitHandler } = useRequiredContext(OrderEntryFormApiContext);
+  const { control, submit } = use(OrderEntryForm.KernelContext)!;
   const orderSide = useWatch({ control, name: 'orderSide' });
 
   const formState = useFormState({ control });
@@ -26,7 +25,7 @@ export const SubmitPositionButton: FC = () => {
         orderSide === 'long' ? $.buyButton : $.sellButton,
         !formState.isValid && $.disabledButton,
       ]}
-      onClick={submitHandler}
+      onClick={submit}
     >
       {hasPositions ? 'Increase Position' : 'Open Position'}
     </button>
