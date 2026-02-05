@@ -16,20 +16,33 @@ export const MarkPrice = propify(PositionStatBase, {
   Value: PositionStats.MarkPrice,
 });
 
+export const Collateral = propify(PositionStatBase, {
+  label: 'Collateral',
+  Value: PositionStats.Collateral,
+});
+
+export const Leverage = propify(PositionStatBase, {
+  label: 'Leverage',
+  Value: PositionStats.Leverage,
+  prefix: '',
+});
+
 export interface PositionStatBaseProps {
   label: string;
   Value: ComponentType<{ positionId: PositionStableId }>;
   secondaryValue?: ReactNode;
+  prefix?: string;
 }
 
-function PositionStatBase({ label, Value, secondaryValue }: PositionStatBaseProps) {
+function PositionStatBase({ label, Value, secondaryValue, prefix = '$' }: PositionStatBaseProps) {
   const position = useRequiredContext(PositionCardContext);
 
   return (
     <div css={$.statCell}>
       <span css={$.statLabel}>{label}</span>
       <span css={$.statValue}>
-        $<Value positionId={position.stableId} />
+        {prefix}
+        <Value positionId={position.stableId} />
       </span>
       {secondaryValue && <span css={$.statValueSecondary}>{secondaryValue}</span>}
     </div>

@@ -27,9 +27,9 @@ export const DecreaseTab: FC<DecreaseTabProps> = ({ positionId, onSubmitSuccess 
   const totalSizeNumeric = $decimalValue(totalPositionSize).toDecimalString();
 
   const positionLeverage = (() => {
-    const size = $decimalValue(position.size).toFloat();
-    const collateral = $decimalValue(position.collateral).toFloat();
-    return collateral > 0 ? (size / collateral).toFixed(1) : '1';
+    const leverage = tradingSdk.getPositionLeverage(positionId);
+    if (leverage.value === '0') return '1';
+    return $decimalValue(leverage).toFloat().toFixed(1);
   })();
 
   const currentQuoteAssetPrice = useSdkQuerySignal(() => {
