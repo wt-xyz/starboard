@@ -1,5 +1,4 @@
 import type { StoreService } from '@sdk/shared/lib/StoreService';
-import { CollateralAmount, RatioOutput } from '@sdk/shared/models/decimals';
 import { assetId } from '@sdk/shared/types';
 import { describe, expect, it, vi } from 'vitest';
 import type { B256Account, VaultContractPort } from '../src/VaultContractPort';
@@ -53,11 +52,11 @@ describe('createIncreasePositionCommand', () => {
     isLong: true,
     indexAsset: TEST_BTC_ASSET_ID,
     collateralAssetId: TEST_USDC_ASSET_ID,
-    leverage: RatioOutput.fromFloat(10),
-    collateralAmount: CollateralAmount.fromFloat(100),
+    sizeDelta: '1000000000', // 1000 with 6 decimals
+    collateralAmount: '100000000', // 100 with 6 decimals
   };
 
-  it('calculates position size as collateralAmount * leverage', async () => {
+  it('passes sizeDelta to the contract', async () => {
     const vaultContractPort = createMockVaultContractPort();
     const storeService = createMockStoreService();
     const increasePosition = createIncreasePositionCommand({ vaultContractPort, storeService });
@@ -65,11 +64,10 @@ describe('createIncreasePositionCommand', () => {
     await increasePosition(defaultParams);
 
     const vault = await vaultContractPort.getVaultContract();
-    // 100 collateral * 10x leverage = 1000 size
     expect(vault.functions.increase_position).toHaveBeenCalledWith(
       { Address: { bits: '0x123' } },
       TEST_BTC_ASSET_ID,
-      '1000000000', // 1000 with 6 decimals (CollateralAmount precision)
+      '1000000000',
       true
     );
   });
@@ -85,7 +83,7 @@ describe('createIncreasePositionCommand', () => {
     const callParams = vault.functions.increase_position().callParams;
     expect(callParams).toHaveBeenCalledWith({
       forward: {
-        amount: '100000000', // 100 with 6 decimals
+        amount: '100000000',
         assetId: TEST_USDC_ASSET_ID,
       },
     });
@@ -146,23 +144,22 @@ describe('createIncreasePositionCommand', () => {
     );
   });
 
-  it('calculates size correctly with different leverage values', async () => {
+  it('passes different sizeDelta values correctly', async () => {
     const vaultContractPort = createMockVaultContractPort();
     const storeService = createMockStoreService();
     const increasePosition = createIncreasePositionCommand({ vaultContractPort, storeService });
 
-    // 50 collateral * 5x leverage = 250 size
     await increasePosition({
       ...defaultParams,
-      collateralAmount: CollateralAmount.fromFloat(50),
-      leverage: RatioOutput.fromFloat(5),
+      collateralAmount: '50000000', // 50 with 6 decimals
+      sizeDelta: '250000000', // 250 with 6 decimals
     });
 
     const vault = await vaultContractPort.getVaultContract();
     expect(vault.functions.increase_position).toHaveBeenCalledWith(
       expect.anything(),
       expect.anything(),
-      '250000000', // 250 with 6 decimals
+      '250000000',
       expect.anything()
     );
   });
