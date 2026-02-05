@@ -105,7 +105,7 @@ export function createDatafeed(
       // You can subscribe to Redux store changes and call onTick with new bars
     },
 
-    unsubscribeBars: (_listenerGuid: string) => { },
+    unsubscribeBars: (_listenerGuid: string) => {},
   };
 }
 

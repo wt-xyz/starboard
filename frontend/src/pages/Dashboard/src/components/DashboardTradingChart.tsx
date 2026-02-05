@@ -1,7 +1,7 @@
+import { type FC, useCallback } from 'react';
+import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import { TradingChart } from '@/components/TradingChart';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
-import { useCallback, type FC } from 'react';
 
 export const DashboardTradingChart: FC = () => {
   const tradingSdk = useTradingSdk();
@@ -21,10 +21,5 @@ export const DashboardTradingChart: FC = () => {
     [asset, tradingSdk]
   );
 
-  return (
-    <TradingChart
-      symbol={asset?.symbol ?? '?'}
-      candlesGetter={getOrFetchCandles}
-    />
-  );
+  return <TradingChart symbol={asset?.symbol ?? '?'} candlesGetter={getOrFetchCandles} />;
 };

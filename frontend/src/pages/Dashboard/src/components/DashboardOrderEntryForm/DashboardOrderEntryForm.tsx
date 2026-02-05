@@ -4,14 +4,20 @@ import { CollateralAmount, DecimalValue, type RequestStatus } from 'fuel-ts-sdk'
 import { WalletContext } from '@/contexts/WalletContext';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import { IncreasePositionForm, type IncreasePositionFormModel } from '@/pages/Dashboard/submodules';
+import {
+  IncreasePositionForm,
+  type IncreasePositionFormModel,
+  type OrderSide,
+} from '@/pages/Dashboard/submodules';
 import * as $ from './DashboardOrderEntryForm.css';
 
 export type DashboardOrderEntryFormProps = {
+  defaultOrderSide?: OrderSide;
   hideSideSwitch?: boolean;
 };
 
 export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
+  defaultOrderSide,
   hideSideSwitch = false,
 }) => {
   const tradingSdk = useTradingSdk();
@@ -70,6 +76,7 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
         <IncreasePositionForm.KernelProvider
           onSubmitSuccessful={handleOrderSubmission}
           onSubmitFailure={handleValidationError}
+          defaultOrderSide={defaultOrderSide}
           {...(!isWalletConnected && { resolver: null })}
         >
           {!hideSideSwitch && <IncreasePositionForm.OrderSideSwitch />}

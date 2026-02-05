@@ -9,7 +9,7 @@ export const container = style({
 });
 
 export const connectWalletButton = style({
-  marginTop: "20px",
+  marginTop: '20px',
   width: '100%',
   padding: '0.5rem 1.25rem',
   backgroundColor: colors.liquidLava,

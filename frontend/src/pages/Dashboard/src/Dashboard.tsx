@@ -1,5 +1,5 @@
-import { Tabs } from 'radix-ui';
 import { useState } from 'react';
+import { Tabs } from 'radix-ui';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useMediaQuery } from '@/lib/useMediaQuery';

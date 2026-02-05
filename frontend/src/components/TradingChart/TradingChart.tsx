@@ -1,4 +1,4 @@
-import { colors } from '@/styles/colors';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import type {
   ChartingLibraryFeatureset,
@@ -6,7 +6,7 @@ import type {
   IChartingLibraryWidget,
   ResolutionString,
 } from 'public/tradingview/charting_library';
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { colors } from '@/styles/colors';
 import * as styles from './TradingChart.css';
 import { createDatafeed } from './TradingChart.utils';
 
@@ -112,8 +112,9 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
     if (!customCssUrlRef.current) customCssUrlRef.current = createTradingViewCustomCssUrl();
 
     // Detect mobile/touch devices
-    const isMobile = window.matchMedia('(max-width: 640px)').matches || 
-                     window.matchMedia('(pointer: coarse)').matches;
+    const isMobile =
+      window.matchMedia('(max-width: 640px)').matches ||
+      window.matchMedia('(pointer: coarse)').matches;
 
     const themeOverrides: ChartingLibraryWidgetOptions['overrides'] = {
       'paneProperties.backgroundType': 'solid',
@@ -151,13 +152,15 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       locale: 'en',
       custom_css_url: customCssUrlRef.current,
       // Use compact formatter on mobile to prevent Y-axis cutoff
-      ...(isMobile ? {
-        custom_formatters: {
-          priceFormatterFactory: () => ({
-            format: (price: number) => formatCompactPrice(price),
-          }),
-        },
-      } : {}),
+      ...(isMobile
+        ? {
+            custom_formatters: {
+              priceFormatterFactory: () => ({
+                format: (price: number) => formatCompactPrice(price),
+              }),
+            },
+          }
+        : {}),
       loading_screen: {
         backgroundColor: colors.gluonGrey,
         foregroundColor: colors.liquidLava,

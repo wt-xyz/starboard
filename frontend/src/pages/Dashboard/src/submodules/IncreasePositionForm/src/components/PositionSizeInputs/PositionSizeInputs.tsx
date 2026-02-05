@@ -3,7 +3,7 @@ import { $decimalValue, DecimalCalculator, DecimalValue, Usdc } from 'fuel-ts-sd
 import { useController, useWatch } from 'react-hook-form';
 import { SizeInput } from '@/modules/PositionForm';
 import { KernelContext, OptionsContext } from '../../contexts';
-import type { OrderEntryFormModel } from '../../models';
+import type { IncreasePositionFormModel } from '../../models';
 
 export const PositionSizeInputs: FC = () => {
   const { control } = use(KernelContext)!;
@@ -20,7 +20,7 @@ export const PositionSizeInputs: FC = () => {
 
   const collateralRef = useRef<HTMLInputElement>(null);
   const positionRef = useRef<HTMLInputElement>(null);
-  const [focusedField, setFocusedField] = useState<keyof OrderEntryFormModel>();
+  const [focusedField, setFocusedField] = useState<keyof IncreasePositionFormModel>();
 
   useEffect(() => {
     const collateralEl = collateralRef.current;
