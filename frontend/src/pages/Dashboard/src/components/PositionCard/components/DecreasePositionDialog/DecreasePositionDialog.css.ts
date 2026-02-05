@@ -17,6 +17,15 @@ export const dialogTitle = style({
   marginBottom: '1rem',
 });
 
+export const statsRow = style({
+  display: 'flex',
+  justifyContent: 'space-around',
+  padding: '0.75rem',
+  backgroundColor: colors.slateGrey,
+  borderRadius: '0.5rem',
+  marginBottom: '1rem',
+});
+
 export const tabsList = style({
   display: 'flex',
   gap: '0.25rem',
