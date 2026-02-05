@@ -258,4 +258,3 @@ export const tabContent = style({
   gap: '1.5rem',
   outline: 'none',
 });
-

@@ -11,8 +11,8 @@ import { WalletContextProvider } from './contexts/WalletContext/WalletContextPro
 import { FuelTsSdkProvider } from './lib/fuel-ts-sdk';
 import './lib/pipe';
 import './lib/toBigInt';
-import './styles/toastify.css';
 import './styles/radix-overrides.css';
+import './styles/toastify.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

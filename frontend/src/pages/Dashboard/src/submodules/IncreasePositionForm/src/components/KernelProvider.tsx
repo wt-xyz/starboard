@@ -2,7 +2,7 @@ import { type FC, type ReactNode, use, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type Resolver, type SubmitErrorHandler, useForm } from 'react-hook-form';
 import { KernelContext, type KernelContextType, OptionsContext } from '../contexts';
-import type { IncreasePositionFormModel } from '../models';
+import type { IncreasePositionFormModel, OrderSide } from '../models';
 import { createIncreasePositionFormSchema, nullIncreasePositionForm } from '../models';
 
 export type KernelProviderProps = {
@@ -10,6 +10,7 @@ export type KernelProviderProps = {
   onSubmitSuccessful: (data: IncreasePositionFormModel) => void;
   onSubmitFailure?: SubmitErrorHandler<IncreasePositionFormModel>;
   resolver?: Resolver<IncreasePositionFormModel> | null;
+  defaultOrderSide?: OrderSide;
 };
 
 export const KernelProvider: FC<KernelProviderProps> = ({
@@ -17,11 +18,15 @@ export const KernelProvider: FC<KernelProviderProps> = ({
   onSubmitSuccessful,
   onSubmitFailure,
   resolver,
+  defaultOrderSide,
 }) => {
   const options = use(OptionsContext)!;
 
   const form = useForm<IncreasePositionFormModel>({
-    defaultValues: nullIncreasePositionForm,
+    defaultValues: {
+      ...nullIncreasePositionForm,
+      ...(defaultOrderSide && { orderSide: defaultOrderSide }),
+    },
     mode: 'all',
     reValidateMode: 'onChange',
     criteriaMode: 'all',

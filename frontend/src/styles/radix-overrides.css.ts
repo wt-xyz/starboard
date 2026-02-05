@@ -11,4 +11,3 @@ globalStyle('.rt-DialogOverlay', {
 globalStyle('.rt-DialogContent', {
   zIndex: 1001,
 });
-
