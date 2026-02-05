@@ -1,12 +1,12 @@
 import { type FC, use } from 'react';
 import { useFormState, useWatch } from 'react-hook-form';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import * as OrderEntryForm from '@/modules/OrderEntryForm';
+import { KernelContext } from '../contexts';
 import * as $ from './SubmitPositionButton.css';
 
 export const SubmitPositionButton: FC = () => {
   const tradingSdk = useTradingSdk();
-  const { control, submit } = use(OrderEntryForm.KernelContext)!;
+  const { control, submit } = use(KernelContext)!;
   const orderSide = useWatch({ control, name: 'orderSide' });
 
   const formState = useFormState({ control });
