@@ -1,7 +1,11 @@
-import type { Context } from 'react';
-import * as PositionForm from '@/modules/PositionForm';
+import { createContext } from 'react';
+import type { Control } from 'react-hook-form';
+import type { Promiseable } from '@/types/Promiseable';
 import type { EditCollateralFormModel } from '../models';
 
-export type KernelContextType = PositionForm.KernelContextType<EditCollateralFormModel>;
+export type KernelContextType = {
+  control: Control<EditCollateralFormModel>;
+  submit: () => Promiseable<void>;
+};
 
-export const KernelContext = PositionForm.KernelContext as Context<KernelContextType | null>;
+export const KernelContext = createContext<KernelContextType | null>(null);
