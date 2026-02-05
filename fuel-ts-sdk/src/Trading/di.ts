@@ -37,6 +37,11 @@ export const createTradingModule = ({ graphqlClient }: TradingModuleConfig) => {
       const positionsQueries = Positions.createPositionQueries({ storeService });
       const marketCommands = Markets.createMarketCommands(storeService);
       const marketQueries = Markets.createMarketQueries(storeService);
+      const tradingCommands = ApplicationServices.createTradingCommands({
+        vaultCommands,
+        positionsQueries,
+        marketQueries,
+      });
       const tradingQueries = ApplicationServices.createTradingQueries({
         marketQueries,
         positionsQueries,
@@ -54,6 +59,7 @@ export const createTradingModule = ({ graphqlClient }: TradingModuleConfig) => {
         ...marketCommands,
         ...positionsQueries,
         ...marketQueries,
+        ...tradingCommands,
         ...tradingQueries,
         ...vaultQueries,
         vault: vaultCommands,

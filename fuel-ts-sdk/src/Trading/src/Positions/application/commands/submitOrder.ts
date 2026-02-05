@@ -1,7 +1,8 @@
 import type { VaultCommands } from '@sdk/shared/contracts';
 import type { DecimalValueInstance } from '@sdk/shared/models/DecimalValue';
-import type { CollateralAmount } from '@sdk/shared/models/decimals';
+import { CollateralAmount } from '@sdk/shared/models/decimals';
 import type { AssetId } from '@sdk/shared/types';
+import { DecimalCalculator } from '@sdk/shared/utils/DecimalCalculator';
 
 export interface SubmitOrderParams {
   isLong: boolean;
@@ -17,5 +18,18 @@ export interface SubmitOrderDependencies {
 
 export const createSubmitOrder =
   (deps: SubmitOrderDependencies) => async (params: SubmitOrderParams) => {
-    await deps.vaultCommands.increasePosition(params);
+    const { isLong, indexAsset, collateralAssetId, leverage, collateralAmount } = params;
+
+    const sizeDelta = DecimalCalculator.value(collateralAmount)
+      .multiplyBy(leverage)
+      .calculate(CollateralAmount)
+      .value.toString();
+
+    await deps.vaultCommands.increasePosition({
+      isLong,
+      indexAsset,
+      collateralAssetId,
+      sizeDelta,
+      collateralAmount: collateralAmount.value.toString(),
+    });
   };

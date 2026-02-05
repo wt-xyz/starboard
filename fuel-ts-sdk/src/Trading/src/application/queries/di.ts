@@ -2,17 +2,21 @@ import type { GetAccountOpenPositionsQueryDeps } from './getCurrentAccountOpenPo
 import { createGetCurrentAccountOpenPositionsQuery } from './getCurrentAccountOpenPositions';
 import type { GetCurrentAccountTotalExposureQueryDependencies } from './getCurrentAccountTotalExposure';
 import { createGetCurrentAccountTotalExposureQuery } from './getCurrentAccountTotalExposure';
+import type { GetPositionEquityQueryDependencies } from './getPositionEquity';
+import { createGetPositionEquityQuery } from './getPositionEquity';
 import type { GetPositionLiquidationPriceApproxQueryDependencies } from './getPositionLiquidationPriceApprox';
 import { createGetPositionLiquidationPriceApproxQuery } from './getPositionLiquidationPriceApprox';
 
 export type TradingQueriesDependencies = GetAccountOpenPositionsQueryDeps &
   GetCurrentAccountTotalExposureQueryDependencies &
+  GetPositionEquityQueryDependencies &
   GetPositionLiquidationPriceApproxQueryDependencies;
 
 export function createTradingQueries(deps: TradingQueriesDependencies) {
   return {
     getCurrentAccountOpenPositions: createGetCurrentAccountOpenPositionsQuery(deps),
     getCurrentAccountTotalExposure: createGetCurrentAccountTotalExposureQuery(deps),
+    getPositionEquity: createGetPositionEquityQuery(deps),
     getPositionLiquidationPriceApprox: createGetPositionLiquidationPriceApproxQuery(deps),
   };
 }
