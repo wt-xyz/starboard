@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { $decimalValue, DecimalCalculator, DecimalValue, type PositionStableId } from 'fuel-ts-sdk';
+import { $decimalValue, type PositionStableId } from 'fuel-ts-sdk';
 import { useTradingSdk } from '@/lib/fuel-ts-sdk';
 
 export interface LeverageProps {
@@ -8,15 +8,9 @@ export interface LeverageProps {
 
 export const Leverage: FC<LeverageProps> = ({ positionId }) => {
   const tradingSdk = useTradingSdk();
-  const position = tradingSdk.getPositionById(positionId);
+  const leverage = tradingSdk.getPositionLeverage(positionId);
 
-  if (!position) return <>—</>;
-
-  if (position.collateral.value === '0') return <>0x</>;
-
-  const leverage = DecimalCalculator.value(position.size)
-    .divideBy(position.collateral)
-    .calculate(DecimalValue);
+  if (leverage.value === '0') return <>0x</>;
 
   return <>{$decimalValue(leverage).toFloat().toFixed(1)}x</>;
 };

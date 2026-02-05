@@ -1,3 +1,4 @@
+export { Collateral, type CollateralProps } from './Collateral';
 export { EntryPrice, type EntryPriceProps } from './EntryPrice';
 export { EstimatedPayout, type EstimatedPayoutProps } from './EstimatedPayout';
 export { Leverage, type LeverageProps } from './Leverage';
