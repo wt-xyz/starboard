@@ -2,14 +2,14 @@ import { type FC, type ReactNode, use, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type Resolver, type SubmitErrorHandler, useForm } from 'react-hook-form';
 import { KernelContext, type KernelContextType, OptionsContext } from '../contexts';
-import type { OrderEntryFormModel } from '../models';
-import { createOrderEntryFormSchema, nullOrderEntryForm } from '../models';
+import type { IncreasePositionFormModel } from '../models';
+import { createIncreasePositionFormSchema, nullIncreasePositionForm } from '../models';
 
 export type KernelProviderProps = {
   children: ReactNode;
-  onSubmitSuccessful: (data: OrderEntryFormModel) => void;
-  onSubmitFailure?: SubmitErrorHandler<OrderEntryFormModel>;
-  resolver?: Resolver<OrderEntryFormModel> | null;
+  onSubmitSuccessful: (data: IncreasePositionFormModel) => void;
+  onSubmitFailure?: SubmitErrorHandler<IncreasePositionFormModel>;
+  resolver?: Resolver<IncreasePositionFormModel> | null;
 };
 
 export const KernelProvider: FC<KernelProviderProps> = ({
@@ -20,15 +20,15 @@ export const KernelProvider: FC<KernelProviderProps> = ({
 }) => {
   const options = use(OptionsContext)!;
 
-  const form = useForm<OrderEntryFormModel>({
-    defaultValues: nullOrderEntryForm,
+  const form = useForm<IncreasePositionFormModel>({
+    defaultValues: nullIncreasePositionForm,
     mode: 'all',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
     resolver: (() => {
       if (resolver === null) return undefined;
       if (resolver) return resolver;
-      return zodResolver(createOrderEntryFormSchema(options));
+      return zodResolver(createIncreasePositionFormSchema(options));
     })(),
   });
 

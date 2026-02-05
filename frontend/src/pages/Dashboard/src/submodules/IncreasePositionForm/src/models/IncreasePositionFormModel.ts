@@ -2,14 +2,14 @@ import { ORDER_SIDES, type OrderSide } from '@/modules/PositionForm';
 
 export { ORDER_SIDES, type OrderSide };
 
-export interface OrderEntryFormModel {
+export interface IncreasePositionFormModel {
   orderSide: OrderSide;
   collateralSize: string;
   positionSize: string;
   leverage: string;
 }
 
-export const nullOrderEntryForm: OrderEntryFormModel = {
+export const nullIncreasePositionForm: IncreasePositionFormModel = {
   orderSide: 'long',
   positionSize: '',
   collateralSize: '',
