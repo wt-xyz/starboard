@@ -1,22 +1,11 @@
 import { type FC, useCallback, useState } from 'react';
 import { Button } from '@radix-ui/themes';
-import { CollateralAmount, DecimalValue } from 'fuel-ts-sdk';
+import { CollateralAmount, DecimalValue, type RequestStatus } from 'fuel-ts-sdk';
 import { WalletContext } from '@/contexts/WalletContext';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import type { OrderEntryFormModel } from '@/modules/OrderEntryForm';
-import * as OrderEntryForm from '@/modules/OrderEntryForm';
+import { IncreasePositionForm, type IncreasePositionFormModel } from '@/pages/Dashboard/submodules';
 import * as $ from './DashboardOrderEntryForm.css';
-import { DashboardOrderFormMetaProvider } from './components/DashboardOrderFormMetaProvider';
-import {
-  ProcessingTransactionDialog,
-  TransactionErrorDialog,
-  TransactionSuccessDialog,
-  ValidationErrorDialog,
-} from './components/OrderFormDialog';
-import { SubmitPositionButton } from './components/SubmitPositionButton';
-
-type TransactionState = 'idle' | 'pending' | 'success' | 'error';
 
 export type DashboardOrderEntryFormProps = {
   hideSideSwitch?: boolean;
@@ -28,7 +17,7 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
   const tradingSdk = useTradingSdk();
   const wallet = useRequiredContext(WalletContext);
 
-  const [transactionState, setTransactionState] = useState<TransactionState>('idle');
+  const [transactionStatus, setTransactionStatus] = useState<RequestStatus>('uninitialized');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showValidationError, setShowValidationError] = useState(false);
 
@@ -38,7 +27,7 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
   const quoteAsset = useSdkQuery(tradingSdk.getWatchedAsset);
 
   const processOrder = useCallback(
-    async (formData: OrderEntryFormModel) => {
+    async (formData: IncreasePositionFormModel) => {
       if (!baseAsset || !quoteAsset)
         throw new Error(
           `Form is not ready for submission. All variables must be defined: baseAsset (${baseAsset}), quoteAsset (${quoteAsset})`
@@ -56,15 +45,15 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
   );
 
   const handleOrderSubmission = useCallback(
-    async (formData: OrderEntryFormModel) => {
-      setTransactionState('pending');
+    async (formData: IncreasePositionFormModel) => {
+      setTransactionStatus('pending');
       setErrorMessage('');
 
       try {
         await processOrder(formData);
-        setTransactionState('success');
+        setTransactionStatus('fulfilled');
       } catch (err) {
-        setTransactionState('error');
+        setTransactionStatus('rejected');
         setErrorMessage(err instanceof Error ? err.message : 'Transaction failed');
       }
     },
@@ -77,40 +66,40 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
 
   return (
     <div css={$.container}>
-      <DashboardOrderFormMetaProvider>
-        <OrderEntryForm.KernelProvider
+      <IncreasePositionForm.OptionsProvider>
+        <IncreasePositionForm.KernelProvider
           onSubmitSuccessful={handleOrderSubmission}
           onSubmitFailure={handleValidationError}
           {...(!isWalletConnected && { resolver: null })}
         >
-          {!hideSideSwitch && <OrderEntryForm.OrderSideSwitch />}
-          <OrderEntryForm.PositionSizeInputs />
-          <OrderEntryForm.LeverageInput />
+          {!hideSideSwitch && <IncreasePositionForm.OrderSideSwitch />}
+          <IncreasePositionForm.PositionSizeInputs />
+          <IncreasePositionForm.LeverageInput />
           {isWalletConnected ? (
-            <SubmitPositionButton />
+            <IncreasePositionForm.SubmitPositionButton />
           ) : (
             <Button size="3" onClick={wallet.establishConnection} css={$.connectWalletButton}>
               Connect Wallet
             </Button>
           )}
-        </OrderEntryForm.KernelProvider>
-      </DashboardOrderFormMetaProvider>
+        </IncreasePositionForm.KernelProvider>
+      </IncreasePositionForm.OptionsProvider>
 
-      <ValidationErrorDialog
+      <IncreasePositionForm.ValidationErrorDialog
         open={showValidationError}
-        onOpenChange={(open) => !open && setShowValidationError(false)}
+        onOpenChange={(open: boolean) => !open && setShowValidationError(false)}
       />
 
-      <ProcessingTransactionDialog open={transactionState === 'pending'} />
+      <IncreasePositionForm.ProcessingTransactionDialog open={transactionStatus === 'pending'} />
 
-      <TransactionSuccessDialog
-        open={transactionState === 'success'}
-        onOpenChange={(open) => !open && setTransactionState('idle')}
+      <IncreasePositionForm.TransactionSuccessDialog
+        open={transactionStatus === 'fulfilled'}
+        onOpenChange={(open: boolean) => !open && setTransactionStatus('uninitialized')}
       />
 
-      <TransactionErrorDialog
-        open={transactionState === 'error'}
-        onOpenChange={(open) => !open && setTransactionState('idle')}
+      <IncreasePositionForm.TransactionErrorDialog
+        open={transactionStatus === 'rejected'}
+        onOpenChange={(open: boolean) => !open && setTransactionStatus('uninitialized')}
         description={
           errorMessage || 'An error occurred while submitting your transaction. Please try again.'
         }

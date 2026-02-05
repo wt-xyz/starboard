@@ -6,7 +6,6 @@ import type { PositionFormField } from '../models';
 import { useFieldsAsserter } from '../utils';
 import * as $ from './SizeInput.css';
 
-
 type SizeInputProps = {
   fieldName?: PositionFormField;
   label?: string;
@@ -14,7 +13,7 @@ type SizeInputProps = {
   onHalf?: () => void;
   onMax?: () => void;
   ref?: RefObject<HTMLInputElement | null>;
-  
+
   assetSymbol?: string;
   assetPrice?: number;
   calculateUsdValue?: SizeInputUsdCalculator;
@@ -46,13 +45,13 @@ export const SizeInput: FC<SizeInputProps> = ({
     calculateUsdValue && assetPrice
       ? calculateUsdValue(field.value ?? '', assetPrice, leverage ?? '')
       : null;
-  
+
   const handleChange = (value: string) => {
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       field.onChange(value.slice(0, 13));
     }
   };
-  
+
   return (
     <div className={$.container}>
       {label && <label className={$.label}>{label}</label>}
@@ -65,12 +64,14 @@ export const SizeInput: FC<SizeInputProps> = ({
           value={field.value ?? ''}
           onChange={(e) => handleChange(e.target.value)}
           placeholder="0.0"
-          />
+        />
         {assetSymbol && <div className={$.assetBadge}>{assetSymbol}</div>}
       </div>
       {(usdValue !== null || showLeverage || onHalf || onMax) && (
         <div className={$.footer}>
-          {usdValue !== null && <span className={$.usdValue}>${formatCurrency(usdValue)}</span>}
+          <span className={$.usdValue}>
+            {usdValue !== null ? <> ${formatCurrency(usdValue)}</> : <>$0.00</>}
+          </span>
           {showLeverage && leverage && <span className={$.leverage}>Leverage: {leverage}x</span>}
           {(onHalf || onMax) && (
             <div className={$.quickActions}>

@@ -5,8 +5,10 @@ export type OptionsContextType = {
   baseAssetSymbol?: string;
   quoteAssetSymbol?: string;
   userBalanceInBaseAsset?: number;
+  currentCollateral?: number;
   currentQuoteAssetPrice?: Signal<number>;
   currentBaseAssetPrice?: Signal<number>;
+  positionEntryPrice?: number;
   maxLeverage?: number;
   minCollateral?: number;
   minPositionSize?: number;
