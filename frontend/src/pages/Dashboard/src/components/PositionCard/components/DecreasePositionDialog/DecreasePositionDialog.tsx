@@ -3,7 +3,13 @@ import { Dialog } from '@radix-ui/themes';
 import type { PositionStableId } from 'fuel-ts-sdk';
 import { Tabs } from 'radix-ui';
 import * as styles from './DecreasePositionDialog.css';
-import { CollateralTab, DecreaseTab } from './tabs';
+import {
+  CollateralTab,
+  DecreaseTab,
+  EntryPriceStat,
+  LiquidationPriceStat,
+  MarkPriceStat,
+} from './components';
 
 type DecreasePositionDialogProps = {
   open: boolean;
@@ -21,6 +27,12 @@ export const DecreasePositionDialog = memo(
       <Dialog.Root open={open} onOpenChange={onOpenChange}>
         <Dialog.Content className={styles.dialogContent}>
           <Dialog.Title className={styles.dialogTitle}>Manage Position</Dialog.Title>
+
+          <div className={styles.statsRow}>
+            <EntryPriceStat positionId={positionId} />
+            <MarkPriceStat positionId={positionId} />
+            <LiquidationPriceStat positionId={positionId} />
+          </div>
 
           <Tabs.Root defaultValue="decrease">
             <Tabs.List className={styles.tabsList}>

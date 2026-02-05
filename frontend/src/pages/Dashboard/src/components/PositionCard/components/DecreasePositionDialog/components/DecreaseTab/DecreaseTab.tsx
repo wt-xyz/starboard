@@ -1,20 +1,20 @@
-import { type FC, use, useCallback, useMemo } from 'react';
-import { $decimalValue, DecimalCalculator, DecimalValue, type PositionStableId } from 'fuel-ts-sdk';
+import { type FC, useCallback, useMemo } from 'react';
+import { Button, Dialog } from '@radix-ui/themes';
+import { $decimalValue, DecimalCalculator, type PositionStableId } from 'fuel-ts-sdk';
 import { PositionSize } from 'fuel-ts-sdk/trading';
-import { useController } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { useTradingSdk } from '@/lib/fuel-ts-sdk';
-import * as DecreasePositionForm from '@/modules/DecreasePositionForm';
-import type { DecreasePositionFormModel } from '@/modules/DecreasePositionForm';
+import { useSdkQuerySignal, useTradingSdk } from '@/lib/fuel-ts-sdk';
+import { DecreasePositionForm, type DecreasePositionFormModel } from '@/pages/Dashboard/submodules';
 import * as $ from './DecreaseTab.css';
+import { SizeInputSection } from './components/SizeInputSection';
+import { Summary } from './components/Summary';
 
 export interface DecreaseTabProps {
   positionId: PositionStableId;
-  onCancel?: () => void;
   onSubmitSuccess?: () => void;
 }
 
-export const DecreaseTab: FC<DecreaseTabProps> = ({ positionId, onCancel, onSubmitSuccess }) => {
+export const DecreaseTab: FC<DecreaseTabProps> = ({ positionId, onSubmitSuccess }) => {
   const tradingSdk = useTradingSdk();
 
   const quoteAssetSymbol = tradingSdk.getWatchedAsset()?.name ?? '...';
@@ -31,6 +31,11 @@ export const DecreaseTab: FC<DecreaseTabProps> = ({ positionId, onCancel, onSubm
     const collateral = $decimalValue(position.collateral).toFloat();
     return collateral > 0 ? (size / collateral).toFixed(1) : '1';
   })();
+
+  const currentQuoteAssetPrice = useSdkQuerySignal(() => {
+    const price = tradingSdk.getWatchedAssetLatestPrice();
+    return price ? $decimalValue(price.value).toFloat() : 0;
+  });
 
   const handleSubmit = useCallback(
     async (formData: DecreasePositionFormModel) => {
@@ -66,12 +71,9 @@ export const DecreaseTab: FC<DecreaseTabProps> = ({ positionId, onCancel, onSubm
     [tradingSdk, positionId, onSubmitSuccess, totalPositionSize, position.size]
   );
 
-  const getSubmitTitle = (percentage: string) =>
-    percentage === '100' ? 'Close Position' : 'Decrease Position';
-
   const optionsContextValue: DecreasePositionForm.OptionsContextType = useMemo(
-    () => ({ baseAssetSymbol, quoteAssetSymbol }),
-    [baseAssetSymbol, quoteAssetSymbol]
+    () => ({ baseAssetSymbol, quoteAssetSymbol, currentQuoteAssetPrice }),
+    [baseAssetSymbol, quoteAssetSymbol, currentQuoteAssetPrice]
   );
 
   return (
@@ -90,59 +92,18 @@ export const DecreaseTab: FC<DecreaseTabProps> = ({ positionId, onCancel, onSubm
         </div>
 
         <div css={$.summarySection}>
-          <DecreasePositionForm.Summary />
+          <Summary positionId={positionId} />
         </div>
 
-        <DecreasePositionForm.Actions onCancel={onCancel} submitTitleFn={getSubmitTitle} />
+        <div className={$.actionsSection}>
+          <Dialog.Close>
+            <Button variant="outline" size="3" className={$.cancelButton}>
+              Cancel
+            </Button>
+          </Dialog.Close>
+          <DecreasePositionForm.SubmitButton />
+        </div>
       </DecreasePositionForm.KernelProvider>
     </DecreasePositionForm.OptionsContext.Provider>
   );
 };
-
-interface SizeInputSectionProps {
-  totalPositionSize: PositionSize;
-}
-
-const SizeInputSection: FC<SizeInputSectionProps> = ({ totalPositionSize }) => {
-  const tradingSdk = useTradingSdk();
-  const { control } = use(DecreasePositionForm.KernelContext)!;
-  const { field } = useController({ control, name: 'sizeDelta' });
-
-  const assetPrice = (() => {
-    const price = tradingSdk.getWatchedAssetLatestPrice();
-    return price ? $decimalValue(price.value).toFloat() : undefined;
-  })();
-
-  const handleHalf = useCallback(() => {
-    const half = DecimalCalculator.value(totalPositionSize)
-      .divideBy(DecimalValue.fromFloat(2))
-      .calculate(PositionSize);
-    field.onChange($decimalValue(half).toDecimalString());
-  }, [field, totalPositionSize]);
-
-  const handleMax = useCallback(() => {
-    field.onChange($decimalValue(totalPositionSize).toDecimalString());
-  }, [field, totalPositionSize]);
-
-  return (
-    <div className={$.inputSection}>
-      <DecreasePositionForm.SizeInput
-        assetPrice={assetPrice}
-        onHalf={handleHalf}
-        onMax={handleMax}
-        showLeverage
-        calculateUsdValue={calculateUsdValue}
-      />
-    </div>
-  );
-};
-
-function calculateUsdValue(fieldValue: string, assetPrice: number, leverage: string) {
-  if (!fieldValue || !leverage) return null;
-  return $decimalValue(
-    DecimalCalculator.value(DecimalValue.fromDecimalString(fieldValue))
-      .multiplyBy(DecimalValue.fromFloat(assetPrice))
-      .divideBy(DecimalValue.fromDecimalString(leverage))
-      .calculate(DecimalValue)
-  ).toDecimalString();
-}
