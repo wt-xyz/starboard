@@ -23,3 +23,10 @@ export const positionInfoValue = style({
   color: colors.snow,
   fontFamily: 'monospace',
 });
+
+export const positionInfoValueSecondary = style({
+  fontSize: '0.6875rem',
+  color: colors.dustyGrey,
+  fontFamily: 'monospace',
+  marginTop: '0.125rem',
+});

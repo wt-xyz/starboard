@@ -28,7 +28,7 @@ export const KernelProvider: FC<KernelProviderProps> = ({
       leverage,
       sizeDelta: '',
     },
-    mode: 'onChange',
+    mode: 'onSubmit',
   });
 
   const submit = useCallback(

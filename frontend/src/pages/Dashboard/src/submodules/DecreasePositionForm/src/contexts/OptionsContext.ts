@@ -4,7 +4,7 @@ import type { RequireFields } from '@/types/RequireFields';
 
 export type OptionsContextType = RequireFields<
   PositionForm.OptionsContextType,
-  'baseAssetSymbol' | 'quoteAssetSymbol'
+  'baseAssetSymbol' | 'quoteAssetSymbol' | 'currentQuoteAssetPrice'
 >;
 
 export const OptionsContext = PositionForm.OptionsContext as Context<OptionsContextType>;

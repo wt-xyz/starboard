@@ -3,16 +3,14 @@ import { useFormState, useWatch } from 'react-hook-form';
 import { useBoolean } from 'usehooks-ts';
 import { calculateSliderPercentage } from '@/modules/PositionForm';
 import { KernelContext } from '../contexts';
-import * as $ from './Actions.css';
+import * as $ from './SubmitButton.css';
 
-export interface ActionsProps {
-  onCancel?: () => void;
-  submitTitleFn?: (percentage: string) => string;
+export interface SubmitButtonProps {
+  titleFn?: (percentage: string) => string;
 }
 
-export const Actions: FC<ActionsProps> = ({
-  onCancel,
-  submitTitleFn = () => 'Decrease Position',
+export const SubmitButton: FC<SubmitButtonProps> = ({
+  titleFn = (percentage) => (percentage === '100' ? 'Close' : 'Decrease'),
 }) => {
   const { control, submit } = use(KernelContext)!;
   const { isValid } = useFormState({ control });
@@ -20,7 +18,7 @@ export const Actions: FC<ActionsProps> = ({
   const isLocked = useBoolean(false);
 
   const percentage = calculateSliderPercentage(sizeDelta ?? '', totalSize ?? '');
-  const submitTitle = submitTitleFn(percentage);
+  const title = titleFn(percentage);
 
   const handleSubmit = async () => {
     isLocked.setTrue();
@@ -31,22 +29,16 @@ export const Actions: FC<ActionsProps> = ({
     }
   };
 
-  const isInteractive = !isLocked.value && isValid;
+  const looksDisabled = isLocked.value || !isValid;
 
   return (
-    <div className={$.buttonGroup}>
-      <button type="button" className={$.cancelButton} onClick={onCancel}>
-        Cancel
-      </button>
-
-      <button
-        type="button"
-        className={$.decreaseButton}
-        disabled={!isInteractive}
-        onClick={handleSubmit}
-      >
-        {submitTitle}
-      </button>
-    </div>
+    <button
+      type="button"
+      css={[$.button, looksDisabled && $.disabled]}
+      disabled={isLocked.value}
+      onClick={handleSubmit}
+    >
+      {title}
+    </button>
   );
 };

@@ -1,7 +1,7 @@
 import { propify } from '@/lib/propify';
 import { SizeInput as PositionFormSizeInput, SizePercentageSlider } from '@/modules/PositionForm';
 
-export { Actions, type ActionsProps } from './Actions';
+export { SubmitButton, type SubmitButtonProps } from './SubmitButton';
 export { CurrentPositionInfo } from './CurrentPositionInfo';
 export { KernelProvider, type KernelProviderProps } from './KernelProvider';
 export { Summary } from './Summary';
