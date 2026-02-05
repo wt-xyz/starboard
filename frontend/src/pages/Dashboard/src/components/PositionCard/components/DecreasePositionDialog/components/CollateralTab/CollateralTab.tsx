@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { EditCollateralForm, type EditCollateralFormModel } from '@/pages/Dashboard/submodules';
 import * as $ from './CollateralTab.css';
+import { Summary } from './Summary';
 
 export interface CollateralTabProps {
   positionId: PositionStableId;
@@ -47,6 +48,10 @@ export const CollateralTab: FC<CollateralTabProps> = ({ positionId, onSubmitSucc
 
         <div className={$.inputSection}>
           <EditCollateralForm.AmountInput />
+        </div>
+
+        <div className={$.summarySection}>
+          <Summary positionId={positionId} />
         </div>
 
         <div className={$.actionsSection}>
