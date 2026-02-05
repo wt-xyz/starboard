@@ -1,28 +1,37 @@
-import type { FC } from 'react';
+import type { ComponentType, ReactNode } from 'react';
+import type { PositionStableId } from 'fuel-ts-sdk';
+import { propify } from '@/lib/propify';
+import { useRequiredContext } from '@/lib/useRequiredContext';
+import { PositionStats } from '@/pages/Dashboard/submodules';
+import { PositionCardContext } from '../../lib/PositionCardContext';
 import * as $ from './_PositionStatsBase.css';
 
-export interface _PositionStatsBaseProps {
+export const EntryPrice = propify(PositionStatBase, {
+  label: 'Entry',
+  Value: PositionStats.EntryPrice,
+});
+
+export const MarkPrice = propify(PositionStatBase, {
+  label: 'Mark',
+  Value: PositionStats.MarkPrice,
+});
+
+export interface PositionStatBaseProps {
   label: string;
-  value: string | null;
-  /** Symbol to display before the value (default: '$') */
-  prefix?: string;
-  /** Symbol to display after the value */
-  suffix?: string;
-  secondaryValue?: string;
+  Value: ComponentType<{ positionId: PositionStableId }>;
+  secondaryValue?: ReactNode;
 }
 
-export const _PositionStatsBase: FC<_PositionStatsBaseProps> = ({
-  label,
-  value,
-  prefix = '$',
-  suffix,
-  secondaryValue,
-}) => (
-  <div css={$.statCell}>
-    <span css={$.statLabel}>{label}</span>
-    <span css={[$.statValue, value == null && $.statValueMuted]}>
-      {value != null ? `${prefix}${value}${suffix ? ` ${suffix}` : ''}` : '—'}
-    </span>
-    {secondaryValue && <span css={$.statValueSecondary}>{secondaryValue}</span>}
-  </div>
-);
+function PositionStatBase({ label, Value, secondaryValue }: PositionStatBaseProps) {
+  const position = useRequiredContext(PositionCardContext);
+
+  return (
+    <div css={$.statCell}>
+      <span css={$.statLabel}>{label}</span>
+      <span css={$.statValue}>
+        $<Value positionId={position.stableId} />
+      </span>
+      {secondaryValue && <span css={$.statValueSecondary}>{secondaryValue}</span>}
+    </div>
+  );
+}

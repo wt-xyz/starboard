@@ -1,3 +1,2 @@
-export * from './EntryPrice';
-export * from './MarkPrice';
+export { EntryPrice, MarkPrice } from './_PositionStatsBase';
 export * from './PositionSize';
