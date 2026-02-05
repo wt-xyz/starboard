@@ -14,6 +14,12 @@ export const actionSwitchSection = style({
 
 export const inputSection = style({});
 
+export const summarySection = style({
+  padding: '1rem',
+  backgroundColor: colors.whiteAlpha[5],
+  borderRadius: '0.5rem',
+});
+
 export const actionsSection = style({
   display: 'flex',
   gap: '0.75rem',
