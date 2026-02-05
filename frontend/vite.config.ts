@@ -14,6 +14,7 @@ export default defineConfig({
       declarationFile: '.env.example',
     }),
     cssTwTransformPlugin(), // Must run first (before react plugin)
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useContextAssertPlugin(), // Transform use(Context)! to useRequiredContext(Context)
     vanillaExtractPlugin(),
     tailwindcss(),

@@ -25,9 +25,8 @@ export function useMediaQuery(query: string, defaultState = false) {
       return () => mediaQueryList.removeEventListener('change', onChange);
     }
 
-    // eslint-disable-next-line
     mediaQueryList.addListener(onChange);
-    // eslint-disable-next-line
+
     return () => mediaQueryList.removeListener(onChange);
   }, [query]);
 
