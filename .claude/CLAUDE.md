@@ -122,6 +122,41 @@ For contract constants (decimals, precision), check `contracts/contracts/core/va
 - **Styles**: Always `import * as $`
 - **No barrel** at `@/modules/index.ts` - kills code splitting
 
+### Component Propification
+
+Use `propify` from `@/lib/propify` to create preset variants of base components:
+
+```tsx
+// Propified variants at top, base component at bottom
+export const EntryPriceStat = propify(PositionStatBase, {
+  label: 'Entry',
+  Value: PositionStats.EntryPrice,
+});
+
+export const MarkPriceStat = propify(PositionStatBase, {
+  label: 'Mark',
+  Value: PositionStats.MarkPrice,
+});
+
+// Base component (not exported from index)
+function PositionStatBase({ label, positionId, Value }: PositionStatBaseProps) {
+  return (
+    <div css={$.cell}>
+      <span css={$.label}>{label}</span>
+      <span css={$.value}>
+        $<Value positionId={positionId} />
+      </span>
+    </div>
+  );
+}
+```
+
+**Rules:**
+
+- Propified exports go at the top of the file
+- Base component stays at the bottom (not exported via index.ts)
+- Use for creating variants with preset props (labels, icons, Value components)
+
 ### Module Contexts
 
 - **`OptionsContext`**: External configurables (inputs)

@@ -1,17 +1,28 @@
 {
   "workbench.editor.customLabels.patterns": {
-    // Modules: ModuleName filename [layer]
-    "**/modules/*/src/contexts/*.ts": "${dirname(2)} ${filename} [context]",
-    "**/modules/*/src/components/*.css.ts": "${dirname(2)} ${filename} [styles]",
-    "**/modules/*/src/components/*/*.css.ts": "${dirname(3)} ${filename} [styles]",
-    "**/modules/*/src/components/*.tsx": "${dirname(2)} ${filename} [component]",
-    "**/modules/*/src/components/*/*.tsx": "${dirname(3)} ${filename} [component]",
-    "**/modules/*/src/models/*.ts": "${dirname(2)} ${filename} [model]",
-    "**/modules/*/src/utils/*.ts": "${dirname(2)} ${filename} [util]",
-    "**/modules/*/tests/*.ts": "${dirname(2)} ${filename} [test]",
-    "**/modules/*/tests/*.tsx": "${dirname(2)} ${filename} [test]",
-    "**/modules/*/tests/*/*.ts": "${dirname(3)} ${filename} [test]",
-    "**/modules/*/tests/*/*.tsx": "${dirname(3)} ${filename} [test]",
+    // Frontend Modules: ModuleName filename [layer]
+    "**/frontend/**/modules/*/src/contexts/*.ts": "${dirname(2)} ${filename} [context]",
+    "**/frontend/**/modules/*/src/components/*.css.ts": "${dirname(2)} ${filename} [styles]",
+    "**/frontend/**/modules/*/src/components/*/*.css.ts": "${dirname(3)} ${filename} [styles]",
+    "**/frontend/**/modules/*/src/components/*.tsx": "${dirname(2)} ${filename} [component]",
+    "**/frontend/**/modules/*/src/components/*/*.tsx": "${dirname(3)} ${filename} [component]",
+    "**/frontend/**/modules/*/src/models/*.ts": "${dirname(2)} ${filename} [model]",
+    "**/frontend/**/modules/*/src/utils/*.ts": "${dirname(2)} ${filename} [util]",
+    "**/frontend/**/modules/*/tests/*.ts": "${dirname(2)} ${filename} [test]",
+    "**/frontend/**/modules/*/tests/*.tsx": "${dirname(2)} ${filename} [test]",
+    "**/frontend/**/modules/*/tests/*/*.ts": "${dirname(3)} ${filename} [test]",
+    "**/frontend/**/modules/*/tests/*/*.tsx": "${dirname(3)} ${filename} [test]",
+
+    // Frontend Dashboard submodules: ModuleName filename [layer] (Dashboard submodules)
+    "**/frontend/**/submodules/*/src/contexts/*.ts": "${dirname(2)} ${filename} [context] (Dashboard submodules)",
+    "**/frontend/**/submodules/*/src/components/*.css.ts": "${dirname(2)} ${filename} [styles] (Dashboard submodules)",
+    "**/frontend/**/submodules/*/src/components/*/*.css.ts": "${dirname(3)} ${filename} [styles] (Dashboard submodules)",
+    "**/frontend/**/submodules/*/src/components/*.tsx": "${dirname(2)} ${filename} [component] (Dashboard submodules)",
+    "**/frontend/**/submodules/*/src/components/*/*.tsx": "${dirname(3)} ${filename} [component] (Dashboard submodules)",
+    "**/frontend/**/submodules/*/src/models/*.ts": "${dirname(2)} ${filename} [model] (Dashboard submodules)",
+    "**/frontend/**/submodules/*/src/utils/*.ts": "${dirname(2)} ${filename} [util] (Dashboard submodules)",
+    "**/frontend/**/submodules/*/src/views/*.tsx": "${dirname(2)} ${filename} [view] (Dashboard submodules)",
+    "**/frontend/**/submodules/*/src/views/*.css.ts": "${dirname(2)} ${filename} [styles] (Dashboard submodules)",
 
     // fuel-ts-sdk: [type] filename (BC > Aggregate)
 
