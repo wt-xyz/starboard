@@ -17,3 +17,11 @@ pnpm sqd down:e2e
 pnpm sqd up:e2e
 ./e2e/run.sh e2e/populate-events-price.ts e2e/verify-indexer-price.test.ts
 pnpm sqd down:e2e
+
+pnpm sqd up:e2e
+./e2e/run.sh e2e/populate-events-set-fees.ts e2e/verify-indexer-set-fees.test.ts
+pnpm sqd down:e2e
+
+echo ""
+echo "TESTS: SUCCESS"
+echo ""

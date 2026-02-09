@@ -1,6 +1,6 @@
 {
   "programType": "contract",
-  "specVersion": "1.1",
+  "specVersion": "1.2",
   "encodingVersion": "1",
   "concreteTypes": [
     {
@@ -202,37 +202,37 @@
     {
       "type": "struct src20::SetDecimalsEvent",
       "concreteTypeId": "b6a606756ed20ecf9e047dfc134b0a9ba42ccc642956ce4205e784e82ee1daa1",
-      "metadataTypeId": 36
+      "metadataTypeId": 35
     },
     {
       "type": "struct src20::SetNameEvent",
       "concreteTypeId": "2c4e26d9fde4e3c732683d47b93ece2ba27aa77cc27495ea42fe5491ef144f0d",
-      "metadataTypeId": 37
+      "metadataTypeId": 36
     },
     {
       "type": "struct src20::SetSymbolEvent",
       "concreteTypeId": "3dc850985943a7e8e5becd967e8b8eaa26a7dec1f75a1a80ace5b3bf622b1e1a",
-      "metadataTypeId": 38
+      "metadataTypeId": 37
     },
     {
       "type": "struct src20::TotalSupplyEvent",
       "concreteTypeId": "7a3907033239b7e20b602aaf2a1a55863934467688426a359aae8b410786d2ba",
-      "metadataTypeId": 39
+      "metadataTypeId": 38
     },
     {
       "type": "struct std::asset_id::AssetId",
       "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
-      "metadataTypeId": 41
+      "metadataTypeId": 40
     },
     {
       "type": "struct std::contract_id::ContractId",
       "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
-      "metadataTypeId": 44
+      "metadataTypeId": 43
     },
     {
       "type": "struct std::string::String",
       "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c",
-      "metadataTypeId": 45
+      "metadataTypeId": 44
     },
     {
       "type": "u256",
@@ -366,6 +366,10 @@
         },
         {
           "name": "VaultInvalidMsgCaller",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "VaultInvalidPrice",
           "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
         },
         {
@@ -538,11 +542,11 @@
       "components": [
         {
           "name": "Address",
-          "typeId": 40
+          "typeId": 39
         },
         {
           "name": "ContractId",
-          "typeId": 44
+          "typeId": 43
         }
       ]
     },
@@ -616,18 +620,6 @@
         {
           "name": "cumulative_funding_rate",
           "typeId": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e"
-        },
-        {
-          "name": "reserve_amount",
-          "typeId": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e"
-        },
-        {
-          "name": "realized_pnl",
-          "typeId": 35
-        },
-        {
-          "name": "last_increased_time",
-          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
       ]
     },
@@ -956,7 +948,11 @@
           "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         },
         {
-          "name": "position_fee_basis_points",
+          "name": "increase_position_fee_basis_points",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "decrease_position_fee_basis_points",
           "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         },
         {
@@ -1050,22 +1046,12 @@
       ]
     },
     {
-      "type": "struct signed_int::i256::I256",
+      "type": "struct src20::SetDecimalsEvent",
       "metadataTypeId": 35,
       "components": [
         {
-          "name": "underlying",
-          "typeId": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e"
-        }
-      ]
-    },
-    {
-      "type": "struct src20::SetDecimalsEvent",
-      "metadataTypeId": 36,
-      "components": [
-        {
           "name": "asset",
-          "typeId": 41
+          "typeId": 40
         },
         {
           "name": "decimals",
@@ -1079,11 +1065,11 @@
     },
     {
       "type": "struct src20::SetNameEvent",
-      "metadataTypeId": 37,
+      "metadataTypeId": 36,
       "components": [
         {
           "name": "asset",
-          "typeId": 41
+          "typeId": 40
         },
         {
           "name": "name",
@@ -1091,7 +1077,7 @@
           "typeArguments": [
             {
               "name": "",
-              "typeId": 45
+              "typeId": 44
             }
           ]
         },
@@ -1103,11 +1089,11 @@
     },
     {
       "type": "struct src20::SetSymbolEvent",
-      "metadataTypeId": 38,
+      "metadataTypeId": 37,
       "components": [
         {
           "name": "asset",
-          "typeId": 41
+          "typeId": 40
         },
         {
           "name": "symbol",
@@ -1115,7 +1101,7 @@
           "typeArguments": [
             {
               "name": "",
-              "typeId": 45
+              "typeId": 44
             }
           ]
         },
@@ -1127,11 +1113,11 @@
     },
     {
       "type": "struct src20::TotalSupplyEvent",
-      "metadataTypeId": 39,
+      "metadataTypeId": 38,
       "components": [
         {
           "name": "asset",
-          "typeId": 41
+          "typeId": 40
         },
         {
           "name": "supply",
@@ -1145,7 +1131,7 @@
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 40,
+      "metadataTypeId": 39,
       "components": [
         {
           "name": "bits",
@@ -1155,7 +1141,7 @@
     },
     {
       "type": "struct std::asset_id::AssetId",
-      "metadataTypeId": 41,
+      "metadataTypeId": 40,
       "components": [
         {
           "name": "bits",
@@ -1165,11 +1151,11 @@
     },
     {
       "type": "struct std::bytes::Bytes",
-      "metadataTypeId": 42,
+      "metadataTypeId": 41,
       "components": [
         {
           "name": "buf",
-          "typeId": 43
+          "typeId": 42
         },
         {
           "name": "len",
@@ -1179,7 +1165,7 @@
     },
     {
       "type": "struct std::bytes::RawBytes",
-      "metadataTypeId": 43,
+      "metadataTypeId": 42,
       "components": [
         {
           "name": "ptr",
@@ -1193,7 +1179,7 @@
     },
     {
       "type": "struct std::contract_id::ContractId",
-      "metadataTypeId": 44,
+      "metadataTypeId": 43,
       "components": [
         {
           "name": "bits",
@@ -1203,11 +1189,11 @@
     },
     {
       "type": "struct std::string::String",
-      "metadataTypeId": 45,
+      "metadataTypeId": 44,
       "components": [
         {
           "name": "bytes",
-          "typeId": 42
+          "typeId": 41
         }
       ]
     }
@@ -1481,6 +1467,19 @@
       ]
     },
     {
+      "name": "get_decrease_position_fee_basis_points",
+      "inputs": [],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
       "name": "get_fee_reserve",
       "inputs": [],
       "output": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e",
@@ -1502,6 +1501,19 @@
         }
       ],
       "output": "2b14fdd13855ff2a88ae5b14c5b878eff0fc6419870b1bde0b69563eb16a9c0c",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_increase_position_fee_basis_points",
+      "inputs": [],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
       "attributes": [
         {
           "name": "storage",
@@ -1544,42 +1556,6 @@
       "attributes": null
     },
     {
-      "name": "get_max_price",
-      "inputs": [
-        {
-          "name": "asset",
-          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
-        }
-      ],
-      "output": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e",
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "get_min_price",
-      "inputs": [
-        {
-          "name": "asset",
-          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
-        }
-      ],
-      "output": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e",
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
-    },
-    {
       "name": "get_pnl",
       "inputs": [
         {
@@ -1610,11 +1586,19 @@
       ]
     },
     {
-      "name": "get_position_by_key",
+      "name": "get_position",
       "inputs": [
         {
-          "name": "position_key",
+          "name": "account",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        },
+        {
+          "name": "index_asset",
           "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "is_long",
+          "concreteTypeId": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903"
         }
       ],
       "output": "3c946bc1dc37ba30bafc7846f183ddb6bb4dbc93b26e91fa87aaf4d29613b0cb",
@@ -1628,9 +1612,14 @@
       ]
     },
     {
-      "name": "get_position_fee_basis_points",
-      "inputs": [],
-      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "name": "get_position_by_key",
+      "inputs": [
+        {
+          "name": "position_key",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ],
+      "output": "3c946bc1dc37ba30bafc7846f183ddb6bb4dbc93b26e91fa87aaf4d29613b0cb",
       "attributes": [
         {
           "name": "storage",
@@ -1712,6 +1701,32 @@
       ]
     },
     {
+      "name": "get_position_liquidation_price",
+      "inputs": [
+        {
+          "name": "account",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        },
+        {
+          "name": "index_asset",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "is_long",
+          "concreteTypeId": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903"
+        }
+      ],
+      "output": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
       "name": "get_position_pnl",
       "inputs": [
         {
@@ -1728,6 +1743,32 @@
         }
       ],
       "output": "3acef182e41da8f557e6ba5daab7129b9c821fb0b9e53c5b1d4a626825f06b8e",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_price",
+      "inputs": [
+        {
+          "name": "asset",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "is_long",
+          "concreteTypeId": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903"
+        },
+        {
+          "name": "is_increase",
+          "concreteTypeId": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903"
+        }
+      ],
+      "output": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e",
       "attributes": [
         {
           "name": "storage",
@@ -2009,7 +2050,11 @@
           "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         },
         {
-          "name": "position_fee_basis_points",
+          "name": "increase_position_fee_basis_points",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "decrease_position_fee_basis_points",
           "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         },
         {
@@ -2114,44 +2159,8 @@
       "concreteTypeId": "4b640168969ec78e1ff09a1a9ccc8234ffaf1b016e862a4251e06348e490b3d3"
     },
     {
-      "logId": "4997665884103701952",
-      "concreteTypeId": "455b46a49016f5c03c18ce54b969ea3d0d33c9b00263b3dcc36aa8da27558b8a"
-    },
-    {
-      "logId": "16514249102412951748",
-      "concreteTypeId": "e52e660ff9a330c417b6493bb8d3d0049bafaa6c4a771b32b205d71bc2bc5ace"
-    },
-    {
-      "logId": "8807078256608655330",
-      "concreteTypeId": "7a3907033239b7e20b602aaf2a1a55863934467688426a359aae8b410786d2ba"
-    },
-    {
-      "logId": "3102420689146076761",
-      "concreteTypeId": "2b0e032df05fde5983b2b9679381b7d50b86d5b2906433071a974b5a60f108e9"
-    },
-    {
-      "logId": "4396767534313560752",
-      "concreteTypeId": "3d0474c702badab0e663699820f0c39e07964c76ec933823c8ebaa2d368868d0"
-    },
-    {
-      "logId": "5997125308282845126",
-      "concreteTypeId": "533a11b199b437c6858157a89214892fb11c6a37a787f46e2268aa4fe6bfa71c"
-    },
-    {
-      "logId": "17276184846747919138",
-      "concreteTypeId": "efc15695c0656322f439c297568242d3f65af9fde2a5f9c6b7052027dd244f9a"
-    },
-    {
-      "logId": "1607443183907089103",
-      "concreteTypeId": "164ec90f2567aacf79e7c3b16da30979eca25bb28a9d54bde3f76c2e60991bb6"
-    },
-    {
-      "logId": "15495673782283636918",
-      "concreteTypeId": "d70bb134945990b64959a75b9357d3cb7a579d59ced16542d117fc9f32474d3e"
-    },
-    {
-      "logId": "16595060151443604364",
-      "concreteTypeId": "e64d7f488909438c3f2993022fe1ca4d21a75e333dda6474c844ce615bcaa819"
+      "logId": "7328682213758406579",
+      "concreteTypeId": "65b4b5a4f6cb0fb32d93ee4909a33603f2474d5778876f5bfb8a366a46a6fba5"
     },
     {
       "logId": "12825652816513834595",
@@ -2174,36 +2183,72 @@
       "concreteTypeId": "b6a606756ed20ecf9e047dfc134b0a9ba42ccc642956ce4205e784e82ee1daa1"
     },
     {
+      "logId": "8807078256608655330",
+      "concreteTypeId": "7a3907033239b7e20b602aaf2a1a55863934467688426a359aae8b410786d2ba"
+    },
+    {
       "logId": "17104960795062510771",
       "concreteTypeId": "ed61073796af24b33de31ddc59c970aefa2613605f42d0dc94a2b1360de862c8"
     },
     {
-      "logId": "7908178656321864902",
-      "concreteTypeId": "6dbf7e96ae6404c6e5c840a50205524c00399749c888ec57884820c238d166c0"
+      "logId": "4997665884103701952",
+      "concreteTypeId": "455b46a49016f5c03c18ce54b969ea3d0d33c9b00263b3dcc36aa8da27558b8a"
     },
     {
-      "logId": "683494322165434932",
-      "concreteTypeId": "097c4276f6aaca3406916024f56092501e2c9ea73e31bcbb671f896f4f95a93e"
+      "logId": "16514249102412951748",
+      "concreteTypeId": "e52e660ff9a330c417b6493bb8d3d0049bafaa6c4a771b32b205d71bc2bc5ace"
     },
     {
-      "logId": "2493799375839123318",
-      "concreteTypeId": "229bc151d1fb57761117b661230e22ebdab179095446fb6bda4bd2f62a9bebf9"
+      "logId": "3102420689146076761",
+      "concreteTypeId": "2b0e032df05fde5983b2b9679381b7d50b86d5b2906433071a974b5a60f108e9"
     },
     {
-      "logId": "2203494434997407480",
-      "concreteTypeId": "1e94628396920ef89acb953041b493c50f2f325ff771ee58af8f7c8b4d5e3890"
-    },
-    {
-      "logId": "7328682213758406579",
-      "concreteTypeId": "65b4b5a4f6cb0fb32d93ee4909a33603f2474d5778876f5bfb8a366a46a6fba5"
+      "logId": "12597442371930058247",
+      "concreteTypeId": "aed31b17d9586e07201770792a5bec23432449aaf33e230df13c56b1cd70136b"
     },
     {
       "logId": "3129731210472335334",
       "concreteTypeId": "2b6f09f432a827e63ee46ce9812752485a7cf3cbedc4f81ea41118895f01b447"
     },
     {
-      "logId": "12597442371930058247",
-      "concreteTypeId": "aed31b17d9586e07201770792a5bec23432449aaf33e230df13c56b1cd70136b"
+      "logId": "683494322165434932",
+      "concreteTypeId": "097c4276f6aaca3406916024f56092501e2c9ea73e31bcbb671f896f4f95a93e"
+    },
+    {
+      "logId": "2203494434997407480",
+      "concreteTypeId": "1e94628396920ef89acb953041b493c50f2f325ff771ee58af8f7c8b4d5e3890"
+    },
+    {
+      "logId": "5997125308282845126",
+      "concreteTypeId": "533a11b199b437c6858157a89214892fb11c6a37a787f46e2268aa4fe6bfa71c"
+    },
+    {
+      "logId": "17276184846747919138",
+      "concreteTypeId": "efc15695c0656322f439c297568242d3f65af9fde2a5f9c6b7052027dd244f9a"
+    },
+    {
+      "logId": "1607443183907089103",
+      "concreteTypeId": "164ec90f2567aacf79e7c3b16da30979eca25bb28a9d54bde3f76c2e60991bb6"
+    },
+    {
+      "logId": "15495673782283636918",
+      "concreteTypeId": "d70bb134945990b64959a75b9357d3cb7a579d59ced16542d117fc9f32474d3e"
+    },
+    {
+      "logId": "16595060151443604364",
+      "concreteTypeId": "e64d7f488909438c3f2993022fe1ca4d21a75e333dda6474c844ce615bcaa819"
+    },
+    {
+      "logId": "4396767534313560752",
+      "concreteTypeId": "3d0474c702badab0e663699820f0c39e07964c76ec933823c8ebaa2d368868d0"
+    },
+    {
+      "logId": "7908178656321864902",
+      "concreteTypeId": "6dbf7e96ae6404c6e5c840a50205524c00399749c888ec57884820c238d166c0"
+    },
+    {
+      "logId": "2493799375839123318",
+      "concreteTypeId": "229bc151d1fb57761117b661230e22ebdab179095446fb6bda4bd2f62a9bebf9"
     }
   ],
   "messagesTypes": [],
@@ -2211,27 +2256,28 @@
     {
       "name": "BASE_ASSET_ID",
       "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
-      "offset": 92912,
+      "offset": 78912,
       "indirect": false
     },
     {
       "name": "BASE_ASSET",
       "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b",
-      "offset": 92872,
+      "offset": 78872,
       "indirect": false
     },
     {
       "name": "BASE_ASSET_DECIMALS",
       "concreteTypeId": "d7649d428b9ff33d188ecbf38a7e4d8fd167fa01b2e10fe9a8f9308e52f1d7cc",
-      "offset": 92904,
+      "offset": 78904,
       "indirect": false
     },
     {
       "name": "PRICEFEED_WRAPPER",
       "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
-      "offset": 92944,
+      "offset": 78944,
       "indirect": false
     }
   ],
-  "errorCodes": {}
+  "errorCodes": {},
+  "panickingCalls": {}
 }
