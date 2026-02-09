@@ -11,6 +11,8 @@ import {
   PositionChange,
   PositionKey,
   Price,
+  SetFeesLog,
+  CurrentFees,
 } from './model/generated/index.js';
 
 export const priceOracleInterface = new Interface(priceOracleAbi);
@@ -31,6 +33,7 @@ const LOG_TYPE_INCREASE_POSITION = 'struct events::IncreasePosition';
 const LOG_TYPE_DECREASE_POSITION = 'struct events::DecreasePosition';
 const LOG_TYPE_CLOSE_POSITION = 'struct events::ClosePosition';
 const LOG_TYPE_LIQUIDATE_POSITION = 'struct events::LiquidatePosition';
+const LOG_TYPE_SET_FEES = 'struct events::SetFees';
 
 if (!GRAPHQL_URL || !VAULT_PRICEFEED_ADDRESS || !VAULT_ADDRESS) {
   throw new Error('Environment variables not set');
@@ -105,6 +108,7 @@ vaultAbi.loggedTypes.forEach((loggedType) => {
   LOG_TYPE_DECREASE_POSITION,
   LOG_TYPE_CLOSE_POSITION,
   LOG_TYPE_LIQUIDATE_POSITION,
+  LOG_TYPE_SET_FEES,
 ].forEach((logType) => {
   if (!Object.values(typeNameByLogId).includes(logType)) {
     throw new Error(`Log type ${logType} not found`);
@@ -501,6 +505,57 @@ async function handleLiquidatePosition(
   await ctx.store.insert(position);
 }
 
+async function handleSetFees(
+  receipt: Receipt<{ receipt: { rb: true; data: true } }>,
+  block: Block,
+  ctx: any
+) {
+  const logs = vaultInterface.decodeLog(receipt.data!, receipt.rb!.toString());
+  const log = logs[0];
+
+  const liquidityFeeBasisPoints = Number(log.liquidity_fee_basis_points.toString());
+  const increasePositionFeeBasisPoints = Number(
+    log.increase_position_fee_basis_points.toString()
+  );
+  const decreasePositionFeeBasisPoints = Number(
+    log.decrease_position_fee_basis_points.toString()
+  );
+  const liquidationFeeBasisPoints = Number(log.liquidation_fee_basis_points.toString());
+
+  // 1) store every SetFees event in SetFeesLog
+  const setFeesLog = new SetFeesLog({
+    id: generateId(receipt, block),
+    timestamp: getUTCBlockTime(block),
+    liquidityFeeBasisPoints,
+    increasePositionFeeBasisPoints,
+    decreasePositionFeeBasisPoints,
+    liquidationFeeBasisPoints,
+  });
+  await ctx.store.insert(setFeesLog);
+
+  // 2) update CurrentFees with id = "1"
+  let currentFees: CurrentFees | null = await ctx.store.findOne(CurrentFees, {
+    where: { id: '1' },
+  });
+
+  if (!currentFees) {
+    currentFees = new CurrentFees({
+      id: '1',
+      liquidityFeeBasisPoints,
+      increasePositionFeeBasisPoints,
+      decreasePositionFeeBasisPoints,
+      liquidationFeeBasisPoints,
+    });
+  } else {
+    currentFees.liquidityFeeBasisPoints = liquidityFeeBasisPoints;
+    currentFees.increasePositionFeeBasisPoints = increasePositionFeeBasisPoints;
+    currentFees.decreasePositionFeeBasisPoints = decreasePositionFeeBasisPoints;
+    currentFees.liquidationFeeBasisPoints = liquidationFeeBasisPoints;
+  }
+
+  await ctx.store.upsert(currentFees);
+}
+
 run(dataSource, database, async (ctx) => {
   const blocks = ctx.blocks.map(augmentBlock);
 
@@ -553,6 +608,9 @@ run(dataSource, database, async (ctx) => {
           // events::LiquidatePosition
         } else if (logType === LOG_TYPE_LIQUIDATE_POSITION) {
           await handleLiquidatePosition(receipt, block, ctx);
+          // events::SetFees
+        } else if (logType === LOG_TYPE_SET_FEES) {
+          await handleSetFees(receipt, block, ctx);
         } else {
           // drop unsupported event
           continue;

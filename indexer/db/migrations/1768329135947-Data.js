@@ -12,9 +12,13 @@ export default class Data1768329135947 {
         await db.query(`CREATE TABLE "position" ("id" character varying NOT NULL, "open_id" character varying NOT NULL, "change" character varying(9) NOT NULL, "timestamp" integer NOT NULL, "latest" boolean NOT NULL, "collateral" numeric NOT NULL, "size" numeric NOT NULL, "price" numeric NOT NULL, "out_average_price" numeric NOT NULL, "realized_funding_rate" numeric NOT NULL, "realized_pnl" numeric NOT NULL, "collateral_delta" numeric NOT NULL, "size_delta" numeric NOT NULL, "out_liquidity_fee" numeric NOT NULL, "out_protocol_fee" numeric NOT NULL, "out_liquidation_fee" numeric NOT NULL, "funding_rate" numeric NOT NULL, "out_funding_rate" numeric NOT NULL, "pnl_delta" numeric NOT NULL, "out_pnl_delta" numeric NOT NULL, "out_amount" numeric NOT NULL, "position_key_id" character varying, CONSTRAINT "PK_b7f483581562b4dc62ae1a5b7e2" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_3306a154148b37f510ef9e5daf" ON "position" ("position_key_id") `)
         await db.query(`ALTER TABLE "position" ADD CONSTRAINT "FK_3306a154148b37f510ef9e5daf4" FOREIGN KEY ("position_key_id") REFERENCES "position_key"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+        await db.query(`CREATE TABLE "set_fees_log" ("id" character varying NOT NULL, "timestamp" integer NOT NULL, "liquidity_fee_basis_points" integer NOT NULL, "increase_position_fee_basis_points" integer NOT NULL, "decrease_position_fee_basis_points" integer NOT NULL, "liquidation_fee_basis_points" integer NOT NULL, CONSTRAINT "PK_c6c6ebc54d2fbc2b7d69383b4e5" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "current_fees" ("id" character varying NOT NULL, "liquidity_fee_basis_points" integer NOT NULL, "increase_position_fee_basis_points" integer NOT NULL, "decrease_position_fee_basis_points" integer NOT NULL, "liquidation_fee_basis_points" integer NOT NULL, CONSTRAINT "PK_f799aec8c974126fdaf7111f19f" PRIMARY KEY ("id"))`)
     }
 
     async down(db) {
+        await db.query(`DROP TABLE "current_fees"`)
+        await db.query(`DROP TABLE "set_fees_log"`)
         await db.query(`ALTER TABLE "position" DROP CONSTRAINT "FK_3306a154148b37f510ef9e5daf4"`)
         await db.query(`DROP INDEX "public"."IDX_3306a154148b37f510ef9e5daf"`)
         await db.query(`DROP TABLE "position"`)

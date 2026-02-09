@@ -55,3 +55,20 @@ type Position @entity {
   outPnlDelta: BigInt!
   outAmount: BigInt!
 }
+
+type SetFeesLog @entity {
+  id: ID!
+  timestamp: Int!
+  liquidityFeeBasisPoints: Int!
+  increasePositionFeeBasisPoints: Int!
+  decreasePositionFeeBasisPoints: Int!
+  liquidationFeeBasisPoints: Int!
+}
+
+type CurrentFees @entity {
+  id: ID!
+  liquidityFeeBasisPoints: Int!
+  increasePositionFeeBasisPoints: Int!
+  decreasePositionFeeBasisPoints: Int!
+  liquidationFeeBasisPoints: Int!
+}
