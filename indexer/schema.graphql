@@ -72,3 +72,12 @@ type CurrentFees @entity {
   decreasePositionFeeBasisPoints: Int!
   liquidationFeeBasisPoints: Int!
 }
+
+type CurrentFundingInfo @entity {
+  asset: ID!
+  timestamp: Int!
+  totalShortSizes: BigInt!
+  totalLongSizes: BigInt!
+  longCumulativeFundingRate: BigInt!
+  shortCumulativeFundingRate: BigInt!
+}

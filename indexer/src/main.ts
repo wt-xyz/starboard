@@ -13,6 +13,7 @@ import {
   Price,
   SetFeesLog,
   CurrentFees,
+  CurrentFundingInfo,
 } from './model/generated/index.js';
 
 export const priceOracleInterface = new Interface(priceOracleAbi);
@@ -34,6 +35,7 @@ const LOG_TYPE_DECREASE_POSITION = 'struct events::DecreasePosition';
 const LOG_TYPE_CLOSE_POSITION = 'struct events::ClosePosition';
 const LOG_TYPE_LIQUIDATE_POSITION = 'struct events::LiquidatePosition';
 const LOG_TYPE_SET_FEES = 'struct events::SetFees';
+const LOG_TYPE_UPDATE_FUNDING_INFO = 'struct events::UpdateFundingInfo';
 
 if (!GRAPHQL_URL || !VAULT_PRICEFEED_ADDRESS || !VAULT_ADDRESS) {
   throw new Error('Environment variables not set');
@@ -109,6 +111,7 @@ vaultAbi.loggedTypes.forEach((loggedType) => {
   LOG_TYPE_CLOSE_POSITION,
   LOG_TYPE_LIQUIDATE_POSITION,
   LOG_TYPE_SET_FEES,
+  LOG_TYPE_UPDATE_FUNDING_INFO,
 ].forEach((logType) => {
   if (!Object.values(typeNameByLogId).includes(logType)) {
     throw new Error(`Log type ${logType} not found`);
@@ -556,6 +559,34 @@ async function handleSetFees(
   await ctx.store.upsert(currentFees);
 }
 
+async function handleUpdateFundingInfo(
+  receipt: Receipt<{ receipt: { rb: true; data: true } }>,
+  block: Block,
+  ctx: any
+) {
+  const logs = vaultInterface.decodeLog(receipt.data!, receipt.rb!.toString());
+  const log = logs[0];
+
+  const asset: string = log.asset;
+  const totalShortSizes = BigInt(log.total_short_sizes.toString());
+  const totalLongSizes = BigInt(log.total_long_sizes.toString());
+  const longCumulativeFundingRate = BigInt(log.long_cumulative_funding_rate.toString());
+  const shortCumulativeFundingRate = BigInt(log.short_cumulative_funding_rate.toString());
+  const timestamp = getUTCBlockTime(block);
+
+    const currentFundingInfo = new CurrentFundingInfo({
+      id: asset,
+      asset,
+      timestamp,
+      totalShortSizes,
+      totalLongSizes,
+      longCumulativeFundingRate,
+      shortCumulativeFundingRate,
+    });
+
+  await ctx.store.upsert(currentFundingInfo);
+}
+
 run(dataSource, database, async (ctx) => {
   const blocks = ctx.blocks.map(augmentBlock);
 
@@ -611,6 +642,9 @@ run(dataSource, database, async (ctx) => {
           // events::SetFees
         } else if (logType === LOG_TYPE_SET_FEES) {
           await handleSetFees(receipt, block, ctx);
+          // events::UpdateFundingInfo
+        } else if (logType === LOG_TYPE_UPDATE_FUNDING_INFO) {
+          await handleUpdateFundingInfo(receipt, block, ctx);
         } else {
           // drop unsupported event
           continue;

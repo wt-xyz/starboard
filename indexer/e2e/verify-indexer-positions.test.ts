@@ -1,6 +1,6 @@
 import pg from 'pg';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { BNB_ASSET, BTC_ASSET, USER_0_ADDRESS } from './utils';
+import { BNB_ASSET, BTC_ASSET, ETH_ASSET, USER_0_ADDRESS } from './utils';
 
 const { Client } = pg;
 
@@ -128,6 +128,56 @@ describe('Verify Positions', () => {
         expect(row.realized_pnl).toBeDefined();
       }
     });
+  });
+
+  it('should have CurrentFundingInfo for each asset with position changes', async () => {
+    const result = await client.query(
+      'SELECT id, asset, total_short_sizes, total_long_sizes FROM current_funding_info WHERE id IN ($1, $2, $3)',
+      [BNB_ASSET, ETH_ASSET, BTC_ASSET]
+    );
+    expect(result.rows.length).toBe(3);
+  });
+
+  it('should have correct CurrentFundingInfo for BNB after all positions closed', async () => {
+    const result = await client.query(
+      'SELECT total_short_sizes, total_long_sizes FROM current_funding_info WHERE id = $1',
+      [BNB_ASSET]
+    );
+    expect(result.rows.length).toBe(1);
+    expect(result.rows[0].total_short_sizes).toBe('0');
+    expect(result.rows[0].total_long_sizes).toBe('0');
+  });
+
+  it('should have correct CurrentFundingInfo for ETH with long positions', async () => {
+    // ETH: user0 long 1000, user1 long 2000 → total_long=3000 (in 6 decimals)
+    const result = await client.query(
+      'SELECT total_short_sizes, total_long_sizes FROM current_funding_info WHERE id = $1',
+      [ETH_ASSET]
+    );
+    expect(result.rows.length).toBe(1);
+    expect(result.rows[0].total_short_sizes).toBe('0');
+    expect(result.rows[0].total_long_sizes).toBe('3000000000');
+  });
+
+  it('should have correct CurrentFundingInfo for BTC with long and short positions', async () => {
+    // BTC: user1 short 1000, user2 long 1000
+    const result = await client.query(
+      'SELECT total_short_sizes, total_long_sizes FROM current_funding_info WHERE id = $1',
+      [BTC_ASSET]
+    );
+    expect(result.rows.length).toBe(1);
+    expect(result.rows[0].total_short_sizes).toBe('1000000000');
+    expect(result.rows[0].total_long_sizes).toBe('1000000000');
+  });
+
+  it('should have reasonable timestamp in CurrentFundingInfo', async () => {
+    const result = await client.query('SELECT timestamp FROM current_funding_info WHERE id = $1', [
+      BNB_ASSET,
+    ]);
+    expect(result.rows.length).toBe(1);
+    const now = Math.floor(Date.now() / 1000);
+    expect(Number(result.rows[0].timestamp)).toBeLessThan(now + 1800);
+    expect(Number(result.rows[0].timestamp)).toBeGreaterThan(now - 1800);
   });
 
   it('should reset aggregated values when position is reopened after final status', async () => {
@@ -400,6 +450,50 @@ describe('Verify Positions', () => {
           }
         }
       }
+    });
+
+    it('should have CurrentFundingInfo for each asset with position changes', async () => {
+      const data = await graphQLPost(
+        `currentFundingInfos(condition:{id:"${BNB_ASSET}"}){nodes{id,asset}}`
+      );
+      expect(data.data.currentFundingInfos.nodes.length).toBe(1);
+
+      const ethData = await graphQLPost(
+        `currentFundingInfos(condition:{id:"${ETH_ASSET}"}){nodes{id}}`
+      );
+      expect(ethData.data.currentFundingInfos.nodes.length).toBe(1);
+
+      const btcData = await graphQLPost(
+        `currentFundingInfos(condition:{id:"${BTC_ASSET}"}){nodes{id}}`
+      );
+      expect(btcData.data.currentFundingInfos.nodes.length).toBe(1);
+    });
+
+    it('should have correct CurrentFundingInfo for BNB after all positions closed', async () => {
+      const data = await graphQLPost(
+        `currentFundingInfos(condition:{id:"${BNB_ASSET}"}){nodes{totalShortSizes,totalLongSizes}}`
+      );
+      expect(data.data.currentFundingInfos.nodes.length).toBe(1);
+      expect(data.data.currentFundingInfos.nodes[0].totalShortSizes).toBe('0');
+      expect(data.data.currentFundingInfos.nodes[0].totalLongSizes).toBe('0');
+    });
+
+    it('should have correct CurrentFundingInfo for ETH with long positions', async () => {
+      const data = await graphQLPost(
+        `currentFundingInfos(condition:{id:"${ETH_ASSET}"}){nodes{totalShortSizes,totalLongSizes}}`
+      );
+      expect(data.data.currentFundingInfos.nodes.length).toBe(1);
+      expect(data.data.currentFundingInfos.nodes[0].totalShortSizes).toBe('0');
+      expect(data.data.currentFundingInfos.nodes[0].totalLongSizes).toBe('3000000000');
+    });
+
+    it('should have correct CurrentFundingInfo for BTC with long and short positions', async () => {
+      const data = await graphQLPost(
+        `currentFundingInfos(condition:{id:"${BTC_ASSET}"}){nodes{totalShortSizes,totalLongSizes}}`
+      );
+      expect(data.data.currentFundingInfos.nodes.length).toBe(1);
+      expect(data.data.currentFundingInfos.nodes[0].totalShortSizes).toBe('1000000000');
+      expect(data.data.currentFundingInfos.nodes[0].totalLongSizes).toBe('1000000000');
     });
   });
 
