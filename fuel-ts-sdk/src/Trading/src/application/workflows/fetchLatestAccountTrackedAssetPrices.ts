@@ -12,21 +12,22 @@ export interface FetchLatestAccountTrackedAssetPricesWorkflowDependencies {
 
 export const createFetchLatestAccountTrackedAssetPricesWorkflow =
   (deps: FetchLatestAccountTrackedAssetPricesWorkflowDependencies) => async () => {
-    const currentUserAddress = deps.walletQueries.getCurrentUserAddress();
-    if (!currentUserAddress) return;
-
-    const baseAsset = deps.marketQueries.getBaseAsset();
-    const watchedAsset = deps.marketQueries.getWatchedAsset();
-    const userOpenPositions = filterPositionsByAccountAddress(
-      deps.positionsQueries.getAllLatestPositions(),
-      currentUserAddress
-    ).filter((p) => deps.positionsQueries.isPositionOpen(p.stableId));
-
     const assetsFetchQueue = new Set<AssetId>();
 
-    userOpenPositions.forEach((p) => {
-      assetsFetchQueue.add(p.assetId);
-    });
+    const currentUserAddress = deps.walletQueries.getCurrentUserAddress();
+    const baseAsset = deps.marketQueries.getBaseAsset();
+    const watchedAsset = deps.marketQueries.getWatchedAsset();
+
+    if (currentUserAddress) {
+      const userOpenPositions = filterPositionsByAccountAddress(
+        deps.positionsQueries.getAllLatestPositions(),
+        currentUserAddress
+      ).filter((p) => deps.positionsQueries.isPositionOpen(p.stableId));
+
+      userOpenPositions.forEach((p) => {
+        assetsFetchQueue.add(p.assetId);
+      });
+    }
 
     if (baseAsset) assetsFetchQueue.add(baseAsset.assetId);
     if (watchedAsset) assetsFetchQueue.add(watchedAsset.assetId);
