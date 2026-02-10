@@ -7,7 +7,6 @@ export interface MarketStatsEntity {
   openInterestLong: OpenInterest;
   openInterestShort: OpenInterest;
   volume24h: TradeVolume;
-  priceChange24h: number | null;
 }
 
 export const TradeVolume = createDecimalValueSchema(6, 'TradeVolume');

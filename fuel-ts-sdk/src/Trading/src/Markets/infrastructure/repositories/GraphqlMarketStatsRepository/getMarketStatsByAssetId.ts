@@ -36,6 +36,5 @@ export const createGetMarketStatsByAssetIdAction =
       openInterestLong: OpenInterest.fromBigIntString(openInterest.openInterestLong),
       openInterestShort: OpenInterest.fromBigIntString(openInterest.openInterestShort),
       volume24h: TradeVolume.fromBigIntString(tradeVolume.tradeVolume),
-      priceChange24h: null,
     });
   };
