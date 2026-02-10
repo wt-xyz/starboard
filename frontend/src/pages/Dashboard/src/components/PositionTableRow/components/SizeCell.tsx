@@ -1,7 +1,7 @@
+import type { FC } from 'react';
+import { $decimalValue } from 'fuel-ts-sdk';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import { $decimalValue } from 'fuel-ts-sdk';
-import type { FC } from 'react';
 import * as $ from '../PositionTableRow.css';
 import { PositionTableRowContext } from '../lib/PositionTableRowContext';
 
@@ -16,9 +16,7 @@ export const SizeCell: FC = () => {
   return (
     <td css={$.cell}>
       <div css={$.cellContent}>
-        <span css={$.cellValue}>
-          ${formatCurrency(Math.abs(sizeValue))}
-        </span>
+        <span css={$.cellValue}>${formatCurrency(Math.abs(sizeValue))}</span>
         <span css={$.cellSecondary}>{leverage.toFixed(1)}x</span>
       </div>
     </td>

@@ -1,8 +1,8 @@
-import { useRequiredContext } from '@/lib/useRequiredContext';
+import type { FC } from 'react';
 import { MinusIcon } from '@radix-ui/react-icons';
 import { Tooltip } from '@radix-ui/themes';
-import type { FC } from 'react';
 import { useBoolean } from 'usehooks-ts';
+import { useRequiredContext } from '@/lib/useRequiredContext';
 import { DecreasePositionDialog } from '../../PositionCard/components/DecreasePositionDialog';
 import * as $ from '../PositionTableRow.css';
 import { PositionTableRowContext } from '../lib/PositionTableRowContext';

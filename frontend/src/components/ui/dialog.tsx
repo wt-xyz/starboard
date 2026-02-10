@@ -1,7 +1,7 @@
+import type * as React from 'react';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import { Dialog as RadixDialog } from 'radix-ui';
-import * as React from 'react';
 import * as styles from './dialog.css';
 
 function Dialog({ ...props }: React.ComponentProps<typeof RadixDialog.Root>) {
@@ -94,13 +94,13 @@ function DialogDescription({
 }
 
 export {
-    Dialog,
-    DialogBody,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 };

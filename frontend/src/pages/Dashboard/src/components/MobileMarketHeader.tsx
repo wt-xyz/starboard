@@ -1,9 +1,9 @@
+import type { FC } from 'react';
+import { $decimalValue, OraclePrice } from 'fuel-ts-sdk';
+import type { AssetPriceEntity, Candle } from 'fuel-ts-sdk/trading';
 import { AssetSelect } from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/AssetSelect';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import { $decimalValue, OraclePrice } from 'fuel-ts-sdk';
-import type { AssetPriceEntity, Candle } from 'fuel-ts-sdk/trading';
-import type { FC } from 'react';
 import * as styles from './MobileMarketHeader.css';
 
 export const MobileMarketHeader: FC = () => {

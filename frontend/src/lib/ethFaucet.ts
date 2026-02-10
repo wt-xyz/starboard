@@ -2,17 +2,17 @@
  * Pinned eth-faucet predicate: request testnet ETH or fund the faucet from the web wallet.
  * PIN comes from VITE_ETH_FAUCET_PIN (env) first, then artifact. Funding UI is in Advanced panel.
  */
+import type { JsonAbi, Provider } from 'fuels';
+import { Predicate } from 'fuels';
 import predicateArtifacts from '@/assets/eth-faucet-predicate.json';
 import { envs } from '@/lib/env';
 import type { Network } from '@/models/Network';
-import type { Provider } from 'fuels';
-import { Predicate } from 'fuels';
 
 const STORAGE_KEY_PREFIX = 'starboard_eth_faucet_';
 
 type Artifact = {
   bytecodeHex: string;
-  abi: any; // JSON ABI from artifact
+  abi: JsonAbi;
   pin: string;
   maxFaucetAmount: number;
 };
@@ -60,8 +60,7 @@ export function getPredicateAddress(
   maxFaucetAmount: number
 ): string {
   const art = getArtifact();
-  const bytecode =
-    art.bytecodeHex.startsWith('0x') ? art.bytecodeHex : `0x${art.bytecodeHex}`;
+  const bytecode = art.bytecodeHex.startsWith('0x') ? art.bytecodeHex : `0x${art.bytecodeHex}`;
   const pinB256 = pin.startsWith('0x') ? pin : `0x${pin}`;
   const predicate = new Predicate({
     bytecode,
@@ -74,13 +73,9 @@ export function getPredicateAddress(
 }
 
 /** Create predicate instance for request or for transfer (fund). */
-function createPredicate(
-  provider: Provider,
-  config: FaucetConfig
-): any {
+function createPredicate(provider: Provider, config: FaucetConfig) {
   const art = getArtifact();
-  const bytecode =
-    art.bytecodeHex.startsWith('0x') ? art.bytecodeHex : `0x${art.bytecodeHex}`;
+  const bytecode = art.bytecodeHex.startsWith('0x') ? art.bytecodeHex : `0x${art.bytecodeHex}`;
   const pin = config.pin.startsWith('0x') ? config.pin : `0x${config.pin}`;
   return new Predicate({
     bytecode,
@@ -91,7 +86,7 @@ function createPredicate(
       MAX_FAUCET_AMOUNT: config.maxFaucetAmount,
     },
     data: [pin],
-  } as any);
+  });
 }
 
 /**

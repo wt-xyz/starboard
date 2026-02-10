@@ -1,7 +1,7 @@
+import type { FC } from 'react';
+import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import { PositionSide } from 'fuel-ts-sdk/trading';
-import type { FC } from 'react';
 import * as $ from '../PositionTableRow.css';
 import { PositionTableRowContext } from '../lib/PositionTableRowContext';
 

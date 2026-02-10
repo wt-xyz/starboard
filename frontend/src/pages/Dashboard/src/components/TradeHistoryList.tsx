@@ -1,7 +1,7 @@
+import { type FC, useCallback, useMemo } from 'react';
+import type { PositionEntity } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { usePolling } from '@/lib/usePolling';
-import type { PositionEntity } from 'fuel-ts-sdk/trading';
-import { useCallback, useMemo, type FC } from 'react';
 import { TradeHistoryCard } from './TradeHistoryCard';
 import * as styles from './TradeHistoryList.css';
 

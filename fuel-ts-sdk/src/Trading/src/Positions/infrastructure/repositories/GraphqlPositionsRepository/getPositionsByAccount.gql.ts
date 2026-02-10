@@ -5,10 +5,7 @@ export const POSITIONS_PER_KEY_LIMIT = 500;
 
 export const GET_POSITIONS_BY_ACCOUNT_QUERY = gql`
   query GetPositionsByAccount($account: String!, $firstKeys: Int!, $firstPositions: Int!) {
-    positionKeys(
-      condition: { account: $account }
-      first: $firstKeys
-    ) {
+    positionKeys(condition: { account: $account }, first: $firstKeys) {
       nodes {
         id
         account

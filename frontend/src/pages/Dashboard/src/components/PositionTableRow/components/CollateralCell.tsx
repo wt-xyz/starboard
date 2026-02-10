@@ -1,7 +1,7 @@
+import type { FC } from 'react';
+import { $decimalValue } from 'fuel-ts-sdk';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import { $decimalValue } from 'fuel-ts-sdk';
-import type { FC } from 'react';
 import * as $ from '../PositionTableRow.css';
 import { PositionTableRowContext } from '../lib/PositionTableRowContext';
 

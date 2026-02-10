@@ -1,19 +1,19 @@
+import { useState } from 'react';
+import { Outlet } from 'react-router';
+import { useAccount } from '@fuels/react';
+import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import logoStarboard from '@/assets/logo-starboard.png';
 import {
-    Sheet,
-    SheetClose,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 } from '@/components/ui/sheet';
 import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { useAutoFaucet } from '@/lib/hooks/useAutoFaucet';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import { useAccount } from '@fuels/react';
-import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
-import { Outlet } from 'react-router';
 import { NetworkSwitcher } from '../../components/NetworkSwitcher';
 import { WalletCollateralCard } from '../../components/WalletCollateralCard';
 import { WalletModal } from '../../components/WalletModal';
@@ -113,7 +113,7 @@ export function DashboardLayout() {
                 <div css={styles.mobileMenuSection}>
                   <NetworkSwitcher />
                 </div>
-                
+
                 <div css={styles.mobileMenuSection}>
                   {isWalletConnected && <WalletCollateralCard />}
 

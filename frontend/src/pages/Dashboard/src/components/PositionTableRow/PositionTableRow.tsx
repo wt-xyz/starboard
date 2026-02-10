@@ -1,13 +1,13 @@
-import { type PositionEntity } from 'fuel-ts-sdk/trading';
 import type { FC } from 'react';
+import { type PositionEntity } from 'fuel-ts-sdk/trading';
 import * as $ from './PositionTableRow.css';
 import {
-    ActionsCell,
-    CollateralCell,
-    NetValueCell,
-    PositionCell,
-    PriceCell,
-    SizeCell,
+  ActionsCell,
+  CollateralCell,
+  NetValueCell,
+  PositionCell,
+  PriceCell,
+  SizeCell,
 } from './components';
 import { PositionTableRowContext } from './lib/PositionTableRowContext';
 

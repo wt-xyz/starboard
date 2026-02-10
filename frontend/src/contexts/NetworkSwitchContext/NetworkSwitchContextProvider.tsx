@@ -29,14 +29,14 @@ export const NetworkSwitchContextProvider: FC<NetworkSwitchContextProviderProps>
       } catch (error) {
         console.error('Failed to change network:', error);
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        
+
         // Check if it's a local network access issue
         if (network === 'local' && errorMessage.includes('not implemented')) {
           toast.error('Local network is only available in development mode');
         } else {
           toast.error(`Failed to switch network: ${errorMessage}`);
         }
-        
+
         // Revert to current network on error
         throw error;
       }

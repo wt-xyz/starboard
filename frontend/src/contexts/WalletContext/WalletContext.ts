@@ -2,8 +2,8 @@ import { createContext } from 'react';
 import type { Account, Network as FuelsNetwork } from 'fuels';
 
 export type WalletContextType = {
-  establishConnection: () => Promise<void>;
-  disconnect: () => Promise<void>;
+  establishConnection: () => void;
+  disconnect: () => void;
   isUserConnected: () => boolean;
 
   getCurrentAccount: () => Promise<Account | null>;

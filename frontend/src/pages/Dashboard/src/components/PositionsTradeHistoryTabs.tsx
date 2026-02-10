@@ -1,5 +1,5 @@
+import { type FC, useState } from 'react';
 import { Tabs } from 'radix-ui';
-import { useState, type FC } from 'react';
 import { PositionsList } from './PositionsList';
 import * as styles from './PositionsTradeHistoryTabs.css';
 import { TradeHistoryList } from './TradeHistoryList';

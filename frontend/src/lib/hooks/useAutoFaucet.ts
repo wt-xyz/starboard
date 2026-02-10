@@ -1,10 +1,10 @@
-import { WalletContext } from '@/contexts/WalletContext/WalletContext';
+import { useEffect, useRef } from 'react';
+import { useCurrentConnector } from '@fuels/react';
+import { toast } from 'react-toastify';
 import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext/NetworkSwitchContext';
+import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { requestTestnetEth } from '@/lib/ethFaucet';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import { useCurrentConnector } from '@fuels/react';
-import { useEffect, useRef } from 'react';
-import { toast } from 'react-toastify';
 
 const BURNER_WALLET_CONNECTOR_NAME = 'Burner Wallet';
 const MIN_ETH_BALANCE_THRESHOLD = BigInt(1000); // 0.000001 ETH (in wei with 9 decimals)
@@ -49,7 +49,7 @@ export function useAutoFaucet(walletAddress: string | null) {
           faucetRequestedRef.current.add(walletAddress);
 
           const result = await requestTestnetEth(account.provider, walletAddress, currentNetwork);
-          
+
           if (result.success) {
             toast.success('🚀 Testnet ETH sent to your burner wallet!', {
               autoClose: 3000,

@@ -1,3 +1,7 @@
+import { type PropsWithChildren, useEffect, useMemo } from 'react';
+import { createStarboardClient } from 'fuel-ts-sdk/client';
+import type { AssetEntity } from 'fuel-ts-sdk/trading';
+import { Provider as ReduxProvider } from 'react-redux';
 import localAssets from '@/assets/local-assets.json';
 import testnetAssets from '@/assets/testnet-assets.json';
 import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext/NetworkSwitchContext';
@@ -5,10 +9,6 @@ import { WalletContext } from '@/contexts/WalletContext';
 import { envs } from '@/lib/env';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import type { Network } from '@/models/Network';
-import { createStarboardClient } from 'fuel-ts-sdk/client';
-import type { AssetEntity } from 'fuel-ts-sdk/trading';
-import { useEffect, useMemo, type PropsWithChildren } from 'react';
-import { Provider as ReduxProvider } from 'react-redux';
 import { useSdkQuery } from '../hooks';
 import { useAccountsSdk } from '../hooks/useAccountsSdk';
 import { FuelTsSdkContext } from './FuelTsSdkContext';

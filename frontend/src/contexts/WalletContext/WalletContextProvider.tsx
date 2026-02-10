@@ -1,13 +1,20 @@
-import { useConnectUI, useDisconnect, useFuel, useIsConnected, useNetwork } from '@fuels/react';
 import type { FC, ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
+import { useConnectUI, useDisconnect, useFuel, useIsConnected, useNetwork } from '@fuels/react';
+import { FuelsProvider } from './@fuels/FuelsProvider';
 import { WalletContext, type WalletContextType } from './WalletContext';
 
 type WalletContextProviderProps = {
   children: ReactNode;
 };
 
-export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children }) => {
+export const WalletContextProvider = (props: WalletContextProviderProps) => (
+  <FuelsProvider>
+    <WalletContextProvider_Provided>{props.children}</WalletContextProvider_Provided>
+  </FuelsProvider>
+);
+
+const WalletContextProvider_Provided: FC<WalletContextProviderProps> = ({ children }) => {
   const { fuel } = useFuel();
   const { connect } = useConnectUI();
   const { disconnect: fuelDisconnect } = useDisconnect();
@@ -16,14 +23,9 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children
 
   const isUserConnected = useCallback(() => isConnected ?? false, [isConnected]);
 
-  const establishConnection = useCallback(async () => {
-    // useConnectUI's connect() shows the connector selection dialog
-    connect();
-  }, [connect]);
+  const establishConnection = connect;
 
-  const disconnect = useCallback(async () => {
-    fuelDisconnect();
-  }, [fuelDisconnect]);
+  const disconnect = fuelDisconnect;
 
   const getCurrentNetwork = useCallback(async () => {
     if (network) return network;
