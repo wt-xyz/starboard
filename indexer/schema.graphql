@@ -53,6 +53,7 @@ type Position @entity {
   outFundingRate: BigInt!
   pnlDelta: BigInt!
   outPnlDelta: BigInt!
+  cumulativeFundingRate: BigInt!
   outAmount: BigInt!
 }
 
