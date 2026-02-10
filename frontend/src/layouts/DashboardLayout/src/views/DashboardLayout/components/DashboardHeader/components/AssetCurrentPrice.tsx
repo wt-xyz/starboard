@@ -7,10 +7,12 @@ import * as $ from './AssetCurrentPrice.css';
 export const AssetCurrentPrice: FC = () => {
   const sdk = useTradingSdk();
   const price = useSdkQuery(sdk.getWatchedAssetLatestPrice);
-  const marketStats = useSdkQuery(sdk.getWatchedAssetMarketStats);
+  const watchedAsset = useSdkQuery(sdk.getWatchedAsset);
 
   const priceValue = price ? $decimalValue(price.value).toFloat() : 0;
-  const change24h = marketStats?.priceChange24h ?? null;
+  const change24h = useSdkQuery(() =>
+    watchedAsset ? sdk.getAssetPriceChange24h(watchedAsset.assetId) : null
+  );
 
   const changeStyles = [$.priceChange];
   if (change24h !== null) {

@@ -1,6 +1,8 @@
-import { useTradingSdk } from '@/lib/fuel-ts-sdk';
+import { useEffect, useState } from 'react';
+import { Tabs } from 'radix-ui';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useMediaQuery } from '@/lib/useMediaQuery';
-import { usePolling } from '@/lib/usePolling';
 import * as styles from './Dashboard.css';
 import { BottomMenu } from './components/BottomMenu';
 import { DashboardOrderEntryForm } from './components/DashboardOrderEntryForm';
@@ -39,15 +41,27 @@ export function Dashboard() {
 
       {isCompactLayout && <BottomMenu />}
 
-      <BackgroundPricesPolling />
+      <BackgroundPriceSubscriptions />
     </>
   );
 }
 
-const BackgroundPricesPolling = () => {
+const BackgroundPriceSubscriptions = () => {
   const trading = useTradingSdk();
 
-  usePolling(trading.workflows.fetchLatestAccountTrackedAssetPrices);
+  const baseAsset = useSdkQuery((sdk) => sdk.trading.getBaseAsset());
+  const watchedAsset = useSdkQuery((sdk) => sdk.trading.getWatchedAsset());
+
+  useEffect(() => {
+    trading.workflows.fetchLatestAccountTrackedAssetPrices();
+  }, [trading.workflows, watchedAsset]);
+
+  useEffect(() => {
+    console.log('test');
+    if (baseAsset) trading.subscribeToAssetPriceUpdates(baseAsset?.assetId);
+
+    if (watchedAsset) trading.subscribeToAssetPriceUpdates(watchedAsset.assetId);
+  }, [baseAsset, trading, watchedAsset]);
 
   return null;
 };
