@@ -9,5 +9,4 @@ export const MarketStatsEntitySchema = z.object({
   openInterestLong: zodDecimalValueSchema(OpenInterest),
   openInterestShort: zodDecimalValueSchema(OpenInterest),
   volume24h: zodDecimalValueSchema(TradeVolume),
-  priceChange24h: z.number().nullable(),
 }) satisfies z.ZodType<MarketStatsEntity, z.ZodTypeDef, unknown>;
