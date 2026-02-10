@@ -81,3 +81,8 @@ type CurrentFundingInfo @entity {
   longCumulativeFundingRate: BigInt!
   shortCumulativeFundingRate: BigInt!
 }
+
+type CurrentAssetConfig @entity {
+  asset: ID!
+  maxLeverage: BigInt!
+}
