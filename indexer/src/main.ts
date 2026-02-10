@@ -14,6 +14,7 @@ import {
   SetFeesLog,
   CurrentFees,
   CurrentFundingInfo,
+  CurrentAssetConfig,
 } from './model/generated/index.js';
 
 export const priceOracleInterface = new Interface(priceOracleAbi);
@@ -36,6 +37,8 @@ const LOG_TYPE_CLOSE_POSITION = 'struct events::ClosePosition';
 const LOG_TYPE_LIQUIDATE_POSITION = 'struct events::LiquidatePosition';
 const LOG_TYPE_SET_FEES = 'struct events::SetFees';
 const LOG_TYPE_UPDATE_FUNDING_INFO = 'struct events::UpdateFundingInfo';
+const LOG_TYPE_SET_ASSET_CONFIG = 'struct events::SetAssetConfig';
+const LOG_TYPE_CLEAR_ASSET_CONFIG = 'struct events::ClearAssetConfig';
 
 if (!GRAPHQL_URL || !VAULT_PRICEFEED_ADDRESS || !VAULT_ADDRESS) {
   throw new Error('Environment variables not set');
@@ -112,6 +115,8 @@ vaultAbi.loggedTypes.forEach((loggedType) => {
   LOG_TYPE_LIQUIDATE_POSITION,
   LOG_TYPE_SET_FEES,
   LOG_TYPE_UPDATE_FUNDING_INFO,
+  LOG_TYPE_SET_ASSET_CONFIG,
+  LOG_TYPE_CLEAR_ASSET_CONFIG,
 ].forEach((logType) => {
   if (!Object.values(typeNameByLogId).includes(logType)) {
     throw new Error(`Log type ${logType} not found`);
@@ -574,17 +579,56 @@ async function handleUpdateFundingInfo(
   const shortCumulativeFundingRate = BigInt(log.short_cumulative_funding_rate.toString());
   const timestamp = getUTCBlockTime(block);
 
-    const currentFundingInfo = new CurrentFundingInfo({
-      id: asset,
-      asset,
-      timestamp,
-      totalShortSizes,
-      totalLongSizes,
-      longCumulativeFundingRate,
-      shortCumulativeFundingRate,
-    });
+  const currentFundingInfo = new CurrentFundingInfo({
+    id: asset,
+    asset,
+    timestamp,
+    totalShortSizes,
+    totalLongSizes,
+    longCumulativeFundingRate,
+    shortCumulativeFundingRate,
+  });
 
   await ctx.store.upsert(currentFundingInfo);
+}
+
+async function handleSetAssetConfig(
+  receipt: Receipt<{ receipt: { rb: true; data: true } }>,
+  _block: Block,
+  ctx: any
+) {
+  const logs = vaultInterface.decodeLog(receipt.data!, receipt.rb!.toString());
+  const log = logs[0];
+
+  const asset: string = log.asset;
+  const maxLeverage = BigInt(log.max_leverage.toString());
+
+  const currentAssetConfig = new CurrentAssetConfig({
+    id: asset,
+    asset,
+    maxLeverage,
+  });
+
+  await ctx.store.upsert(currentAssetConfig);
+}
+
+async function handleClearAssetConfig(
+  receipt: Receipt<{ receipt: { rb: true; data: true } }>,
+  _block: Block,
+  ctx: any
+) {
+  const logs = vaultInterface.decodeLog(receipt.data!, receipt.rb!.toString());
+  const log = logs[0];
+
+  const asset: string = log.asset;
+
+  const currentAssetConfig = new CurrentAssetConfig({
+    id: asset,
+    asset,
+    maxLeverage: BigInt(0),
+  });
+
+  await ctx.store.upsert(currentAssetConfig);
 }
 
 run(dataSource, database, async (ctx) => {
@@ -645,6 +689,12 @@ run(dataSource, database, async (ctx) => {
           // events::UpdateFundingInfo
         } else if (logType === LOG_TYPE_UPDATE_FUNDING_INFO) {
           await handleUpdateFundingInfo(receipt, block, ctx);
+          // events::SetAssetConfig
+        } else if (logType === LOG_TYPE_SET_ASSET_CONFIG) {
+          await handleSetAssetConfig(receipt, block, ctx);
+          // events::ClearAssetConfig
+        } else if (logType === LOG_TYPE_CLEAR_ASSET_CONFIG) {
+          await handleClearAssetConfig(receipt, block, ctx);
         } else {
           // drop unsupported event
           continue;

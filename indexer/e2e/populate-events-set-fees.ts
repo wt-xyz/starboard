@@ -1,6 +1,6 @@
 import { Provider, Wallet } from 'fuels';
 import { Vault } from '../../contracts/types/index.js';
-import { DEPLOYER_PK, call } from './utils.js';
+import { BNB_ASSET, BTC_ASSET, DEPLOYER_PK, ETH_ASSET, call } from './utils.js';
 
 // graphql url is hardcoded, taken from the fuel node starting script
 const graphQLUrl = 'http://127.0.0.1:4000/v1/graphql';
@@ -48,4 +48,15 @@ async function populateEvents() {
       20 // liquidation_fee_basis_points
     )
   );
+
+  // 1) One SetAssetConfig for one asset (BNB)
+  await call(vaultDeployer.functions.set_asset_config(BNB_ASSET, 50 * 10_000));
+
+  // 2) Two SetAssetConfig events for one asset (ETH) – second overwrites
+  await call(vaultDeployer.functions.set_asset_config(ETH_ASSET, 10 * 10_000));
+  await call(vaultDeployer.functions.set_asset_config(ETH_ASSET, 20 * 10_000));
+
+  // 3) One SetAssetConfig and one ClearAssetConfig for one asset (BTC)
+  await call(vaultDeployer.functions.set_asset_config(BTC_ASSET, 50 * 10_000));
+  await call(vaultDeployer.functions.clear_asset_config(BTC_ASSET));
 }

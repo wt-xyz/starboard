@@ -1,5 +1,6 @@
 import pg from 'pg';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { BNB_ASSET, BTC_ASSET, ETH_ASSET } from './utils';
 
 const { Client } = pg;
 
@@ -74,6 +75,36 @@ describe('Verify SetFees indexing', () => {
       expect(row.increase_position_fee_basis_points).toBe(15);
       expect(row.decrease_position_fee_basis_points).toBe(5);
       expect(row.liquidation_fee_basis_points).toBe(20);
+    });
+
+    it('should have CurrentAssetConfig for BNB after one SetAssetConfig', async () => {
+      const result = await client.query(
+        'SELECT asset, max_leverage FROM current_asset_config WHERE id = $1',
+        [BNB_ASSET]
+      );
+      expect(result.rows.length).toBe(1);
+      expect(result.rows[0].asset).toBe(BNB_ASSET);
+      expect(result.rows[0].max_leverage).toBe('500000');
+    });
+
+    it('should have CurrentAssetConfig for ETH after two SetAssetConfig (second wins)', async () => {
+      const result = await client.query(
+        'SELECT asset, max_leverage FROM current_asset_config WHERE id = $1',
+        [ETH_ASSET]
+      );
+      expect(result.rows.length).toBe(1);
+      expect(result.rows[0].asset).toBe(ETH_ASSET);
+      expect(result.rows[0].max_leverage).toBe('200000');
+    });
+
+    it('should have CurrentAssetConfig for BTC with max_leverage 0 after SetAssetConfig then ClearAssetConfig', async () => {
+      const result = await client.query(
+        'SELECT asset, max_leverage FROM current_asset_config WHERE id = $1',
+        [BTC_ASSET]
+      );
+      expect(result.rows.length).toBe(1);
+      expect(result.rows[0].asset).toBe(BTC_ASSET);
+      expect(result.rows[0].max_leverage).toBe('0');
     });
   });
 

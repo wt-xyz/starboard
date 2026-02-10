@@ -15,9 +15,11 @@ export default class Data1768329135947 {
         await db.query(`CREATE TABLE "set_fees_log" ("id" character varying NOT NULL, "timestamp" integer NOT NULL, "liquidity_fee_basis_points" integer NOT NULL, "increase_position_fee_basis_points" integer NOT NULL, "decrease_position_fee_basis_points" integer NOT NULL, "liquidation_fee_basis_points" integer NOT NULL, CONSTRAINT "PK_c6c6ebc54d2fbc2b7d69383b4e5" PRIMARY KEY ("id"))`)
         await db.query(`CREATE TABLE "current_fees" ("id" character varying NOT NULL, "liquidity_fee_basis_points" integer NOT NULL, "increase_position_fee_basis_points" integer NOT NULL, "decrease_position_fee_basis_points" integer NOT NULL, "liquidation_fee_basis_points" integer NOT NULL, CONSTRAINT "PK_f799aec8c974126fdaf7111f19f" PRIMARY KEY ("id"))`)
         await db.query(`CREATE TABLE "current_funding_info" ("id" character varying NOT NULL, "asset" text NOT NULL, "timestamp" integer NOT NULL, "total_short_sizes" numeric NOT NULL, "total_long_sizes" numeric NOT NULL, "long_cumulative_funding_rate" numeric NOT NULL, "short_cumulative_funding_rate" numeric NOT NULL, CONSTRAINT "PK_8ba6e062ba0352e42eac0b94349" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "current_asset_config" ("id" character varying NOT NULL, "asset" text NOT NULL, "max_leverage" numeric NOT NULL, CONSTRAINT "PK_aba5651ac2731de2cc769a9b25d" PRIMARY KEY ("id"))`)
     }
 
     async down(db) {
+        await db.query(`DROP TABLE "current_asset_config"`)
         await db.query(`DROP TABLE "current_funding_info"`)
         await db.query(`DROP TABLE "current_fees"`)
         await db.query(`DROP TABLE "set_fees_log"`)
