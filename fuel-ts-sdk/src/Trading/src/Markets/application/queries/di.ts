@@ -4,6 +4,7 @@ import { createGetAllAssetsLatestPricesQuery } from './getAllAssetsLatestPrices'
 import { createGetAssetByIdQuery } from './getAssetById';
 import { createGetAssetLatestPriceQuery } from './getAssetLatestPrice';
 import { createGetWatchedAssetMarketStatsQuery } from './getAssetMarketStats';
+import { createGetAssetPriceChange24hQuery } from './getAssetPriceChange24h';
 import { createGetBaseAssetQuery } from './getBaseAsset';
 import { createGetBaseAssetLatestPriceQuery } from './getBaseAssetLatestPrice';
 import { createGetCandles } from './getCandles';
@@ -22,6 +23,7 @@ export const createMarketQueries = (storeService: StoreService) => ({
   getWatchedAssetLatestPrice: createGetWatchedAssetLatestPriceQuery(storeService),
   getBaseAssetLatestPrice: createGetBaseAssetLatestPriceQuery(storeService),
   getAssetLatestPrice: createGetAssetLatestPriceQuery(storeService),
+  getAssetPriceChange24h: createGetAssetPriceChange24hQuery({ storeService }),
   getWatchedAssetMarketStats: createGetWatchedAssetMarketStatsQuery({ storeService }),
 });
 
