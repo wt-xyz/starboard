@@ -5,6 +5,7 @@ This directory contains multiple environment configuration files for different d
 ## Environment Files
 
 ### `.env` (Local Development)
+
 - **Purpose**: Your local development environment
 - **Git**: Not tracked (add your personal config here)
 - **Default Network**: `local`
@@ -12,11 +13,13 @@ This directory contains multiple environment configuration files for different d
 - **Use Case**: Day-to-day development with local Fuel node
 
 ### `.env.example` (Template)
+
 - **Purpose**: Template showing all required environment variables
 - **Git**: Tracked (check this in)
 - **Use Case**: Reference for developers setting up their local environment
 
 ### `.env.staging` (Staging/Preview Deployments)
+
 - **Purpose**: Staging and preview deployments
 - **Git**: Tracked (check this in)
 - **Default Network**: `testnet`
@@ -24,6 +27,7 @@ This directory contains multiple environment configuration files for different d
 - **Use Case**: Vercel preview branches, staging deployments
 
 ### `.env.production` (Production Deployments)
+
 - **Purpose**: Production deployments
 - **Git**: Tracked (check this in)
 - **Default Network**: `mainnet`
@@ -44,25 +48,27 @@ This directory contains multiple environment configuration files for different d
 All network configurations are JSON objects with keys for each network:
 
 - **`VITE_CHAIN_IDS`**: Fuel chain IDs for each network
+
   ```json
-  {"local":"0","testnet":"0","mainnet":"9889"}
+  { "local": "0", "testnet": "0", "mainnet": "9889" }
   ```
 
 - **`VITE_RPC_URLS`**: Fuel GraphQL RPC endpoints
+
   ```json
   {
-    "local":"http://localhost:4000/v1/graphql",
-    "testnet":"https://testnet.fuel.network/v1/graphql",
-    "mainnet":"https://mainnet.fuel.network/v1/graphql"
+    "local": "http://localhost:4000/v1/graphql",
+    "testnet": "https://testnet.fuel.network/v1/graphql",
+    "mainnet": "https://mainnet.fuel.network/v1/graphql"
   }
   ```
 
 - **`VITE_INDEXER_URLS`**: Indexer GraphQL endpoints
   ```json
   {
-    "local":"http://localhost:4350/graphql",
-    "testnet":"https://starboard.squids.live/starboard-testnet@test2/api/graphql",
-    "mainnet":"https://starboard.squids.live/starboard-mainnet/api/graphql"
+    "local": "http://localhost:4350/graphql",
+    "testnet": "https://starboard.squids.live/starboard-testnet@test2/api/graphql",
+    "mainnet": "https://starboard.squids.live/starboard-mainnet/api/graphql"
   }
   ```
 
@@ -72,6 +78,7 @@ All network configurations are JSON objects with keys for each network:
 - **`VITE_TESTNET_TOKEN_CONTRACT_IDS`**: Test token contract addresses (optional for mainnet)
 
 For contracts not yet deployed, use a zero address:
+
 ```
 0x0000000000000000000000000000000000000000000000000000000000000000
 ```
@@ -85,6 +92,7 @@ For contracts not yet deployed, use a zero address:
 ### For Local Development
 
 1. Copy `.env.example` to `.env`:
+
    ```bash
    cp .env.example .env
    ```
@@ -104,6 +112,7 @@ Deployments automatically use the appropriate env file:
 - **Vercel Preview**: Uses `.env.staging`
 
 To test a deployment config locally:
+
 ```bash
 # Load production config
 pnpm build --mode production
@@ -130,13 +139,16 @@ The app includes a network switcher UI that allows users to switch between netwo
 ## Troubleshooting
 
 ### "Invalid JSON string" error
+
 - Check that all JSON values are properly formatted
 - Restart the dev server after changing `.env` files (Vite caches env vars)
 
 ### "Contract ID cannot be empty" error
+
 - Use zero address `0x0000...0000` for undeployed contracts, not empty strings
 
 ### Network switcher not working
+
 - Ensure all three networks are configured in your `.env` file
 - Clear browser cache and do a hard refresh
 

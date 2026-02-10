@@ -1,6 +1,6 @@
-import { NETWORKS, type Network } from '@/models/Network';
 import { ContractIdSchema } from 'fuel-ts-sdk';
 import zod from 'zod';
+import { NETWORKS, type Network } from '@/models/Network';
 
 export type EnvConfig = zod.infer<typeof EnvConfigSchema>;
 

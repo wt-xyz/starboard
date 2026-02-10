@@ -1,9 +1,9 @@
+import type { FC } from 'react';
+import { $decimalValue } from 'fuel-ts-sdk';
+import { calculateUnrealizedPnl } from 'fuel-ts-sdk/trading';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import { $decimalValue } from 'fuel-ts-sdk';
-import { calculateUnrealizedPnl } from 'fuel-ts-sdk/trading';
-import type { FC } from 'react';
 import * as $ from '../PositionTableRow.css';
 import { PositionTableRowContext } from '../lib/PositionTableRowContext';
 
@@ -15,7 +15,8 @@ export const NetValueCell: FC = () => {
   const collateralValue = $decimalValue(position.collateral).toFloat();
   const pnl = markPrice ? calculateUnrealizedPnl(position, markPrice.value) : null;
   const pnlValue = pnl ? $decimalValue(pnl).toFloat() : null;
-  const pnlPercent = pnlValue !== null && collateralValue > 0 ? (pnlValue / collateralValue) * 100 : null;
+  const pnlPercent =
+    pnlValue !== null && collateralValue > 0 ? (pnlValue / collateralValue) * 100 : null;
   const profitable = pnlValue !== null ? pnlValue >= 0 : null;
 
   // Net value = collateral + PnL

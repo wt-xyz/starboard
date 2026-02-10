@@ -31,7 +31,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
             amount?: string
             pin?: string
             out?: string
-        }
+        },
     )
         .then(() => process.exit(0))
         .catch((err) => {
@@ -47,18 +47,10 @@ export async function fundEthFaucetPredicate(taskArgs: {
     pin?: string
     out?: string
 }) {
-    const predicatePath = join(
-        __dirname,
-        "../contracts/testnet/eth-faucet-predicate/out/debug"
-    )
+    const predicatePath = join(__dirname, "../contracts/testnet/eth-faucet-predicate/out/debug")
     const bytecode = readFileSync(join(predicatePath, "eth-faucet-predicate.bin"))
     const bytecodeHex = "0x" + bytecode.toString("hex")
-    const abi = JSON.parse(
-        readFileSync(
-            join(predicatePath, "eth-faucet-predicate-abi.json"),
-            "utf-8"
-        )
-    )
+    const abi = JSON.parse(readFileSync(join(predicatePath, "eth-faucet-predicate-abi.json"), "utf-8"))
 
     const pin = taskArgs.pin ?? randomPinHex()
     const pinB256 = pin.startsWith("0x") ? pin : "0x" + pin
@@ -83,12 +75,7 @@ export async function fundEthFaucetPredicate(taskArgs: {
     console.log("PIN (save for frontend):", pinB256)
     console.log("Funding with", amount, "base units (base asset)...")
 
-    const tx = await wallet.transfer(
-        predicate.address,
-        amount,
-        baseAssetId,
-        { gasLimit: 10_000 }
-    )
+    const tx = await wallet.transfer(predicate.address, amount, baseAssetId, { gasLimit: 10_000 })
     await tx.waitForResult()
     console.log("Funded.")
 
@@ -102,6 +89,11 @@ export async function fundEthFaucetPredicate(taskArgs: {
         writeFileSync(taskArgs.out, JSON.stringify(artifact, null, 2), "utf-8")
         console.log("Wrote frontend artifact to", taskArgs.out)
     } else {
-        console.log("Add to frontend src/assets/eth-faucet-predicate.json: pin =", pinB256, "and maxFaucetAmount =", MAX_FAUCET_AMOUNT)
+        console.log(
+            "Add to frontend src/assets/eth-faucet-predicate.json: pin =",
+            pinB256,
+            "and maxFaucetAmount =",
+            MAX_FAUCET_AMOUNT,
+        )
     }
 }

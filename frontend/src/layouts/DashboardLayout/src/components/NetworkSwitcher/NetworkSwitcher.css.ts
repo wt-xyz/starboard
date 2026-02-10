@@ -1,6 +1,6 @@
-import { colors } from '@/styles/colors';
-import { recipe } from '@vanilla-extract/recipes';
 import { style } from '@vanilla-extract/css';
+import { recipe } from '@vanilla-extract/recipes';
+import { colors } from '@/styles/colors';
 
 export const networkSwitcherContainer = style({
   display: 'flex',

@@ -1,10 +1,10 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import type {
-    ChartingLibraryFeatureset,
-    ChartingLibraryWidgetOptions,
-    IChartingLibraryWidget,
-    ResolutionString,
+  ChartingLibraryFeatureset,
+  ChartingLibraryWidgetOptions,
+  IChartingLibraryWidget,
+  ResolutionString,
 } from 'public/tradingview/charting_library';
 import { colors } from '@/styles/colors';
 import * as styles from './TradingChart.css';

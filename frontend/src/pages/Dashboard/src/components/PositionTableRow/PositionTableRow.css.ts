@@ -1,5 +1,5 @@
-import { colors } from '@/styles/colors';
 import { style } from '@vanilla-extract/css';
+import { colors } from '@/styles/colors';
 
 export const tableRow = style({
   backgroundColor: colors.gluonGrey,

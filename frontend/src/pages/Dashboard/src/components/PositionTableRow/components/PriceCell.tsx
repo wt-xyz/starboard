@@ -1,9 +1,9 @@
+import type { FC } from 'react';
+import { $decimalValue } from 'fuel-ts-sdk';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import { colors } from '@/styles/colors';
-import { $decimalValue } from 'fuel-ts-sdk';
-import type { FC } from 'react';
 import * as $ from '../PositionTableRow.css';
 import { PositionTableRowContext } from '../lib/PositionTableRowContext';
 
@@ -20,7 +20,9 @@ export const PriceCell: FC<PriceCellProps> = ({ type }) => {
   );
 
   const liquidationPrice = useSdkQuery((sdk) =>
-    type === 'liquidation' ? sdk.trading.getPositionLiquidationPriceApprox(position.stableId) : undefined
+    type === 'liquidation'
+      ? sdk.trading.getPositionLiquidationPriceApprox(position.stableId)
+      : undefined
   );
 
   let priceValue: number | null = null;

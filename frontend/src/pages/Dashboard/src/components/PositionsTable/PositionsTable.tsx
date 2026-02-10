@@ -1,5 +1,5 @@
-import { type PositionEntity } from 'fuel-ts-sdk/trading';
 import type { FC } from 'react';
+import { type PositionEntity } from 'fuel-ts-sdk/trading';
 import { PositionTableRow } from '../PositionTableRow';
 import * as $ from './PositionsTable.css';
 import { TableHeader } from './components/TableHeader';

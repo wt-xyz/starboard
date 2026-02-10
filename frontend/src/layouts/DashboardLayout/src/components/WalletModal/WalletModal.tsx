@@ -1,28 +1,28 @@
+import type { FC } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useCurrentConnector } from '@fuels/react';
+import { CheckIcon, ChevronDownIcon, CopyIcon, ExitIcon } from '@radix-ui/react-icons';
+import { $decimalValue } from 'fuel-ts-sdk';
+import { toast } from 'react-toastify';
 import {
-    Dialog,
-    DialogBody,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext/NetworkSwitchContext';
 import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { envs } from '@/lib/env';
 import {
-    getFaucetConfig,
-    getPredicateAddress,
-    requestTestnetEth,
-    saveFaucetConfig,
+  getFaucetConfig,
+  getPredicateAddress,
+  requestTestnetEth,
+  saveFaucetConfig,
 } from '@/lib/ethFaucet';
 import { formatCurrency, formatNumber } from '@/lib/formatCurrency';
 import { useSdk, useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
-import { useCurrentConnector } from '@fuels/react';
-import { CheckIcon, ChevronDownIcon, CopyIcon, ExitIcon } from '@radix-ui/react-icons';
-import { $decimalValue } from 'fuel-ts-sdk';
-import type { FC } from 'react';
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import * as styles from './WalletModal.css';
 
 type WalletModalProps = {
@@ -192,15 +192,15 @@ export const WalletModal: FC<WalletModalProps> = ({
     setIsFunding(true);
     try {
       const baseAssetId = await account.provider.getBaseAssetId();
-      const tx = await account.transfer(
-        predicateAddress,
-        Number(amountBase),
-        baseAssetId,
-        { gasLimit: 15_000 }
-      );
+      const tx = await account.transfer(predicateAddress, Number(amountBase), baseAssetId, {
+        gasLimit: 15_000,
+      });
       await tx.waitForResult();
       const config = getFaucetConfig(currentNetwork);
-      saveFaucetConfig(currentNetwork, { pin: config.pin, maxFaucetAmount: config.maxFaucetAmount });
+      saveFaucetConfig(currentNetwork, {
+        pin: config.pin,
+        maxFaucetAmount: config.maxFaucetAmount,
+      });
       toast.success('Faucet funded. "Get testnet ETH" will use this faucet.');
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -237,19 +237,15 @@ export const WalletModal: FC<WalletModalProps> = ({
               onClick={handleCopy}
               aria-label={copied ? 'Copied' : 'Copy address'}
             >
-              {copied ? (
-                <CheckIcon css={styles.copyIcon} />
-              ) : (
-                <CopyIcon css={styles.copyIcon} />
-              )}
+              {copied ? <CheckIcon css={styles.copyIcon} /> : <CopyIcon css={styles.copyIcon} />}
             </button>
           </div>
 
           {showBurnerUI && (
             <div css={styles.burnerSection}>
               <p css={styles.burnerNotice}>
-                You're using a Burner Wallet. It's stored in this browser only. Use the button
-                below to fund it with test USDC.
+                You're using a Burner Wallet. It's stored in this browser only. Use the button below
+                to fund it with test USDC.
               </p>
               <button
                 type="button"

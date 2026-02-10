@@ -1,7 +1,7 @@
-import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
+import { type FC } from 'react';
 import { $decimalValue } from 'fuel-ts-sdk';
 import { PositionChange, type PositionEntity } from 'fuel-ts-sdk/trading';
-import { type FC } from 'react';
+import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as styles from './TradeHistoryList.css';
 
 type TradeHistoryCardProps = {

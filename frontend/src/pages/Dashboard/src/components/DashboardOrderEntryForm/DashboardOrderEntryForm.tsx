@@ -61,7 +61,9 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
       } catch (err) {
         toast.dismiss(toastId);
         const message = err instanceof Error ? err.message : 'Transaction failed';
-        toast.error(message || 'An error occurred while submitting your transaction. Please try again.');
+        toast.error(
+          message || 'An error occurred while submitting your transaction. Please try again.'
+        );
       }
     },
     [processOrder]
