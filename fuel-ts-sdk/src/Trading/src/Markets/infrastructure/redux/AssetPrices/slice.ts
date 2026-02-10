@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import type { AssetPriceEntity } from '../../../domain';
 import 'immer';
 import { asyncFetchCurrentAssetPricesThunk } from './thunks';
 import { assetPricesAdapter, assetPricesInitialState } from './types';
@@ -6,7 +7,11 @@ import { assetPricesAdapter, assetPricesInitialState } from './types';
 export const assetPricesSlice = createSlice({
   name: 'assetPrices',
   initialState: assetPricesInitialState,
-  reducers: {},
+  reducers: {
+    assetPriceReceived: (state, action: PayloadAction<AssetPriceEntity>) => {
+      assetPricesAdapter.upsertOne(state, action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(asyncFetchCurrentAssetPricesThunk.pending, (state) => {

@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import type { WalletQueries } from '@sdk/Accounts';
 import type { VaultCommands, VaultQueries } from '@sdk/shared/contracts';
 import type { StoreService } from '@sdk/shared/lib/StoreService';
+import type { SubscriptionService } from '@sdk/shared/lib/subscriptions';
 import type { GraphQLClient } from 'graphql-request';
 import * as Markets from './src/Markets';
 import * as Positions from './src/Positions';
@@ -13,6 +14,7 @@ export interface TradingModuleConfig {
 
 export interface TradingCommandsAndQueriesDependencies {
   storeService: StoreService;
+  subscriptionService: SubscriptionService;
   vaultCommands: VaultCommands;
   vaultQueries: VaultQueries;
   walletQueries: WalletQueries;
@@ -31,11 +33,12 @@ export const createTradingModule = ({ graphqlClient }: TradingModuleConfig) => {
         Positions.positionsAdapters.createGraphQLPositionRepository(graphqlClient),
     }),
     createCommandsAndQueries: (deps: TradingCommandsAndQueriesDependencies) => {
-      const { storeService, vaultCommands, vaultQueries, walletQueries } = deps;
+      const { storeService, subscriptionService, vaultCommands, vaultQueries, walletQueries } =
+        deps;
 
       const positionCommands = Positions.createPositionCommands({ vaultCommands, storeService });
       const positionsQueries = Positions.createPositionQueries({ storeService });
-      const marketCommands = Markets.createMarketCommands(storeService);
+      const marketCommands = Markets.createMarketCommands({ storeService, subscriptionService });
       const marketQueries = Markets.createMarketQueries(storeService);
       const tradingCommands = ApplicationServices.createTradingCommands({
         vaultCommands,
