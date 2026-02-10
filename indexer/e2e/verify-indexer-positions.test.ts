@@ -180,6 +180,28 @@ describe('Verify Positions', () => {
     expect(Number(result.rows[0].timestamp)).toBeGreaterThan(now - 1800);
   });
 
+  it('should have CurrentFundingInfo cumulative rates matching latest positions', async () => {
+    // the last position in the asset updates the CurrentFundingInfo cumulative rates,
+    // regardless of long/short
+    const result = await client.query(
+      `SELECT
+       p.cumulative_funding_rate AS position_cumulative_funding_rate,
+       CASE WHEN pk.is_long THEN cfi.long_cumulative_funding_rate ELSE cfi.short_cumulative_funding_rate END AS cfi_cumulative_funding_rate
+       FROM position p
+       JOIN position_key pk ON p.position_key_id=pk.id
+       JOIN current_funding_info cfi ON cfi.asset=pk.index_asset_id
+       WHERE p.id IN (SELECT MAX(p.id) FROM position p JOIN position_key pk ON p.position_key_id=pk.id GROUP BY pk.index_asset_id)
+       ORDER BY pk.index_asset_id`
+    );
+
+    expect(result.rows.length).toBe(3);
+
+    result.rows.forEach((row: any) => {
+      const { position_cumulative_funding_rate, cfi_cumulative_funding_rate } = row;
+      expect(position_cumulative_funding_rate).toBe(cfi_cumulative_funding_rate);
+    });
+  });
+
   it('should reset aggregated values when position is reopened after final status', async () => {
     // Check if any position was reopened after CLOSE or LIQUIDATE
     // Get all position keys that have both final status and INCREASE events

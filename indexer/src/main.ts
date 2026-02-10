@@ -128,7 +128,8 @@ function getUTCBlockTime(block: Block): number {
 }
 
 function generateId(receipt: Receipt<{ receipt: { rb: true; data: true } }>, block: Block): string {
-  return `${block.header.height}-${receipt.transactionIndex}-${receipt.index}`;
+  // id is unique and sortable with the order of the events in the blockchain
+  return `${String(block.header.height).padStart(10, '0')}${String(receipt.transactionIndex).padStart(3, '0')}${String(receipt.index).padStart(4, '0')}`;
 }
 
 async function handlePriceUpdate(
@@ -283,6 +284,7 @@ async function handleIncreasePosition(
   const pnlDelta = pnlDeltaHasProfit ? BigInt(pnlDeltaRawStr) : -BigInt(pnlDeltaRawStr);
   const outPnlDeltaRawStr = log.out_pnl_delta.toString();
   const outPnlDelta = pnlDeltaHasProfit ? BigInt(outPnlDeltaRawStr) : -BigInt(outPnlDeltaRawStr);
+  const cumulativeFundingRate = BigInt(log.cumulative_funding_rate.toString());
 
   const id = generateId(receipt, block);
 
@@ -331,6 +333,7 @@ async function handleIncreasePosition(
     outFundingRate,
     pnlDelta,
     outPnlDelta,
+    cumulativeFundingRate,
     outAmount: BigInt(0),
     realizedFundingRate,
     realizedPnl,
@@ -369,6 +372,7 @@ async function handleDecreasePosition(
   const outPnlDeltaRawStr = log.out_pnl_delta.toString();
   const outPnlDelta = pnlDeltaHasProfit ? BigInt(outPnlDeltaRawStr) : -BigInt(outPnlDeltaRawStr);
   const outAmount = BigInt(log.amount_out.toString());
+  const cumulativeFundingRate = BigInt(log.cumulative_funding_rate.toString());
 
   const currentPosition: Position | null = await ctx.store.findOne(Position, {
     where: { positionKey: positionKeyRecord, latest: true },
@@ -406,6 +410,7 @@ async function handleDecreasePosition(
     pnlDelta,
     outPnlDelta,
     outAmount,
+    cumulativeFundingRate,
     realizedFundingRate,
     realizedPnl,
   });
@@ -468,6 +473,7 @@ async function handleLiquidatePosition(
   const pnlDelta = pnlDeltaHasProfit ? BigInt(pnlDeltaRawStr) : -BigInt(pnlDeltaRawStr);
   const outPnlDeltaRawStr = log.out_pnl_delta.toString();
   const outPnlDelta = pnlDeltaHasProfit ? BigInt(outPnlDeltaRawStr) : -BigInt(outPnlDeltaRawStr);
+  const cumulativeFundingRate = BigInt(log.cumulative_funding_rate.toString());
 
   const currentPosition: Position | null = await ctx.store.findOne(Position, {
     where: { positionKey: positionKeyRecord, latest: true },
@@ -507,6 +513,7 @@ async function handleLiquidatePosition(
     pnlDelta,
     outPnlDelta,
     outAmount: BigInt(0),
+    cumulativeFundingRate,
     realizedFundingRate,
     realizedPnl,
   });

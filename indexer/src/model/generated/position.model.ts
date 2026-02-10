@@ -73,5 +73,8 @@ export class Position {
     outPnlDelta!: bigint
 
     @BigIntColumn_({nullable: false})
+    cumulativeFundingRate!: bigint
+
+    @BigIntColumn_({nullable: false})
     outAmount!: bigint
 }
