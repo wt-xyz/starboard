@@ -1,6 +1,12 @@
 import { keyframes, style } from '@vanilla-extract/css';
 import { colors } from '../../../../../styles/colors';
 
+export const dialogContent = style({
+  padding: '1.25rem',
+  maxWidth: '400px',
+  width: '100%',
+});
+
 export const addressRow = style({
   display: 'flex',
   alignItems: 'center',

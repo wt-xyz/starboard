@@ -4,13 +4,7 @@ import { useCurrentConnector } from '@fuels/react';
 import { CheckIcon, ChevronDownIcon, CopyIcon, ExitIcon } from '@radix-ui/react-icons';
 import { $decimalValue } from 'fuel-ts-sdk';
 import { toast } from 'react-toastify';
-import {
-  Dialog,
-  DialogBody,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog } from '@radix-ui/themes';
 import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext/NetworkSwitchContext';
 import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { envs } from '@/lib/env';
@@ -221,13 +215,10 @@ export const WalletModal: FC<WalletModalProps> = ({
   }, [predicateAddress]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Wallet</DialogTitle>
-        </DialogHeader>
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Content className={styles.dialogContent}>
+        <Dialog.Title>Wallet</Dialog.Title>
 
-        <DialogBody>
           <div css={styles.addressRow}>
             <span css={styles.avatar} style={{ background: avatarGradient }} />
             <span css={styles.addressText}>{truncateAddress(address)}</span>
@@ -379,8 +370,7 @@ export const WalletModal: FC<WalletModalProps> = ({
             <ExitIcon />
             Disconnect
           </button>
-        </DialogBody>
-      </DialogContent>
-    </Dialog>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };
