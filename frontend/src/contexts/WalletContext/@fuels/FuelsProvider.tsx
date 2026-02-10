@@ -19,6 +19,7 @@ export const FuelsProvider = memo((props: PropsWithChildren) => {
       uiConfig={{
         suggestBridge: false,
       }}
+      theme="dark"
     >
       {props.children}
     </FuelProvider>
