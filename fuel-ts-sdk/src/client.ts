@@ -1,6 +1,7 @@
 import { createTradingModule } from '@sdk/Trading/di';
 import type { Account } from 'fuels';
 import { GraphQLClient } from 'graphql-request';
+import { createClient as createWsClient } from 'graphql-ws';
 import { createAccountsModule } from './Accounts/di';
 import {
   createTestnetTokenCommands,
@@ -9,6 +10,7 @@ import {
 } from './shared/contracts';
 import { createStoreService } from './shared/lib/StoreService';
 import { createStore } from './shared/lib/redux';
+import { createGraphqlWsTransport, createSubscriptionService } from './shared/lib/subscriptions';
 import type { ContractId } from './shared/types';
 
 export type StarboardClient = ReturnType<typeof createStarboardClient>;
@@ -22,6 +24,8 @@ export interface StarboardClientConfig {
 
 export const createStarboardClient = (config: StarboardClientConfig) => {
   const graphqlClient = new GraphQLClient(config.indexerUrl);
+  const wsClient = createWsClient({ url: toWsUrl(config.indexerUrl) });
+  const subscriptionService = createSubscriptionService(createGraphqlWsTransport(wsClient));
 
   const accountsModule = createAccountsModule({
     walletGetter: config.accountGetter,
@@ -51,6 +55,7 @@ export const createStarboardClient = (config: StarboardClientConfig) => {
   const accountsCommandsAndQueries = accountsModule.createCommandsAndQueries({ storeService });
   const tradingCommandsAndQueries = tradingModule.createCommandsAndQueries({
     storeService,
+    subscriptionService,
     vaultCommands,
     vaultQueries,
     walletQueries: accountsCommandsAndQueries,
@@ -67,3 +72,5 @@ export const createStarboardClient = (config: StarboardClientConfig) => {
     store: starboardStore,
   };
 };
+
+const toWsUrl = (httpUrl: string) => httpUrl.replace(/^http/, 'ws');
