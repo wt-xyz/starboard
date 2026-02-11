@@ -92,3 +92,16 @@ type TradeVolume24h @entity {
   indexAssetId: String!
   tradeVolume: BigInt!
 }
+
+type CurrentPositionState @entity {
+  id: ID!
+  positionKeyId: String!
+  collateral: BigInt!
+  size: BigInt!
+  positionFee: BigInt!
+  liquidationFee: BigInt!
+  pnl: BigInt!
+  fundingRate: BigInt!
+  minimalCollateral: BigInt!
+  effectiveCollateral: BigInt!
+}
