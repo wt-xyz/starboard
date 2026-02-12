@@ -1,10 +1,11 @@
 import SimplifyInflectorPlugin from '@graphile-contrib/pg-simplify-inflector';
 import * as PgAggregatesPlugin from '@graphile/pg-aggregates';
-import * as PgPubsubModule from '@graphile/pg-pubsub';
 import cors from 'cors';
 import express from 'express';
 import { NodePlugin } from 'graphile-build';
+import { createRequire } from 'module';
 import type * as pg from 'pg';
+import type { PostGraphilePlugin } from 'postgraphile';
 import {
   Plugin,
   embed,
@@ -15,7 +16,9 @@ import {
 } from 'postgraphile';
 import FilterPlugin from 'postgraphile-plugin-connection-filter';
 
-const PgPubsub = (PgPubsubModule as any).default || PgPubsubModule;
+const require = createRequire(import.meta.url);
+const PgPubsub: PostGraphilePlugin =
+  (require('@graphile/pg-pubsub') as any).default ?? require('@graphile/pg-pubsub');
 
 const app = express();
 
@@ -79,6 +82,8 @@ export const CurrentPricePlugin: Plugin = makeExtendSchemaPlugin((_build, _optio
       Subscription: {
         currentPriceUpdated: {
           resolve: (payload, { asset }, _context, _info) => {
+            console.log('resolve');
+            console.log('asset', asset);
             // { asset }: same asset argument from the original subscription query
 
             // Defense in depth: verify the asset matches (in case of hash collision, though for 20 bytes it is hard)
