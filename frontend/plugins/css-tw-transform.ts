@@ -10,6 +10,53 @@ import type { Plugin } from 'vite';
  * - <div css={[styles.a, styles.b]} tw="p-4" /> -> <div className={clsx(styles.a, styles.b, "p-4")} />
  * - <div className="existing" css={styles.button} /> -> <div className={clsx("existing", styles.button)} />
  */
+/**
+ * Masks content inside brace expressions (depth >= 1) with null bytes,
+ * preserving string length for position mapping. Brace characters
+ * themselves are kept so structural patterns like `prop={` still match.
+ * This prevents matching props inside nested JSX within prop values.
+ */
+function maskNestedContent(str: string): string {
+  const chars = Array.from(str);
+  let depth = 0;
+  let inString: string | null = null;
+  let escaped = false;
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    if (!escaped && (char === '"' || char === "'" || char === '`')) {
+      if (inString === char) {
+        inString = null;
+      } else if (inString === null) {
+        inString = char;
+      }
+    }
+
+    if (char === '\\' && !escaped) {
+      escaped = true;
+      if (depth >= 1) chars[i] = '\x00';
+      continue;
+    }
+    escaped = false;
+
+    if (inString) {
+      if (depth >= 1) chars[i] = '\x00';
+      continue;
+    }
+
+    if (char === '{') {
+      depth++;
+    } else if (char === '}') {
+      depth--;
+    } else if (depth >= 1) {
+      chars[i] = '\x00';
+    }
+  }
+
+  return chars.join('');
+}
+
 export function cssTwTransformPlugin(): Plugin {
   return {
     name: 'vite-plugin-css-tw-transform',
@@ -157,13 +204,18 @@ export function cssTwTransformPlugin(): Plugin {
           propsString = propsString.trimEnd().slice(0, -1);
         }
 
-        // Check if this tag has css, tw, or className props
-        const hasCssProp = /\s+css=/.test(propsString);
-        const hasTwProp = /\s+tw=/.test(propsString);
-        const hasClassNameProp = /\s+className=/.test(propsString);
+        // Only match props at the top level of this tag (brace depth 0),
+        // ignoring css/tw/className inside nested JSX within prop values
+        const maskedProps = maskNestedContent(propsString);
+        const hasCssProp = /\s+css=/.test(maskedProps);
+        const hasTwProp = /\s+tw=/.test(maskedProps);
+        const hasClassNameProp = /\s+className=/.test(maskedProps);
 
         if (!hasCssProp && !hasTwProp) {
-          cursor = tagEnd + 1;
+          // Continue scanning inside the tag so nested JSX elements
+          // within prop values (e.g. <Cell value={<div css={...}>} />)
+          // still get their css/tw props transformed.
+          cursor = propsStart;
           continue;
         }
 
@@ -174,9 +226,9 @@ export function cssTwTransformPlugin(): Plugin {
 
         // Extract existing className prop value
         if (hasClassNameProp) {
-          const classNameMatch = propsString.match(/\s+className=(['"{])/);
+          const classNameMatch = maskedProps.match(/\s+className=(['"{])/);
           if (classNameMatch) {
-            const classNameIdx = propsString.indexOf(classNameMatch[0]);
+            const classNameIdx = classNameMatch.index!;
             const valueStart = classNameIdx + classNameMatch[0].length;
             const firstChar = classNameMatch[1];
 
@@ -202,9 +254,9 @@ export function cssTwTransformPlugin(): Plugin {
 
         // Extract css prop value
         if (hasCssProp) {
-          const cssMatch = cleanedProps.match(/\s+css=/);
+          const cssMatch = maskNestedContent(cleanedProps).match(/\s+css=/);
           if (cssMatch) {
-            const cssIdx = cleanedProps.indexOf(cssMatch[0]);
+            const cssIdx = cssMatch.index!;
             const cssStartIdx = cssIdx + cssMatch[0].length + 1; // after " css={"
             cssValue = extractBracedContent(cleanedProps, cssStartIdx - 1);
             if (cssValue !== null) {
@@ -216,7 +268,8 @@ export function cssTwTransformPlugin(): Plugin {
 
         // Extract tw prop value (handle both double and single quotes)
         if (hasTwProp) {
-          const twMatch = cleanedProps.match(/\s+tw=(['"])(.+?)\1/);
+          const maskedCleaned = maskNestedContent(cleanedProps);
+          const twMatch = maskedCleaned.match(/\s+tw=(['"])(.+?)\1/);
           if (twMatch) {
             const extractedTwValue = twMatch[2];
 
@@ -238,8 +291,9 @@ export function cssTwTransformPlugin(): Plugin {
             }
 
             twValue = extractedTwValue;
-            // Remove tw prop from props string
-            cleanedProps = cleanedProps.replace(/\s+tw=['"][^'"]*['"]/, '');
+            // Remove tw prop using position-based slicing
+            const twIdx = twMatch.index!;
+            cleanedProps = cleanedProps.slice(0, twIdx) + cleanedProps.slice(twIdx + twMatch[0].length);
           }
         }
 

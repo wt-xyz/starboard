@@ -151,6 +151,118 @@ describe('cssTwTransformPlugin', () => {
     });
   });
 
+  describe('nested JSX in prop values', () => {
+    it('should transform css on elements nested inside a prop value', () => {
+      const input = `<Cell
+  value={
+    <div css={$.assetInfo}>
+      <span css={[$.side, isLong ? $.sideLong : $.sideShort]}>{isLong ? 'LONG' : 'SHORT'}</span>
+      <span css={$.assetSymbol}>{asset?.name}</span>
+    </div>
+  }
+/>`;
+      const result = transform(input, 'test.tsx');
+      // Cell itself should not get a className attribute
+      expect(result?.code).not.toMatch(/<Cell\s+className/);
+      // Inner elements should have their css transformed to className
+      expect(result?.code).toContain('className={clsx($.assetInfo)}');
+      expect(result?.code).toContain(
+        'className={clsx([$.side, isLong ? $.sideLong : $.sideShort])}'
+      );
+      expect(result?.code).toContain('className={clsx($.assetSymbol)}');
+    });
+
+    it('should transform both top-level css and nested JSX css', () => {
+      const input = `<td css={$.cell}>
+  <div css={$.content}>
+    <Cell value={<span css={$.inner}>text</span>} />
+  </div>
+</td>`;
+      const result = transform(input, 'test.tsx');
+      // td and div get their css transformed
+      expect(result?.code).toContain('className={clsx($.cell)}');
+      expect(result?.code).toContain('className={clsx($.content)}');
+      // Cell itself should not get a className attribute
+      expect(result?.code).not.toMatch(/<Cell\s+className/);
+      // The span inside Cell's value should also be transformed
+      expect(result?.code).toContain('className={clsx($.inner)}');
+    });
+
+    it('should leave nested css untouched when parent has own css', () => {
+      const input = `<Wrapper css={$.wrapper} content={<div css={$.inner}>hello</div>} />`;
+      const result = transform(input, 'test.tsx');
+      // Wrapper's own css should be transformed
+      expect(result?.code).toContain('className={clsx($.wrapper)}');
+      // Inner div's css remains because Wrapper's replacement encompasses everything
+      expect(result?.code).toContain('css={$.inner}');
+    });
+
+    it('should transform css in React fragments inside prop values', () => {
+      const input = `<Cell
+  value={\`$\${formatCurrency(netValue)}\`}
+  secondary={
+    <>
+      {pnlValue !== null && (
+        <span css={[$.cellSecondary, pnlColorStyle]}>
+          {pnlValue >= 0 ? '+' : ''}
+        </span>
+      )}
+    </>
+  }
+/>`;
+      const result = transform(input, 'test.tsx');
+      // Cell itself should not get a className attribute
+      expect(result?.code).not.toMatch(/<Cell\s+className/);
+      // The span inside secondary should have its css transformed
+      expect(result?.code).toContain('className={clsx([$.cellSecondary, pnlColorStyle])}');
+    });
+
+    it('should transform css on single JSX element in value prop', () => {
+      const input = `<Cell
+  value={
+    <span css={colorStyle}>
+      +$100.00
+    </span>
+  }
+/>`;
+      const result = transform(input, 'test.tsx');
+      expect(result?.code).not.toMatch(/<Cell\s+className/);
+      expect(result?.code).toContain('className={clsx(colorStyle)}');
+    });
+
+    it('should transform tw on elements nested in prop values', () => {
+      const input = `<Card content={<div tw="p-4">hello</div>} />`;
+      const result = transform(input, 'test.tsx');
+      expect(result?.code).not.toMatch(/<Card\s+className/);
+      expect(result?.code).toContain('className="p-4"');
+    });
+
+    it('should not merge nested className into parent', () => {
+      const input = `<Card css={$.card} content={<div className="inner">hello</div>} />`;
+      const result = transform(input, 'test.tsx');
+      // Card's own css should be transformed normally
+      expect(result?.code).toContain('className={clsx($.card)}');
+      // Inner div's className should remain intact (inside Card's replacement)
+      expect(result?.code).toContain('className="inner"');
+    });
+
+    it('should transform deeply nested JSX in prop values', () => {
+      const input = `<Table
+  header={
+    <Row>
+      <Cell css={$.headerCell}>Name</Cell>
+      <Cell css={$.headerCell}>Value</Cell>
+    </Row>
+  }
+/>`;
+      const result = transform(input, 'test.tsx');
+      // Table has no css prop, should not get className
+      expect(result?.code).not.toMatch(/<Table\s+className/);
+      // Inner Cell elements should have their css transformed
+      expect(result?.code).toContain('className={clsx($.headerCell)}');
+    });
+  });
+
   describe('edge cases', () => {
     it('should skip files without css or tw props', () => {
       const input = `<div className="normal">No transformation needed</div>`;
