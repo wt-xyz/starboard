@@ -64,6 +64,14 @@ function buildCurrentPriceTopic(args: { asset: string }) {
   return `starboard:price:${args.asset.substring(0, 42)}`;
 }
 
+function buildCurrentPositionTopic(args: { account: string }) {
+  return `starboard:position:${args.account.substring(0, 42)}`;
+}
+
+function buildCurrentFundingInfoTopic(args: { asset: string }) {
+  return `starboard:funding:${args.asset.substring(0, 42)}`;
+}
+
 export const CurrentPricePlugin: Plugin = makeExtendSchemaPlugin((_build, _options) => {
   return {
     typeDefs: gql`
@@ -82,13 +90,91 @@ export const CurrentPricePlugin: Plugin = makeExtendSchemaPlugin((_build, _optio
       Subscription: {
         currentPriceUpdated: {
           resolve: (payload, { asset }, _context, _info) => {
-            console.log('resolve');
-            console.log('asset', asset);
             // { asset }: same asset argument from the original subscription query
 
             // Defense in depth: verify the asset matches (in case of hash collision, though for 20 bytes it is hard)
             if (payload.asset !== asset) {
-              // TODO Unfortunately, a client will receive null, use subscribePlan to filter out properly
+              // Unfortunately, a client will receive null, use subscribePlan to filter out properly
+              return null; // Filter out non-matching events
+            }
+
+            return payload;
+          },
+        },
+      },
+    },
+  };
+});
+
+export const CurrentPositionPlugin: Plugin = makeExtendSchemaPlugin((_build, _options) => {
+  return {
+    typeDefs: gql`
+      enum PositionChange {
+        INCREASE
+        DECREASE
+        CLOSE
+        LIQUIDATE
+      }
+
+      type _CurrentPositionPayload {
+        account: String!
+        asset: String!
+        isLong: Boolean!
+        openId: String!
+        positionKeyId: String!
+        change: PositionChange!
+      }
+
+      extend type Subscription {
+        currentPositionUpdated(account: String!): _CurrentPositionPayload
+          @pgSubscription(topic: ${embed(buildCurrentPositionTopic)})
+      }
+    `,
+    resolvers: {
+      Subscription: {
+        currentPositionUpdated: {
+          resolve: (payload, { account }, _context, _info) => {
+            // { account }: same account argument from the original subscription query
+
+            // Defense in depth: verify the account matches (in case of hash collision, though for 20 bytes it is hard)
+            if (payload.account !== account) {
+              // Unfortunately, a client will receive null, use subscribePlan to filter out properly
+              return null; // Filter out non-matching events
+            }
+
+            return payload;
+          },
+        },
+      },
+    },
+  };
+});
+
+export const CurrentFundingInfoPlugin: Plugin = makeExtendSchemaPlugin((_build, _options) => {
+  return {
+    typeDefs: gql`
+      type _CurrentFundingInfoPayload {
+        asset: String!
+        totalShortSizes: BigInt!
+        totalLongSizes: BigInt!
+        longCumulativeFundingRate: BigInt!
+        shortCumulativeFundingRate: BigInt!
+      }
+
+      extend type Subscription {
+        currentFundingInfoUpdated(asset: String!): _CurrentFundingInfoPayload
+          @pgSubscription(topic: ${embed(buildCurrentFundingInfoTopic)})
+      }
+    `,
+    resolvers: {
+      Subscription: {
+        currentFundingInfoUpdated: {
+          resolve: (payload, { asset }, _context, _info) => {
+            // { asset }: same asset argument from the original subscription query
+
+            // Defense in depth: verify the asset matches (in case of hash collision, though for 20 bytes it is hard)
+            if (payload.asset !== asset) {
+              // Unfortunately, a client will receive null, use subscribePlan to filter out properly
               return null; // Filter out non-matching events
             }
 
@@ -136,6 +222,8 @@ app.use(
         SimplifyInflectorPlugin,
         ProcessorStatusPlugin,
         CurrentPricePlugin,
+        CurrentPositionPlugin,
+        CurrentFundingInfoPlugin,
       ],
       externalGraphqlRoute:
         process.env.BASE_PATH == null ? undefined : `${process.env.BASE_PATH}/api/graphql`,
