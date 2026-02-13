@@ -224,7 +224,6 @@ export const container = style({
   maxWidth: '100%',
   margin: 0,
   padding: 0,
-  overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
 });
