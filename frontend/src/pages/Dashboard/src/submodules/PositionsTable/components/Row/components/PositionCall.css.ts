@@ -1,0 +1,34 @@
+import { style } from '@vanilla-extract/css';
+import { colors } from '@/styles/colors';
+
+export const assetInfo = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+});
+
+export const assetSymbol = style({
+  fontSize: '0.75rem',
+  fontWeight: '600',
+  color: colors.snow,
+});
+
+export const side = style({
+  display: 'inline-block',
+  padding: '0.0625rem 0.3125rem',
+  borderRadius: '0.1875rem',
+  fontSize: '0.5625rem',
+  fontWeight: '700',
+  letterSpacing: '0.05em',
+  textTransform: 'uppercase',
+});
+
+export const sideLong = style({
+  backgroundColor: colors.whiteAlpha[10],
+  color: colors.success,
+});
+
+export const sideShort = style({
+  backgroundColor: colors.whiteAlpha[10],
+  color: colors.error,
+});
