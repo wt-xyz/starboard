@@ -9,7 +9,7 @@ export default class Data1768329135949 {
     await db.query(`
 CREATE OR REPLACE FUNCTION current_price_update() RETURNS TRIGGER AS $$
 DECLARE
-    v_cnt integer;
+   v_cnt integer;
 BEGIN
    INSERT INTO current_price VALUES(NEW.asset, NEW.timestamp, NEW.price)
       ON CONFLICT(asset)
