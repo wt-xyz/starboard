@@ -5,9 +5,9 @@ import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useBoolean } from 'usehooks-ts';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
+import { DecreasePositionDialog } from '../../DecreasePositionDialog';
 import { PositionCardContext } from '../lib/PositionCardContext';
 import * as $ from './CardHeader.css';
-import { DecreasePositionDialog } from './DecreasePositionDialog';
 
 export const CardHeader: FC = () => {
   const modalOpenBoolean = useBoolean();

@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import type { PositionStableId } from 'fuel-ts-sdk';
 import { propify } from '@/lib/propify';
-import * as PositionStats from '@/pages/Dashboard/src/submodules/PositionStats';
+import { PositionStats } from '@/pages/Dashboard/submodules';
 import * as $ from './PositionStats.css';
 
 export const EntryPriceStat = propify(PositionStatBase, {

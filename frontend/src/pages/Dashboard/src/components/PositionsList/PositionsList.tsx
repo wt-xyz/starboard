@@ -2,27 +2,27 @@ import { type FC, useCallback, useMemo } from 'react';
 import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { usePolling } from '@/lib/usePolling';
-import { PositionCard } from './PositionCard';
-import * as styles from './PositionsList.css';
-import { PositionsTable } from './PositionsTable';
+import * as $ from './PositionsList.css';
+import { PositionCard } from './components/PositionCard';
+import { PositionsTable } from './components/PositionsTable';
 
 type PositionsListProps = {
-  filterBySide?: 'long' | 'short';
+  side?: 'long' | 'short';
 };
 
-export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
+export const PositionsList: FC<PositionsListProps> = ({ side }) => {
   const trading = useTradingSdk();
   const userAddress = useSdkQuery((sdk) => sdk.accounts.getCurrentUserAddress());
 
   const accountOpenPositions = useSdkQuery(() => trading.getCurrentAccountOpenPositions());
 
   const filteredOpenPositions = useMemo(() => {
-    if (!filterBySide) return accountOpenPositions;
+    if (!side) return accountOpenPositions;
     return accountOpenPositions.filter((openPosition) => {
       const isLong = openPosition.side === PositionSide.LONG;
-      return filterBySide === 'long' ? isLong : !isLong;
+      return side === 'long' ? isLong : !isLong;
     });
-  }, [accountOpenPositions, filterBySide]);
+  }, [accountOpenPositions, side]);
 
   usePolling(
     useCallback(() => {
@@ -32,7 +32,7 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
 
   if (filteredOpenPositions.length === 0) {
     return (
-      <div css={styles.positionsContainer}>
+      <div css={$.positionsContainer}>
         <div style={{ textAlign: 'center', color: '#878787', padding: '3rem 1rem' }}>
           No open positions
         </div>
@@ -41,15 +41,13 @@ export const PositionsList: FC<PositionsListProps> = ({ filterBySide }) => {
   }
 
   return (
-    <div css={styles.positionsContainer}>
-      {/* Desktop: Table view */}
-      <div css={styles.desktopView}>
-        <PositionsTable positions={filteredOpenPositions} />
+    <div css={$.positionsContainer}>
+      <div css={$.desktopView}>
+        <PositionsTable entries={filteredOpenPositions} />
       </div>
 
-      {/* Mobile: Card view */}
-      <div css={styles.mobileView}>
-        <div css={styles.positionCards}>
+      <div css={$.mobileView}>
+        <div css={$.positionCards}>
           {filteredOpenPositions.map((openPosition) => (
             <PositionCard key={openPosition.revisionId} position={openPosition} />
           ))}
