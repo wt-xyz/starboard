@@ -293,7 +293,8 @@ export function cssTwTransformPlugin(): Plugin {
             twValue = extractedTwValue;
             // Remove tw prop using position-based slicing
             const twIdx = twMatch.index!;
-            cleanedProps = cleanedProps.slice(0, twIdx) + cleanedProps.slice(twIdx + twMatch[0].length);
+            cleanedProps =
+              cleanedProps.slice(0, twIdx) + cleanedProps.slice(twIdx + twMatch[0].length);
           }
         }
 
