@@ -2,9 +2,9 @@ import type { FC } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { useCurrentConnector } from '@fuels/react';
 import { CheckIcon, ChevronDownIcon, CopyIcon, ExitIcon } from '@radix-ui/react-icons';
+import { Dialog } from '@radix-ui/themes';
 import { $decimalValue } from 'fuel-ts-sdk';
 import { toast } from 'react-toastify';
-import { Dialog } from '@radix-ui/themes';
 import { NetworkSwitchContext } from '@/contexts/NetworkSwitchContext/NetworkSwitchContext';
 import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { envs } from '@/lib/env';
@@ -219,157 +219,157 @@ export const WalletModal: FC<WalletModalProps> = ({
       <Dialog.Content className={styles.dialogContent}>
         <Dialog.Title>Wallet</Dialog.Title>
 
-          <div css={styles.addressRow}>
-            <span css={styles.avatar} style={{ background: avatarGradient }} />
-            <span css={styles.addressText}>{truncateAddress(address)}</span>
+        <div css={styles.addressRow}>
+          <span css={styles.avatar} style={{ background: avatarGradient }} />
+          <span css={styles.addressText}>{truncateAddress(address)}</span>
+          <button
+            type="button"
+            css={styles.copyButton}
+            onClick={handleCopy}
+            aria-label={copied ? 'Copied' : 'Copy address'}
+          >
+            {copied ? <CheckIcon css={styles.copyIcon} /> : <CopyIcon css={styles.copyIcon} />}
+          </button>
+        </div>
+
+        {showBurnerUI && (
+          <div css={styles.burnerSection}>
+            <p css={styles.burnerNotice}>
+              You're using a Burner Wallet. It's stored in this browser only. Use the button below
+              to fund it with test USDC.
+            </p>
             <button
               type="button"
-              css={styles.copyButton}
-              onClick={handleCopy}
-              aria-label={copied ? 'Copied' : 'Copy address'}
+              css={styles.burnerMintButton}
+              onClick={handleMint}
+              disabled={isMinting}
             >
-              {copied ? <CheckIcon css={styles.copyIcon} /> : <CopyIcon css={styles.copyIcon} />}
+              {isMinting ? 'Minting...' : 'Mint USDC'}
             </button>
           </div>
+        )}
 
-          {showBurnerUI && (
-            <div css={styles.burnerSection}>
-              <p css={styles.burnerNotice}>
-                You're using a Burner Wallet. It's stored in this browser only. Use the button below
-                to fund it with test USDC.
-              </p>
-              <button
-                type="button"
-                css={styles.burnerMintButton}
-                onClick={handleMint}
-                disabled={isMinting}
-              >
-                {isMinting ? 'Minting...' : 'Mint USDC'}
-              </button>
-            </div>
-          )}
-
-          {showTestnetTools && !showBurnerUI && (
-            <div css={styles.getTestnetEthSection}>
-              <button
-                type="button"
-                css={styles.getTestnetEthButton}
-                onClick={handleMint}
-                disabled={isMinting}
-              >
-                {isMinting ? 'Minting...' : 'Mint test USDC'}
-              </button>
-            </div>
-          )}
-
-          {showGetTestnetEth && (
-            <div css={styles.getTestnetEthSection}>
-              <button
-                type="button"
-                css={styles.getTestnetEthButton}
-                onClick={handleGetTestnetEth}
-                disabled={isRequestingEth}
-              >
-                {isRequestingEth ? 'Requesting...' : 'Get testnet ETH'}
-              </button>
-            </div>
-          )}
-
-          {showGetTestnetEth && (
-            <div css={styles.advancedPanel}>
-              <button
-                type="button"
-                css={styles.advancedTrigger}
-                onClick={() => setAdvancedOpen((o) => !o)}
-                aria-expanded={advancedOpen}
-              >
-                <span>Advanced</span>
-                <ChevronDownIcon
-                  css={styles.advancedChevron}
-                  style={{ transform: advancedOpen ? 'rotate(0deg)' : 'rotate(-90deg)' }}
-                />
-              </button>
-              {advancedOpen && (
-                <div css={styles.fundFaucetSection}>
-                  <div css={styles.fundFaucetTitle}>Fund testnet faucet</div>
-                  <p css={styles.burnerNotice}>
-                    Deploy and fund the eth-faucet predicate with your web wallet. After funding,
-                    &quot;Get testnet ETH&quot; will use this faucet for this network.
-                  </p>
-                  {predicateAddress && (
-                    <div css={styles.fundFaucetAddressRow}>
-                      <span css={styles.fundFaucetAddressText}>
-                        {truncateAddress(predicateAddress)}
-                      </span>
-                      <button
-                        type="button"
-                        css={styles.copyButton}
-                        onClick={handleCopyPredicateAddress}
-                        aria-label="Copy predicate address"
-                      >
-                        <CopyIcon css={styles.copyIcon} />
-                      </button>
-                    </div>
-                  )}
-                  <input
-                    type="number"
-                    css={styles.fundFaucetAmountInput}
-                    placeholder="Amount (ETH)"
-                    min="0"
-                    step="0.1"
-                    value={fundAmount}
-                    onChange={(e) => setFundAmount(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    css={styles.fundFaucetButton}
-                    onClick={handleFundFaucet}
-                    disabled={isFunding || !predicateAddress}
-                  >
-                    {isFunding ? 'Funding...' : 'Fund faucet'}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          <div css={styles.balanceSection}>
-            <div css={styles.balanceRow}>
-              <span css={styles.balanceLabel}>ETH</span>
-              <span css={styles.balanceValue}>
-                {ethBalanceLoading ? (
-                  <span css={styles.skeleton} />
-                ) : ethBalance !== null ? (
-                  <>
-                    {formatNumber(Number(ethBalance) / 10 ** ETH_DECIMALS, { decimals: 4 })}
-                    <span css={styles.balanceSymbol}>ETH</span>
-                  </>
-                ) : (
-                  <span css={styles.balanceSymbol}>—</span>
-                )}
-              </span>
-            </div>
-            <div css={styles.balanceRow}>
-              <span css={styles.balanceLabel}>Available Collateral</span>
-              <span css={styles.balanceValue}>
-                {isLoading ? (
-                  <span css={styles.skeleton} />
-                ) : (
-                  <>
-                    {displayValue}
-                    <span css={styles.balanceSymbol}>{baseAsset?.symbol}</span>
-                  </>
-                )}
-              </span>
-            </div>
+        {showTestnetTools && !showBurnerUI && (
+          <div css={styles.getTestnetEthSection}>
+            <button
+              type="button"
+              css={styles.getTestnetEthButton}
+              onClick={handleMint}
+              disabled={isMinting}
+            >
+              {isMinting ? 'Minting...' : 'Mint test USDC'}
+            </button>
           </div>
+        )}
 
-          <div css={styles.divider} />
+        {showGetTestnetEth && (
+          <div css={styles.getTestnetEthSection}>
+            <button
+              type="button"
+              css={styles.getTestnetEthButton}
+              onClick={handleGetTestnetEth}
+              disabled={isRequestingEth}
+            >
+              {isRequestingEth ? 'Requesting...' : 'Get testnet ETH'}
+            </button>
+          </div>
+        )}
 
-          <button type="button" css={styles.disconnectButton} onClick={handleDisconnect}>
-            <ExitIcon />
-            Disconnect
-          </button>
+        {showGetTestnetEth && (
+          <div css={styles.advancedPanel}>
+            <button
+              type="button"
+              css={styles.advancedTrigger}
+              onClick={() => setAdvancedOpen((o) => !o)}
+              aria-expanded={advancedOpen}
+            >
+              <span>Advanced</span>
+              <ChevronDownIcon
+                css={styles.advancedChevron}
+                style={{ transform: advancedOpen ? 'rotate(0deg)' : 'rotate(-90deg)' }}
+              />
+            </button>
+            {advancedOpen && (
+              <div css={styles.fundFaucetSection}>
+                <div css={styles.fundFaucetTitle}>Fund testnet faucet</div>
+                <p css={styles.burnerNotice}>
+                  Deploy and fund the eth-faucet predicate with your web wallet. After funding,
+                  &quot;Get testnet ETH&quot; will use this faucet for this network.
+                </p>
+                {predicateAddress && (
+                  <div css={styles.fundFaucetAddressRow}>
+                    <span css={styles.fundFaucetAddressText}>
+                      {truncateAddress(predicateAddress)}
+                    </span>
+                    <button
+                      type="button"
+                      css={styles.copyButton}
+                      onClick={handleCopyPredicateAddress}
+                      aria-label="Copy predicate address"
+                    >
+                      <CopyIcon css={styles.copyIcon} />
+                    </button>
+                  </div>
+                )}
+                <input
+                  type="number"
+                  css={styles.fundFaucetAmountInput}
+                  placeholder="Amount (ETH)"
+                  min="0"
+                  step="0.1"
+                  value={fundAmount}
+                  onChange={(e) => setFundAmount(e.target.value)}
+                />
+                <button
+                  type="button"
+                  css={styles.fundFaucetButton}
+                  onClick={handleFundFaucet}
+                  disabled={isFunding || !predicateAddress}
+                >
+                  {isFunding ? 'Funding...' : 'Fund faucet'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div css={styles.balanceSection}>
+          <div css={styles.balanceRow}>
+            <span css={styles.balanceLabel}>ETH</span>
+            <span css={styles.balanceValue}>
+              {ethBalanceLoading ? (
+                <span css={styles.skeleton} />
+              ) : ethBalance !== null ? (
+                <>
+                  {formatNumber(Number(ethBalance) / 10 ** ETH_DECIMALS, { decimals: 4 })}
+                  <span css={styles.balanceSymbol}>ETH</span>
+                </>
+              ) : (
+                <span css={styles.balanceSymbol}>—</span>
+              )}
+            </span>
+          </div>
+          <div css={styles.balanceRow}>
+            <span css={styles.balanceLabel}>Available Collateral</span>
+            <span css={styles.balanceValue}>
+              {isLoading ? (
+                <span css={styles.skeleton} />
+              ) : (
+                <>
+                  {displayValue}
+                  <span css={styles.balanceSymbol}>{baseAsset?.symbol}</span>
+                </>
+              )}
+            </span>
+          </div>
+        </div>
+
+        <div css={styles.divider} />
+
+        <button type="button" css={styles.disconnectButton} onClick={handleDisconnect}>
+          <ExitIcon />
+          Disconnect
+        </button>
       </Dialog.Content>
     </Dialog.Root>
   );
