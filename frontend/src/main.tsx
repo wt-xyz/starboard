@@ -13,6 +13,7 @@ import { FuelTsSdkProvider } from './lib/fuel-ts-sdk';
 import './lib/pipe';
 import './lib/toBigInt';
 import './styles/radix-overrides.css';
+import './styles/scrollbar.css';
 import './styles/toastify.css';
 
 const queryClient = new QueryClient();
