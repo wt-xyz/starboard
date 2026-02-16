@@ -1,0 +1,17 @@
+# Playwright test results
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Screenshots and videos
+*.png
+*.mp4
+*.webm
+
+# Traces
+trace.zip
+*.trace
+
+# State files
+storage-state.json
+auth.json
