@@ -96,7 +96,8 @@ function createPredicate(provider: Provider, config: FaucetConfig) {
 export async function requestTestnetEth(
   provider: Provider,
   recipientAddress: string,
-  network?: Network
+  network?: Network,
+  amount?: number,
 ): Promise<{ success: true } | { success: false; error: string }> {
   try {
     const config = network
@@ -104,14 +105,22 @@ export async function requestTestnetEth(
       : { pin: getArtifact().pin, maxFaucetAmount: getArtifact().maxFaucetAmount };
     const pin = config.pin.startsWith('0x') ? config.pin : `0x${config.pin}`;
     const effectiveConfig: FaucetConfig = { pin, maxFaucetAmount: config.maxFaucetAmount };
+
     const predicate = createPredicate(provider, effectiveConfig);
     const baseAssetId = await provider.getBaseAssetId();
+    const transferAmount = amount ?? effectiveConfig.maxFaucetAmount;
+
     const tx = await predicate.transfer(
       recipientAddress,
-      effectiveConfig.maxFaucetAmount,
+      transferAmount,
       baseAssetId
     );
-    await tx.waitForResult();
+    const result = await tx.waitForResult();
+
+    if (result.status === 'failure') {
+      return { success: false, error: `Transaction failed with status: ${result.status}` };
+    }
+
     return { success: true };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

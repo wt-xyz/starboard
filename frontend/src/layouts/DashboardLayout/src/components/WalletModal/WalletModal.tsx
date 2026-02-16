@@ -102,7 +102,7 @@ export const WalletModal: FC<WalletModalProps> = ({
         toast.error('Could not get wallet provider');
         return;
       }
-      const result = await requestTestnetEth(account.provider, address, currentNetwork);
+      const result = await requestTestnetEth(account.provider, address, currentNetwork, 100_000);
       if (result.success) {
         toast.success('Testnet ETH sent. It may take a moment to appear.');
       } else {
