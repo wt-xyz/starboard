@@ -55,19 +55,24 @@ export const TradingSelectors = {
     increaseButton: 'button:has-text(/increase/i)',
   },
 
-  // Position close/decrease dialog
+  // Position close/decrease dialog (Radix Dialog)
   closeDialog: {
     dialog: '[role="dialog"]',
-    title: 'text=/close|decrease.*position/i',
+    title: 'text=Decrease Position',
 
-    // Close options
-    closeFullButton: 'button:has-text(/close.*full|100%/i)',
-    closeHalfButton: 'button:has-text(/50%/i)',
-    closePercentInput: 'input[type="number"], input[type="text"]',
+    // Slider percentage mark buttons
+    percentageButtons: {
+      zero: 'button:has-text("0%")',
+      quarter: 'button:has-text("25%")',
+      half: 'button:has-text("50%")',
+      threeQuarter: 'button:has-text("75%")',
+      full: 'button:has-text("100%")',
+    },
 
-    // Confirm/submit
-    confirmButton: 'button:has-text(/confirm|close|submit/i)',
-    cancelButton: 'button:has-text(/cancel/i)',
+    // Submit buttons (text changes based on slider percentage)
+    closeButton: 'button:has-text("Close Position")',
+    decreaseButton: 'button:has-text("Decrease Position")',
+    cancelButton: 'button:has-text("Cancel")',
   },
 
   // Market selector
