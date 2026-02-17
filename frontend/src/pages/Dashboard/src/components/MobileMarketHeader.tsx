@@ -13,15 +13,15 @@ export const MobileMarketHeader: FC = () => {
   const watchedAsset = useSdkQuery(sdk.getWatchedAsset);
   const price = useSdkQuery(sdk.getWatchedAssetLatestPrice);
   const candles = useSdkQuery(() =>
-    watchedAsset ? sdk.getCandles(watchedAsset.assetId, 'D1') : []
+    watchedAsset ? sdk.getCandles(watchedAsset.assetId, 'H1') : []
   );
   const marketStats = useSdkQuery((s) => s.trading.getWatchedAssetMarketStats());
 
   useEffect(() => {
     if (!watchedAsset) return;
-    const status = sdk.getCandlesStatus(watchedAsset.assetId, 'D1');
+    const status = sdk.getCandlesStatus(watchedAsset.assetId, 'H1');
     if (status === 'uninitialized') {
-      sdk.fetchCandles(watchedAsset.assetId, 'D1');
+      sdk.fetchCandles(watchedAsset.assetId, 'H1');
     }
   }, [sdk, watchedAsset]);
 
@@ -150,15 +150,27 @@ function useMobileFunding(
   }, [fundingInfo, fetchStatus]);
 }
 
+const TWENTY_FOUR_HOURS_S = 24 * 60 * 60;
+
 function calculatePriceChange(
   currentPrice: AssetPriceEntity | undefined,
   candles: Candle[] | undefined
 ): number | null {
   if (!currentPrice || !candles || candles.length === 0) return null;
 
+  const now = Date.now() / 1000;
+  const target = now - TWENTY_FOUR_HOURS_S;
+
+  // Find the candle closest to 24h ago (candles are ordered oldest-first)
+  let closest = candles[0];
+  for (const c of candles) {
+    if (Math.abs(c.startedAt - target) < Math.abs(closest.startedAt - target)) {
+      closest = c;
+    }
+  }
+
   const current = $decimalValue(currentPrice.value).toFloat();
-  const openCandle = candles[candles.length - 1]; // most recent D1 candle = today's open
-  const open = $decimalValue(OraclePrice.fromBigIntString(openCandle.openPrice)).toFloat();
+  const open = $decimalValue(OraclePrice.fromBigIntString(closest.openPrice)).toFloat();
 
   if (open === 0) return null;
   return (current - open) / open;
