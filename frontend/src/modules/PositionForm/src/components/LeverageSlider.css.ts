@@ -2,34 +2,62 @@ import { style } from '@vanilla-extract/css';
 import { colors } from '@/styles/colors';
 
 export const sliderContainer = style({
-  marginTop: '0.5rem',
+  marginTop: '0.25rem',
   width: '100%',
-  maxWidth: '100%',
-  minWidth: 0,
   boxSizing: 'border-box',
-  position: 'relative',
-  overflow: 'visible',
 });
 
-export const sliderLabel = style({
-  display: 'block',
-  marginBottom: '8px',
-  fontSize: '0.875rem',
-  fontWeight: 500,
-  color: colors.snow,
+export const sliderRow = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.75rem',
+});
+
+export const sliderColumn = style({
+  flex: 1,
+  minWidth: 0,
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+export const trackWrapper = style({
+  position: 'relative',
+  height: '20px',
+  display: 'flex',
+  alignItems: 'center',
+});
+
+const trackDotBase = {
+  position: 'absolute',
+  width: '8px',
+  height: '8px',
+  borderRadius: '50%',
+  transform: 'translateX(-50%)',
+  zIndex: 1,
+  pointerEvents: 'none',
+} as const;
+
+export const trackDotActive = style({
+  ...trackDotBase,
+  backgroundColor: colors.gluonGrey,
+  border: `2px solid ${colors.liquidLava}`,
+});
+
+export const trackDotInactive = style({
+  ...trackDotBase,
+  backgroundColor: colors.gluonGrey,
+  border: `2px solid ${colors.slateGrey}`,
 });
 
 export const sliderRoot = style({
-  position: 'relative',
+  position: 'absolute',
   display: 'flex',
   alignItems: 'center',
   width: '100%',
-  maxWidth: '100%',
-  minWidth: 0,
   height: '20px',
-  marginBottom: '8px',
   boxSizing: 'border-box',
   overflow: 'visible',
+  zIndex: 2,
 });
 
 export const sliderTrack = style({
@@ -49,10 +77,12 @@ export const sliderRange = style({
 
 export const sliderThumb = style({
   display: 'block',
-  width: '16px',
-  height: '16px',
+  width: '18px',
+  height: '18px',
   backgroundColor: colors.snow,
   borderRadius: '50%',
+  border: `3px solid ${colors.liquidLava}`,
+  boxShadow: `0 0 0 2px ${colors.liquidLavaAlpha[30]}`,
   cursor: 'pointer',
   ':hover': {
     backgroundColor: colors.dustyGrey,
@@ -63,20 +93,14 @@ export const sliderThumb = style({
   },
 });
 
-export const percentageMarks = style({
+export const labelsRow = style({
   position: 'relative',
-  display: 'block',
+  height: '1rem',
   marginTop: '2px',
   width: '100%',
-  maxWidth: '100%',
-  minWidth: 0,
-  boxSizing: 'border-box',
-  paddingLeft: '0',
-  paddingRight: '0',
-  overflow: 'visible',
 });
 
-export const percentageMark = style({
+export const labelButton = style({
   position: 'absolute',
   padding: 0,
   backgroundColor: 'transparent',
@@ -95,28 +119,45 @@ export const percentageMark = style({
   },
 });
 
-export const percentageMarkFirst = style({
+export const labelButtonFirst = style({
   transform: 'translateX(0) !important',
 });
 
-export const percentageMarkLast = style({
+export const labelButtonLast = style({
   transform: 'translateX(-100%) !important',
 });
 
-export const valueDisplay = style({
-  position: 'absolute',
-  width: '5ch',
-  bottom: '28px',
-  textAlign: 'center',
-  transform: 'translateX(-50%)',
-  zIndex: 100,
+export const leverageInputWrapper = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1px',
+  flexShrink: 0,
+  backgroundColor: colors.slateGrey,
+  border: `1px solid ${colors.whiteAlpha[20]}`,
+  borderRadius: '6px',
+  padding: '6px 8px',
+});
+
+export const leverageInput = style({
+  width: '3ch',
+  backgroundColor: 'transparent',
+  border: 'none',
+  outline: 'none',
+  color: colors.snow,
+  fontFamily: 'monospace',
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  textAlign: 'right',
+});
+
+export const leverageSuffix = style({
+  color: colors.dustyGrey,
   fontSize: '0.875rem',
   fontWeight: 500,
-  color: colors.snow,
 });
 
 export const error = style({
   color: colors.error,
   fontSize: '0.75rem',
-  marginLeft: '0.5rem',
+  marginBottom: '0.25rem',
 });

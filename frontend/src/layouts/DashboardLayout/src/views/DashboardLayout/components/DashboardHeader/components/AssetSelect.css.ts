@@ -7,12 +7,12 @@ export const selectTrigger = recipe({
     all: 'unset',
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '0.625rem',
+    gap: '0.5rem',
     backgroundColor: colors.gluonGrey,
     color: colors.snow,
-    padding: '0.5rem 0.75rem',
-    paddingRight: '0.625rem',
-    minHeight: '2.75rem',
+    padding: '0.25rem 0.5rem',
+    paddingRight: '0.5rem',
+    minHeight: '2rem',
     lineHeight: 1,
     borderRadius: '0.5rem',
     border: `1px solid ${colors.slateGrey}`,
@@ -130,8 +130,8 @@ export const assetIconWrapper = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: '2rem',
-  height: '2rem',
+  width: '1.5rem',
+  height: '1.5rem',
   borderRadius: '50%',
   backgroundColor: 'rgba(255, 255, 255, 0.08)',
   flexShrink: 0,
@@ -139,8 +139,8 @@ export const assetIconWrapper = style({
 });
 
 export const assetIcon = style({
-  width: '1.25rem',
-  height: '1.25rem',
+  width: '1rem',
+  height: '1rem',
   objectFit: 'contain',
 });
 
