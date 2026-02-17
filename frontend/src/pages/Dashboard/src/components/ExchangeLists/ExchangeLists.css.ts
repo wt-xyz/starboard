@@ -31,6 +31,13 @@ export const tabsBar = style({
 
 export const tabsList = style({
   display: 'flex',
+  overflowX: 'auto',
+  scrollbarWidth: 'none',
+  selectors: {
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+  },
 });
 
 export const closeAllButton = style({
@@ -55,8 +62,9 @@ export const tabsTrigger = style({
   borderBottom: '2px solid transparent',
   marginBottom: '-1px',
   cursor: 'pointer',
-  fontSize: '0.875rem',
+  fontSize: '0.75rem',
   fontWeight: '500',
+  whiteSpace: 'nowrap',
   transition: 'all 0.15s ease',
   ':hover': {
     color: colors.snow,
