@@ -51,7 +51,7 @@ function calculatePriceChange(
   if (!currentPrice || !candles || candles.length === 0) return null;
 
   const current = $decimalValue(currentPrice.value).toFloat();
-  const openCandle = candles[0];
+  const openCandle = candles[candles.length - 1]; // most recent D1 candle = today's open
   const open = $decimalValue(OraclePrice.fromBigIntString(openCandle.openPrice)).toFloat();
 
   if (open === 0) return null;
