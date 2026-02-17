@@ -9,6 +9,7 @@ export const container = style({
   borderRadius: '0.5rem',
   marginBottom: '0.5rem',
   gap: '0.375rem',
+  overflow: 'hidden',
 });
 
 export const topRow = style({
@@ -21,7 +22,8 @@ export const topRow = style({
 export const statsRow = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '0.75rem',
+  flexWrap: 'wrap',
+  gap: '0.25rem 0.75rem',
   fontSize: '0.625rem',
   fontFamily: 'monospace',
   color: colors.dustyGrey,

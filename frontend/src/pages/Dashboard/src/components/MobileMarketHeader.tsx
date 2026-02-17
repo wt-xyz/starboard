@@ -51,11 +51,6 @@ export const MobileMarketHeader: FC = () => {
   // Funding
   const { fundingFormatted, fundingVariant } = useMobileFunding(tradingSdk, watchedAsset);
 
-  const changeStyles = [styles.priceChange];
-  if (change24h !== null) {
-    changeStyles.push(change24h >= 0 ? styles.priceChangePositive : styles.priceChangeNegative);
-  }
-
   const getAssetPriceFormatted = (priceValue: string, currentDecimal = 0) => {
     if (currentDecimal === 9) return formatCurrency(0);
     const nextPriceValue = formatCurrency(Number(priceValue), { decimals: currentDecimal });
@@ -73,11 +68,6 @@ export const MobileMarketHeader: FC = () => {
 
         <div css={styles.priceSection}>
           <span css={styles.price}>${getAssetPriceFormatted(priceValue.toString())}</span>
-          {change24h !== null && (
-            <span css={changeStyles}>
-              {formatPercentage(change24h, { decimals: 2, signDisplay: 'always' })}
-            </span>
-          )}
         </div>
       </div>
 
