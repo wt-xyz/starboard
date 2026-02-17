@@ -3,18 +3,18 @@ import { colors } from '../../../styles/colors';
 
 export const page = style({
   width: '100%',
-  height: 'calc(100vh - 4rem)',
+  height: 'calc(100vh - 3rem)',
   backgroundColor: colors.darkVoid,
   display: 'grid',
   gridTemplateColumns: '1fr 400px',
   gridTemplateRows: 'auto 1fr',
-  gap: '0.5rem',
-  padding: '1rem 1rem 0.5rem 1rem',
+  gap: '1px',
+  padding: '0',
   '@media': {
     '(max-width: 1024px)': {
       gridTemplateColumns: '1fr',
       gridTemplateRows: 'auto auto auto',
-      padding: '0.5rem',
+      padding: '0',
       paddingBottom: '80px',
       overflowY: 'auto',
       overflowX: 'hidden',
@@ -34,12 +34,12 @@ export const mobileHeader = style({
 export const chartSection = style({
   minWidth: 0,
   minHeight: '460px',
-  maxHeight: 'calc(100vh - 6rem - 150px)',
-  height: 'calc(100vh - 6rem - 280px)',
+  maxHeight: 'calc(100vh - 5rem - 150px)',
+  height: 'calc(100vh - 5rem - 280px)',
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: colors.gluonGrey,
-  borderRadius: '0.5rem',
+  borderRadius: '0',
   overflow: 'hidden',
   position: 'relative',
   resize: 'vertical',
@@ -61,8 +61,8 @@ export const orderEntrySection = style({
   flexDirection: 'column',
   overflow: 'auto',
   backgroundColor: colors.gluonGrey,
-  borderRadius: '0.5rem',
-  padding: '1rem',
+  borderRadius: '0',
+  padding: '0.75rem',
   boxSizing: 'border-box',
   '@media': {
     '(max-width: 1024px)': {
@@ -87,14 +87,14 @@ export const bottomSection = style({
 export const orderEntryFormWrapper = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '0.5rem',
+  gap: '0.375rem',
 });
 
 export const orderEntryTitle = style({
   fontSize: '0.875rem',
   fontWeight: 600,
   color: colors.snow,
-  marginBottom: '1rem',
+  marginBottom: '0.5rem',
   textTransform: 'none',
   letterSpacing: '0.01em',
 });

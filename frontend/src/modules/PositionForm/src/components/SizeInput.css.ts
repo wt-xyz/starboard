@@ -7,7 +7,7 @@ export const container = style({
   backgroundColor: colors.gluonGrey,
   border: `1px solid ${colors.whiteAlpha[10]}`,
   borderRadius: '6px',
-  padding: '10px 14px',
+  padding: '8px 10px',
   gap: '2px',
   transition: 'all 0.2s',
   ':hover': {
