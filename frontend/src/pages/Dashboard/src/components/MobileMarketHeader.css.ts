@@ -3,13 +3,32 @@ import { colors } from '@/styles/colors';
 
 export const container = style({
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
+  flexDirection: 'column',
   padding: '0.5rem 0.75rem',
   backgroundColor: colors.gluonGrey,
   borderRadius: '0.5rem',
   marginBottom: '0.5rem',
+  gap: '0.375rem',
+});
+
+export const topRow = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
   gap: '0.5rem',
+});
+
+export const statsRow = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.75rem',
+  fontSize: '0.625rem',
+  fontFamily: 'monospace',
+  color: colors.dustyGrey,
+});
+
+export const statItem = style({
+  whiteSpace: 'nowrap',
 });
 
 export const assetSection = style({
