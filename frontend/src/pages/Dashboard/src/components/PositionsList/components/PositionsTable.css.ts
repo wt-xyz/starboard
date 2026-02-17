@@ -1,6 +1,27 @@
 import { style } from '@vanilla-extract/css';
 import { colors } from '@/styles/colors';
 
+export const actionsRow = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  justifyContent: 'flex-end',
+});
+
+export const closeButton = style({
+  fontSize: '0.75rem',
+  fontWeight: 500,
+  color: colors.error,
+  backgroundColor: 'transparent',
+  border: 'none',
+  padding: '0.25rem 0.5rem',
+  cursor: 'pointer',
+  transition: 'color 0.15s ease',
+  ':hover': {
+    color: '#ff6b6b',
+  },
+});
+
 export const iconButton = style({
   display: 'inline-flex',
   alignItems: 'center',

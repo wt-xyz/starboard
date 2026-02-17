@@ -45,6 +45,21 @@ export const statValue = style({
   fontFamily: 'monospace',
 });
 
+export const closeAllButton = style({
+  fontSize: '0.75rem',
+  fontWeight: 500,
+  color: colors.error,
+  backgroundColor: 'transparent',
+  border: `1px solid ${colors.error}`,
+  borderRadius: '0.375rem',
+  padding: '0.25rem 0.75rem',
+  cursor: 'pointer',
+  transition: 'all 0.15s ease',
+  ':hover': {
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+  },
+});
+
 export const positionCards = style({
   display: 'flex',
   flexDirection: 'column',
