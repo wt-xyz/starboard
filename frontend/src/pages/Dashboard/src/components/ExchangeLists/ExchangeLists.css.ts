@@ -19,12 +19,32 @@ export const tabsRoot = style({
   minHeight: 0,
 });
 
-export const tabsList = style({
+export const tabsBar = style({
   display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
   flexShrink: 0,
   borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
   backgroundColor: colors.gluonGrey,
   padding: '0 0.5rem',
+});
+
+export const tabsList = style({
+  display: 'flex',
+});
+
+export const closeAllButton = style({
+  fontSize: '0.75rem',
+  fontWeight: 500,
+  color: colors.error,
+  backgroundColor: 'transparent',
+  border: 'none',
+  padding: '0.25rem 0.5rem',
+  cursor: 'pointer',
+  transition: 'color 0.15s ease',
+  ':hover': {
+    color: '#ff6b6b',
+  },
 });
 
 export const tabsTrigger = style({
