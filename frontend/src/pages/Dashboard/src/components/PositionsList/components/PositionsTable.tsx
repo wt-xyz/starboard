@@ -1,9 +1,11 @@
-import type { FC } from 'react';
+import { type FC, useCallback } from 'react';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { Tooltip } from '@radix-ui/themes';
 import type { PositionStableId } from 'fuel-ts-sdk';
 import type { PositionEntity } from 'fuel-ts-sdk/trading';
+import { toast } from 'react-toastify';
 import { useBoolean } from 'usehooks-ts';
+import { useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { PositionsTable as PT } from '@/pages/Dashboard/submodules';
 import { DecreasePositionDialog } from './DecreasePositionDialog';
 import * as $ from './PositionsTable.css';
@@ -53,14 +55,34 @@ export const PositionsTable: FC<PositionsTableProps> = ({ entries }) => {
 
 export const ActionsCell = (props: { stableId: PositionStableId }) => {
   const modalOpenBoolean = useBoolean();
+  const trading = useTradingSdk();
+
+  const handleMarketClose = useCallback(async () => {
+    const position = trading.getPositionById(props.stableId);
+    if (!position) return;
+    try {
+      await trading.decreasePosition({
+        positionId: props.stableId,
+        sizeDelta: position.size,
+      });
+      toast.success('Position closed successfully');
+    } catch (error) {
+      toast.error('Failed to close position');
+    }
+  }, [trading, props.stableId]);
 
   return (
     <td>
-      <Tooltip content="Edit Position">
-        <button className={$.iconButton} onClick={modalOpenBoolean.setTrue}>
-          <HamburgerMenuIcon />
+      <div className={$.actionsRow}>
+        <button className={$.closeButton} onClick={handleMarketClose}>
+          Close
         </button>
-      </Tooltip>
+        <Tooltip content="Edit Position">
+          <button className={$.iconButton} onClick={modalOpenBoolean.setTrue}>
+            <HamburgerMenuIcon />
+          </button>
+        </Tooltip>
+      </div>
 
       {modalOpenBoolean.value && (
         <DecreasePositionDialog
