@@ -29,42 +29,49 @@ export const TradeHistoryList: FC = () => {
     [allRevisions]
   );
 
-  if (sortedRevisions.length === 0) {
-    return (
-      <div css={$.emptyState}>
-        <span css={$.emptyStateText}>No trade history yet</span>
-      </div>
-    );
-  }
+  const isEmpty = sortedRevisions.length === 0;
 
   return (
-    <PositionsTable.Root
-      header={
-        <PositionsTable.Header>
-          {(h) => (
-            <>
-              <h.Action />
-              <h.Custom>Market</h.Custom>
-              <h.Size />
-              <h.MarkPrice />
-              <h.RealizedPnl />
-            </>
-          )}
-        </PositionsTable.Header>
-      }
-      body={sortedRevisions.map((position) => (
-        <PositionsTable.Row key={position.revisionId} position={position}>
-          {(r) => (
-            <>
-              <r.ActionCell />
-              <r.PositionCell />
-              <r.SizeCell />
-              <r.MarkPriceCell />
-              <r.RealizedPnlCell />
-            </>
-          )}
-        </PositionsTable.Row>
-      ))}
-    />
+    <>
+      <PositionsTable.Root
+        header={
+          <PositionsTable.Header>
+            {(h) => (
+              <>
+                <h.Time />
+                <h.Position />
+                <h.Direction />
+                <h.MarkPrice />
+                <h.SizeDelta />
+                <h.TradeValue />
+                <h.Fees />
+                <h.PnlDelta />
+              </>
+            )}
+          </PositionsTable.Header>
+        }
+        body={sortedRevisions.map((position) => (
+          <PositionsTable.Row key={position.revisionId} position={position}>
+            {(r) => (
+              <>
+                <r.TimestampCell />
+                <r.PositionCell />
+                <r.ActionCell />
+                <r.MarkPriceCell />
+                <r.SizeDeltaCell />
+                <r.TradeValueCell />
+                <r.FeesCell />
+                <r.PnlDeltaCell />
+              </>
+            )}
+          </PositionsTable.Row>
+        ))}
+      />
+      {isEmpty && (
+        <div css={$.emptyState}>
+          <span css={$.emptyStateText}>No trade history yet</span>
+        </div>
+      )}
+    </>
   );
 };
