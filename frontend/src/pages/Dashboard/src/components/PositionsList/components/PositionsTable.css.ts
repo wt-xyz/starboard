@@ -1,6 +1,16 @@
 import { style } from '@vanilla-extract/css';
 import { colors } from '@/styles/colors';
 
+export const actionsCell = style({
+  padding: '0.5rem 0.625rem',
+  borderTop: `1px solid ${colors.whiteAlpha[10]}`,
+  borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
+  borderRight: `1px solid ${colors.whiteAlpha[10]}`,
+  borderTopRightRadius: '0.5rem',
+  borderBottomRightRadius: '0.5rem',
+  verticalAlign: 'middle',
+});
+
 export const actionsRow = style({
   display: 'flex',
   alignItems: 'center',

@@ -72,7 +72,7 @@ export const ActionsCell = (props: { stableId: PositionStableId }) => {
   }, [trading, props.stableId]);
 
   return (
-    <td>
+    <td className={$.actionsCell}>
       <div className={$.actionsRow}>
         <button className={$.closeButton} onClick={handleMarketClose}>
           Close
