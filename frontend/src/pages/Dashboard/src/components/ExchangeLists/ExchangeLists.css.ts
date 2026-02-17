@@ -8,7 +8,7 @@ export const container = style({
   height: '100%',
   minHeight: 0,
   backgroundColor: colors.gluonGrey,
-  borderRadius: '0.5rem',
+  borderRadius: '0',
   overflow: 'visible',
 });
 
@@ -24,11 +24,11 @@ export const tabsList = style({
   flexShrink: 0,
   borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
   backgroundColor: colors.gluonGrey,
-  padding: '0 1rem',
+  padding: '0 0.5rem',
 });
 
 export const tabsTrigger = style({
-  padding: '0.875rem 1.5rem',
+  padding: '0.5rem 0.75rem',
   backgroundColor: 'transparent',
   color: colors.dustyGrey,
   border: 'none',
@@ -60,7 +60,7 @@ export const tabsTrigger = style({
 export const tabsContent = style({
   flex: 1,
   overflow: 'auto',
-  padding: '0 1rem 1rem 1rem',
+  padding: '0 0.5rem 0.5rem 0.5rem',
   minHeight: 0,
   WebkitOverflowScrolling: 'touch',
 });
