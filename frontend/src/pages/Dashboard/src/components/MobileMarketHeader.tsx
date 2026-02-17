@@ -36,9 +36,7 @@ export const MobileMarketHeader: FC = () => {
     if (!Number.isFinite(longValue) || !Number.isFinite(shortValue)) return null;
     const total = longValue + shortValue;
     if (total === 0) return '$0';
-    const longPct = Math.round((longValue / total) * 100);
-    const shortPct = 100 - longPct;
-    return `${formatCurrency(total, { compact: true, symbol: '$' })} (${longPct}L/${shortPct}S)`;
+    return formatCurrency(total, { compact: true, symbol: '$' });
   }, [marketStats]);
 
   // Volume
@@ -74,14 +72,14 @@ export const MobileMarketHeader: FC = () => {
       <div css={styles.statsRow}>
         {change24h !== null && (
           <span css={[styles.statItem, change24h >= 0 ? styles.priceChangePositive : styles.priceChangeNegative]}>
-            24h: {formatPercentage(change24h, { decimals: 2, signDisplay: 'always' })}
+            {formatPercentage(change24h, { decimals: 2, signDisplay: 'always' })}
           </span>
         )}
-        {oiFormatted && <span css={styles.statItem}>OI: {oiFormatted}</span>}
-        {volFormatted && <span css={styles.statItem}>Vol: {volFormatted}</span>}
+        {oiFormatted && <span css={styles.statItem}>OI {oiFormatted}</span>}
+        {volFormatted && <span css={styles.statItem}>Vol {volFormatted}</span>}
         {fundingFormatted && (
           <span css={[styles.statItem, fundingVariant === 'positive' ? styles.priceChangePositive : fundingVariant === 'negative' ? styles.priceChangeNegative : undefined]}>
-            Fund: {fundingFormatted}
+            Fund {fundingFormatted}
           </span>
         )}
       </div>
@@ -144,7 +142,7 @@ function useMobileFunding(
     }
 
     const sign = direction === 'positive' ? '+' : '-';
-    const directionLabel = direction === 'negative' ? ' (L pay)' : ' (S pay)';
+    const directionLabel = direction === 'negative' ? ' L' : ' S';
     const fundingFormatted = `${sign}${baseRatePercent.toFixed(4)}%${directionLabel}`;
     const fundingVariant = direction === 'positive' ? ('positive' as const) : ('negative' as const);
 
