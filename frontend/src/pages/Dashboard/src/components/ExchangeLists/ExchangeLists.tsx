@@ -1,18 +1,21 @@
 import { type FC, useState } from 'react';
 import { Tabs } from 'radix-ui';
+import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { PositionsList } from '../PositionsList';
 import * as $ from './ExchangeLists.css';
 import { TradeHistoryList } from './components/TradeHistoryList';
 
 export const ExchangeLists: FC = () => {
   const [activeTab, setActiveTab] = useState<string>(TABS.POSITIONS);
+  const trading = useTradingSdk();
+  const openPositions = useSdkQuery(() => trading.getCurrentAccountOpenPositions());
 
   return (
     <div css={$.container}>
       <Tabs.Root value={activeTab} onValueChange={setActiveTab} css={$.tabsRoot}>
         <Tabs.List css={$.tabsList}>
           <Tabs.Trigger value={TABS.POSITIONS} css={$.tabsTrigger}>
-            Positions
+            Positions ({openPositions.length})
           </Tabs.Trigger>
           <Tabs.Trigger value={TABS.HISTORY} css={$.tabsTrigger}>
             Trade History
