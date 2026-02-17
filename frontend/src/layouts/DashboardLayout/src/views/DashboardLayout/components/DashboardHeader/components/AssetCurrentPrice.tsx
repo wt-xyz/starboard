@@ -22,9 +22,10 @@ export const AssetCurrentPrice: FC = () => {
   }, [sdk, watchedAsset]);
 
   const priceValue = price ? $decimalValue(price.value).toFloat() : 0;
-  const change24h = useSdkQuery(() =>
+  const sdkChange24h = useSdkQuery(() =>
     watchedAsset ? sdk.getAssetPriceChange24h(watchedAsset.assetId) : null
-  ) ?? calculatePriceChange(price, candles);
+  );
+  const change24h = calculatePriceChange(price, candles) ?? sdkChange24h ?? null;
 
   const changeStyles = [$.priceChange];
   if (change24h !== null) {
