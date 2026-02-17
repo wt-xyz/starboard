@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, useEffect } from 'react';
 import { $decimalValue, OraclePrice } from 'fuel-ts-sdk';
 import type { AssetPriceEntity, Candle } from 'fuel-ts-sdk/trading';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
@@ -12,6 +12,14 @@ export const AssetCurrentPrice: FC = () => {
   const candles = useSdkQuery(() =>
     watchedAsset ? sdk.getCandles(watchedAsset.assetId, 'D1') : []
   );
+
+  useEffect(() => {
+    if (!watchedAsset) return;
+    const status = sdk.getCandlesStatus(watchedAsset.assetId, 'D1');
+    if (status === 'uninitialized') {
+      sdk.fetchCandles(watchedAsset.assetId, 'D1');
+    }
+  }, [sdk, watchedAsset]);
 
   const priceValue = price ? $decimalValue(price.value).toFloat() : 0;
   const change24h = useSdkQuery(() =>

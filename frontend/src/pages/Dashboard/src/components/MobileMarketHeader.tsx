@@ -17,6 +17,14 @@ export const MobileMarketHeader: FC = () => {
   );
   const marketStats = useSdkQuery((s) => s.trading.getWatchedAssetMarketStats());
 
+  useEffect(() => {
+    if (!watchedAsset) return;
+    const status = sdk.getCandlesStatus(watchedAsset.assetId, 'D1');
+    if (status === 'uninitialized') {
+      sdk.fetchCandles(watchedAsset.assetId, 'D1');
+    }
+  }, [sdk, watchedAsset]);
+
   const change24h = calculatePriceChange(price, candles);
   const priceValue = price ? $decimalValue(price.value).toFloat() : 0;
 
