@@ -91,6 +91,12 @@ export const error = style({
   fontWeight: '400',
 });
 
+export const availableBalance = style({
+  fontSize: '0.625rem',
+  color: colors.dustyGrey,
+  fontFamily: 'monospace',
+});
+
 export const quickActions = style({
   display: 'flex',
   gap: '0.375rem',
