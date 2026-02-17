@@ -25,7 +25,6 @@ export const statsRow = style({
   gap: '0.5rem',
   fontSize: '0.625rem',
   fontFamily: 'monospace',
-  color: colors.dustyGrey,
   overflowX: 'auto',
   scrollbarWidth: 'none',
   selectors: {
@@ -34,7 +33,25 @@ export const statsRow = style({
 });
 
 export const statItem = style({
+  display: 'inline-flex',
+  alignItems: 'baseline',
+  gap: '0.25rem',
   whiteSpace: 'nowrap',
+  selectors: {
+    '& + &::before': {
+      content: '"·"',
+      color: colors.dustyGreyAlpha[50],
+      marginRight: '0.25rem',
+    },
+  },
+});
+
+export const statLabel = style({
+  color: colors.dustyGrey,
+});
+
+export const statValue = style({
+  color: colors.snow,
 });
 
 export const assetSection = style({
