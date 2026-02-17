@@ -33,7 +33,7 @@ export const headerLeft = style({
 });
 
 export const logo = style({
-  height: '2rem',
+  height: '1.5rem',
   width: 'auto',
   objectFit: 'contain',
   display: 'block',

@@ -1,4 +1,4 @@
-import { type FC, use } from 'react';
+import { type FC, use, useCallback } from 'react';
 import { Slider } from 'radix-ui';
 import { useController } from 'react-hook-form';
 import { KernelContext } from '../contexts';
@@ -15,6 +15,7 @@ export const LeverageSlider: FC<LeverageSliderProps> = ({ label = 'Leverage' }) 
   const { field, fieldState } = useController({ control, name: 'leverage' });
 
   const stepIdx = STEP_VALUES.indexOf(+field.value!);
+  const thumbPercent = (stepIdx / (STEP_VALUES.length - 1)) * 100;
 
   const handleSliderChange = ([idx]: number[]) => {
     field.onChange(String(STEP_VALUES[idx]));
@@ -24,50 +25,86 @@ export const LeverageSlider: FC<LeverageSliderProps> = ({ label = 'Leverage' }) 
     field.onChange(String(value));
   };
 
+  const handleInputChange = useCallback(
+    (value: string) => {
+      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+        field.onChange(value);
+      }
+    },
+    [field]
+  );
+
+  const handleInputBlur = useCallback(() => {
+    const num = parseFloat(field.value ?? '');
+    if (isNaN(num)) {
+      field.onChange(String(STEP_VALUES[0]));
+      return;
+    }
+    const clamped = Math.min(100, Math.max(0.1, num));
+    const nearest = STEP_VALUES.reduce((prev, curr) =>
+      Math.abs(curr - clamped) < Math.abs(prev - clamped) ? curr : prev
+    );
+    field.onChange(String(nearest));
+  }, [field]);
+
   return (
     <div className={$.sliderContainer}>
-      <label className={$.sliderLabel}>
-        {label}
-        {fieldState.error && <span className={$.error}>{fieldState.error.message}</span>}
-      </label>
-      <Slider.Root
-        className={$.sliderRoot}
-        value={[stepIdx]}
-        onValueChange={handleSliderChange}
-        min={0}
-        max={STEP_VALUES.length - 1}
-        step={1}
-      >
-        <div
-          className={$.valueDisplay}
-          style={{ left: `clamp(25%, ${(stepIdx / 70) * 100}%, 95%)` }}
-        >
-          {field.value}x
+      {fieldState.error && <span className={$.error}>{fieldState.error.message}</span>}
+      <div className={$.sliderRow}>
+        <div className={$.sliderColumn}>
+          <div className={$.trackWrapper}>
+            {LABEL_PERCENTAGE_MARKS.slice(1).map((mark) => (
+              <span
+                key={mark}
+                className={mark <= thumbPercent ? $.trackDotActive : $.trackDotInactive}
+                style={{ left: `${mark}%` }}
+              />
+            ))}
+            <Slider.Root
+              className={$.sliderRoot}
+              value={[stepIdx]}
+              onValueChange={handleSliderChange}
+              min={0}
+              max={STEP_VALUES.length - 1}
+              step={1}
+            >
+              <Slider.Track className={$.sliderTrack}>
+                <Slider.Range className={$.sliderRange} />
+              </Slider.Track>
+              <Slider.Thumb className={$.sliderThumb} />
+            </Slider.Root>
+          </div>
+
+          <div className={$.labelsRow}>
+            {LABEL_PERCENTAGE_MARKS.map((mark, index) => {
+              const isFirst = index === 0;
+              const isLast = index === LABEL_PERCENTAGE_MARKS.length - 1;
+              return (
+                <button
+                  key={mark}
+                  type="button"
+                  className={`${$.labelButton} ${isFirst ? $.labelButtonFirst : ''} ${isLast ? $.labelButtonLast : ''}`}
+                  style={{ left: `${mark}%` }}
+                  onClick={() => handleLabelClick(LABELS[index])}
+                >
+                  {LABELS[index]}x
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <Slider.Track className={$.sliderTrack}>
-          <Slider.Range className={$.sliderRange} />
-        </Slider.Track>
-
-        <Slider.Thumb className={$.sliderThumb} />
-      </Slider.Root>
-
-      <div className={$.percentageMarks}>
-        {LABEL_PERCENTAGE_MARKS.map((mark, index) => {
-          const isFirst = index === 0;
-          const isLast = index === LABEL_PERCENTAGE_MARKS.length - 1;
-          return (
-            <button
-              key={mark}
-              type="button"
-              className={`${$.percentageMark} ${isFirst ? $.percentageMarkFirst : ''} ${isLast ? $.percentageMarkLast : ''}`}
-              style={{ left: `${mark}%` }}
-              onClick={() => handleLabelClick(LABELS[index])}
-            >
-              {LABELS[index]}x
-            </button>
-          );
-        })}
+        <div className={$.leverageInputWrapper}>
+          <input
+            type="text"
+            inputMode="decimal"
+            className={$.leverageInput}
+            value={field.value ?? ''}
+            onChange={(e) => handleInputChange(e.target.value)}
+            onBlur={handleInputBlur}
+          />
+          <span className={$.leverageSuffix}>x</span>
+        </div>
       </div>
     </div>
   );
