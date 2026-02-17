@@ -39,7 +39,7 @@ function formatLongDominantRate(fundingInfo: FundingInfoEntity): FundingRateResu
 
   const rate = hourlyRatePercent(sizeDelta, fundingInfo.totalLongSizes);
 
-  return { formattedRate: `-${rate.toFixed(4)}%`, variant: 'negative' };
+  return { formattedRate: `-${rate.toFixed(4)}% (L pay)`, variant: 'negative' };
 }
 
 function formatShortDominantRate(fundingInfo: FundingInfoEntity): FundingRateResult {
@@ -49,7 +49,7 @@ function formatShortDominantRate(fundingInfo: FundingInfoEntity): FundingRateRes
 
   const rate = hourlyRatePercent(sizeDelta, fundingInfo.totalShortSizes);
 
-  return { formattedRate: `+${rate.toFixed(4)}%`, variant: 'positive' };
+  return { formattedRate: `+${rate.toFixed(4)}% (S pay)`, variant: 'positive' };
 }
 
 function hourlyRatePercent(sizeDelta: DecimalValueInstance, dominantSide: DecimalValueInstance) {
