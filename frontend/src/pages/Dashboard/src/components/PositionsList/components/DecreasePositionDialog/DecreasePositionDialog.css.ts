@@ -76,3 +76,13 @@ export const tabsContent = style({
 export const tabsContentInner = style({
   overflow: 'hidden',
 });
+
+export const limitPlaceholder = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '2rem 1rem',
+  fontSize: '0.875rem',
+  color: colors.dustyGrey,
+  textAlign: 'center',
+});
