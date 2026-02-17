@@ -11,8 +11,8 @@ export const page = style({
 export const header = style({
   backgroundColor: colors.gluonGrey,
   borderBottom: `1px solid ${colors.slateGrey}`,
-  padding: '0 2rem',
-  height: '4rem',
+  padding: '0 0.75rem',
+  height: '3rem',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -29,7 +29,7 @@ export const header = style({
 export const headerLeft = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '2rem',
+  gap: '1rem',
 });
 
 export const logo = style({
@@ -66,7 +66,7 @@ export const navLinkActive = style({
 export const headerRight = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '1rem',
+  gap: '0.5rem',
 });
 
 export const desktopOnly = style({
