@@ -1,5 +1,6 @@
 import { type FC, useEffect, useMemo } from 'react';
 import { PositionSide } from 'fuel-ts-sdk/trading';
+import { toast } from 'react-toastify';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as $ from './PositionsList.css';
 import { PositionCard } from './components/PositionCard';
@@ -30,28 +31,53 @@ export const PositionsList: FC<PositionsListProps> = ({ side }) => {
     }
   }, [trading, userAddress]);
 
-  if (filteredOpenPositions.length === 0) {
-    return (
-      <div css={$.positionsContainer}>
-        <div style={{ textAlign: 'center', color: '#878787', padding: '3rem 1rem' }}>
-          No open positions
-        </div>
-      </div>
-    );
-  }
+  const isEmpty = filteredOpenPositions.length === 0;
+
+  const handleCloseAll = useCallback(async () => {
+    for (const position of filteredOpenPositions) {
+      try {
+        await trading.decreasePosition({
+          positionId: position.stableId,
+          sizeDelta: position.size,
+        });
+      } catch (error) {
+        toast.error(`Failed to close position`);
+      }
+    }
+    toast.success('All positions closed');
+  }, [filteredOpenPositions, trading]);
 
   return (
     <div css={$.positionsContainer}>
+      {!isEmpty && (
+        <div css={$.header}>
+          <span css={$.headerTitle} />
+          <button css={$.closeAllButton} onClick={handleCloseAll}>
+            Close All
+          </button>
+        </div>
+      )}
       <div css={$.desktopView}>
         <PositionsTable entries={filteredOpenPositions} />
+        {isEmpty && (
+          <div css={$.emptyState}>
+            <span css={$.emptyStateText}>No open positions</span>
+          </div>
+        )}
       </div>
 
       <div css={$.mobileView}>
-        <div css={$.positionCards}>
-          {filteredOpenPositions.map((openPosition) => (
-            <PositionCard key={openPosition.revisionId} position={openPosition} />
-          ))}
-        </div>
+        {isEmpty ? (
+          <div css={$.emptyState}>
+            <span css={$.emptyStateText}>No open positions</span>
+          </div>
+        ) : (
+          <div css={$.positionCards}>
+            {filteredOpenPositions.map((openPosition) => (
+              <PositionCard key={openPosition.revisionId} position={openPosition} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
