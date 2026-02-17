@@ -5,11 +5,16 @@ import * as $ from './Row.css';
 import {
   ActionCell,
   CollateralCell,
+  FeesCell,
   NetValueCell,
+  PnlDeltaCell,
   PositionCell,
   PriceCell,
   RealizedPnlCell,
   SizeCell,
+  SizeDeltaCell,
+  TimestampCell,
+  TradeValueCell,
 } from './components';
 import { RowContext } from './contexts/RowContext';
 
@@ -30,10 +35,15 @@ export const Row: FC<RowProps> = ({ position, children }) => {
 const rowComponentsBag = {
   PositionCell,
   SizeCell,
+  SizeDeltaCell,
   NetValueCell,
   CollateralCell,
   RealizedPnlCell,
+  PnlDeltaCell,
   ActionCell,
+  TimestampCell,
+  TradeValueCell,
+  FeesCell,
   EntryPriceCell: propify(PriceCell, { type: 'entry' }),
   MarkPriceCell: propify(PriceCell, { type: 'mark' }),
   LiquidationPriceCell: propify(PriceCell, { type: 'liquidation' }),
