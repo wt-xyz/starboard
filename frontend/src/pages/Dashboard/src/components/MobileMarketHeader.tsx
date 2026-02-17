@@ -71,15 +71,31 @@ export const MobileMarketHeader: FC = () => {
 
       <div css={styles.statsRow}>
         {change24h !== null && (
-          <span css={[styles.statItem, change24h >= 0 ? styles.priceChangePositive : styles.priceChangeNegative]}>
-            {formatPercentage(change24h, { decimals: 2, signDisplay: 'always' })}
+          <span css={styles.statItem}>
+            <span css={styles.statLabel}>24h</span>
+            <span css={change24h >= 0 ? styles.priceChangePositive : styles.priceChangeNegative}>
+              {formatPercentage(change24h, { decimals: 2, signDisplay: 'always' })}
+            </span>
           </span>
         )}
-        {oiFormatted && <span css={styles.statItem}>OI {oiFormatted}</span>}
-        {volFormatted && <span css={styles.statItem}>Vol {volFormatted}</span>}
+        {oiFormatted && (
+          <span css={styles.statItem}>
+            <span css={styles.statLabel}>OI</span>
+            <span css={styles.statValue}>{oiFormatted}</span>
+          </span>
+        )}
+        {volFormatted && (
+          <span css={styles.statItem}>
+            <span css={styles.statLabel}>Vol</span>
+            <span css={styles.statValue}>{volFormatted}</span>
+          </span>
+        )}
         {fundingFormatted && (
-          <span css={[styles.statItem, fundingVariant === 'positive' ? styles.priceChangePositive : fundingVariant === 'negative' ? styles.priceChangeNegative : undefined]}>
-            Fund {fundingFormatted}
+          <span css={styles.statItem}>
+            <span css={styles.statLabel}>Fund</span>
+            <span css={fundingVariant === 'positive' ? styles.priceChangePositive : fundingVariant === 'negative' ? styles.priceChangeNegative : styles.statValue}>
+              {fundingFormatted}
+            </span>
           </span>
         )}
       </div>
