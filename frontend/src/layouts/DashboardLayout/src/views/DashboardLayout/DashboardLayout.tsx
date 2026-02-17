@@ -15,7 +15,6 @@ import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { useAutoFaucet } from '@/lib/hooks/useAutoFaucet';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import { NetworkSwitcher } from '../../components/NetworkSwitcher';
-import { WalletCollateralCard } from '../../components/WalletCollateralCard';
 import { WalletModal } from '../../components/WalletModal';
 import * as styles from './DashboardLayout.css';
 import { DashboardHeader } from './components/DashboardHeader';
@@ -81,7 +80,6 @@ export function DashboardLayout() {
         <div css={styles.headerRight}>
           <div css={styles.desktopOnly}>
             <NetworkSwitcher />
-            {isWalletConnected && <WalletCollateralCard />}
             <button
               onClick={handleWalletButtonClick}
               css={isWalletConnected ? styles.walletConnected : styles.walletButton}
@@ -115,8 +113,7 @@ export function DashboardLayout() {
                 </div>
 
                 <div css={styles.mobileMenuSection}>
-                  {isWalletConnected && <WalletCollateralCard />}
-
+      
                   <SheetClose asChild>
                     <button
                       onClick={handleWalletButtonClick}
