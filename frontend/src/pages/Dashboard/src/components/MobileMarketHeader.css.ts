@@ -22,11 +22,15 @@ export const topRow = style({
 export const statsRow = style({
   display: 'flex',
   alignItems: 'center',
-  flexWrap: 'wrap',
-  gap: '0.25rem 0.75rem',
+  gap: '0.5rem',
   fontSize: '0.625rem',
   fontFamily: 'monospace',
   color: colors.dustyGrey,
+  overflowX: 'auto',
+  scrollbarWidth: 'none',
+  selectors: {
+    '&::-webkit-scrollbar': { display: 'none' },
+  },
 });
 
 export const statItem = style({
