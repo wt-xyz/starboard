@@ -4,6 +4,9 @@ import { toast } from 'react-toastify';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { PositionsList } from '../PositionsList';
 import * as $ from './ExchangeLists.css';
+import { FundingHistoryList } from './components/FundingHistoryList';
+import { OpenOrdersList } from './components/OpenOrdersList';
+import { OrderHistoryList } from './components/OrderHistoryList';
 import { TradeHistoryList } from './components/TradeHistoryList';
 
 export const ExchangeLists: FC = () => {
@@ -36,6 +39,15 @@ export const ExchangeLists: FC = () => {
             <Tabs.Trigger value={TABS.HISTORY} css={$.tabsTrigger}>
               Trade History
             </Tabs.Trigger>
+            <Tabs.Trigger value={TABS.OPEN_ORDERS} css={$.tabsTrigger}>
+              Open Orders
+            </Tabs.Trigger>
+            <Tabs.Trigger value={TABS.ORDER_HISTORY} css={$.tabsTrigger}>
+              Order History
+            </Tabs.Trigger>
+            <Tabs.Trigger value={TABS.FUNDING_HISTORY} css={$.tabsTrigger}>
+              Funding History
+            </Tabs.Trigger>
           </Tabs.List>
           {activeTab === TABS.POSITIONS && openPositions.length > 0 && (
             <button css={$.closeAllButton} onClick={handleCloseAll}>
@@ -51,6 +63,18 @@ export const ExchangeLists: FC = () => {
         <Tabs.Content value={TABS.HISTORY} css={$.tabsContent}>
           <TradeHistoryList />
         </Tabs.Content>
+
+        <Tabs.Content value={TABS.OPEN_ORDERS} css={$.tabsContent}>
+          <OpenOrdersList />
+        </Tabs.Content>
+
+        <Tabs.Content value={TABS.ORDER_HISTORY} css={$.tabsContent}>
+          <OrderHistoryList />
+        </Tabs.Content>
+
+        <Tabs.Content value={TABS.FUNDING_HISTORY} css={$.tabsContent}>
+          <FundingHistoryList />
+        </Tabs.Content>
       </Tabs.Root>
     </div>
   );
@@ -59,4 +83,7 @@ export const ExchangeLists: FC = () => {
 const TABS = {
   POSITIONS: 'positions',
   HISTORY: 'history',
+  OPEN_ORDERS: 'open-orders',
+  ORDER_HISTORY: 'order-history',
+  FUNDING_HISTORY: 'funding-history',
 } as const;
