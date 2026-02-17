@@ -1,6 +1,7 @@
 import { type FC, use, useCallback, useEffect, useRef, useState } from 'react';
 import { $decimalValue, DecimalCalculator, DecimalValue, Usdc } from 'fuel-ts-sdk';
 import { useController, useWatch } from 'react-hook-form';
+import { formatCurrency } from '@/lib/formatCurrency';
 import { SizeInput } from '@/modules/PositionForm';
 import { KernelContext, OptionsContext } from '../../contexts';
 import type { IncreasePositionFormModel } from '../../models';
@@ -116,6 +117,7 @@ export const PositionSizeInputs: FC = () => {
         label="Pay"
         assetSymbol="USDC"
         assetPrice={currentBaseAssetPrice.value}
+        availableBalance={formatCurrency(userBalanceInBaseAsset)}
         onHalf={handleHalfIn}
         onMax={handleAllIn}
         calculateUsdValue={calculateCollateralUsdValue}
