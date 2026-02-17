@@ -14,6 +14,7 @@ type SizeInputProps = {
   onMax?: () => void;
   ref?: RefObject<HTMLInputElement | null>;
 
+  availableBalance?: string;
   assetSymbol?: string;
   assetPrice?: number;
   calculateUsdValue?: SizeInputUsdCalculator;
@@ -27,6 +28,7 @@ export const SizeInput: FC<SizeInputProps> = ({
   onMax,
   ref,
 
+  availableBalance,
   assetSymbol: assetSymbolProp,
   assetPrice: assetPriceProp,
   calculateUsdValue,
@@ -72,6 +74,7 @@ export const SizeInput: FC<SizeInputProps> = ({
           <span className={$.usdValue}>
             {usdValue !== null ? <> ${formatCurrency(usdValue)}</> : <>$0.00</>}
           </span>
+          {availableBalance && <span className={$.availableBalance}>Bal: {availableBalance}</span>}
           {showLeverage && leverage && <span className={$.leverage}>Leverage: {leverage}x</span>}
           {(onHalf || onMax) && (
             <div className={$.quickActions}>
