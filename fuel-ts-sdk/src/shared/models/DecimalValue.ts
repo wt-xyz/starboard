@@ -33,7 +33,7 @@ export function createDecimalValueSchema<
 ): DecimalValueSchema<TDecimals, TBrand> {
   function createInstance(value: bigint | string): DecimalValueInstance<TDecimals, TBrand> {
     return {
-      value: String(value),
+      value: typeof value === 'string' ? normalizeIntegerString(value) : String(value),
       decimals,
     };
   }
@@ -115,4 +115,9 @@ export function isDecimalValue<TDecimals extends number = number, TBrand extends
   if (!('value' in v)) return false;
   if (precision !== undefined && v.decimals !== precision) return false;
   return true;
+}
+
+function normalizeIntegerString(value: string): string {
+  if (!value.includes('e') && !value.includes('E')) return value;
+  return BigInt(Number(value)).toString();
 }
