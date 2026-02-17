@@ -34,19 +34,30 @@ export const DecreasePositionDialog = memo(
             <LiquidationPriceStat positionId={positionId} />
           </div>
 
-          <Tabs.Root defaultValue="decrease">
+          <Tabs.Root defaultValue="market">
             <Tabs.List className={styles.tabsList}>
-              <Tabs.Trigger value="decrease" className={styles.tabsTrigger}>
-                Decrease
+              <Tabs.Trigger value="market" className={styles.tabsTrigger}>
+                Market
+              </Tabs.Trigger>
+              <Tabs.Trigger value="limit" className={styles.tabsTrigger}>
+                Limit
               </Tabs.Trigger>
               <Tabs.Trigger value="collateral" className={styles.tabsTrigger}>
                 Collateral
               </Tabs.Trigger>
             </Tabs.List>
 
-            <Tabs.Content value="decrease" className={styles.tabsContent} forceMount>
+            <Tabs.Content value="market" className={styles.tabsContent} forceMount>
               <div className={styles.tabsContentInner}>
                 <DecreaseTab positionId={positionId} onSubmitSuccess={closeDialog} />
+              </div>
+            </Tabs.Content>
+
+            <Tabs.Content value="limit" className={styles.tabsContent} forceMount>
+              <div className={styles.tabsContentInner}>
+                <div className={styles.limitPlaceholder}>
+                  Limit close orders coming soon
+                </div>
               </div>
             </Tabs.Content>
 
