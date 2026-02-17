@@ -1,6 +1,5 @@
 import { type FC, useEffect, useMemo } from 'react';
 import { PositionSide } from 'fuel-ts-sdk/trading';
-import { toast } from 'react-toastify';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as $ from './PositionsList.css';
 import { PositionCard } from './components/PositionCard';
@@ -33,30 +32,8 @@ export const PositionsList: FC<PositionsListProps> = ({ side }) => {
 
   const isEmpty = filteredOpenPositions.length === 0;
 
-  const handleCloseAll = useCallback(async () => {
-    for (const position of filteredOpenPositions) {
-      try {
-        await trading.decreasePosition({
-          positionId: position.stableId,
-          sizeDelta: position.size,
-        });
-      } catch (error) {
-        toast.error(`Failed to close position`);
-      }
-    }
-    toast.success('All positions closed');
-  }, [filteredOpenPositions, trading]);
-
   return (
     <div css={$.positionsContainer}>
-      {!isEmpty && (
-        <div css={$.header}>
-          <span css={$.headerTitle} />
-          <button css={$.closeAllButton} onClick={handleCloseAll}>
-            Close All
-          </button>
-        </div>
-      )}
       <div css={$.desktopView}>
         <PositionsTable entries={filteredOpenPositions} />
         {isEmpty && (
