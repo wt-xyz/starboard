@@ -92,6 +92,7 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
               Connect Wallet
             </Button>
           )}
+          <IncreasePositionForm.OrderSummary />
         </IncreasePositionForm.KernelProvider>
       </IncreasePositionForm.OptionsProvider>
     </div>
