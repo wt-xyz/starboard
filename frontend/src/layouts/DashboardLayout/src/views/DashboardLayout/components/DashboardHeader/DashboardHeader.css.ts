@@ -4,13 +4,13 @@ import { colors } from '@/styles/colors';
 export const container = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '1.5rem',
+  gap: '1rem',
 });
 
 export const assetSection = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '1rem',
+  gap: '0.5rem',
 });
 
 export const separator = style({
@@ -22,5 +22,5 @@ export const separator = style({
 export const statsSection = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '1.5rem',
+  gap: '1rem',
 });
