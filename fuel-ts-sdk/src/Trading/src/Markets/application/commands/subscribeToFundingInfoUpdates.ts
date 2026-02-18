@@ -11,23 +11,35 @@ export interface SyncFundingInfoDependencies {
 }
 
 export const createSyncFundingInfoCommands = (deps: SyncFundingInfoDependencies) => {
+  const refCounts = new Map<AssetId, number>();
+
   const fundingInfoUpdateHandler = (payload: AssetFundingInfoUpdatedEventPayload) => {
     deps.storeService.dispatch(AssetFundingInfoUpdatedEvent(payload));
   };
 
   return {
     syncFundingInfo: (assetId: AssetId) => {
-      deps.storeService.dispatch(asyncFetchCurrentFundingInfoThunk(assetId));
-      deps.subscriptionService.subscribe(
-        subscriptions.CurrentFundingInfoUpdated(assetId),
-        fundingInfoUpdateHandler
-      );
+      const count = refCounts.get(assetId) ?? 0;
+      refCounts.set(assetId, count + 1);
+      if (count === 0) {
+        deps.storeService.dispatch(asyncFetchCurrentFundingInfoThunk(assetId));
+        deps.subscriptionService.subscribe(
+          subscriptions.CurrentFundingInfoUpdated(assetId),
+          fundingInfoUpdateHandler
+        );
+      }
     },
     desyncFundingInfo: (assetId: AssetId) => {
-      deps.subscriptionService.unsubscribe(
-        subscriptions.CurrentFundingInfoUpdated(assetId),
-        fundingInfoUpdateHandler
-      );
+      const count = refCounts.get(assetId) ?? 0;
+      if (count <= 1) {
+        refCounts.delete(assetId);
+        deps.subscriptionService.unsubscribe(
+          subscriptions.CurrentFundingInfoUpdated(assetId),
+          fundingInfoUpdateHandler
+        );
+      } else {
+        refCounts.set(assetId, count - 1);
+      }
     },
   };
 };
