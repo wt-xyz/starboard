@@ -1,16 +1,17 @@
-import type { SubscriptionService } from '@sdk/shared/lib/subscriptions';
 import type { StoreService } from '@sdk/shared/lib/StoreService';
+import type { SubscriptionService } from '@sdk/shared/lib/subscriptions';
 import { createFetchCandlesCommand } from './fetchCandles';
 import { createFetchLatestAssetPriceCommand } from './fetchLatestAssetPrice';
 import { createFetchMarketStatsCommand } from './fetchMarketStats';
 import { createPopulateAssetsCommand } from './populateAssets';
-import { createSubscribeToAssetPriceCommands } from './subscribeToAssetPriceUpdates';
+import { createSyncAssetPriceCommands } from './subscribeToAssetPriceUpdates';
+import { createSyncFundingInfoCommands } from './subscribeToFundingInfoUpdates';
 import { createWatchAssetCommand } from './watchAsset';
 
-interface MarketCommandsDependencies {
+type MarketCommandsDependencies = {
   storeService: StoreService;
   subscriptionService: SubscriptionService;
-}
+};
 
 export const createMarketCommands = (deps: MarketCommandsDependencies) => ({
   fetchCandles: createFetchCandlesCommand(deps.storeService),
@@ -21,7 +22,8 @@ export const createMarketCommands = (deps: MarketCommandsDependencies) => ({
 
   fetchMarketStats: createFetchMarketStatsCommand({ storeService: deps.storeService }),
 
-  ...createSubscribeToAssetPriceCommands(deps),
+  ...createSyncAssetPriceCommands(deps),
+  ...createSyncFundingInfoCommands(deps),
 });
 
 export type MarketCommands = ReturnType<typeof createMarketCommands>;
