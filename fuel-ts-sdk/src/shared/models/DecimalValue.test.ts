@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
   $decimalValue,
-  createDecimalValueSchema,
   DecimalValue,
+  createDecimalValueSchema,
   isDecimalValue,
 } from './DecimalValue';
-import { CollateralAmount, OraclePrice, PercentageMultiplier, Usdc, UsdValue } from './decimals';
+import { CollateralAmount, OraclePrice, PercentageMultiplier, UsdValue, Usdc } from './decimals';
 
 describe('DecimalValue', () => {
   describe('construction', () => {
