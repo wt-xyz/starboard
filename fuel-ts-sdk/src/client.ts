@@ -3,11 +3,7 @@ import type { Account } from 'fuels';
 import { GraphQLClient } from 'graphql-request';
 import { createClient as createWsClient } from 'graphql-ws';
 import { createAccountsModule } from './Accounts/di';
-import {
-  createTestnetTokenCommands,
-  createVaultCommands,
-  createVaultQueries,
-} from './shared/contracts';
+import { createTestnetTokenCommands, createVaultCommands } from './shared/contracts';
 import { createStoreService } from './shared/lib/StoreService';
 import { createStore } from './shared/lib/redux';
 import { createGraphqlWsTransport, createSubscriptionService } from './shared/lib/subscriptions';
@@ -44,9 +40,6 @@ export const createStarboardClient = (config: StarboardClientConfig) => {
     vaultContractPort: accountsModule.services.contractsService,
     storeService,
   });
-  const vaultQueries = createVaultQueries({
-    vaultContractPort: accountsModule.services.contractsService,
-  });
   const testnetTokenCommands = createTestnetTokenCommands({
     testnetTokenContractPort: accountsModule.services.contractsService,
     storeService,
@@ -57,7 +50,6 @@ export const createStarboardClient = (config: StarboardClientConfig) => {
     storeService,
     subscriptionService,
     vaultCommands,
-    vaultQueries,
     walletQueries: accountsCommandsAndQueries,
   });
 
@@ -67,7 +59,6 @@ export const createStarboardClient = (config: StarboardClientConfig) => {
 
     __extra: {
       faucet: testnetTokenCommands.faucet,
-      getFundingInfo: vaultQueries.getFundingInfo,
     },
     store: starboardStore,
   };

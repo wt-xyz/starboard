@@ -3,20 +3,27 @@ import type { AssetId } from '@sdk/shared/types';
 import type { MarketCommands, MarketQueries } from '../../Markets';
 import { type PositionsQueries, filterPositionsByAccountAddress } from '../../Positions';
 
-export interface FetchLatestAccountTrackedAssetPricesWorkflowDependencies {
+export interface SyncAccountTrackedAssetPricesWorkflowDependencies {
   walletQueries: WalletQueries;
   marketQueries: MarketQueries;
   marketCommands: MarketCommands;
   positionsQueries: PositionsQueries;
 }
 
-export const createFetchLatestAccountTrackedAssetPricesWorkflow =
-  (deps: FetchLatestAccountTrackedAssetPricesWorkflowDependencies) => async () => {
-    const assetsFetchQueue = new Set<AssetId>();
+export const createSyncAccountTrackedAssetPricesWorkflow = (
+  deps: SyncAccountTrackedAssetPricesWorkflowDependencies
+) => {
+  let synced = new Set<AssetId>();
+
+  return () => {
+    const needed = new Set<AssetId>();
 
     const currentUserAddress = deps.walletQueries.getCurrentUserAddress();
     const baseAsset = deps.marketQueries.getBaseAsset();
     const watchedAsset = deps.marketQueries.getWatchedAsset();
+
+    if (baseAsset) needed.add(baseAsset.assetId);
+    if (watchedAsset) needed.add(watchedAsset.assetId);
 
     if (currentUserAddress) {
       const userOpenPositions = filterPositionsByAccountAddress(
@@ -24,15 +31,17 @@ export const createFetchLatestAccountTrackedAssetPricesWorkflow =
         currentUserAddress
       ).filter((p) => deps.positionsQueries.isPositionOpen(p.stableId));
 
-      userOpenPositions.forEach((p) => {
-        assetsFetchQueue.add(p.assetId);
-      });
+      userOpenPositions.forEach((p) => needed.add(p.assetId));
     }
 
-    if (baseAsset) assetsFetchQueue.add(baseAsset.assetId);
-    if (watchedAsset) assetsFetchQueue.add(watchedAsset.assetId);
+    for (const id of synced) {
+      if (!needed.has(id)) deps.marketCommands.desyncAssetPrice(id);
+    }
 
-    await Promise.all(
-      [...assetsFetchQueue].map((id) => deps.marketCommands.fetchLatestAssetPrice(id))
-    );
+    for (const id of needed) {
+      if (!synced.has(id)) deps.marketCommands.syncAssetPrice(id);
+    }
+
+    synced = needed;
   };
+};
