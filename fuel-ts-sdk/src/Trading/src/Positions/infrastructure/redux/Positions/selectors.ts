@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
 import type { RootState } from '@sdk/shared/lib/redux';
 import type { Address, PositionStableId } from '@sdk/shared/types';
-import { positionsAdapter } from './slice';
+import { positionsAdapter } from './types';
 
-const selectPositionsState = (state: RootState) => state.trading.positions.positions;
+export const selectPositionsState = (state: RootState) => state.trading.positions.positions;
 
 const adapterSelectors = positionsAdapter.getSelectors(selectPositionsState);
 

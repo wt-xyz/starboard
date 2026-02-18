@@ -5,7 +5,7 @@ import type { PositionRepository } from '../../../domain';
 export const positionsApi = createApi({
   reducerPath: 'positionsApi',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['positions-by-address', 'positions-by-stable-id'],
+  tagTypes: ['positions-by-address'],
   endpoints: (builder) => ({
     getPositionsByAddress: builder.query({
       async queryFn(address: Address, api) {
