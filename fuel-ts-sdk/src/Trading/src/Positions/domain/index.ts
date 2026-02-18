@@ -1,4 +1,5 @@
 export * from './calculations';
+export * from './events';
 export { PositionSchema } from './PositionEntity.schema';
 export * from './positionsDecimals';
 export { PositionChange, PositionSide, PositionStatus } from './PositionsEntity';
