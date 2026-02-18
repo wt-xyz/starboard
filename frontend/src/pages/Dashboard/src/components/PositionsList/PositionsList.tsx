@@ -1,7 +1,6 @@
-import { type FC, useCallback, useMemo } from 'react';
+import { type FC, useEffect, useMemo } from 'react';
 import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import { usePolling } from '@/lib/usePolling';
 import * as $ from './PositionsList.css';
 import { PositionCard } from './components/PositionCard';
 import { PositionsTable } from './components/PositionsTable';
@@ -24,11 +23,12 @@ export const PositionsList: FC<PositionsListProps> = ({ side }) => {
     });
   }, [accountOpenPositions, side]);
 
-  usePolling(
-    useCallback(() => {
-      if (userAddress) trading.fetchPositionsByAccount(userAddress, true);
-    }, [trading, userAddress])
-  );
+  useEffect(() => {
+    if (userAddress) {
+      trading.syncPositionsByAccount(userAddress);
+      return () => trading.desyncPositionsByAccount();
+    }
+  }, [trading, userAddress]);
 
   if (filteredOpenPositions.length === 0) {
     return (

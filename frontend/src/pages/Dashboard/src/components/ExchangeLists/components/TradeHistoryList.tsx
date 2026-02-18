@@ -1,7 +1,6 @@
-import { type FC, useCallback, useMemo } from 'react';
+import { type FC, useEffect, useMemo } from 'react';
 import type { PositionEntity } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import { usePolling } from '@/lib/usePolling';
 import { PositionsTable } from '../../../../submodules';
 import * as $ from './TradeHistoryList.css';
 
@@ -9,12 +8,12 @@ export const TradeHistoryList: FC = () => {
   const trading = useTradingSdk();
   const userAddress = useSdkQuery((sdk) => sdk.accounts.getCurrentUserAddress());
 
-  usePolling(
-    useCallback(() => {
-      if (userAddress) trading.fetchPositionsByAccount(userAddress, true);
-    }, [trading, userAddress]),
-    5000
-  );
+  useEffect(() => {
+    if (userAddress) {
+      trading.syncPositionsByAccount(userAddress);
+      return () => trading.desyncPositionsByAccount();
+    }
+  }, [trading, userAddress]);
 
   const allRevisions = useSdkQuery((sdk) => {
     if (!userAddress) return [];
