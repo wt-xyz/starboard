@@ -61,6 +61,7 @@ export const createStarboardClient = (config: StarboardClientConfig) => {
       faucet: testnetTokenCommands.faucet,
     },
     store: starboardStore,
+    dispose: () => wsClient.dispose(),
   };
 };
 
