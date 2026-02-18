@@ -119,5 +119,26 @@ export function isDecimalValue<TDecimals extends number = number, TBrand extends
 
 function normalizeIntegerString(value: string): string {
   if (!value.includes('e') && !value.includes('E')) return value;
-  return BigInt(Number(value)).toString();
+
+  const match = value.match(/^([+-]?)(\d+)(?:\.(\d+))?[eE]([+-]?\d+)$/);
+  if (!match) {
+    throw new TypeError(`Invalid numeric string: "${value}"`);
+  }
+
+  const [, sign, intPart, fracPart = '', expStr] = match;
+  const exponent = Number(expStr);
+
+  const mantissaDigits = intPart + fracPart;
+  const effectiveExponent = exponent - fracPart.length;
+
+  if (effectiveExponent < 0) {
+    throw new TypeError(
+      `Cannot represent "${value}" as an integer: exponent would produce a fractional value`
+    );
+  }
+
+  const digits = mantissaDigits + '0'.repeat(effectiveExponent);
+  const stripped = digits.replace(/^0+/, '') || '0';
+
+  return sign === '-' && stripped !== '0' ? '-' + stripped : stripped;
 }
