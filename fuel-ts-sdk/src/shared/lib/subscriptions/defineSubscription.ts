@@ -6,7 +6,7 @@ interface SubscriptionConfig<TArgs, TEntity> {
 }
 
 export const defineSubscription = <TArgs, TEntity>(
-  config: SubscriptionConfig<TArgs, TEntity>,
+  config: SubscriptionConfig<TArgs, TEntity>
 ): SubscriptionFactory<TArgs, TEntity> => {
   return (args: TArgs): BoundSubscription<TEntity> => ({
     topic: config.topic(args),
