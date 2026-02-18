@@ -1,4 +1,4 @@
-import { type FC, memo, useCallback } from 'react';
+import { type FC, memo, useCallback, useEffect } from 'react';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { usePolling } from '@/lib/usePolling';
 import * as $ from './DashboardHeader.css';
@@ -22,6 +22,7 @@ export const DashboardHeader: FC = () => (
     </div>
 
     <MarketStatsPolling />
+    <FundingInfoSync />
   </div>
 );
 
@@ -40,3 +41,18 @@ const MarketStatsPolling = memo(() => {
   return null;
 });
 MarketStatsPolling.displayName = 'MarketStatsPolling';
+
+const FundingInfoSync = memo(() => {
+  const trading = useTradingSdk();
+  const watchedAsset = useSdkQuery(trading.getWatchedAsset);
+  const assetId = watchedAsset?.assetId;
+
+  useEffect(() => {
+    if (!assetId) return;
+    trading.syncFundingInfo(assetId);
+    return () => trading.desyncFundingInfo(assetId);
+  }, [trading, assetId]);
+
+  return null;
+});
+FundingInfoSync.displayName = 'FundingInfoSync';

@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Tabs } from 'radix-ui';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { useEffect } from 'react';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useMediaQuery } from '@/lib/useMediaQuery';
 import * as styles from './Dashboard.css';
@@ -49,19 +47,12 @@ export function Dashboard() {
 const BackgroundPriceSubscriptions = () => {
   const trading = useTradingSdk();
 
-  const baseAsset = useSdkQuery((sdk) => sdk.trading.getBaseAsset());
   const watchedAsset = useSdkQuery((sdk) => sdk.trading.getWatchedAsset());
+  const openPositions = useSdkQuery((sdk) => sdk.trading.getCurrentAccountOpenPositions());
 
   useEffect(() => {
-    trading.workflows.fetchLatestAccountTrackedAssetPrices();
-  }, [trading.workflows, watchedAsset]);
-
-  useEffect(() => {
-    console.log('test');
-    if (baseAsset) trading.subscribeToAssetPriceUpdates(baseAsset?.assetId);
-
-    if (watchedAsset) trading.subscribeToAssetPriceUpdates(watchedAsset.assetId);
-  }, [baseAsset, trading, watchedAsset]);
+    trading.workflows.syncAccountTrackedAssetPrices();
+  }, [trading.workflows, watchedAsset, openPositions]);
 
   return null;
 };
