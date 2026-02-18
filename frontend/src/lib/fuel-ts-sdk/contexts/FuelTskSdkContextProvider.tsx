@@ -32,6 +32,8 @@ export function FuelTsSdkProvider({ children }: FuelTsSdkProviderProps) {
     return client;
   }, [assets, currentNetwork, indexerUrl, wallet.getCurrentAccount]);
 
+  useEffect(() => () => void client.dispose(), [client]);
+
   return (
     <ReduxProvider store={client.store}>
       <FuelTsSdkContext.Provider value={client}>
