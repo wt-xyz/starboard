@@ -44,6 +44,32 @@ describe('DecimalValue', () => {
       expect($decimalValue(value).toFloat()).toBeCloseTo(100, 6);
     });
 
+    it('should normalize scientific notation without precision loss for large values', () => {
+      const value = UsdValue.fromBigIntString('1234567890123456789e2');
+
+      expect(value.value).toBe('123456789012345678900');
+    });
+
+    it('should normalize scientific notation with fractional mantissa', () => {
+      const value = UsdValue.fromBigIntString('1.5e3');
+
+      expect(value.value).toBe('1500');
+    });
+
+    it('should normalize negative scientific notation value', () => {
+      const value = UsdValue.fromBigIntString('-3e5');
+
+      expect(value.value).toBe('-300000');
+    });
+
+    it('should throw for negative exponent producing fractional value', () => {
+      expect(() => UsdValue.fromBigIntString('1e-5')).toThrow(TypeError);
+    });
+
+    it('should throw for fractional mantissa with insufficient exponent', () => {
+      expect(() => UsdValue.fromBigIntString('1.5e0')).toThrow(TypeError);
+    });
+
     it('should use default unbranded schema via DecimalValue export', () => {
       const value = DecimalValue.fromFloat(42.5);
 
