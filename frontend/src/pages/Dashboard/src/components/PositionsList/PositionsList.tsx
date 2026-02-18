@@ -26,7 +26,7 @@ export const PositionsList: FC<PositionsListProps> = ({ side }) => {
   useEffect(() => {
     if (userAddress) {
       trading.syncPositionsByAccount(userAddress);
-      return () => trading.desyncPositionsByAccount();
+      return () => trading.desyncPositionsByAccount(userAddress);
     }
   }, [trading, userAddress]);
 
