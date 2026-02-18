@@ -3,6 +3,7 @@ import {
   $decimalValue,
   DecimalCalculator,
   DecimalValue,
+  type DecimalValueInstance,
   createDecimalValueSchema,
 } from 'fuel-ts-sdk';
 import type { FundingInfoEntity } from 'fuel-ts-sdk/trading';
@@ -19,33 +20,47 @@ export const FundingRateStat: FC = () => {
   return <MarketStat label="1H Funding" value={formattedRate} variant={variant} />;
 };
 
-function formatHourlyFundingRate(fundingInfo: FundingInfoEntity): {
-  formattedRate: string;
-  variant: 'default' | 'positive' | 'negative';
-} {
+type FundingRateResult = { formattedRate: string; variant: 'default' | 'positive' | 'negative' };
+
+function formatHourlyFundingRate(fundingInfo: FundingInfoEntity): FundingRateResult {
   const totalLongs = $decimalValue(fundingInfo.totalLongSizes).toBigInt();
   const totalShorts = $decimalValue(fundingInfo.totalShortSizes).toBigInt();
 
-  if (totalLongs === 0n && totalShorts === 0n) {
-    return { formattedRate: '0.0000%', variant: 'default' };
-  }
-
-  const hourlyRatePercent = DecimalCalculator.value(FUNDING_RATE_FACTOR)
-    .multiplyBy(SECONDS_PER_HOUR)
-    .multiplyBy(PERCENT)
-    .calculate(DecimalValue);
-
-  const rate = $decimalValue(hourlyRatePercent).toFloat();
-
-  if (totalLongs > totalShorts) {
-    return { formattedRate: `-${rate.toFixed(4)}%`, variant: 'negative' };
-  }
-
-  if (totalShorts > totalLongs) {
-    return { formattedRate: `+${rate.toFixed(4)}%`, variant: 'positive' };
-  }
+  if (totalShorts < totalLongs) return formatLongDominantRate(fundingInfo);
+  if (totalShorts > totalLongs) return formatShortDominantRate(fundingInfo);
 
   return { formattedRate: '0.0000%', variant: 'default' };
+}
+
+function formatLongDominantRate(fundingInfo: FundingInfoEntity): FundingRateResult {
+  const sizeDelta = DecimalCalculator.value(fundingInfo.totalLongSizes)
+    .subtractBy(fundingInfo.totalShortSizes)
+    .calculate();
+
+  const rate = hourlyRatePercent(sizeDelta, fundingInfo.totalLongSizes);
+
+  return { formattedRate: `-${rate.toFixed(4)}%`, variant: 'negative' };
+}
+
+function formatShortDominantRate(fundingInfo: FundingInfoEntity): FundingRateResult {
+  const sizeDelta = DecimalCalculator.value(fundingInfo.totalShortSizes)
+    .subtractBy(fundingInfo.totalLongSizes)
+    .calculate();
+
+  const rate = hourlyRatePercent(sizeDelta, fundingInfo.totalShortSizes);
+
+  return { formattedRate: `+${rate.toFixed(4)}%`, variant: 'positive' };
+}
+
+function hourlyRatePercent(sizeDelta: DecimalValueInstance, dominantSide: DecimalValueInstance) {
+  const result = DecimalCalculator.value(sizeDelta)
+    .multiplyBy(FUNDING_RATE_FACTOR)
+    .multiplyBy(SECONDS_PER_HOUR)
+    .multiplyBy(PERCENT)
+    .divideBy(dominantSide)
+    .calculate(DecimalValue);
+
+  return $decimalValue(result).toFloat();
 }
 
 const Scalar = createDecimalValueSchema(0, 'Scalar');
