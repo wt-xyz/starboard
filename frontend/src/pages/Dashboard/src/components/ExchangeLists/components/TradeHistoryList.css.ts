@@ -138,3 +138,27 @@ export const closeBadge = style({
     },
   },
 });
+
+export const desktopView = style({
+  display: 'block',
+  '@media': {
+    '(max-width: 1023px)': {
+      display: 'none',
+    },
+  },
+});
+
+export const mobileView = style({
+  display: 'block',
+  '@media': {
+    '(min-width: 1024px)': {
+      display: 'none',
+    },
+  },
+});
+
+export const cardList = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.5rem',
+});
