@@ -10,6 +10,11 @@ export const container = style({
   backgroundColor: colors.gluonGrey,
   borderRadius: '0',
   overflow: 'visible',
+  '@media': {
+    '(max-width: 1023px)': {
+      height: 'auto',
+    },
+  },
 });
 
 export const tabsRoot = style({
@@ -17,6 +22,12 @@ export const tabsRoot = style({
   flexDirection: 'column',
   flex: 1,
   minHeight: 0,
+  '@media': {
+    '(max-width: 1023px)': {
+      flex: 'none',
+      minHeight: 'auto',
+    },
+  },
 });
 
 export const tabsBar = style({
@@ -79,7 +90,7 @@ export const tabsTrigger = style({
   },
   '@media': {
     '(max-width: 1024px)': {
-      padding: '0.75rem 1rem',
+      padding: '0.625rem 0.5rem',
       minHeight: '44px', // Touch-friendly
     },
   },
@@ -91,6 +102,13 @@ export const tabsContent = style({
   padding: '0 0.5rem 0.5rem 0.5rem',
   minHeight: 0,
   WebkitOverflowScrolling: 'touch',
+  '@media': {
+    '(max-width: 1023px)': {
+      flex: 'none',
+      overflow: 'visible',
+      minHeight: 'auto',
+    },
+  },
 });
 
 export const emptyState = style({

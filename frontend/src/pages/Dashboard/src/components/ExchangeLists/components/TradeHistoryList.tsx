@@ -2,6 +2,7 @@ import { type FC, useEffect, useMemo } from 'react';
 import type { PositionEntity } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { PositionsTable } from '../../../../submodules';
+import { TradeHistoryCard } from './TradeHistoryCard';
 import * as $ from './TradeHistoryList.css';
 
 export const TradeHistoryList: FC = () => {
@@ -33,45 +34,61 @@ export const TradeHistoryList: FC = () => {
 
   return (
     <>
-      <PositionsTable.Root
-        header={
-          <PositionsTable.Header>
-            {(h) => (
-              <>
-                <h.Time />
-                <h.Position />
-                <h.Direction />
-                <h.MarkPrice />
-                <h.SizeDelta />
-                <h.TradeValue />
-                <h.Fees />
-                <h.PnlDelta />
-              </>
-            )}
-          </PositionsTable.Header>
-        }
-        body={sortedRevisions.map((position) => (
-          <PositionsTable.Row key={position.revisionId} position={position}>
-            {(r) => (
-              <>
-                <r.TimestampCell />
-                <r.PositionCell />
-                <r.ActionCell />
-                <r.MarkPriceCell />
-                <r.SizeDeltaCell />
-                <r.TradeValueCell />
-                <r.FeesCell />
-                <r.PnlDeltaCell />
-              </>
-            )}
-          </PositionsTable.Row>
-        ))}
-      />
-      {isEmpty && (
-        <div css={$.emptyState}>
-          <span css={$.emptyStateText}>No trade history yet</span>
-        </div>
-      )}
+      <div css={$.desktopView}>
+        <PositionsTable.Root
+          header={
+            <PositionsTable.Header>
+              {(h) => (
+                <>
+                  <h.Time />
+                  <h.Position />
+                  <h.Direction />
+                  <h.MarkPrice />
+                  <h.SizeDelta />
+                  <h.TradeValue />
+                  <h.Fees />
+                  <h.PnlDelta />
+                </>
+              )}
+            </PositionsTable.Header>
+          }
+          body={sortedRevisions.map((position) => (
+            <PositionsTable.Row key={position.revisionId} position={position}>
+              {(r) => (
+                <>
+                  <r.TimestampCell />
+                  <r.PositionCell />
+                  <r.ActionCell />
+                  <r.MarkPriceCell />
+                  <r.SizeDeltaCell />
+                  <r.TradeValueCell />
+                  <r.FeesCell />
+                  <r.PnlDeltaCell />
+                </>
+              )}
+            </PositionsTable.Row>
+          ))}
+        />
+        {isEmpty && (
+          <div css={$.emptyState}>
+            <span css={$.emptyStateText}>No trade history yet</span>
+          </div>
+        )}
+      </div>
+
+      <div css={$.mobileView}>
+        {isEmpty ? (
+          <div css={$.emptyState}>
+            <span css={$.emptyStateText}>No trade history yet</span>
+          </div>
+        ) : (
+          <div css={$.cardList}>
+            {sortedRevisions.map((position) => (
+              <TradeHistoryCard key={position.revisionId} position={position} />
+            ))}
+          </div>
+        )}
+      </div>
     </>
   );
 };
