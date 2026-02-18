@@ -1,11 +1,11 @@
-import type { FetchLatestAccountTrackedAssetPricesWorkflowDependencies } from './fetchLatestAccountTrackedAssetPrices';
-import { createFetchLatestAccountTrackedAssetPricesWorkflow } from './fetchLatestAccountTrackedAssetPrices';
+import type { SyncAccountTrackedAssetPricesWorkflowDependencies } from './syncAccountTrackedAssetPrices';
+import { createSyncAccountTrackedAssetPricesWorkflow } from './syncAccountTrackedAssetPrices';
 
-export type TradingWorkflowsDependencies = FetchLatestAccountTrackedAssetPricesWorkflowDependencies;
+export type TradingWorkflowsDependencies = SyncAccountTrackedAssetPricesWorkflowDependencies;
 
 export const createTradingWorkflows = (deps: TradingWorkflowsDependencies) => {
   return {
-    fetchLatestAccountTrackedAssetPrices: createFetchLatestAccountTrackedAssetPricesWorkflow(deps),
+    syncAccountTrackedAssetPrices: createSyncAccountTrackedAssetPricesWorkflow(deps),
   };
 };
 
