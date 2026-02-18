@@ -17,11 +17,6 @@ export interface LoadableMixin {
   fetchStatus: RequestStatus;
   error: string | null | undefined;
 }
-export interface Loadable<T> {
-  data: T;
-  fetchStatus: RequestStatus;
-  error: string | null;
-}
 
 /**
  * LoadableState - State container with loading state
