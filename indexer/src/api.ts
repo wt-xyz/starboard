@@ -4,7 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import { NodePlugin } from 'graphile-build';
 import { createRequire } from 'module';
-import type * as pg from 'pg';
+import pg from 'pg';
 import type { PostGraphilePlugin } from 'postgraphile';
 import {
   Plugin,
@@ -15,6 +15,8 @@ import {
   postgraphile,
 } from 'postgraphile';
 import FilterPlugin from 'postgraphile-plugin-connection-filter';
+
+const { Pool } = pg;
 
 const require = createRequire(import.meta.url);
 const PgPubsub: PostGraphilePlugin =
@@ -70,6 +72,10 @@ function buildCurrentPositionTopic(args: { account: string }) {
 
 function buildCurrentFundingInfoTopic(args: { asset: string }) {
   return `starboard:funding:${args.asset.substring(0, 42)}`;
+}
+
+function buildTradeVolume24hTopic(args: { asset: string }) {
+  return `starboard:trade:${args.asset.substring(0, 42)}`;
 }
 
 export const CurrentPricePlugin: Plugin = makeExtendSchemaPlugin((_build, _options) => {
@@ -186,6 +192,39 @@ export const CurrentFundingInfoPlugin: Plugin = makeExtendSchemaPlugin((_build, 
   };
 });
 
+export const TradeVolume24hPlugin: Plugin = makeExtendSchemaPlugin((_build, _options) => {
+  return {
+    typeDefs: gql`
+      type _TradeVolume24hPayload {
+        asset: String!
+        tradeVolume: BigInt!
+      }
+
+      extend type Subscription {
+        tradeVolume24hUpdated(asset: String!): _TradeVolume24hPayload
+          @pgSubscription(topic: ${embed(buildTradeVolume24hTopic)})
+      }
+    `,
+    resolvers: {
+      Subscription: {
+        tradeVolume24hUpdated: {
+          resolve: (payload, { asset }, _context, _info) => {
+            // { asset }: same asset argument from the original subscription query
+
+            // Defense in depth: verify the asset matches (in case of hash collision, though for 20 bytes it is hard)
+            if (payload.asset !== asset) {
+              // Unfortunately, a client will receive null, use subscribePlan to filter out properly
+              return null; // Filter out non-matching events
+            }
+
+            return payload;
+          },
+        },
+      },
+    },
+  };
+});
+
 app.get('/graphql', (_req, res, _next) => {
   const graphiqlPath: string =
     process.env.BASE_PATH == null ? '/graphiql' : `${process.env.BASE_PATH}/api/graphiql`;
@@ -224,6 +263,7 @@ app.use(
         CurrentPricePlugin,
         CurrentPositionPlugin,
         CurrentFundingInfoPlugin,
+        TradeVolume24hPlugin,
       ],
       externalGraphqlRoute:
         process.env.BASE_PATH == null ? undefined : `${process.env.BASE_PATH}/api/graphql`,
@@ -234,6 +274,52 @@ app.use(
   )
 );
 
-app.listen(process.env.GRAPHQL_SERVER_PORT, () => {
+// TODO: get the connection pool from the postgraphile context
+const pgPool = new Pool({
+  host: process.env.DB_HOST ?? 'localhost',
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 5432,
+  database: process.env.DB_NAME ?? 'postgres',
+  user: process.env.DB_USER ?? 'postgres',
+  password: process.env.DB_PASS ?? 'postgres',
+});
+
+const TRADE_VOLUME_24H_INTERVAL_MS = 60_000;
+let tradeVolume24hScheduler: NodeJS.Timeout | undefined;
+
+// TODO: quering the table trade_volume_24h has poor performance, the database function has poor performance as well
+function startTradeVolume24hScheduler(): NodeJS.Timeout {
+  return setInterval(async () => {
+    let client;
+    try {
+      client = await pgPool.connect();
+      const { rows } = await client.query<{ index_asset_id: string; trade_volume: string }>(
+        `SELECT index_asset_id, trade_volume AS trade_volume FROM public.trade_volume_24h`
+      );
+      for (const row of rows) {
+        const topic = buildTradeVolume24hTopic({ asset: row.index_asset_id });
+        const payload = JSON.stringify({
+          asset: row.index_asset_id,
+          tradeVolume: row.trade_volume,
+        });
+        await client.query('SELECT pg_notify($1, $2)', [topic, payload]);
+      }
+    } catch (err) {
+      console.error('Trade volume 24h scheduler error:', err);
+    } finally {
+      client?.release();
+    }
+  }, TRADE_VOLUME_24H_INTERVAL_MS);
+}
+
+const server = app.listen(process.env.GRAPHQL_SERVER_PORT, () => {
   console.log(`Squid API listening on port ${process.env.GRAPHQL_SERVER_PORT}`);
+  tradeVolume24hScheduler = startTradeVolume24hScheduler();
+});
+
+server.on('close', () => {
+  if (tradeVolume24hScheduler) {
+    clearInterval(tradeVolume24hScheduler);
+    tradeVolume24hScheduler = undefined;
+  }
+  pgPool.end().catch((err) => console.error('Error closing pgPool:', err));
 });
