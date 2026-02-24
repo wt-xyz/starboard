@@ -9,7 +9,7 @@ type LeverageSliderProps = {
   label?: string;
 };
 
-export const LeverageSlider: FC<LeverageSliderProps> = ({ label = 'Leverage' }) => {
+export const LeverageSlider: FC<LeverageSliderProps> = ({ label: _label = 'Leverage' }) => {
   useFieldsAsserter(['leverage'], 'LeverageSlider');
   const { control } = use(KernelContext)!;
   const { field, fieldState } = useController({ control, name: 'leverage' });

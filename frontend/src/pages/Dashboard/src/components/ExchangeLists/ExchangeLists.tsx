@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { PositionsList } from '../PositionsList';
 import * as $ from './ExchangeLists.css';
-import { FundingHistoryList } from './components/FundingHistoryList';
-import { OpenOrdersList } from './components/OpenOrdersList';
+import { FundingHistoryList } from '@/@starboard/pages/Dashboard/components/ExchangeLists/components/FundingHistoryList';
+import { OpenOrdersList } from '@/@starboard/pages/Dashboard/components/ExchangeLists/components/OpenOrdersList';
 import { TradeHistoryList } from './components/TradeHistoryList';
 
 export const ExchangeLists: FC = () => {

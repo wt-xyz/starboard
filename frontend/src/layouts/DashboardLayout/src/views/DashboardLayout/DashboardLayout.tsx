@@ -113,7 +113,6 @@ export function DashboardLayout() {
                 </div>
 
                 <div css={styles.mobileMenuSection}>
-      
                   <SheetClose asChild>
                     <button
                       onClick={handleWalletButtonClick}

@@ -5,4 +5,4 @@ export * from './LeverageInput';
 export * from './OrderSideSwitch';
 export * from './PositionSizeInputs';
 export * from './SubmitButton';
-export * from './OrderSummary';
+export * from '@/@starboard/pages/Dashboard/submodules/IncreasePositionForm/components/OrderSummary';
