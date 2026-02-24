@@ -15,7 +15,7 @@ export const createSyncAccountTrackedAssetPricesWorkflow = (
 ) => {
   let synced = new Set<AssetId>();
 
-  return () => {
+  const sync = () => {
     const needed = new Set<AssetId>();
 
     const currentUserAddress = deps.walletQueries.getCurrentUserAddress();
@@ -44,4 +44,13 @@ export const createSyncAccountTrackedAssetPricesWorkflow = (
 
     synced = needed;
   };
+
+  sync.dispose = () => {
+    for (const id of synced) {
+      deps.marketCommands.desyncAssetPrice(id);
+    }
+    synced = new Set();
+  };
+
+  return sync;
 };
