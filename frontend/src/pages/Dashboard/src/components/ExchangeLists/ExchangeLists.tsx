@@ -14,17 +14,25 @@ export const ExchangeLists: FC = () => {
   const openPositions = useSdkQuery(() => trading.getCurrentAccountOpenPositions());
 
   const handleCloseAll = useCallback(async () => {
-    for (const position of openPositions) {
-      try {
-        await trading.decreasePosition({
+    if (!window.confirm(`Close all ${openPositions.length} positions at market price?`)) return;
+
+    const results = await Promise.allSettled(
+      openPositions.map((position) =>
+        trading.decreasePosition({
           positionId: position.stableId,
           sizeDelta: position.size,
-        });
-      } catch (error) {
-        toast.error(`Failed to close position`);
-      }
+        })
+      )
+    );
+
+    const failures = results.filter((r) => r.status === 'rejected').length;
+    if (failures === 0) {
+      toast.success('All positions closed');
+    } else if (failures === results.length) {
+      toast.error('Failed to close all positions');
+    } else {
+      toast.warning(`Closed ${results.length - failures}/${results.length} positions`);
     }
-    toast.success('All positions closed');
   }, [openPositions, trading]);
 
   return (
@@ -41,7 +49,7 @@ export const ExchangeLists: FC = () => {
             <Tabs.Trigger value={TABS.OPEN_ORDERS} css={$.tabsTrigger}>
               Open Orders
             </Tabs.Trigger>
-<Tabs.Trigger value={TABS.FUNDING_HISTORY} css={$.tabsTrigger}>
+            <Tabs.Trigger value={TABS.FUNDING_HISTORY} css={$.tabsTrigger}>
               Funding History
             </Tabs.Trigger>
           </Tabs.List>
@@ -64,7 +72,7 @@ export const ExchangeLists: FC = () => {
           <OpenOrdersList />
         </Tabs.Content>
 
-<Tabs.Content value={TABS.FUNDING_HISTORY} css={$.tabsContent}>
+        <Tabs.Content value={TABS.FUNDING_HISTORY} css={$.tabsContent}>
           <FundingHistoryList />
         </Tabs.Content>
       </Tabs.Root>
