@@ -75,7 +75,7 @@ function buildCurrentFundingInfoTopic(args: { asset: string }) {
 }
 
 function buildTradeVolume24hTopic(args: { asset: string }) {
-  return `starboard:trade:${args.asset.substring(0, 42)}`;
+  return `starboard:trade_24h:${args.asset.substring(0, 42)}`;
 }
 
 export const CurrentPricePlugin: Plugin = makeExtendSchemaPlugin((_build, _options) => {
@@ -292,14 +292,14 @@ function startTradeVolume24hScheduler(): NodeJS.Timeout {
     let client;
     try {
       client = await pgPool.connect();
-      const { rows } = await client.query<{ index_asset_id: string; trade_volume: string }>(
-        `SELECT index_asset_id, trade_volume AS trade_volume FROM public.trade_volume_24h`
+      const { rows } = await client.query<{ index_asset_id: string; trade_volume_24h: string }>(
+        `SELECT t1.index_asset_id, t1.trade_volume-COALESCE(t2.trade_volume, 0) AS trade_volume_24h FROM (SELECT index_asset_id, trade_volume FROM trade_volume WHERE (index_asset_id, timestamp) IN (SELECT index_asset_id, MAX(timestamp) FROM trade_volume GROUP BY index_asset_id)) t1 LEFT JOIN (SELECT index_asset_id, trade_volume FROM trade_volume WHERE (index_asset_id, timestamp) IN (SELECT index_asset_id, MAX(timestamp) FROM trade_volume WHERE timestamp < extract(epoch from now())-86400 GROUP BY index_asset_id)) t2 ON t1.index_asset_id = t2.index_asset_id`
       );
       for (const row of rows) {
         const topic = buildTradeVolume24hTopic({ asset: row.index_asset_id });
         const payload = JSON.stringify({
           asset: row.index_asset_id,
-          tradeVolume: row.trade_volume,
+          tradeVolume: row.trade_volume_24h,
         });
         await client.query('SELECT pg_notify($1, $2)', [topic, payload]);
       }
