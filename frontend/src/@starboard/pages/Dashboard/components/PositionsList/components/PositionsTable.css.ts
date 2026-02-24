@@ -30,6 +30,10 @@ export const closeButton = style({
   ':hover': {
     color: '#ff6b6b',
   },
+  ':disabled': {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
 });
 
 export const iconButton = style({
