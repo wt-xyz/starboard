@@ -6,6 +6,7 @@ import { OptionsContext } from '../../contexts/OptionsContext';
 import * as $ from './OrderSummary.css';
 
 const SLIPPAGE_PRESETS = ['0.1', '0.3', '0.5', '1.0'] as const;
+// TODO: Import MAX_LEVERAGE and FEE_RATE from SDK/contract constants
 const MAX_LEVERAGE = 50;
 const FEE_RATE = 0.004;
 
@@ -18,6 +19,7 @@ export const OrderSummary: FC = () => {
     name: ['orderSide', 'collateralSize', 'leverage'],
   });
 
+  // TODO: Wire slippage to SDK decreasePosition/increasePosition call
   const [slippage, setSlippage] = useState('0.3');
   const [isCustomSlippage, setIsCustomSlippage] = useState(false);
   const [customSlippageInput, setCustomSlippageInput] = useState('');

@@ -1,8 +1,8 @@
 import { type FC, useEffect, useMemo, useState } from 'react';
-import { $decimalValue, OraclePrice } from 'fuel-ts-sdk';
+import { $decimalValue } from 'fuel-ts-sdk';
 import type { FundingInfo, RequestStatus } from 'fuel-ts-sdk';
-import type { AssetPriceEntity, Candle } from 'fuel-ts-sdk/trading';
 import { AssetSelect } from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/AssetSelect';
+import { calculatePriceChange } from '@/lib/calculatePriceChange';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
 import { useSdk, useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as styles from './MobileMarketHeader.css';
@@ -166,28 +166,3 @@ function useMobileFunding(
   }, [fundingInfo, fetchStatus]);
 }
 
-const TWENTY_FOUR_HOURS_S = 24 * 60 * 60;
-
-function calculatePriceChange(
-  currentPrice: AssetPriceEntity | undefined,
-  candles: Candle[] | undefined
-): number | null {
-  if (!currentPrice || !candles || candles.length === 0) return null;
-
-  const now = Date.now() / 1000;
-  const target = now - TWENTY_FOUR_HOURS_S;
-
-  // Find the candle closest to 24h ago (candles are ordered oldest-first)
-  let closest = candles[0];
-  for (const c of candles) {
-    if (Math.abs(c.startedAt - target) < Math.abs(closest.startedAt - target)) {
-      closest = c;
-    }
-  }
-
-  const current = $decimalValue(currentPrice.value).toFloat();
-  const open = $decimalValue(OraclePrice.fromBigIntString(closest.openPrice)).toFloat();
-
-  if (open === 0) return null;
-  return (current - open) / open;
-}

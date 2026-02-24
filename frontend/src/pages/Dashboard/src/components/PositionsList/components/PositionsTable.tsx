@@ -60,6 +60,7 @@ export const ActionsCell = (props: { stableId: PositionStableId }) => {
   const handleMarketClose = useCallback(async () => {
     const position = trading.getPositionById(props.stableId);
     if (!position) return;
+    if (!window.confirm('Close this position at market price?')) return;
     try {
       await trading.decreasePosition({
         positionId: props.stableId,
