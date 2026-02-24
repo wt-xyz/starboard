@@ -65,4 +65,4 @@ export const createStarboardClient = (config: StarboardClientConfig) => {
   };
 };
 
-const toWsUrl = (httpUrl: string) => httpUrl.replace(/^http/, 'ws');
+const toWsUrl = (httpUrl: string) => httpUrl.replace(/^http(s?):\/\//, 'ws$1://');
