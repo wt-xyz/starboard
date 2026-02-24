@@ -323,3 +323,19 @@ server.on('close', () => {
   }
   pgPool.end().catch((err) => console.error('Error closing pgPool:', err));
 });
+
+process.on('SIGINT', () => {
+  server.close();
+});
+
+process.on('SIGTERM', () => {
+  server.close();
+});
+
+process.on('SIGQUIT', () => {
+  server.close();
+});
+
+process.on('SIGBREAK', () => {
+  server.close();
+});
