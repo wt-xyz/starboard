@@ -1,8 +1,8 @@
 import { type FC, use, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { formatCurrency } from '@/lib/formatCurrency';
-import { KernelContext } from '../../contexts/KernelContext';
-import { OptionsContext } from '../../contexts/OptionsContext';
+import { KernelContext } from '@/pages/Dashboard/src/submodules/IncreasePositionForm/src/contexts/KernelContext';
+import { OptionsContext } from '@/pages/Dashboard/src/submodules/IncreasePositionForm/src/contexts/OptionsContext';
 import * as $ from './OrderSummary.css';
 
 const SLIPPAGE_PRESETS = ['0.1', '0.3', '0.5', '1.0'] as const;

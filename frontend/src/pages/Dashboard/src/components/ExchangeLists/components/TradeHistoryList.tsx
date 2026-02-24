@@ -2,8 +2,8 @@ import { type FC, useEffect, useMemo } from 'react';
 import type { PositionEntity } from 'fuel-ts-sdk/trading';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { PositionsTable } from '../../../../submodules';
-import { TradeHistoryCard } from './TradeHistoryCard';
-import * as $ from './TradeHistoryList.css';
+import { TradeHistoryCard } from '@/@starboard/pages/Dashboard/components/ExchangeLists/components/TradeHistoryCard';
+import * as $ from '@/@starboard/pages/Dashboard/components/ExchangeLists/components/TradeHistoryList.css';
 
 export const TradeHistoryList: FC = () => {
   const trading = useTradingSdk();

@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { PositionsTable } from '../../../../submodules';
+import { PositionsTable } from '@/pages/Dashboard/submodules';
 import * as $ from './TradeHistoryList.css';
 
 export const OpenOrdersList: FC = () => {

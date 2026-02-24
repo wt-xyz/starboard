@@ -1,29 +1,27 @@
-import { type FC, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useMemo } from 'react';
 import { $decimalValue } from 'fuel-ts-sdk';
-import type { FundingInfo, RequestStatus } from 'fuel-ts-sdk';
 import { AssetSelect } from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/AssetSelect';
-import { calculatePriceChange } from '@/lib/calculatePriceChange';
+import { calculatePriceChange } from '@/@starboard/lib/calculatePriceChange';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
-import { useSdk, useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
+import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as styles from './MobileMarketHeader.css';
 
 export const MobileMarketHeader: FC = () => {
-  const sdk = useTradingSdk();
-  const tradingSdk = useSdk();
-  const watchedAsset = useSdkQuery(sdk.getWatchedAsset);
-  const price = useSdkQuery(sdk.getWatchedAssetLatestPrice);
+  const trading = useTradingSdk();
+  const watchedAsset = useSdkQuery(trading.getWatchedAsset);
+  const price = useSdkQuery(trading.getWatchedAssetLatestPrice);
   const candles = useSdkQuery(() =>
-    watchedAsset ? sdk.getCandles(watchedAsset.assetId, 'H1') : []
+    watchedAsset ? trading.getCandles(watchedAsset.assetId, 'H1') : []
   );
   const marketStats = useSdkQuery((s) => s.trading.getWatchedAssetMarketStats());
 
   useEffect(() => {
     if (!watchedAsset) return;
-    const status = sdk.getCandlesStatus(watchedAsset.assetId, 'H1');
+    const status = trading.getCandlesStatus(watchedAsset.assetId, 'H1');
     if (status === 'uninitialized') {
-      sdk.fetchCandles(watchedAsset.assetId, 'H1');
+      trading.fetchCandles(watchedAsset.assetId, 'H1');
     }
-  }, [sdk, watchedAsset]);
+  }, [trading, watchedAsset]);
 
   const change24h = calculatePriceChange(price, candles);
   const priceValue = price ? $decimalValue(price.value).toFloat() : 0;
@@ -47,7 +45,8 @@ export const MobileMarketHeader: FC = () => {
   }, [marketStats?.volume24h]);
 
   // Funding
-  const { fundingFormatted, fundingVariant } = useMobileFunding(tradingSdk, watchedAsset);
+  const fundingInfo = useSdkQuery((sdk) => sdk.trading.getWatchedAssetFundingInfo());
+  const { fundingFormatted, fundingVariant } = useMobileFunding(fundingInfo);
 
   const getAssetPriceFormatted = (priceValue: string, currentDecimal = 0) => {
     if (currentDecimal === 9) return formatCurrency(0);
@@ -108,38 +107,15 @@ const FUNDING_RATE_FACTOR_BASE = 1_000_000_000n;
 const SECONDS_PER_HOUR = 3600n;
 
 function useMobileFunding(
-  sdk: ReturnType<typeof useSdk>,
-  watchedAsset: ReturnType<typeof useSdkQuery<any>> | undefined
+  fundingInfo: ReturnType<typeof useSdkQuery<any>> | undefined
 ) {
-  const [fetchStatus, setFetchStatus] = useState<RequestStatus>('uninitialized');
-  const [fundingInfo, setFundingInfo] = useState<FundingInfo>();
-
-  useEffect(() => {
-    if (!watchedAsset) return;
-    if (
-      (fetchStatus === 'fulfilled' && fundingInfo?.assetId !== watchedAsset.assetId) ||
-      fetchStatus === 'uninitialized'
-    ) {
-      setFetchStatus('pending');
-      sdk.__extra
-        .getFundingInfo(watchedAsset.assetId)
-        .then((info) => {
-          setFundingInfo(info);
-          setFetchStatus('fulfilled');
-        })
-        .catch(() => {
-          setFetchStatus('rejected');
-        });
-    }
-  }, [fetchStatus, fundingInfo?.assetId, sdk.__extra, watchedAsset]);
-
   return useMemo(() => {
-    if (!fundingInfo || fetchStatus !== 'fulfilled') {
+    if (!fundingInfo) {
       return { fundingFormatted: null, fundingVariant: 'default' as const };
     }
 
-    const totalLongs = BigInt(fundingInfo.totalLongSizes);
-    const totalShorts = BigInt(fundingInfo.totalShortSizes);
+    const totalLongs = $decimalValue(fundingInfo.totalLongSizes).toBigInt();
+    const totalShorts = $decimalValue(fundingInfo.totalShortSizes).toBigInt();
 
     if (totalLongs === 0n && totalShorts === 0n) {
       return { fundingFormatted: '0.0000%', fundingVariant: 'default' as const };
@@ -163,6 +139,6 @@ function useMobileFunding(
     const fundingVariant = direction === 'positive' ? ('positive' as const) : ('negative' as const);
 
     return { fundingFormatted, fundingVariant };
-  }, [fundingInfo, fetchStatus]);
+  }, [fundingInfo]);
 }
 
