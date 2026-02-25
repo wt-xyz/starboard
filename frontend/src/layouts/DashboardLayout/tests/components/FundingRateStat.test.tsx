@@ -60,7 +60,7 @@ describe('FundingRateStat', () => {
       mockFundingInfo = createFundingInfo(100, 0);
       render(<FundingRateStat />);
 
-      expect(screen.getByText('-0.0083%')).toBeInTheDocument();
+      expect(screen.getByText('-0.0083% (L pay)')).toBeInTheDocument();
     });
 
     it('renders negative rate scaled by imbalance ratio', () => {
@@ -68,7 +68,7 @@ describe('FundingRateStat', () => {
       mockFundingInfo = createFundingInfo(100, 50);
       render(<FundingRateStat />);
 
-      expect(screen.getByText('-0.0041%')).toBeInTheDocument();
+      expect(screen.getByText('-0.0041% (L pay)')).toBeInTheDocument();
     });
 
     it('renders small rate for near-balanced market', () => {
@@ -76,7 +76,7 @@ describe('FundingRateStat', () => {
       mockFundingInfo = createFundingInfo(100, 99);
       render(<FundingRateStat />);
 
-      expect(screen.getByText('-0.0001%')).toBeInTheDocument();
+      expect(screen.getByText('-0.0001% (L pay)')).toBeInTheDocument();
     });
   });
 
@@ -85,7 +85,7 @@ describe('FundingRateStat', () => {
       mockFundingInfo = createFundingInfo(0, 100);
       render(<FundingRateStat />);
 
-      expect(screen.getByText('+0.0083%')).toBeInTheDocument();
+      expect(screen.getByText('+0.0083% (S pay)')).toBeInTheDocument();
     });
 
     it('renders positive rate scaled by imbalance ratio', () => {
@@ -93,14 +93,14 @@ describe('FundingRateStat', () => {
       mockFundingInfo = createFundingInfo(50, 100);
       render(<FundingRateStat />);
 
-      expect(screen.getByText('+0.0041%')).toBeInTheDocument();
+      expect(screen.getByText('+0.0041% (S pay)')).toBeInTheDocument();
     });
 
     it('renders small rate for near-balanced market', () => {
       mockFundingInfo = createFundingInfo(99, 100);
       render(<FundingRateStat />);
 
-      expect(screen.getByText('+0.0001%')).toBeInTheDocument();
+      expect(screen.getByText('+0.0001% (S pay)')).toBeInTheDocument();
     });
   });
 });
