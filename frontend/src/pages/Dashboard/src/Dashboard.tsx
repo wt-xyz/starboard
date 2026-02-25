@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
+import { componentize } from '@/lib/componentize';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useMediaQuery } from '@/lib/useMediaQuery';
-import * as styles from './Dashboard.css';
+import * as $ from './Dashboard.css';
 import { BottomMenu } from './components/BottomMenu';
 import { DashboardOrderEntryForm } from './components/DashboardOrderEntryForm';
 import { DashboardTradingChart } from './components/DashboardTradingChart';
@@ -13,29 +14,29 @@ export function Dashboard() {
 
   return (
     <>
-      <div css={styles.page}>
+      <$$.page>
         {isCompactLayout && (
-          <div css={styles.mobileHeader}>
+          <$$.mobileHeader>
             <MobileMarketHeader />
-          </div>
+          </$$.mobileHeader>
         )}
 
-        <div css={styles.chartSection}>
+        <$$.chartSection>
           <DashboardTradingChart />
-        </div>
+        </$$.chartSection>
 
-        <div css={styles.orderEntrySection}>
-          <h2 css={styles.orderEntryTitle}>Order Entry</h2>
+        <$$.orderEntrySection>
+          <h2 css={$.orderEntryTitle}>Order Entry</h2>
 
-          <div css={styles.orderEntryFormWrapper}>
+          <$$.orderEntryFormWrapper>
             <DashboardOrderEntryForm />
-          </div>
-        </div>
+          </$$.orderEntryFormWrapper>
+        </$$.orderEntrySection>
 
-        <div css={styles.bottomSection}>
+        <$$.bottomSection>
           <ExchangeLists />
-        </div>
-      </div>
+        </$$.bottomSection>
+      </$$.page>
 
       {isCompactLayout && <BottomMenu />}
 
@@ -43,6 +44,8 @@ export function Dashboard() {
     </>
   );
 }
+
+const $$ = componentize($);
 
 const BackgroundPriceSubscriptions = () => {
   const trading = useTradingSdk();
