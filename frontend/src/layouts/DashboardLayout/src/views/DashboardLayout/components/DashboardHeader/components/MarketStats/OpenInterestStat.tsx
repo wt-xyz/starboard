@@ -1,31 +1,29 @@
 import type { FC } from 'react';
-import { $decimalValue } from 'fuel-ts-sdk';
 import { formatCurrency } from '@/lib/formatCurrency';
-import { useSdkQuery } from '@/lib/fuel-ts-sdk';
+import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { propify } from '@/lib/propify';
 import { MarketStat } from './_MarketStatsBase';
 
 export const OpenInterestStat: FC = () => {
-  const openInterest = useSdkQuery((sdk) => sdk.trading.getWatchedAssetMarketStats());
+  const sdk = useTradingSdk();
+  const watchedAsset = useSdkQuery(sdk.getWatchedAsset);
+  const assetId = watchedAsset?.assetId;
+  const total = useSdkQuery(() => (assetId ? sdk.getAssetOpenInterestTotal(assetId) : null));
+  const longPct = useSdkQuery(() => (assetId ? sdk.getAssetOpenInterestLongPct(assetId) : null));
+  const shortPct = useSdkQuery(() => (assetId ? sdk.getAssetOpenInterestShortPct(assetId) : null));
 
-  if (!openInterest) return <_OpenInterestStat value="$--" />;
-
-  const longValue = $decimalValue(openInterest.openInterestLong).toFloat();
-  const shortValue = $decimalValue(openInterest.openInterestShort).toFloat();
-
-  if (!Number.isFinite(longValue) || !Number.isFinite(shortValue)) {
-    return <_OpenInterestStat value="$--" />;
-  }
-
-  const total = longValue + shortValue;
-
+  if (total === null) return <_OpenInterestStat value="$--" />;
   if (total === 0) return <_OpenInterestStat value="$0" />;
 
-  const longPct = Math.round((longValue / total) * 100);
-  const shortPct = 100 - longPct;
+  const longDisplay = longPct !== null ? Math.round(longPct * 100) : null;
+  const shortDisplay = shortPct !== null ? Math.round(shortPct * 100) : null;
   const totalFormatted = formatCurrency(total, { compact: true, symbol: '$' });
 
-  return <_OpenInterestStat value={`${totalFormatted} (${longPct}L/${shortPct}S)`} />;
+  if (longDisplay !== null && shortDisplay !== null) {
+    return <_OpenInterestStat value={`${totalFormatted} (${longDisplay}L/${shortDisplay}S)`} />;
+  }
+
+  return <_OpenInterestStat value={totalFormatted} />;
 };
 
 const _OpenInterestStat = propify(MarketStat, { label: 'Open Interest' });
