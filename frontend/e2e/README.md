@@ -62,7 +62,7 @@ pnpm test:e2e:headed
 
 This test suite follows the **Screenplay pattern** to maximize maintainability. All UI selectors are centralized in dedicated files, so when the UI changes, you only need to update selectors in ONE place.
 
-```
+```text
 e2e/
 ├── selectors/              # Centralized UI selectors
 │   ├── wallet.selectors.ts
@@ -83,7 +83,7 @@ e2e/
     └── smoke.spec.ts
 ```
 
-**See [`SCREENPLAY_PATTERN.md`](./SCREENPLAY_PATTERN.md) for detailed documentation on this architecture.**
+**The Screenplay pattern centralizes all selectors in `selectors/`, so UI changes only require updating one file.**
 
 ## Environment Configuration
 
@@ -176,10 +176,7 @@ This approach avoids complex wallet management and provides clean test isolation
 
 The burner wallet is automatically funded with 0.1 ETH from the genesis account (pre-funded on local testnet) to pay for transaction gas fees. This happens transparently in the `setupBurnerWallet()` helper function.
 
-```typescript
-// Genesis account private key (local testnet only)
-const GENESIS_PRIVATE_KEY = '0x9e42fa83bda35cbc769c4b058c721adef68011d7945d0b30165397ec6d05a53a';
-```
+The genesis private key is defined in `e2e/helpers/burner-wallet.ts` and matches the pre-funded account on the local Docker testnet (see `docker/starboard/setup_starboard_contracts.sh`).
 
 ## Fixtures
 
@@ -297,15 +294,15 @@ docker compose ps
 
 ## Test Results
 
-Current status (as of 2026-02-03):
+Current status (as of 2026-02-25):
 
-```
+```text
 ✅  13 passed  - Network & wallet connection tests
 ⏸️   5 skipped - ETH faucet predicate tests (version incompatibility)
 ❌  27 blocked - USDC-dependent tests (blocked by frontend balance bug)
 ```
 
-**🚨 IMPORTANT:** 27 tests are currently blocked by a frontend bug in balance fetching. See [`BLOCKING_ISSUES.md`](./BLOCKING_ISSUES.md) for full details.
+**🚨 IMPORTANT:** 27 tests are currently blocked by a frontend bug in balance fetching.
 
 **Summary:** The wallet successfully receives 0.1 ETH on-chain (verified), but the UI consistently shows 0.0000 ETH. This causes USDC minting to fail with "Insufficient funds" even though the wallet has sufficient balance. Once this frontend bug is fixed, all tests should pass.
 
@@ -347,9 +344,7 @@ When adding new tests:
 
 ## Documentation
 
-- [`SCREENPLAY_PATTERN.md`](./SCREENPLAY_PATTERN.md) - Architecture and migration guide
 - [`selectors/README.md`](./selectors/README.md) - Selector documentation
-- [`E2E_TEST_FIXES.md`](./E2E_TEST_FIXES.md) - History of issues fixed during implementation
 
 ## Support
 

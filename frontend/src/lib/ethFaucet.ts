@@ -110,11 +110,26 @@ export async function requestTestnetEth(
     const baseAssetId = await provider.getBaseAssetId();
     const transferAmount = amount ?? effectiveConfig.maxFaucetAmount;
 
+    if (transferAmount <= 0) {
+      return { success: false, error: 'Transfer amount must be greater than zero' };
+    }
+    if (transferAmount > effectiveConfig.maxFaucetAmount) {
+      return {
+        success: false,
+        error: `Requested amount ${transferAmount} exceeds max faucet amount ${effectiveConfig.maxFaucetAmount}`,
+      };
+    }
+
     const tx = await predicate.transfer(recipientAddress, transferAmount, baseAssetId);
-    const result = await tx.waitForResult();
+    const result = await Promise.race([
+      tx.waitForResult(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Transaction timed out after 60s')), 60_000)
+      ),
+    ]);
 
     if (result.status === 'failure') {
-      return { success: false, error: `Transaction failed with status: ${result.status}` };
+      return { success: false, error: `Transaction failed (id: ${tx.id})` };
     }
 
     return { success: true };

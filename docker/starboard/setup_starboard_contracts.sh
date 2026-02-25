@@ -13,7 +13,7 @@ echo "Building ETH faucet predicate..."
 pnpm build:eth-faucet-predicate
 
 echo "Funding ETH faucet predicate for e2e tests..."
-# Fund with 1 ETH (1000000000 base units) - enough for ~200 test runs at 0.005 ETH each
+# Fund with 1 ETH (1000000000 base units) - enough for ~10,000 test runs at 0.0001 ETH each
 pnpm fund:eth-faucet-predicate \
   --url=http://starboard_fuel_core:4000/v1/graphql \
   --privK=0x9e42fa83bda35cbc769c4b058c721adef68011d7945d0b30165397ec6d05a53a \

@@ -40,7 +40,7 @@ export async function createBurnerWallet(page: Page): Promise<void> {
   });
 
   // Wait for page to be fully loaded
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
   await page.waitForTimeout(1000);
 
   // Check if wallet is already connected
