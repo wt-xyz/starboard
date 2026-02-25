@@ -59,7 +59,7 @@ export function useAutoFaucet(walletAddress: string | null) {
             faucetRequestedRef.current.delete(walletAddress);
           }
         }
-      } catch (error) {
+      } catch (_error) {
         // Remove from set so it can retry
         faucetRequestedRef.current.delete(walletAddress);
       } finally {
