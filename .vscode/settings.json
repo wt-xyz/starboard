@@ -55,8 +55,8 @@
     "**/fuel-ts-sdk/**/*.test.ts": "[test] ${filename}",
 
     // Fallback
-    "**/*.ts": "${filename}/${dirname}/${dirname(1)}",
-    "**/*.tsx": "${filename}/${dirname}/${dirname(1)}"
+    "**/*.ts": "${filename}.${extname}  (/${dirname(1)}/${dirname})",
+    "**/*.tsx": "${filename}.${extname} (/${dirname(1)}/${dirname})"
   },
 
   "explorer.sortOrder": "foldersNestsFiles",
