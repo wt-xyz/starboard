@@ -287,6 +287,20 @@ describe('cssTwTransformPlugin', () => {
       const input = `<div tw="p-4 mx-2 bg-blue-500 text-white rounded-lg">Content</div>`;
       expect(() => transform(input, 'test.tsx')).toThrow(/Too many Tailwind classes/);
     });
+
+    it('should transform css on $ prefixed member expression tags', () => {
+      const input = `<$$.headerRight css={$.desktopOnly}>Content</$$.headerRight>`;
+      const result = transform(input, 'test.tsx');
+      expect(result?.code).toContain('className={clsx($.desktopOnly)}');
+      expect(result?.code).not.toContain(' css=');
+    });
+
+    it('should transform css on member expression tags like Namespace.Component', () => {
+      const input = `<Styled.Container css={styles.wrapper}>Content</Styled.Container>`;
+      const result = transform(input, 'test.tsx');
+      expect(result?.code).toContain('className={clsx(styles.wrapper)}');
+      expect(result?.code).not.toContain(' css=');
+    });
   });
 
   describe('complex scenarios', () => {
