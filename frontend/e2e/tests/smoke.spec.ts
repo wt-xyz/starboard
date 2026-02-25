@@ -156,10 +156,7 @@ test.describe('Smoke Tests with Authenticated Wallet', () => {
     const hasShort = await shortButton.isVisible({ timeout: 2000 }).catch(() => false);
 
     // At least one button should be visible
-    if (hasSubmit || hasLong || hasShort) {
-      console.log('  ✅ Trading action buttons found');
-    } else {
-      console.log('  ⚠️  No trading buttons found, but order form container exists');
-    }
+    expect(hasSubmit || hasLong || hasShort).toBeTruthy();
+    console.log('  ✅ Trading action buttons found');
   });
 });

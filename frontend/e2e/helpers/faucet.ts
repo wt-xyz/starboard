@@ -124,9 +124,17 @@ export async function requestEthFromFaucet(page: Page): Promise<void> {
   console.log('  🖱️  Clicking "Get testnet ETH" button...');
   await getEthButton.click();
 
-  // Wait for transaction to process (faucet transfers can take time)
-  console.log('  ⏳ Waiting for faucet transaction to process (30s)...');
-  await page.waitForTimeout(30000);
+  // Wait for transaction to process by watching for toast notification
+  console.log('  ⏳ Waiting for faucet transaction to process...');
+  const successToast = page.locator(CommonSelectors.toast.success);
+  const errorToast = page.locator(CommonSelectors.toast.error);
+  await expect(successToast.or(errorToast)).toBeVisible({ timeout: 30_000 });
+
+  const hasError = await errorToast.isVisible({ timeout: 500 }).catch(() => false);
+  if (hasError) {
+    const errorText = await errorToast.textContent();
+    throw new Error(`Faucet request failed: ${errorText}`);
+  }
 
   console.log('  ✅ Faucet request completed');
 
@@ -247,6 +255,8 @@ export async function verifyBalance(
       } else {
         throw new Error(`Insufficient ${asset} balance: ${balanceValue} < ${minAmount}`);
       }
+    } else {
+      throw new Error(`Could not parse ${asset} balance from text: "${balanceText}"`);
     }
   }
 
