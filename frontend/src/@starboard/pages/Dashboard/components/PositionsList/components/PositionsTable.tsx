@@ -69,7 +69,7 @@ export const ActionsCell = (props: { stableId: PositionStableId }) => {
         sizeDelta: position.size,
       });
       toast.success('Position closed successfully');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to close position');
     } finally {
       setIsClosing(false);
