@@ -4,7 +4,11 @@ import { createGetAllAssetsLatestPricesQuery } from './getAllAssetsLatestPrices'
 import { createGetAssetByIdQuery } from './getAssetById';
 import { createGetAssetLatestPriceQuery } from './getAssetLatestPrice';
 import { createGetWatchedAssetMarketStatsQuery } from './getAssetMarketStats';
+import { createGetAssetOpenInterestLongPctQuery } from './getAssetOpenInterestLongPct';
+import { createGetAssetOpenInterestShortPctQuery } from './getAssetOpenInterestShortPct';
+import { createGetAssetOpenInterestTotalQuery } from './getAssetOpenInterestTotal';
 import { createGetAssetPriceChange24hQuery } from './getAssetPriceChange24h';
+import { createGetAssetVolume24hQuery } from './getAssetVolume24h';
 import { createGetBaseAssetQuery } from './getBaseAsset';
 import { createGetBaseAssetLatestPriceQuery } from './getBaseAssetLatestPrice';
 import { createGetCandles } from './getCandles';
@@ -25,6 +29,10 @@ export const createMarketQueries = (storeService: StoreService) => ({
   getBaseAssetLatestPrice: createGetBaseAssetLatestPriceQuery(storeService),
   getAssetLatestPrice: createGetAssetLatestPriceQuery(storeService),
   getAssetPriceChange24h: createGetAssetPriceChange24hQuery({ storeService }),
+  getAssetVolume24h: createGetAssetVolume24hQuery({ storeService }),
+  getAssetOpenInterestTotal: createGetAssetOpenInterestTotalQuery({ storeService }),
+  getAssetOpenInterestLongPct: createGetAssetOpenInterestLongPctQuery({ storeService }),
+  getAssetOpenInterestShortPct: createGetAssetOpenInterestShortPctQuery({ storeService }),
   getWatchedAssetMarketStats: createGetWatchedAssetMarketStatsQuery({ storeService }),
   getWatchedAssetFundingInfo: createGetWatchedAssetFundingInfoQuery({ storeService }),
 });
