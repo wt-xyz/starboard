@@ -1,4 +1,4 @@
-import { test as base, Page } from '@playwright/test';
+import { Page, test as base } from '@playwright/test';
 import { disconnectWallet, setupBurnerWallet } from '../helpers/burner-wallet';
 import { mintUsdc } from '../helpers/faucet';
 import { waitForPageReady } from '../helpers/wait-for';

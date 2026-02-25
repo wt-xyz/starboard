@@ -54,7 +54,9 @@ export async function waitForPositionUpdate(page: Page): Promise<void> {
  */
 export async function waitForPageReady(page: Page): Promise<void> {
   // Wait for common loading indicators to disappear
-  const loadingIndicators = page.locator('[class*="loading"], [class*="spinner"], [aria-busy="true"]');
+  const loadingIndicators = page.locator(
+    '[class*="loading"], [class*="spinner"], [aria-busy="true"]'
+  );
   const count = await loadingIndicators.count();
 
   if (count > 0) {

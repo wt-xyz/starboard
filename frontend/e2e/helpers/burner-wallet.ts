@@ -36,7 +36,7 @@ export async function createBurnerWallet(page: Page): Promise<void> {
         keysToRemove.push(key);
       }
     }
-    keysToRemove.forEach(key => localStorage.removeItem(key));
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
   });
 
   // Wait for page to be fully loaded
@@ -45,7 +45,9 @@ export async function createBurnerWallet(page: Page): Promise<void> {
 
   // Check if wallet is already connected
   let existingWalletButton = page.locator(WalletSelectors.connectedWalletButton.primary);
-  let isAlreadyConnected = await existingWalletButton.isVisible({ timeout: 2000 }).catch(() => false);
+  let isAlreadyConnected = await existingWalletButton
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
 
   if (!isAlreadyConnected) {
     existingWalletButton = page.locator(WalletSelectors.connectedWalletButton.fallback);
@@ -167,7 +169,9 @@ export async function disconnectWallet(page: Page): Promise<void> {
     }
 
     // Try fallback if primary not visible
-    const isDisconnectVisible = await disconnectButton.isVisible({ timeout: 2000 }).catch(() => false);
+    const isDisconnectVisible = await disconnectButton
+      .isVisible({ timeout: 2000 })
+      .catch(() => false);
     if (!isDisconnectVisible) {
       disconnectButton = page.locator(WalletSelectors.walletModal.disconnectButton.fallback);
     }
@@ -184,7 +188,10 @@ export async function disconnectWallet(page: Page): Promise<void> {
 
     console.log('  ✅ Wallet disconnected');
   } catch (error) {
-    console.log('  ⚠️  Could not disconnect wallet:', error instanceof Error ? error.message : 'Unknown error');
+    console.log(
+      '  ⚠️  Could not disconnect wallet:',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
   }
 }
 
@@ -214,12 +221,14 @@ export async function closeWalletModal(page: Page): Promise<void> {
   await dialogOverlay.click({ position: { x: 10, y: 10 }, force: true });
 
   // Wait for modal to close
-  await page.waitForSelector('[data-slot="dialog-overlay"]', { state: 'hidden', timeout: 3000 }).catch(async () => {
-    // If that didn't work, try Escape key
-    console.log('  ⚠️  Click didn\'t close modal, trying Escape...');
-    await page.keyboard.press('Escape');
-    await page.waitForTimeout(500);
-  });
+  await page
+    .waitForSelector('[data-slot="dialog-overlay"]', { state: 'hidden', timeout: 3000 })
+    .catch(async () => {
+      // If that didn't work, try Escape key
+      console.log("  ⚠️  Click didn't close modal, trying Escape...");
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(500);
+    });
 
   // Extra wait for animations
   await page.waitForTimeout(300);
@@ -293,7 +302,9 @@ export async function fundBurnerWalletForGas(page: Page): Promise<void> {
   console.log(`  💰 Burner wallet balance after transfer: ${newBalance.format()}`);
 
   if (newBalance.lt(amountToSend)) {
-    throw new Error(`Burner wallet funding failed! Expected at least ${amountToSend}, got ${newBalance.toString()}`);
+    throw new Error(
+      `Burner wallet funding failed! Expected at least ${amountToSend}, got ${newBalance.toString()}`
+    );
   }
 
   console.log('  ✅ Burner wallet funded with ETH for gas');
@@ -322,7 +333,11 @@ export async function refreshWalletBalance(page: Page): Promise<void> {
 /**
  * Wait for ETH balance to show a minimum amount in the UI
  */
-export async function waitForEthBalance(page: Page, minAmount: number = 0.001, timeoutMs: number = 30000): Promise<void> {
+export async function waitForEthBalance(
+  page: Page,
+  minAmount: number = 0.001,
+  timeoutMs: number = 30000
+): Promise<void> {
   console.log(`  ⏳ Waiting for ETH balance >= ${minAmount} to appear in UI...`);
 
   const startTime = Date.now();
@@ -365,7 +380,9 @@ export async function waitForEthBalance(page: Page, minAmount: number = 0.001, t
     await page.waitForTimeout(2000);
   }
 
-  throw new Error(`Timeout waiting for ETH balance >= ${minAmount} to appear in UI after ${timeoutMs}ms`);
+  throw new Error(
+    `Timeout waiting for ETH balance >= ${minAmount} to appear in UI after ${timeoutMs}ms`
+  );
 }
 
 /**
@@ -406,7 +423,9 @@ export async function waitForAutoFaucet(page: Page, timeoutMs: number = 45_000):
     if (balance > 0n) {
       console.log(`  ✅ Wallet has ETH balance: ${balance.toString()} base units`);
     } else {
-      throw new Error('Auto-faucet did not deliver ETH within timeout. The faucet predicate may be exhausted.');
+      throw new Error(
+        'Auto-faucet did not deliver ETH within timeout. The faucet predicate may be exhausted.'
+      );
     }
   }
 
@@ -418,9 +437,7 @@ export async function waitForAutoFaucet(page: Page, timeoutMs: number = 45_000):
  * Get on-chain ETH balance for the burner wallet (Node.js context)
  */
 async function getOnChainBalance(page: Page): Promise<bigint> {
-  const privateKey = await page.evaluate(() =>
-    localStorage.getItem('burner-wallet-private-key')
-  );
+  const privateKey = await page.evaluate(() => localStorage.getItem('burner-wallet-private-key'));
   if (!privateKey) return 0n;
 
   const rpcUrl = await page.evaluate(async () => {

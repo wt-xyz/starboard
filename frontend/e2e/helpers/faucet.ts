@@ -8,7 +8,10 @@ const MAX_FAUCET_AMOUNT = 5_000_000n; // 0.005 ETH per request
  * Get wallet balance from on-chain (runs in Node.js context, not browser)
  * Forces a fresh query by creating a new provider each time
  */
-export async function getWalletBalance(page: Page, forceRefresh = true): Promise<{ formatted: string; raw: string }> {
+export async function getWalletBalance(
+  page: Page,
+  forceRefresh = true
+): Promise<{ formatted: string; raw: string }> {
   // Get private key from browser localStorage
   const privateKey = await page.evaluate(() => {
     return localStorage.getItem('burner-wallet-private-key');
@@ -46,20 +49,20 @@ export async function getWalletBalance(page: Page, forceRefresh = true): Promise
   let balance;
   if (forceRefresh) {
     // Add small delay to ensure transaction is propagated
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
   balance = await wallet.getBalance(baseAssetId);
 
   return {
     formatted: balance.format(),
-    raw: balance.toString()
+    raw: balance.toString(),
   };
 }
 
 /**
  * Verify the predicate has sufficient ETH balance for testing
- * 
+ *
  * Note: Predicate balance verification is optional - tests will fail with clear errors
  * if predicate is unfunded during actual test execution.
  */
@@ -80,18 +83,21 @@ export async function verifyPredicateBalance(
     if (balance < minAmount) {
       throw new Error(
         `ETH faucet predicate has insufficient balance.\n` +
-        `  Current: ${balance.toString()} (${Number(balance) / 1e9} ETH)\n` +
-        `  Required: ${minAmount.toString()} (${Number(minAmount) / 1e9} ETH)\n` +
-        `  Please fund the predicate before running tests.`
+          `  Current: ${balance.toString()} (${Number(balance) / 1e9} ETH)\n` +
+          `  Required: ${minAmount.toString()} (${Number(minAmount) / 1e9} ETH)\n` +
+          `  Please fund the predicate before running tests.`
       );
     }
 
     console.log(
       `  ✅ Predicate balance verified: ${balance.toString()} (${Number(balance) / 1e9} ETH) ` +
-      `>= ${minAmount.toString()} (${Number(minAmount) / 1e9} ETH)`
+        `>= ${minAmount.toString()} (${Number(minAmount) / 1e9} ETH)`
     );
   } catch (error) {
-    console.warn('⚠️  Could not verify predicate balance:', error instanceof Error ? error.message : String(error));
+    console.warn(
+      '⚠️  Could not verify predicate balance:',
+      error instanceof Error ? error.message : String(error)
+    );
     console.warn('   Tests will continue - they will fail if predicate is unfunded');
   }
 }
@@ -142,7 +148,12 @@ export async function mintUsdc(page: Page, amount?: string): Promise<void> {
     // Capture SDK Faucet and USDC Mint logs, plus errors/warnings
     if (text.includes('[SDK Faucet]') || text.includes('[USDC Mint]')) {
       consoleMessages.push(`[${type}] ${text}`);
-    } else if (type === 'error' || type === 'warning' || text.includes('error') || text.includes('Error')) {
+    } else if (
+      type === 'error' ||
+      type === 'warning' ||
+      text.includes('error') ||
+      text.includes('Error')
+    ) {
       consoleMessages.push(`[${type}] ${text}`);
     }
   };
@@ -212,9 +223,10 @@ export async function verifyBalance(
   await page.waitForTimeout(500);
 
   // Find the balance row for the asset
-  const balanceLocator = asset === 'ETH'
-    ? page.locator(WalletSelectors.walletModal.balances.ethRow)
-    : page.locator(WalletSelectors.walletModal.balances.usdcRow);
+  const balanceLocator =
+    asset === 'ETH'
+      ? page.locator(WalletSelectors.walletModal.balances.ethRow)
+      : page.locator(WalletSelectors.walletModal.balances.usdcRow);
 
   await expect(balanceLocator).toBeVisible({ timeout: 10_000 });
 

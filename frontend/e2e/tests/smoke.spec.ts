@@ -79,7 +79,9 @@ test.describe('Smoke Tests', () => {
     await waitForPageReady(page);
 
     // Look for positions table or empty state
-    const positionsSection = page.locator('[class*="position"]', { hasText: /position|open/i }).first();
+    const positionsSection = page
+      .locator('[class*="position"]', { hasText: /position|open/i })
+      .first();
     await expect(positionsSection).toBeVisible({ timeout: 10_000 });
   });
 });
@@ -125,7 +127,9 @@ test.describe('Smoke Tests with Authenticated Wallet', () => {
     await closeWalletModal(page);
   });
 
-  test('can access position entry form with funded wallet', async ({ authenticatedWallet: page }) => {
+  test('can access position entry form with funded wallet', async ({
+    authenticatedWallet: page,
+  }) => {
     // Verify the dashboard trading interface is visible
     // The order form should be present with wallet funded
 

@@ -34,8 +34,10 @@ export const WalletSelectors = {
     // Balance section
     balances: {
       // Use :first to avoid strict mode violation (ETH label appears in both label and value)
-      ethRow: 'div[class*="balanceSection"] div[class*="balanceRow"]:has(span[class*="balanceLabel"]:has-text("ETH"))',
-      usdcRow: 'div[class*="balanceSection"] div[class*="balanceRow"]:has(span[class*="balanceLabel"]:has-text("Available Collateral"))',
+      ethRow:
+        'div[class*="balanceSection"] div[class*="balanceRow"]:has(span[class*="balanceLabel"]:has-text("ETH"))',
+      usdcRow:
+        'div[class*="balanceSection"] div[class*="balanceRow"]:has(span[class*="balanceLabel"]:has-text("Available Collateral"))',
     },
 
     // Testnet tools
