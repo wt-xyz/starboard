@@ -14,6 +14,15 @@ declare global {
 }
 
 declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: `${string}-${string}`]: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+    }
+  }
+
   interface HTMLAttributes<T> {
     /**
      * Component styles from vanilla-extract or CSS modules
