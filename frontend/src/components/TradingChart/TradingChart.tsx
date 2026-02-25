@@ -19,91 +19,6 @@ export interface TradingChartHandle {
   setWidgetbarVisible: (visible: boolean) => void;
 }
 
-function createTradingViewCustomCssUrl(): string {
-  const css = `
-@import url("/tradingview/custom-styles.css");
-
-/* Starboard: match dashboard panel grey for the Object Tree panel container. */
-.wrap-ukH4sVzT,
-.wrap-ukH4sVzT .space-ukH4sVzT,
-.wrap-ukH4sVzT .tree-ukH4sVzT {
-  background-color: ${colors.gluonGrey} !important;
-}
-
-/* Starboard: remove blue selection highlight in the Object Tree list. */
-.wrap-IEe5qpW4,
-html.theme-dark .wrap-IEe5qpW4 {
-  background-color: ${colors.gluonGrey} !important;
-}
-
-@media (any-hover:hover) {
-  .wrap-IEe5qpW4:hover,
-  html.theme-dark .wrap-IEe5qpW4:hover {
-    background-color: ${colors.slateGrey} !important;
-  }
-}
-
-.wrap-IEe5qpW4.selected-IEe5qpW4,
-html.theme-dark .wrap-IEe5qpW4.selected-IEe5qpW4,
-.wrap-IEe5qpW4.childOfSelected-IEe5qpW4,
-html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4 {
-  background-color: ${colors.slateGrey} !important;
-}
-
-@media (any-hover:hover) {
-  .wrap-IEe5qpW4.selected-IEe5qpW4:hover,
-  html.theme-dark .wrap-IEe5qpW4.selected-IEe5qpW4:hover,
-  .wrap-IEe5qpW4.childOfSelected-IEe5qpW4:hover,
-  html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4:hover {
-    background-color: ${colors.slateGrey} !important;
-  }
-}
-
-/* Starboard: use Liquid Lava as TradingView active accent. */
-:root, html, body {
-  --color-accent: ${colors.liquidLava} !important;
-  --tv-color-platform-background: ${colors.gluonGrey} !important;
-  --tv-color-pane-background: ${colors.gluonGrey} !important;
-  --tv-color-toolbar-button-background-active: ${colors.liquidLava} !important;
-  --tv-color-toolbar-button-background-active-hover: ${colors.liquidLava} !important;
-  --tv-color-toolbar-button-text-active: ${colors.snow} !important;
-  --tv-color-toolbar-button-text-active-hover: ${colors.snow} !important;
-  --tv-color-popup-element-background-active: ${colors.liquidLava} !important;
-  --tv-color-popup-element-toolbox-background-active-hover: ${colors.liquidLava} !important;
-  --tv-color-item-active-text: ${colors.snow} !important;
-}
-
-/* Remove left padding/margin from chart */
-.chart-markup-table {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-}
-.layout__area--left {
-  display: none !important;
-}
-
-/* Ensure time scale (X-axis) is fully visible */
-.chart-container {
-  padding-bottom: 2px !important;
-}
-.time-axis {
-  overflow: visible !important;
-}
-
-/* Mobile: ensure X-axis labels are fully visible */
-@media (max-width: 1024px) {
-  .chart-container {
-    padding-bottom: 6px !important;
-  }
-  .chart-widget {
-    margin-bottom: 4px !important;
-  }
-}
-`;
-
-  return URL.createObjectURL(new Blob([css], { type: 'text/css' }));
-}
-
 export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(function TradingChart(
   { symbol, candlesGetter }: TradingChartProps,
   ref
@@ -230,3 +145,88 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
 
   return <div ref={containerRef} css={styles.container} />;
 });
+
+function createTradingViewCustomCssUrl(): string {
+  const css = `
+@import url("/tradingview/custom-styles.css");
+
+/* Starboard: match dashboard panel grey for the Object Tree panel container. */
+.wrap-ukH4sVzT,
+.wrap-ukH4sVzT .space-ukH4sVzT,
+.wrap-ukH4sVzT .tree-ukH4sVzT {
+  background-color: ${colors.gluonGrey} !important;
+}
+
+/* Starboard: remove blue selection highlight in the Object Tree list. */
+.wrap-IEe5qpW4,
+html.theme-dark .wrap-IEe5qpW4 {
+  background-color: ${colors.gluonGrey} !important;
+}
+
+@media (any-hover:hover) {
+  .wrap-IEe5qpW4:hover,
+  html.theme-dark .wrap-IEe5qpW4:hover {
+    background-color: ${colors.slateGrey} !important;
+  }
+}
+
+.wrap-IEe5qpW4.selected-IEe5qpW4,
+html.theme-dark .wrap-IEe5qpW4.selected-IEe5qpW4,
+.wrap-IEe5qpW4.childOfSelected-IEe5qpW4,
+html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4 {
+  background-color: ${colors.slateGrey} !important;
+}
+
+@media (any-hover:hover) {
+  .wrap-IEe5qpW4.selected-IEe5qpW4:hover,
+  html.theme-dark .wrap-IEe5qpW4.selected-IEe5qpW4:hover,
+  .wrap-IEe5qpW4.childOfSelected-IEe5qpW4:hover,
+  html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4:hover {
+    background-color: ${colors.slateGrey} !important;
+  }
+}
+
+/* Starboard: use Liquid Lava as TradingView active accent. */
+:root, html, body {
+  --color-accent: ${colors.liquidLava} !important;
+  --tv-color-platform-background: ${colors.gluonGrey} !important;
+  --tv-color-pane-background: ${colors.gluonGrey} !important;
+  --tv-color-toolbar-button-background-active: ${colors.liquidLava} !important;
+  --tv-color-toolbar-button-background-active-hover: ${colors.liquidLava} !important;
+  --tv-color-toolbar-button-text-active: ${colors.snow} !important;
+  --tv-color-toolbar-button-text-active-hover: ${colors.snow} !important;
+  --tv-color-popup-element-background-active: ${colors.liquidLava} !important;
+  --tv-color-popup-element-toolbox-background-active-hover: ${colors.liquidLava} !important;
+  --tv-color-item-active-text: ${colors.snow} !important;
+}
+
+/* Remove left padding/margin from chart */
+.chart-markup-table {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+.layout__area--left {
+  display: none !important;
+}
+
+/* Ensure time scale (X-axis) is fully visible */
+.chart-container {
+  padding-bottom: 2px !important;
+}
+.time-axis {
+  overflow: visible !important;
+}
+
+/* Mobile: ensure X-axis labels are fully visible */
+@media (max-width: 1024px) {
+  .chart-container {
+    padding-bottom: 6px !important;
+  }
+  .chart-widget {
+    margin-bottom: 4px !important;
+  }
+}
+`;
+
+  return URL.createObjectURL(new Blob([css], { type: 'text/css' }));
+}
