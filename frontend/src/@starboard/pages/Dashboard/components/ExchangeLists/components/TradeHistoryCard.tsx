@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { $decimalValue } from 'fuel-ts-sdk';
-import { type PositionEntity, PositionChange, PositionSide } from 'fuel-ts-sdk/trading';
+import { PositionChange, type PositionEntity, PositionSide } from 'fuel-ts-sdk/trading';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as $ from './TradeHistoryCard.css';
@@ -35,9 +35,7 @@ export const TradeHistoryCard: FC<TradeHistoryCardProps> = ({ position }) => {
   return (
     <div css={$.card}>
       <div css={$.header}>
-        <span css={[$.side, isLong ? $.sideLong : $.sideShort]}>
-          {isLong ? 'LONG' : 'SHORT'}
-        </span>
+        <span css={[$.side, isLong ? $.sideLong : $.sideShort]}>{isLong ? 'LONG' : 'SHORT'}</span>
         <span css={$.assetName}>{asset?.name}</span>
         <span css={$.actionLabel}>{changeLabels[position.change]}</span>
       </div>

@@ -33,12 +33,9 @@ export const OrderSummary: FC = () => {
   const positionNotional = collateral * lev;
   const minCollateral = positionNotional / MAX_LEVERAGE;
   const availableForLoss = collateral - minCollateral;
-  const priceChange = availableForLoss > 0
-    ? (availableForLoss / positionNotional) * currentPrice
-    : 0;
-  const liqPrice = orderSide === 'long'
-    ? currentPrice - priceChange
-    : currentPrice + priceChange;
+  const priceChange =
+    availableForLoss > 0 ? (availableForLoss / positionNotional) * currentPrice : 0;
+  const liqPrice = orderSide === 'long' ? currentPrice - priceChange : currentPrice + priceChange;
   const fee = positionNotional * FEE_RATE;
 
   const handlePresetClick = (preset: string) => {
@@ -105,30 +102,22 @@ export const OrderSummary: FC = () => {
 
       <div className={$.row}>
         <span className={$.label}>Total Order Value</span>
-        <span className={$.value}>
-          {formatCurrency(positionNotional, { symbol: '$' })}
-        </span>
+        <span className={$.value}>{formatCurrency(positionNotional, { symbol: '$' })}</span>
       </div>
 
       <div className={$.row}>
         <span className={$.label}>Margin</span>
-        <span className={$.value}>
-          {formatCurrency(collateral, { symbol: '$' })}
-        </span>
+        <span className={$.value}>{formatCurrency(collateral, { symbol: '$' })}</span>
       </div>
 
       <div className={$.row}>
         <span className={$.label}>Liq. Price</span>
-        <span className={$.value}>
-          {formatCurrency(liqPrice, { symbol: '$' })}
-        </span>
+        <span className={$.value}>{formatCurrency(liqPrice, { symbol: '$' })}</span>
       </div>
 
       <div className={$.row}>
         <span className={$.label}>Est. Fee</span>
-        <span className={$.value}>
-          ~{formatCurrency(fee, { symbol: '$' })}
-        </span>
+        <span className={$.value}>~{formatCurrency(fee, { symbol: '$' })}</span>
       </div>
     </div>
   );
