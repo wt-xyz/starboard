@@ -33,8 +33,8 @@ export const test = base.extend<WalletFixtures>({
     await page.reload();
     await waitForPageReady(page);
 
-    // Connect burner wallet
-    await setupBurnerWallet(page);
+    // Connect burner wallet (no funding — this fixture is for unfunded wallet tests)
+    await setupBurnerWallet(page, /* skipFunding */ true);
 
     console.log('✅ Connected wallet setup complete\n');
 

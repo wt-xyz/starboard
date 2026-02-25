@@ -29,6 +29,7 @@ dist-ssr
 .env.staging
 .env.production
 .env.e2e.testnet
+.env.e2e.local
 
 # Playwright test results
 test-results/

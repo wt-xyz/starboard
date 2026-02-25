@@ -243,21 +243,26 @@ export async function verifyBalance(
   console.log(`  Balance display: ${balanceText}`);
 
   // Parse the balance value from the text
-  if (balanceText) {
-    // For ETH: "ETH 0.0050 ETH" -> extract "0.0050"
-    // For USDC: "Available Collateral 999,990.00 USDC" -> extract "999,990.00"
-    const matches = balanceText.match(/[\d,]+\.?\d*/g);
-    if (matches && matches.length > 0) {
-      // Get the last number (the actual balance value)
-      const balanceValue = parseFloat(matches[matches.length - 1].replace(/,/g, ''));
-      if (balanceValue >= minAmount) {
-        console.log(`  ✅ ${asset} balance verified: ${balanceValue} >= ${minAmount}`);
-      } else {
-        throw new Error(`Insufficient ${asset} balance: ${balanceValue} < ${minAmount}`);
-      }
+  if (!balanceText) {
+    await closeWalletModal(page);
+    throw new Error(`${asset} balance row has no text content`);
+  }
+
+  // For ETH: "ETH 0.0050 ETH" -> extract "0.0050"
+  // For USDC: "Available Collateral 999,990.00 USDC" -> extract "999,990.00"
+  const matches = balanceText.match(/[\d,]+\.?\d*/g);
+  if (matches && matches.length > 0) {
+    // Get the last number (the actual balance value)
+    const balanceValue = parseFloat(matches[matches.length - 1].replace(/,/g, ''));
+    if (balanceValue >= minAmount) {
+      console.log(`  ✅ ${asset} balance verified: ${balanceValue} >= ${minAmount}`);
     } else {
-      throw new Error(`Could not parse ${asset} balance from text: "${balanceText}"`);
+      await closeWalletModal(page);
+      throw new Error(`Insufficient ${asset} balance: ${balanceValue} < ${minAmount}`);
     }
+  } else {
+    await closeWalletModal(page);
+    throw new Error(`Could not parse ${asset} balance from text: "${balanceText}"`);
   }
 
   // Close modal
