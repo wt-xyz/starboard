@@ -26,10 +26,7 @@ export async function waitForTransaction(page: Page): Promise<void> {
   const successToast = page.locator(CommonSelectors.toast.success);
   const errorToast = page.locator(CommonSelectors.toast.error);
 
-  await Promise.race([
-    expect(successToast).toBeVisible({ timeout: 30_000 }),
-    expect(errorToast).toBeVisible({ timeout: 30_000 }),
-  ]);
+  await expect(successToast.or(errorToast)).toBeVisible({ timeout: 30_000 });
 }
 
 /**

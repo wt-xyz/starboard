@@ -26,7 +26,7 @@ export default async function globalSetup() {
     console.log(`\n🌐 Checking if app is running at ${appUrl}...`);
 
     try {
-      const response = await fetch(appUrl, { method: 'HEAD' });
+      const response = await fetch(appUrl, { method: 'HEAD', signal: AbortSignal.timeout(10_000) });
       if (response.ok) {
         console.log('✅ App is running and accessible');
       } else {

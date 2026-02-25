@@ -51,6 +51,10 @@ async function waitForPosition(page: import('@playwright/test').Page, timeoutMs 
   // Wait for "No open positions" to disappear
   const emptyState = page.locator('text=No open positions');
   await expect(emptyState).toBeHidden({ timeout: timeoutMs });
+
+  // Confirm a position action button is actually present
+  const actionButton = page.getByRole('button', { name: /decrease|close|increase/i }).first();
+  await expect(actionButton).toBeVisible({ timeout: timeoutMs });
 }
 
 /**

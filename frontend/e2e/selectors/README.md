@@ -4,7 +4,7 @@ This directory contains all UI selectors for the e2e test suite, following the S
 
 ## Structure
 
-```
+```text
 selectors/
 ├── common.selectors.ts    # Common UI elements (toasts, navigation, etc.)
 ├── trading.selectors.ts   # Trading forms, positions, orders

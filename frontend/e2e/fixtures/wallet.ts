@@ -58,16 +58,24 @@ export const test = base.extend<WalletFixtures>({
 
     // Clear any existing state (must be after navigation)
     await page.context().clearCookies();
-    await page.evaluate(() => {
+    await page.evaluate(async () => {
       localStorage.clear();
       sessionStorage.clear();
       // Also clear any indexed DB data that might store network preference
       if (window.indexedDB) {
-        indexedDB.databases().then((dbs) => {
-          dbs.forEach((db) => {
-            if (db.name) indexedDB.deleteDatabase(db.name);
-          });
-        });
+        const dbs = await indexedDB.databases();
+        await Promise.all(
+          dbs.map(
+            (db) =>
+              new Promise<void>((resolve) => {
+                if (!db.name) return resolve();
+                const req = indexedDB.deleteDatabase(db.name);
+                req.onsuccess = () => resolve();
+                req.onerror = () => resolve();
+                req.onblocked = () => resolve();
+              })
+          )
+        );
       }
     });
 

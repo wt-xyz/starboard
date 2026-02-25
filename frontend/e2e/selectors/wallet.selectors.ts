@@ -13,7 +13,7 @@ export const WalletSelectors = {
   // Header wallet button (when connected, shows truncated address)
   connectedWalletButton: {
     primary: 'button[class*="walletConnected"]',
-    fallback: 'button:has-text(/0x[a-fA-F0-9]{4}/)',
+    fallback: 'button:has-text(/(0x|fuel)[a-fA-F0-9]{4}/i)',
   },
 
   // Wallet connector modal (appears when clicking Connect)
