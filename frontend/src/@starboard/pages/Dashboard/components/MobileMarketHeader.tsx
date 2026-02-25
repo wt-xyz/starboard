@@ -1,8 +1,13 @@
 import { type FC, useEffect, useMemo } from 'react';
-import { $decimalValue, DecimalCalculator, DecimalValue, createDecimalValueSchema } from 'fuel-ts-sdk';
+import {
+  $decimalValue,
+  DecimalCalculator,
+  DecimalValue,
+  createDecimalValueSchema,
+} from 'fuel-ts-sdk';
 import type { FundingInfoEntity } from 'fuel-ts-sdk/trading';
-import { AssetSelect } from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/AssetSelect';
 import { calculatePriceChange } from '@/@starboard/lib/calculatePriceChange';
+import { AssetSelect } from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/AssetSelect';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as styles from './MobileMarketHeader.css';
@@ -93,7 +98,15 @@ export const MobileMarketHeader: FC = () => {
         {fundingFormatted && (
           <span css={styles.statItem}>
             <span css={styles.statLabel}>Fund</span>
-            <span css={fundingVariant === 'positive' ? styles.priceChangePositive : fundingVariant === 'negative' ? styles.priceChangeNegative : styles.statValue}>
+            <span
+              css={
+                fundingVariant === 'positive'
+                  ? styles.priceChangePositive
+                  : fundingVariant === 'negative'
+                    ? styles.priceChangeNegative
+                    : styles.statValue
+              }
+            >
               {fundingFormatted}
             </span>
           </span>
@@ -108,7 +121,10 @@ const FUNDING_RATE_FACTOR = DecimalValue.fromBigInt(23n);
 const SECONDS_PER_HOUR = Scalar.fromBigInt(3600n);
 const PERCENT = Scalar.fromBigInt(100n);
 
-type FundingResult = { fundingFormatted: string | null; fundingVariant: 'default' | 'positive' | 'negative' };
+type FundingResult = {
+  fundingFormatted: string | null;
+  fundingVariant: 'default' | 'positive' | 'negative';
+};
 
 function useMobileFunding(fundingInfo: FundingInfoEntity | undefined): FundingResult {
   return useMemo(() => {
@@ -156,4 +172,3 @@ function useMobileFunding(fundingInfo: FundingInfoEntity | undefined): FundingRe
     return { fundingFormatted: '0.0000%', fundingVariant: 'default' as const };
   }, [fundingInfo]);
 }
-

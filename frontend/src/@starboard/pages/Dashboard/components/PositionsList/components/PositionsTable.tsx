@@ -6,8 +6,8 @@ import type { PositionEntity } from 'fuel-ts-sdk/trading';
 import { toast } from 'react-toastify';
 import { useBoolean } from 'usehooks-ts';
 import { useTradingSdk } from '@/lib/fuel-ts-sdk';
-import { PositionsTable as PT } from '@/pages/Dashboard/submodules';
 import { DecreasePositionDialog } from '@/pages/Dashboard/src/components/PositionsList/components/DecreasePositionDialog';
+import { PositionsTable as PT } from '@/pages/Dashboard/submodules';
 import * as $ from './PositionsTable.css';
 
 export interface PositionsTableProps {
