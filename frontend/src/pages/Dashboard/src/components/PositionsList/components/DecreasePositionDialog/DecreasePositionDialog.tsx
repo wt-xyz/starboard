@@ -55,9 +55,7 @@ export const DecreasePositionDialog = memo(
 
             <Tabs.Content value="limit" className={styles.tabsContent} forceMount>
               <div className={styles.tabsContentInner}>
-                <div className={styles.limitPlaceholder}>
-                  Limit close orders coming soon
-                </div>
+                <div className={styles.limitPlaceholder}>Limit close orders coming soon</div>
               </div>
             </Tabs.Content>
 
