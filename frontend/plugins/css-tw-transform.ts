@@ -178,8 +178,8 @@ export function cssTwTransformPlugin(): Plugin {
           continue;
         }
 
-        // Extract tag name
-        const tagNameMatch = transformed.slice(tagStart + 1).match(/^(\w+)/);
+        // Extract tag name (supports $ and member expressions like $$.header, Namespace.Component)
+        const tagNameMatch = transformed.slice(tagStart + 1).match(/^([\w$]+(?:\.[\w$]+)*)/);
         if (!tagNameMatch) {
           cursor = tagStart + 1;
           continue;
