@@ -1,3 +1,5 @@
+import type { GetAllPositionRevisionsQueryDependencies } from './getAllPositionRevisions';
+import { createGetAllPositionRevisionsQuery } from './getAllPositionRevisions';
 import type { GetAllPositionsQueryDependencies } from './getAllPositions';
 import { createGetAllLatestPositionsQuery } from './getAllPositions';
 import type { GetPositionLeverageQueryDependencies } from './getPositionLeverage';
@@ -9,13 +11,15 @@ import { createGetPositionByIdQuery } from './getPositionsById';
 import type { IsPositionOpenQueryDependencies } from './isPositionOpen';
 import { createIsPositionOpenQuery } from './isPositionOpen';
 
-export type PositionsQueriesDependencies = GetAllPositionsQueryDependencies &
+export type PositionsQueriesDependencies = GetAllPositionRevisionsQueryDependencies &
+  GetAllPositionsQueryDependencies &
   GetPositionByIdQueryDependencies &
   IsPositionOpenQueryDependencies &
   GetPositionSizeInQuoteAssetQueryDependencies &
   GetPositionLeverageQueryDependencies;
 
 export const createPositionQueries = (deps: PositionsQueriesDependencies) => ({
+  getAllPositionRevisions: createGetAllPositionRevisionsQuery(deps),
   getPositionById: createGetPositionByIdQuery(deps),
   isPositionOpen: createIsPositionOpenQuery(deps),
   getAllLatestPositions: createGetAllLatestPositionsQuery(deps),
