@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { assetId } from 'fuel-ts-sdk';
-import type { AssetEntity, Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import type { RequestStatus } from 'fuel-ts-sdk';
+import type { AssetEntity, Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DashboardTradingChart } from '../src/components/DashboardTradingChart';
 
@@ -28,33 +28,32 @@ let mockCandles: Candle[] = [];
 let fetchCandlesCalls: Array<{ assetId: string; interval: CandleInterval }> = [];
 let getCandlesCalls: Array<{ assetId: string; interval: CandleInterval }> = [];
 
-const mockFetchCandles = vi.fn(
-  async (asset: string, interval: CandleInterval) => {
-    fetchCandlesCalls.push({ assetId: asset, interval });
-    // After fetching, candles become available
-    mockCandles = [MOCK_CANDLE];
-    mockCandlesStatus = 'fulfilled';
-  }
-);
+const mockFetchCandles = vi.fn(async (asset: string, interval: CandleInterval) => {
+  fetchCandlesCalls.push({ assetId: asset, interval });
+  // After fetching, candles become available
+  mockCandles = [MOCK_CANDLE];
+  mockCandlesStatus = 'fulfilled';
+});
 
-const mockGetCandles = vi.fn(
-  (asset: string, interval: CandleInterval) => {
-    getCandlesCalls.push({ assetId: asset, interval });
-    return mockCandles;
-  }
-);
+const mockGetCandles = vi.fn((asset: string, interval: CandleInterval) => {
+  getCandlesCalls.push({ assetId: asset, interval });
+  return mockCandles;
+});
 
-const mockGetCandlesStatus = vi.fn(
-  (_asset: string, _interval: CandleInterval): RequestStatus => {
-    return mockCandlesStatus;
-  }
-);
+const mockGetCandlesStatus = vi.fn((_asset: string, _interval: CandleInterval): RequestStatus => {
+  return mockCandlesStatus;
+});
 
 // Capture the candlesGetter so we can call it directly in tests
 let capturedCandlesGetter: ((interval: CandleInterval) => Promise<Candle[]>) | null = null;
 
 vi.mock('@/components/TradingChart', () => ({
-  TradingChart: ({ candlesGetter }: { symbol: string; candlesGetter: (interval: CandleInterval) => Promise<Candle[]> }) => {
+  TradingChart: ({
+    candlesGetter,
+  }: {
+    symbol: string;
+    candlesGetter: (interval: CandleInterval) => Promise<Candle[]>;
+  }) => {
     capturedCandlesGetter = candlesGetter;
     return <div data-testid="trading-chart" />;
   },
