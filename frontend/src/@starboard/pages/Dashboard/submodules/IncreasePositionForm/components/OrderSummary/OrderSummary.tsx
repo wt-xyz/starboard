@@ -27,9 +27,10 @@ export const OrderSummary: FC = () => {
   const collateral = parseFloat(collateralSize ?? '');
   const lev = parseFloat(leverage ?? '');
 
-  if (!collateral || !lev || collateral <= 0 || lev <= 0) return null;
-
   const currentPrice = currentQuoteAssetPrice.value;
+
+  if (!collateral || !lev || collateral <= 0 || lev <= 0 || !currentPrice || currentPrice <= 0)
+    return null;
   const positionNotional = collateral * lev;
   const minCollateral = positionNotional / MAX_LEVERAGE;
   const availableForLoss = collateral - minCollateral;

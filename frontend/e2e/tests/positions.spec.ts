@@ -73,7 +73,7 @@ async function openDecreaseDialog(page: import('@playwright/test').Page) {
   // Wait for the Radix dialog to appear with the title "Decrease Position"
   const dialog = page.locator('[role="dialog"]');
   await expect(dialog).toBeVisible({ timeout: 5_000 });
-  await expect(dialog.getByRole('heading', { name: 'Decrease Position' })).toBeVisible();
+  await expect(dialog.getByRole('heading', { name: 'Manage Position' })).toBeVisible();
   return dialog;
 }
 

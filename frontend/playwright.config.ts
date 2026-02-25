@@ -17,6 +17,9 @@ const result = dotenv.config({ path: envPath });
 if (result.error) {
   console.error(`❌ Failed to load environment file: ${envPath}`);
   console.error(result.error);
+  throw new Error(
+    `Required environment file not found: ${envPath}. See e2e/README.md for setup instructions.`
+  );
 } else {
   console.log(`📝 Loaded environment from: ${envPath}`);
   console.log(`🌍 VITE_DEFAULT_ENVIRONMENT: ${process.env.VITE_DEFAULT_ENVIRONMENT}`);

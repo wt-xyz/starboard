@@ -412,7 +412,7 @@ export async function waitForAutoFaucet(page: Page, timeoutMs: number = 45_000):
         const account = await fuel.currentAccount();
         if (!account) return '0';
         const provider = await fuel.getProvider();
-        const baseAssetId = provider.getBaseAssetId();
+        const baseAssetId = await provider.getBaseAssetId();
         const balance = await account.getBalance(baseAssetId);
         return balance?.toString() ?? '0';
       } catch {

@@ -52,8 +52,11 @@ const BackgroundPriceSubscriptions = () => {
 
   useEffect(() => {
     trading.workflows.syncAccountTrackedAssetPrices();
-    return () => trading.workflows.syncAccountTrackedAssetPrices.dispose();
   }, [trading.workflows, watchedAsset, openPositions]);
+
+  useEffect(() => {
+    return () => trading.workflows.syncAccountTrackedAssetPrices.dispose();
+  }, [trading.workflows]);
 
   return null;
 };

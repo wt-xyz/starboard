@@ -136,6 +136,11 @@ export const leverageInputWrapper = style({
   border: `1px solid ${colors.whiteAlpha[20]}`,
   borderRadius: '6px',
   padding: '6px 8px',
+  selectors: {
+    '&:focus-within': {
+      borderColor: colors.liquidLava,
+    },
+  },
 });
 
 export const leverageInput = style({

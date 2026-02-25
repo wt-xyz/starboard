@@ -14,7 +14,16 @@ export const LeverageSlider: FC<LeverageSliderProps> = ({ label: _label = 'Lever
   const { control } = use(KernelContext)!;
   const { field, fieldState } = useController({ control, name: 'leverage' });
 
-  const stepIdx = STEP_VALUES.indexOf(+field.value!);
+  const parsedLeverage = Number(field.value);
+  const stepIdx = Number.isFinite(parsedLeverage)
+    ? STEP_VALUES.reduce(
+        (bestIdx, step, idx) =>
+          Math.abs(step - parsedLeverage) < Math.abs(STEP_VALUES[bestIdx] - parsedLeverage)
+            ? idx
+            : bestIdx,
+        0
+      )
+    : 0;
   const thumbPercent = (stepIdx / (STEP_VALUES.length - 1)) * 100;
 
   const handleSliderChange = ([idx]: number[]) => {
