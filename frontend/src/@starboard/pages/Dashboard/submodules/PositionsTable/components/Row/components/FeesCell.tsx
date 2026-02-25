@@ -1,8 +1,8 @@
 import { type FC, use } from 'react';
 import { $decimalValue } from 'fuel-ts-sdk';
 import { formatCurrency } from '@/lib/formatCurrency';
-import { RowContext } from '@/pages/Dashboard/src/submodules/PositionsTable/components/Row/contexts/RowContext';
 import { Cell } from '@/pages/Dashboard/src/submodules/PositionsTable/components/Row/components/common/Cell';
+import { RowContext } from '@/pages/Dashboard/src/submodules/PositionsTable/components/Row/contexts/RowContext';
 
 export const FeesCell: FC = () => {
   const position = use(RowContext)!;

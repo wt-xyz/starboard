@@ -1,12 +1,12 @@
 import { type FC, useCallback, useState } from 'react';
 import { Tabs } from 'radix-ui';
 import { toast } from 'react-toastify';
-import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import { PositionsList } from '@/pages/Dashboard/src/components/PositionsList';
-import * as $ from './ExchangeLists.css';
 import { FundingHistoryList } from '@/@starboard/pages/Dashboard/components/ExchangeLists/components/FundingHistoryList';
 import { OpenOrdersList } from '@/@starboard/pages/Dashboard/components/ExchangeLists/components/OpenOrdersList';
+import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { TradeHistoryList } from '@/pages/Dashboard/src/components/ExchangeLists/components/TradeHistoryList';
+import { PositionsList } from '@/pages/Dashboard/src/components/PositionsList';
+import * as $ from './ExchangeLists.css';
 
 export const ExchangeLists: FC = () => {
   const [activeTab, setActiveTab] = useState<string>(TABS.POSITIONS);
