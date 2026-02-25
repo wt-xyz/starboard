@@ -6,6 +6,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import baseConfig from '../eslint.config.base.js';
+import { exportsFirstRule } from './eslint-rules/exports-first.js';
 
 export default tseslint.config(
   {
@@ -33,6 +34,7 @@ export default tseslint.config(
     },
     plugins: {
       react,
+      custom: { rules: { 'exports-first': exportsFirstRule } },
     },
     settings: {
       react: {
@@ -48,8 +50,10 @@ export default tseslint.config(
       'react/jsx-no-constructed-context-values': 'warn',
       'react/no-unknown-property': ['error', { ignore: ['css', 'tw'] }],
       'react/no-unescaped-entities': 'off',
+      'react/prop-types': 'off',
       // TypeScript-specific
       '@typescript-eslint/no-empty-object-type': 'off',
+      'custom/exports-first': 'warn',
       '@typescript-eslint/consistent-type-imports': [
         'error',
         {
