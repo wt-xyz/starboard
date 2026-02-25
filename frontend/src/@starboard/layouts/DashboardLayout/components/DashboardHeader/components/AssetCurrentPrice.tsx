@@ -1,9 +1,9 @@
 import { type FC, useEffect, useMemo } from 'react';
 import { $decimalValue } from 'fuel-ts-sdk';
 import { calculatePriceChange } from '@/@starboard/lib/calculatePriceChange';
+import * as $ from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/AssetCurrentPrice.css';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import * as $ from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/AssetCurrentPrice.css';
 
 export const AssetCurrentPrice: FC = () => {
   const sdk = useTradingSdk();

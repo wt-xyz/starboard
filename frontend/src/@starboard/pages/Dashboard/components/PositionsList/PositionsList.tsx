@@ -1,7 +1,7 @@
 import { type FC, useEffect, useMemo } from 'react';
 import { PositionSide } from 'fuel-ts-sdk/trading';
-import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as $ from '@/@starboard/pages/Dashboard/components/PositionsList/PositionsList.css';
+import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { PositionCard } from '@/pages/Dashboard/src/components/PositionsList/components/PositionCard';
 import { PositionsTable } from '@/pages/Dashboard/src/components/PositionsList/components/PositionsTable';
 
