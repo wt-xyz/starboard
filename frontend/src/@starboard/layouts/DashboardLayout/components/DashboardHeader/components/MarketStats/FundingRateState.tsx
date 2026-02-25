@@ -7,8 +7,8 @@ import {
   createDecimalValueSchema,
 } from 'fuel-ts-sdk';
 import type { FundingInfoEntity } from 'fuel-ts-sdk/trading';
-import { useSdkQuery } from '@/lib/fuel-ts-sdk';
 import { MarketStat } from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/MarketStats/_MarketStatsBase';
+import { useSdkQuery } from '@/lib/fuel-ts-sdk';
 
 export const FundingRateStat: FC = () => {
   const fundingInfo = useSdkQuery((sdk) => sdk.trading.getWatchedAssetFundingInfo());
