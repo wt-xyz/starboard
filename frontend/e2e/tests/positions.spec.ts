@@ -170,7 +170,9 @@ test.describe('Position Trading', () => {
       await waitForPosition(page);
 
       // The positions table/list should have some numerical content
-      const positionsArea = page.locator('[class*="positionsContainer"], [class*="position"]').first();
+      const positionsArea = page
+        .locator('[class*="positionsContainer"], [class*="position"]')
+        .first();
       await expect(positionsArea).toBeVisible({ timeout: 10_000 });
       const content = await positionsArea.textContent();
       console.log(`  📊 Position content: ${content?.slice(0, 100)}...`);
@@ -273,7 +275,9 @@ test.describe('Position Trading', () => {
       // Should see inline "Insufficient balance" validation error
       const insufficientError = page.locator('text=Insufficient balance');
       const errorToast = page.locator('.Toastify__toast--error');
-      const validationToast = page.locator('.Toastify__toast--error', { hasText: /fill out|correctly/i });
+      const validationToast = page.locator('.Toastify__toast--error', {
+        hasText: /fill out|correctly/i,
+      });
 
       const hasError = await Promise.race([
         insufficientError.waitFor({ state: 'visible', timeout: 10_000 }).then(() => 'inline'),

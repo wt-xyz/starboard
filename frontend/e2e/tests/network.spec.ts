@@ -10,7 +10,9 @@ test.describe('Network Switching', () => {
 
   test('network switcher is visible', async ({ page }) => {
     // Look for network switcher in header/navigation
-    const networkSwitcher = page.locator('button, select', { hasText: /local|testnet|mainnet|network/i });
+    const networkSwitcher = page.locator('button, select', {
+      hasText: /local|testnet|mainnet|network/i,
+    });
 
     // Network switcher should be visible
     await expect(networkSwitcher.first()).toBeVisible();

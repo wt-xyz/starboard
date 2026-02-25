@@ -1,6 +1,6 @@
 /**
  * Global setup for Playwright tests
- * 
+ *
  * This runs once before all tests to verify the environment is ready.
  * Checks environment variables and verifies the app is running.
  */
@@ -10,11 +10,7 @@ export default async function globalSetup() {
 
   try {
     // 1. Check environment variables
-    const requiredEnvVars = [
-      'VITE_DEFAULT_ENVIRONMENT',
-      'VITE_RPC_URLS',
-      'VITE_INDEXER_URLS',
-    ];
+    const requiredEnvVars = ['VITE_DEFAULT_ENVIRONMENT', 'VITE_RPC_URLS', 'VITE_INDEXER_URLS'];
 
     for (const envVar of requiredEnvVars) {
       if (!process.env[envVar]) {
