@@ -12,7 +12,7 @@ export const DashboardTradingChart: FC = () => {
       if (!asset) return [];
       const status = tradingSdk.getCandlesStatus(asset.assetId, interval);
 
-      if (status === 'uninitialized') {
+      if (status !== 'fulfilled') {
         await tradingSdk.fetchCandles(asset.assetId, interval);
       }
 
