@@ -17,7 +17,7 @@ selectors/
 ### Import selectors in your helper or test file:
 
 ```typescript
-import { WalletSelectors, CommonSelectors, TradingSelectors } from '../selectors';
+import { CommonSelectors, TradingSelectors, WalletSelectors } from '../selectors';
 ```
 
 ### Use selectors with Playwright locators:
@@ -63,9 +63,9 @@ await expect(button).toBeVisible();
 Selectors are organized hierarchically to match the UI structure:
 
 ```typescript
-WalletSelectors.walletModal.balances.ethRow
-WalletSelectors.walletModal.disconnectButton.primary
-TradingSelectors.orderForm.collateralInput
+WalletSelectors.walletModal.balances.ethRow;
+WalletSelectors.walletModal.disconnectButton.primary;
+TradingSelectors.orderForm.collateralInput;
 ```
 
 ## Maintenance

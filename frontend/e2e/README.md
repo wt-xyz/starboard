@@ -7,6 +7,7 @@ Comprehensive Playwright end-to-end tests for the Starboard trading platform.
 ### Prerequisites
 
 1. **Start the development server in DEV mode** in a separate terminal:
+
    ```bash
    cd frontend
    # IMPORTANT: Must run in dev mode to enable network switcher and local network
@@ -14,14 +15,16 @@ Comprehensive Playwright end-to-end tests for the Starboard trading platform.
    # OR simply:
    pnpm dev
    ```
-   
+
    **Note:** The dev server MUST run in development mode for e2e tests. This enables:
+
    - Network switcher UI
    - Local network selection
    - Burner wallet option
    - Test/dev features
 
 2. **Ensure Docker services are running**:
+
    ```bash
    cd docker
    docker compose up -d
@@ -63,7 +66,7 @@ This test suite follows the **Screenplay pattern** to maximize maintainability. 
 e2e/
 ├── selectors/              # Centralized UI selectors
 │   ├── wallet.selectors.ts
-│   ├── trading.selectors.ts  
+│   ├── trading.selectors.ts
 │   ├── common.selectors.ts
 │   └── index.ts
 ├── helpers/                # Reusable test helpers
@@ -113,6 +116,7 @@ VITE_DEFAULT_ENVIRONMENT=testnet
 ### 1. Network Tests (`network.spec.ts`)
 
 Tests network switching and configuration:
+
 - Network switcher visibility
 - Current network display
 - Network indicator shows correct chain ID
@@ -124,6 +128,7 @@ Tests network switching and configuration:
 ### 2. Setup Tests (`setup.spec.ts`)
 
 Tests wallet setup flow:
+
 - Burner wallet connection
 - Wallet disconnection
 - Wallet modal display
@@ -135,6 +140,7 @@ Tests wallet setup flow:
 ### 3. Position Trading Tests (`positions.spec.ts`)
 
 Tests core trading functionality:
+
 - Opening long positions
 - Opening short positions
 - Closing positions (full and partial)
@@ -146,6 +152,7 @@ Tests core trading functionality:
 ### 4. Smoke Tests (`smoke.spec.ts`)
 
 Basic application health checks:
+
 - Application loads
 - Key UI elements render
 - Market data displays
@@ -179,6 +186,7 @@ const GENESIS_PRIVATE_KEY = '0x9e42fa83bda35cbc769c4b058c721adef68011d7945d0b301
 ### `authenticatedWallet`
 
 Provides a page with a fully set up burner wallet:
+
 - Connected to burner wallet
 - Funded with 0.1 ETH for gas
 - Minted USDC collateral
@@ -206,7 +214,7 @@ test('wallet connection flow', async ({ connectedWallet: page }) => {
 ### Wallet Helpers (`helpers/burner-wallet.ts`)
 
 - `createBurnerWallet(page)` - Connect to burner wallet
-- `setupBurnerWallet(page)` - Connect and fund wallet  
+- `setupBurnerWallet(page)` - Connect and fund wallet
 - `verifyWalletConnected(page)` - Verify connection
 - `disconnectWallet(page)` - Disconnect wallet
 - `openWalletModal(page)` - Open wallet modal
@@ -229,7 +237,7 @@ test('wallet connection flow', async ({ connectedWallet: page }) => {
 All UI selectors are centralized in `e2e/selectors/`:
 
 ```typescript
-import { WalletSelectors, TradingSelectors, CommonSelectors } from '../selectors';
+import { CommonSelectors, TradingSelectors, WalletSelectors } from '../selectors';
 
 // Use selectors instead of hardcoded strings
 const button = page.locator(WalletSelectors.connectButton.primary);
@@ -237,6 +245,7 @@ const toast = page.locator(CommonSelectors.toast.success);
 ```
 
 **Benefits:**
+
 - UI changes only require updating ONE file
 - Type-safe selectors with autocomplete
 - Primary + fallback selector strategy for robustness
@@ -250,6 +259,7 @@ const toast = page.locator(CommonSelectors.toast.success);
 **Error:** `net::ERR_CONNECTION_REFUSED at http://localhost:5173/`
 
 **Solution:**
+
 ```bash
 # Start the dev server in a separate terminal
 cd frontend
@@ -264,6 +274,7 @@ pnpm dev
 **Error:** Connection errors to `localhost:4000` or `localhost:4350`
 
 **Solution:**
+
 ```bash
 cd docker
 docker compose up -d
@@ -303,6 +314,7 @@ Current status (as of 2026-02-03):
 **Status:** Not yet implemented (per plan requirements)
 
 When ready to add CI:
+
 1. Add `.github/workflows/e2e-tests.yml`
 2. Start Docker services in CI
 3. Run tests with `pnpm test:e2e:local`
@@ -342,6 +354,7 @@ When adding new tests:
 ## Support
 
 For issues or questions:
+
 1. Check this README for common troubleshooting steps
 2. Review the selector documentation in `selectors/README.md`
 3. Check test artifacts (screenshots, videos, traces) in `test-results/`
