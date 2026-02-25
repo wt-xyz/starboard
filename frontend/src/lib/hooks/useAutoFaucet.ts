@@ -49,7 +49,12 @@ export function useAutoFaucet(walletAddress: string | null) {
           faucetRequestedRef.current.add(walletAddress);
 
           const FAUCET_AMOUNT = 100_000; // 0.0001 ETH (base units, 9 decimals)
-          const result = await requestTestnetEth(account.provider, walletAddress, currentNetwork, FAUCET_AMOUNT);
+          const result = await requestTestnetEth(
+            account.provider,
+            walletAddress,
+            currentNetwork,
+            FAUCET_AMOUNT
+          );
 
           if (result.success) {
             toast.success('Testnet ETH sent to your burner wallet!', {
