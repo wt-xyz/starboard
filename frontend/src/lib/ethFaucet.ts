@@ -97,7 +97,7 @@ export async function requestTestnetEth(
   provider: Provider,
   recipientAddress: string,
   network?: Network,
-  amount?: number,
+  amount?: number
 ): Promise<{ success: true } | { success: false; error: string }> {
   try {
     const config = network
@@ -110,11 +110,7 @@ export async function requestTestnetEth(
     const baseAssetId = await provider.getBaseAssetId();
     const transferAmount = amount ?? effectiveConfig.maxFaucetAmount;
 
-    const tx = await predicate.transfer(
-      recipientAddress,
-      transferAmount,
-      baseAssetId
-    );
+    const tx = await predicate.transfer(recipientAddress, transferAmount, baseAssetId);
     const result = await tx.waitForResult();
 
     if (result.status === 'failure') {
