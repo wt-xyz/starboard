@@ -84,10 +84,7 @@ describe('AssetSelect', () => {
 
     const trigger = screen.getByRole('button', { name: /BTC\/USD/i });
     const icon = trigger.querySelector('img');
-    expect(icon).toHaveAttribute(
-      'src',
-      'https://verified-assets.fuel.network/images/solvBTC.webp'
-    );
+    expect(icon).toHaveAttribute('src', 'https://verified-assets.fuel.network/images/solvBTC.webp');
   });
 
   it('filters out base assets from the table', () => {
