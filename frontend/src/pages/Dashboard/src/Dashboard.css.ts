@@ -3,13 +3,12 @@ import { colors } from '../../../styles/colors';
 
 export const page = style({
   width: '100%',
-  height: 'calc(100vh - 3rem)',
   backgroundColor: colors.darkVoid,
   display: 'grid',
-  gridTemplateColumns: '1fr 400px',
-  gridTemplateRows: 'auto 1fr',
-  gap: '1px',
-  padding: '0',
+  gridTemplateColumns: 'minmax(0, 1fr) 400px',
+  gridTemplateRows: 'auto minmax(0, 1fr)',
+  gap: '0.5rem',
+  padding: '1rem 1rem 0.5rem 1rem',
   '@media': {
     '(max-width: 1024px)': {
       gridTemplateColumns: '1fr',
@@ -39,8 +38,8 @@ export const chartSection = style({
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: colors.gluonGrey,
-  borderRadius: '0',
-  overflow: 'hidden',
+  borderRadius: '0.5rem',
+  overflow: 'auto',
   position: 'relative',
   resize: 'vertical',
   '@media': {
@@ -73,6 +72,7 @@ export const orderEntrySection = style({
 
 export const bottomSection = style({
   gridColumn: '1 / -1',
+  minWidth: 0,
   minHeight: 0,
   display: 'flex',
   flexDirection: 'column',
