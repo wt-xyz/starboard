@@ -15,8 +15,24 @@ import type {
 
 // Map TradingView resolutions to our candle intervals
 
+/**
+ * Compute a TradingView pricescale that gives meaningful decimal places
+ * for the given price magnitude.
+ *
+ * pricescale = 10^n where n = number of visible decimal places.
+ */
+function computePricescale(price: number): number {
+  const abs = Math.abs(price);
+  if (abs === 0) return 100_000_000;
+  if (abs >= 1_000) return 100; // 2 dp  → $84,000.12
+  if (abs >= 1) return 10_000; // 4 dp  → $1.2345
+  if (abs >= 0.01) return 1_000_000; // 6 dp  → $0.012345
+  return 100_000_000; // 8 dp  → $0.00012345
+}
+
 export function createDatafeed(
-  getCandles: (interval: CandleInterval) => Promise<Candle[]>
+  getCandles: (interval: CandleInterval) => Promise<Candle[]>,
+  currentPrice?: number
 ): IBasicDataFeed {
   return {
     onReady: (callback: OnReadyCallback) => {
@@ -46,7 +62,7 @@ export function createDatafeed(
           exchange: 'Starboard',
           listed_exchange: 'Starboard',
           minmov: 1,
-          pricescale: 100,
+          pricescale: computePricescale(currentPrice ?? 0),
           has_intraday: true,
           has_daily: true,
           has_weekly_and_monthly: false,

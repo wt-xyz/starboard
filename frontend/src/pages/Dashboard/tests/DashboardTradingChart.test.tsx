@@ -62,16 +62,24 @@ vi.mock('@/components/TradingChart', () => ({
 vi.mock('@/lib/fuel-ts-sdk', () => ({
   useTradingSdk: () => ({
     getWatchedAsset: () => WATCHED_ASSET,
+    getWatchedAssetLatestPrice: () => null,
     getCandlesStatus: mockGetCandlesStatus,
     fetchCandles: mockFetchCandles,
     getCandles: mockGetCandles,
   }),
-  useSdkQuery: (selector: (sdk: unknown) => unknown) =>
-    selector({
-      trading: {
-        getWatchedAsset: () => WATCHED_ASSET,
-      },
-    }),
+  useSdkQuery: (selector: (sdk: unknown) => unknown) => {
+    try {
+      return selector({
+        trading: {
+          getWatchedAsset: () => WATCHED_ASSET,
+        },
+      });
+    } catch {
+      // Direct method refs (e.g. tradingSdk.getWatchedAssetLatestPrice) are
+      // called with no args; if the selector throws, call it directly.
+      return (selector as () => unknown)();
+    }
+  },
 }));
 
 describe('DashboardTradingChart', () => {
