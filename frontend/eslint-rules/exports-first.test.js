@@ -120,6 +120,10 @@ describe('exports-first', () => {
             export { C };
           `,
         },
+        {
+          name: 're-export is not treated as export clause',
+          code: ["export { foo } from './foo';", 'export const A = 1;', 'const B = 2;'].join('\n'),
+        },
       ],
       invalid: [
         {
