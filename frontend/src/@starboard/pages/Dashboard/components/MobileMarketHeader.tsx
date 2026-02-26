@@ -7,7 +7,7 @@ import {
 } from 'fuel-ts-sdk';
 import type { FundingInfoEntity } from 'fuel-ts-sdk/trading';
 import { calculatePriceChange } from '@/@starboard/lib/calculatePriceChange';
-import { AssetSelect } from '@/layouts/DashboardLayout/src/views/DashboardLayout/components/DashboardHeader/components/AssetSelect';
+import { AssetSelect } from '@/components/AssetSelect';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as styles from './MobileMarketHeader.css';
@@ -116,16 +116,10 @@ export const MobileMarketHeader: FC = () => {
   );
 };
 
-const Scalar = createDecimalValueSchema(0, 'Scalar');
-const FUNDING_RATE_FACTOR = DecimalValue.fromBigInt(23n);
-const SECONDS_PER_HOUR = Scalar.fromBigInt(3600n);
-const PERCENT = Scalar.fromBigInt(100n);
-
 type FundingResult = {
   fundingFormatted: string | null;
   fundingVariant: 'default' | 'positive' | 'negative';
 };
-
 function useMobileFunding(fundingInfo: FundingInfoEntity | undefined): FundingResult {
   return useMemo(() => {
     if (!fundingInfo) {
@@ -172,3 +166,11 @@ function useMobileFunding(fundingInfo: FundingInfoEntity | undefined): FundingRe
     return { fundingFormatted: '0.0000%', fundingVariant: 'default' as const };
   }, [fundingInfo]);
 }
+
+const FUNDING_RATE_FACTOR = DecimalValue.fromBigInt(23n);
+
+const Scalar = createDecimalValueSchema(0, 'Scalar');
+
+const SECONDS_PER_HOUR = Scalar.fromBigInt(3600n);
+
+const PERCENT = Scalar.fromBigInt(100n);

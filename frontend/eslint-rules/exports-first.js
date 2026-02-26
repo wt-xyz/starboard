@@ -138,6 +138,63 @@ export const exportsFirstRule = {
     }
 
     /**
+     * Adjusts firstUsage-sorted groups to respect initialization-time
+     * dependencies.  Const/let/var initializers execute at module scope,
+     * so if declaration A's initializer references declaration B,
+     * B must appear before A to avoid TDZ errors.
+     * Function declarations are hoisted and type declarations are erased,
+     * so neither kind creates init-time constraints.
+     */
+    function topoSortByInitDeps(sortedGroups) {
+      const initDeps = new Map();
+
+      for (const group of sortedGroups) {
+        const deps = new Set();
+
+        if (
+          group.declNode &&
+          group.declNode.type !== 'FunctionDeclaration' &&
+          !isTypeDeclaration(group.declNode)
+        ) {
+          for (const other of sortedGroups) {
+            if (other === group || !other.declNode) continue;
+            const otherVars = sourceCode.getDeclaredVariables(other.declNode);
+            for (const v of otherVars) {
+              for (const ref of v.references) {
+                if (ref.from.type !== 'module' && ref.from.type !== 'global') continue;
+                const pos = ref.identifier.range[0];
+                if (group.nodes.some((n) => pos >= n.range[0] && pos <= n.range[1])) {
+                  deps.add(other);
+                }
+              }
+            }
+          }
+        }
+
+        initDeps.set(group, deps);
+      }
+
+      // DFS topological sort, processing in firstUsage order as tiebreaker
+      const result = [];
+      const visited = new Set();
+
+      function visit(group) {
+        if (visited.has(group)) return;
+        visited.add(group);
+        for (const dep of initDeps.get(group)) {
+          visit(dep);
+        }
+        result.push(group);
+      }
+
+      for (const group of sortedGroups) {
+        visit(group);
+      }
+
+      return result;
+    }
+
+    /**
      * Collects declaration "groups" — a value declaration followed by
      * attached expression statements (e.g. Comp.displayName = '...').
      * Type/interface declarations that are referenced by a nearby value
@@ -357,11 +414,14 @@ export const exportsFirstRule = {
 
         if (declGroups.length <= 1) return;
 
-        // Sort by first usage, stable tie-break by original position
-        const sorted = [...declGroups].sort((a, b) => {
-          if (a.firstUsage !== b.firstUsage) return a.firstUsage - b.firstUsage;
-          return a.startBodyIdx - b.startBodyIdx;
-        });
+        // Sort by first usage, stable tie-break by original position,
+        // then adjust for initialization-time dependencies between const declarations.
+        const sorted = topoSortByInitDeps(
+          [...declGroups].sort((a, b) => {
+            if (a.firstUsage !== b.firstUsage) return a.firstUsage - b.firstUsage;
+            return a.startBodyIdx - b.startBodyIdx;
+          })
+        );
 
         const isOrdered = declGroups.every((g, idx) => g.startBodyIdx === sorted[idx].startBodyIdx);
         if (isOrdered) return;
