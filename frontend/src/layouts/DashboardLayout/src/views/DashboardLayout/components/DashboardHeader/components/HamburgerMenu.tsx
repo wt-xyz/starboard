@@ -1,13 +1,6 @@
 import { type FC, useState } from 'react';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { componentize } from '@/lib/componentize';
 import { ConnectWalletButton } from './ConnectWalletButton';
 import * as $ from './HamburgerMenu.css';
@@ -35,9 +28,7 @@ export const HamburgerMenu: FC = () => {
           </$$.mobileMenuSection>
 
           <$$.mobileMenuSection>
-            <SheetClose asChild>
-              <ConnectWalletButton />
-            </SheetClose>
+            <ConnectWalletButton />
           </$$.mobileMenuSection>
         </$$.mobileMenuContent>
       </SheetContent>
