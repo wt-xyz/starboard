@@ -24,5 +24,11 @@ export const DashboardTradingChart: FC = () => {
     [asset, tradingSdk]
   );
 
-  return <TradingChart symbol={asset?.symbol ?? '?'} candlesGetter={getOrFetchCandles} currentPrice={currentPrice} />;
+  return (
+    <TradingChart
+      symbol={asset?.symbol ?? '?'}
+      candlesGetter={getOrFetchCandles}
+      currentPrice={currentPrice}
+    />
+  );
 };
