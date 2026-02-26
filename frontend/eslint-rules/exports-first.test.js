@@ -167,6 +167,15 @@ describe('exports-first', () => {
             const B = 3;
           `,
         },
+        {
+          name: 'init-time dependency keeps declaration above its consumer even when firstUsage is later',
+          code: [
+            'export const Main = () => use(ITEMS, B);',
+            'const SCHEMA = createSchema();',
+            'const ITEMS = SCHEMA.array();',
+            'const B = () => {};',
+          ].join('\n'),
+        },
       ],
       invalid: [
         {
@@ -192,6 +201,35 @@ describe('exports-first', () => {
             'const B = () => <div />;',
             '',
             'const A = () => <div />;',
+          ].join('\n'),
+        },
+        {
+          name: 'reorder respects initialization-time dependencies between const declarations',
+          code: [
+            'export const Main = () => {',
+            '  B();',
+            '  A();',
+            '  ITEMS.get();',
+            '};',
+            'const SCHEMA = createSchema();',
+            'const ITEMS = SCHEMA.array();',
+            'const A = () => {};',
+            'const B = () => {};',
+          ].join('\n'),
+          errors: [{ messageId: 'reorder' }],
+          output: [
+            'export const Main = () => {',
+            '  B();',
+            '  A();',
+            '  ITEMS.get();',
+            '};',
+            'const B = () => {};',
+            '',
+            'const A = () => {};',
+            '',
+            'const SCHEMA = createSchema();',
+            '',
+            'const ITEMS = SCHEMA.array();',
           ].join('\n'),
         },
         {
