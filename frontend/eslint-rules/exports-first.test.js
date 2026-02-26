@@ -195,6 +195,20 @@ describe('exports-first', () => {
           ].join('\n'),
         },
         {
+          name: 'out-of-order with interleaved expression — reports but does not autofix',
+          code: [
+            'export const Main = () => {',
+            '  B();',
+            '  A();',
+            '};',
+            'const A = () => {};',
+            'sideEffect();',
+            'const B = () => {};',
+          ].join('\n'),
+          errors: [{ messageId: 'reorder' }],
+          output: null,
+        },
+        {
           name: 'reorder preserves attached displayName (JSX)',
           code: [
             'export const Main = () => (',
