@@ -13,6 +13,7 @@ import { createDatafeed } from './TradingChart.utils';
 export interface TradingChartProps {
   symbol: string;
   candlesGetter: (interval: CandleInterval) => Promise<Candle[]>;
+  currentPrice?: number;
 }
 
 export interface TradingChartHandle {
@@ -105,7 +106,7 @@ html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4 {
 }
 
 export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(function TradingChart(
-  { symbol, candlesGetter }: TradingChartProps,
+  { symbol, candlesGetter, currentPrice }: TradingChartProps,
   ref
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -158,12 +159,16 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
       if (abs >= 1_000_000_000) return sign + (abs / 1_000_000_000).toFixed(1) + 'B';
       if (abs >= 1_000_000) return sign + (abs / 1_000_000).toFixed(1) + 'M';
       if (abs >= 1_000) return sign + (abs / 1_000).toFixed(1) + 'K';
-      return sign + abs.toFixed(2);
+      if (abs >= 1) return sign + abs.toFixed(2);
+      if (abs === 0) return '0';
+      // For small prices, show enough significant digits
+      const digits = Math.max(2, Math.ceil(-Math.log10(abs)) + 2);
+      return sign + abs.toFixed(digits);
     };
 
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol,
-      datafeed: createDatafeed(candlesGetter),
+      datafeed: createDatafeed(candlesGetter, currentPrice),
       interval: '15' as ResolutionString,
       container: containerRef.current,
       library_path: '/tradingview/',
