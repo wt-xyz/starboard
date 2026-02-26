@@ -129,4 +129,31 @@ describe('AssetSelect', () => {
     const bodyRows = container.querySelectorAll('tbody tr');
     expect(bodyRows).toHaveLength(0);
   });
+
+  it('shows volume fallback when volume is null', () => {
+    mockGetAssetVolume24h.mockReturnValue(null);
+
+    const { container } = render(<AssetSelect />);
+
+    const mutedSpans = container.querySelectorAll('tbody span');
+    const dashes = Array.from(mutedSpans).filter((el) => el.textContent === '--');
+    expect(dashes.length).toBeGreaterThan(0);
+  });
+
+  it('shows volume fallback when volume is undefined', () => {
+    mockGetAssetVolume24h.mockReturnValue(undefined);
+
+    const { container } = render(<AssetSelect />);
+
+    const mutedSpans = container.querySelectorAll('tbody span');
+    const dashes = Array.from(mutedSpans).filter((el) => el.textContent === '--');
+    expect(dashes.length).toBeGreaterThan(0);
+  });
+
+  it('star buttons have accessible labels', () => {
+    const { container } = render(<AssetSelect />);
+
+    const starButtons = container.querySelectorAll('button[aria-label="Add to watchlist"]');
+    expect(starButtons).toHaveLength(2); // one per non-base asset row
+  });
 });
