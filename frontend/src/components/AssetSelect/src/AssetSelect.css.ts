@@ -74,6 +74,7 @@ export const rootStyle = recipe({
 });
 
 export const popoverScroller = style({
+  display: 'block',
   '@media': {
     '(max-width: 1024px)': {
       overflow: 'auto',
@@ -92,6 +93,12 @@ export const popoverContent = recipe({
     maxHeight: '520px',
     overflow: 'auto',
     boxShadow: '0 12px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.2)',
+    '@media': {
+      '(max-width: 1024px)': {
+        overflow: 'visible',
+        maxHeight: 'none',
+      },
+    },
   },
   variants: {
     fullWidth: {
