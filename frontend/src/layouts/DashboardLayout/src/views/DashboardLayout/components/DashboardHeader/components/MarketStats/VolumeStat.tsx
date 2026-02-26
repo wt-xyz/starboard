@@ -11,7 +11,7 @@ export const VolumeStat: FC = () => {
     watchedAsset ? sdk.getAssetVolume24h(watchedAsset.assetId) : null
   );
 
-  if (volume === null) return <_VolumeStat value="$--" />;
+  if (volume == null) return <_VolumeStat value="$--" />;
 
   return <_VolumeStat value={formatCurrency(volume, { compact: true, symbol: '$' })} />;
 };
