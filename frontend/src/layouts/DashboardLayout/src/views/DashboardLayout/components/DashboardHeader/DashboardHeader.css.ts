@@ -28,6 +28,7 @@ export const headerLeft = style({
 
 export const statsSection = style({
   flex: 1,
+  minWidth: 0,
   display: 'flex',
   alignItems: 'center',
   gap: '1.5rem',
