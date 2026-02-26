@@ -47,7 +47,7 @@ const mockGetCandlesStatus = vi.fn((_asset: string, _interval: CandleInterval): 
 // Capture the candlesGetter so we can call it directly in tests
 let capturedCandlesGetter: ((interval: CandleInterval) => Promise<Candle[]>) | null = null;
 
-vi.mock('@/components/TradingChart', () => ({
+vi.mock('@/@starboard/components/TradingChart', () => ({
   TradingChart: ({
     candlesGetter,
   }: {
