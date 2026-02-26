@@ -14,8 +14,19 @@ describe('scrollFade @supports gate', () => {
     expect(spreads.length).toBeGreaterThan(0);
 
     for (const { index } of spreads) {
-      const preceding = lines.slice(0, index).join('\n');
-      expect(preceding).toContain("'@supports'");
+      let supportsIdx = -1;
+      for (let i = index - 1; i >= 0; i--) {
+        if (lines[i].includes("'@supports'")) {
+          supportsIdx = i;
+          break;
+        }
+      }
+      expect(supportsIdx).toBeGreaterThanOrEqual(0);
+
+      const region = lines.slice(supportsIdx, index).join('\n');
+      const opens = (region.match(/{/g) || []).length;
+      const closes = (region.match(/}/g) || []).length;
+      expect(opens).toBeGreaterThan(closes);
     }
   });
 

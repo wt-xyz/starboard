@@ -66,7 +66,7 @@ export const MobileMarketHeader: FC = () => {
     <div css={styles.container}>
       <div css={styles.topRow}>
         <div css={styles.assetSection}>
-          <AssetSelect />
+          <AssetSelect fullWidth id="mobile-header-asset-select" />
         </div>
 
         <div css={styles.priceSection}>
