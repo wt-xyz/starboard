@@ -37,7 +37,9 @@ export const exportsFirstRule = {
     }
 
     function isExportClause(node) {
-      return node.type === 'ExportNamedDeclaration' && node.declaration == null;
+      return (
+        node.type === 'ExportNamedDeclaration' && node.declaration == null && node.source == null
+      );
     }
 
     function getDeclaredVarNames(node) {
