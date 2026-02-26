@@ -462,6 +462,14 @@ export const exportsFirstRule = {
             );
             if (hasNonDeclInRange) return null;
 
+            // Also bail out if export clauses (skipped by collectGroups)
+            // exist in the replacement range — the fix would delete them.
+            const hasExportClauseInRange = body.some(
+              (node) =>
+                isExportClause(node) && node.range[0] >= sectionStart && node.range[1] <= sectionEnd
+            );
+            if (hasExportClauseInRange) return null;
+
             const reorderedText = sorted
               .map((g) => g.nodes.map((n) => sourceCode.getText(n)).join('\n'))
               .join('\n\n');

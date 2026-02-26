@@ -314,6 +314,29 @@ describe('exports-first', () => {
             'const helper = () => {};',
           ].join('\n'),
         },
+        {
+          name: 'export clause between out-of-order declarations — reorder bails, clause moves to bottom',
+          code: [
+            'export const Main = () => {',
+            '  B();',
+            '  A();',
+            '};',
+            'const A = () => {};',
+            'export { Main as default };',
+            'const B = () => {};',
+          ].join('\n'),
+          errors: [{ messageId: 'reorder' }, { messageId: 'exportClauseBottom' }],
+          output: [
+            'export const Main = () => {',
+            '  B();',
+            '  A();',
+            '};',
+            'const A = () => {};',
+            'const B = () => {};',
+            '',
+            'export { Main as default };',
+          ].join('\n'),
+        },
       ],
     });
   });
