@@ -2,6 +2,7 @@ import { createVar, globalStyle, keyframes, style } from '@vanilla-extract/css';
 
 const FADE = '64px';
 const MOBILE = '(max-width: 1024px)';
+const SUPPORTS_SCROLL_ANIMATION = '(animation-timeline: scroll(self block))';
 
 // CSS variables driven by scroll-driven animations.
 // Default 0px = no fade (used when content doesn't overflow).
@@ -32,26 +33,34 @@ const fadeAnimX = keyframes({
 
 export const scrollFadeY = style({
   vars: { [fadeTop]: '0px', [fadeBottom]: '0px' },
-  '@media': {
-    [MOBILE]: {
-      ...hideScrollbar,
-      maskImage: [
-        `linear-gradient(to bottom, transparent, black ${fadeTop}, black calc(100% - ${fadeBottom}), transparent)`,
-        'linear-gradient(black, black)',
-      ].join(', '),
-      maskComposite: 'intersect',
-      WebkitMaskComposite: 'destination-in',
-      animationName: fadeAnimY,
-      animationTimingFunction: 'linear',
-      animationTimeline: 'scroll(self block)',
+  '@supports': {
+    [SUPPORTS_SCROLL_ANIMATION]: {
+      '@media': {
+        [MOBILE]: {
+          ...hideScrollbar,
+          maskImage: [
+            `linear-gradient(to bottom, transparent, black ${fadeTop}, black calc(100% - ${fadeBottom}), transparent)`,
+            'linear-gradient(black, black)',
+          ].join(', '),
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'destination-in',
+          animationName: fadeAnimY,
+          animationTimingFunction: 'linear',
+          animationTimeline: 'scroll(self block)',
+        },
+      },
     },
   },
 });
 
 const webkitHideScrollbar = {
-  '@media': {
-    [MOBILE]: {
-      display: 'none' as const,
+  '@supports': {
+    [SUPPORTS_SCROLL_ANIMATION]: {
+      '@media': {
+        [MOBILE]: {
+          display: 'none' as const,
+        },
+      },
     },
   },
 };
@@ -60,18 +69,22 @@ globalStyle(`${scrollFadeY}::-webkit-scrollbar`, webkitHideScrollbar);
 
 export const scrollFadeX = style({
   vars: { [fadeLeft]: '0px', [fadeRight]: '0px' },
-  '@media': {
-    [MOBILE]: {
-      ...hideScrollbar,
-      maskImage: [
-        'linear-gradient(black, black)',
-        `linear-gradient(to right, transparent, black ${fadeLeft}, black calc(100% - ${fadeRight}), transparent)`,
-      ].join(', '),
-      maskComposite: 'intersect',
-      WebkitMaskComposite: 'destination-in',
-      animationName: fadeAnimX,
-      animationTimingFunction: 'linear',
-      animationTimeline: 'scroll(self inline)',
+  '@supports': {
+    [SUPPORTS_SCROLL_ANIMATION]: {
+      '@media': {
+        [MOBILE]: {
+          ...hideScrollbar,
+          maskImage: [
+            'linear-gradient(black, black)',
+            `linear-gradient(to right, transparent, black ${fadeLeft}, black calc(100% - ${fadeRight}), transparent)`,
+          ].join(', '),
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'destination-in',
+          animationName: fadeAnimX,
+          animationTimingFunction: 'linear',
+          animationTimeline: 'scroll(self inline)',
+        },
+      },
     },
   },
 });
@@ -85,18 +98,22 @@ export const scrollFadeXY = style({
     [fadeLeft]: '0px',
     [fadeRight]: '0px',
   },
-  '@media': {
-    [MOBILE]: {
-      ...hideScrollbar,
-      maskImage: [
-        `linear-gradient(to bottom, transparent, black ${fadeTop}, black calc(100% - ${fadeBottom}), transparent)`,
-        `linear-gradient(to right, transparent, black ${fadeLeft}, black calc(100% - ${fadeRight}), transparent)`,
-      ].join(', '),
-      maskComposite: 'intersect',
-      WebkitMaskComposite: 'destination-in',
-      animationName: `${fadeAnimY}, ${fadeAnimX}`,
-      animationTimingFunction: 'linear, linear',
-      animationTimeline: 'scroll(self block), scroll(self inline)',
+  '@supports': {
+    [SUPPORTS_SCROLL_ANIMATION]: {
+      '@media': {
+        [MOBILE]: {
+          ...hideScrollbar,
+          maskImage: [
+            `linear-gradient(to bottom, transparent, black ${fadeTop}, black calc(100% - ${fadeBottom}), transparent)`,
+            `linear-gradient(to right, transparent, black ${fadeLeft}, black calc(100% - ${fadeRight}), transparent)`,
+          ].join(', '),
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'destination-in',
+          animationName: `${fadeAnimY}, ${fadeAnimX}`,
+          animationTimingFunction: 'linear, linear',
+          animationTimeline: 'scroll(self block), scroll(self inline)',
+        },
+      },
     },
   },
 });
