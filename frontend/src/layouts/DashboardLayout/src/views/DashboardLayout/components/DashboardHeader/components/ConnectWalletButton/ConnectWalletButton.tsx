@@ -9,7 +9,7 @@ import { WalletModal } from './components/WalletModal';
 export const ConnectWalletButton: FC = () => {
   const wallet = useRequiredContext(WalletContext);
   const { account } = useAccount();
-  const isWalletConnected = wallet.isUserConnected();
+  const isConnected = wallet.isUserConnected();
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
   const walletAddress = account ?? '';
@@ -20,7 +20,7 @@ export const ConnectWalletButton: FC = () => {
   useAutoFaucet(walletAddress);
 
   function handleWalletButtonClick() {
-    if (isWalletConnected && walletAddress) {
+    if (isConnected && walletAddress) {
       setIsWalletModalOpen(true);
     } else {
       wallet.establishConnection();
@@ -31,9 +31,9 @@ export const ConnectWalletButton: FC = () => {
     <>
       <button
         onClick={handleWalletButtonClick}
-        css={isWalletConnected ? $.walletConnected : $.walletButton}
+        css={isConnected ? $.walletConnected : $.walletButton}
       >
-        {isWalletConnected && walletAddress ? (
+        {isConnected && walletAddress ? (
           <>
             <span css={$.walletAvatar} style={{ background: avatarGradient }} />
             {displayAddress}
