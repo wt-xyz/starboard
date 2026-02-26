@@ -11,7 +11,8 @@ export function componentize<T extends Record<string, ClassValue>>(styles: T): C
   const cache = new Map<string, unknown>();
 
   return new Proxy({} as Componentized<T>, {
-    get(_, prop: string) {
+    get(_, prop: string | symbol) {
+      if (typeof prop === 'symbol') return undefined;
       if (cache.has(prop)) return cache.get(prop);
 
       const styleKey = prop[0].toLowerCase() + prop.slice(1);
