@@ -391,6 +391,17 @@ export const exportsFirstRule = {
             const lastDeclGroup = declGroups[declGroups.length - 1];
             const sectionEnd = lastDeclGroup.nodes[lastDeclGroup.nodes.length - 1].range[1];
 
+            // Bail out if non-declaration groups exist between the first and last
+            // declGroups — their correct position after reordering is ambiguous
+            // and replacing the range would silently drop them.
+            const hasNonDeclInRange = groups.some(
+              (g) =>
+                g.declNode == null &&
+                g.nodes[0].range[0] >= sectionStart &&
+                g.nodes[g.nodes.length - 1].range[1] <= sectionEnd
+            );
+            if (hasNonDeclInRange) return null;
+
             const reorderedText = sorted
               .map((g) => g.nodes.map((n) => sourceCode.getText(n)).join('\n'))
               .join('\n\n');
