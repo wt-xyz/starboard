@@ -12,14 +12,14 @@ export const OpenInterestStat: FC = () => {
   const longPct = useSdkQuery(() => (assetId ? sdk.getAssetOpenInterestLongPct(assetId) : null));
   const shortPct = useSdkQuery(() => (assetId ? sdk.getAssetOpenInterestShortPct(assetId) : null));
 
-  if (total === null) return <_OpenInterestStat value="$--" />;
+  if (total == null) return <_OpenInterestStat value="$--" />;
   if (total === 0) return <_OpenInterestStat value="$0" />;
 
-  const longDisplay = longPct !== null ? Math.round(longPct * 100) : null;
-  const shortDisplay = shortPct !== null ? Math.round(shortPct * 100) : null;
+  const longDisplay = longPct != null ? Math.round(longPct * 100) : null;
+  const shortDisplay = shortPct != null ? Math.round(shortPct * 100) : null;
   const totalFormatted = formatCurrency(total, { compact: true, symbol: '$' });
 
-  if (longDisplay !== null && shortDisplay !== null) {
+  if (longDisplay != null && shortDisplay != null) {
     return <_OpenInterestStat value={`${totalFormatted} (${longDisplay}L/${shortDisplay}S)`} />;
   }
 
