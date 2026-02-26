@@ -5,6 +5,7 @@ export const StarCell: FC = () => (
   <td css={$.starCell}>
     <button
       css={$.starButton}
+      aria-label="Add to watchlist"
       onClick={(e) => {
         e.stopPropagation();
       }}
