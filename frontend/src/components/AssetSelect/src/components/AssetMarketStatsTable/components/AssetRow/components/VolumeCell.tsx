@@ -14,7 +14,7 @@ export const VolumeCell: FC<VolumeCellProps> = ({ assetId }) => {
 
   return (
     <td css={$.cell}>
-      {volume !== null ? (
+      {volume != null ? (
         formatCurrency(volume, { compact: true, symbol: '$' })
       ) : (
         <span css={$.muted}>--</span>
