@@ -1,5 +1,4 @@
 import { type FC, useEffect, useMemo } from 'react';
-import type { PositionEntity } from 'fuel-ts-sdk/trading';
 import { TradeHistoryCard } from '@/@starboard/pages/Dashboard/components/ExchangeLists/components/TradeHistoryCard';
 import * as $ from '@/@starboard/pages/Dashboard/components/ExchangeLists/components/TradeHistoryList.css';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
@@ -16,14 +15,7 @@ export const TradeHistoryList: FC = () => {
     }
   }, [trading, userAddress]);
 
-  const allRevisions = useSdkQuery((sdk) => {
-    if (!userAddress) return [];
-    const state = sdk.store.getState();
-    const positions = state.trading.positions.positions;
-    return positions.ids
-      .map((id) => positions.entities[id as keyof typeof positions.entities])
-      .filter((p): p is PositionEntity => !!p && p.accountAddress === userAddress);
-  });
+  const allRevisions = useSdkQuery((sdk) => sdk.trading.getCurrentAccountPositionRevisions());
 
   const sortedRevisions = useMemo(
     () => [...allRevisions].sort((a, b) => b.timestamp - a.timestamp),
