@@ -4,6 +4,7 @@ build/
 fuel-ts-sdk/lib/
 contracts/lib/
 contracts/types/
+contracts/fuel-script-types/
 contracts/**/out/
 contracts/cache/
 indexer/lib/

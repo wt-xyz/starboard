@@ -11,4 +11,7 @@ members = [
 
   "contracts/testnet/token",
   "contracts/vault-expose",
+
+  "fuel-scripts/increase-position-script",
+  "fuel-scripts/decrease-position-script",
 ]

@@ -4,14 +4,15 @@ import { readdir, readFile, writeFile } from "fs/promises"
 import { join } from "path"
 
 const typesDir = new URL("../types", import.meta.url).pathname
+const fuelScriptTypesDir = new URL("../fuel-script-types", import.meta.url).pathname
 
-async function fixImports() {
-    const files = await readdir(typesDir)
+async function fixImportsInDir(dir) {
+    const files = await readdir(dir)
 
     for (const file of files) {
         if (!file.endsWith(".ts")) continue
 
-        const filePath = join(typesDir, file)
+        const filePath = join(dir, file)
         let content = await readFile(filePath, "utf-8")
 
         // Add .js extension to relative imports
@@ -19,6 +20,11 @@ async function fixImports() {
 
         await writeFile(filePath, content, "utf-8")
     }
+}
+
+async function fixImports() {
+    await fixImportsInDir(typesDir)
+    await fixImportsInDir(fuelScriptTypesDir)
 
     console.log("✓ Fixed imports in generated types")
 }

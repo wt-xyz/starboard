@@ -14,7 +14,7 @@
         "build:contracts": "forc build --release --log-level 4",
         "build:pre": "pnpm build:vault-expose-1 && pnpm build:vault-expose-2",
         "build": "pnpm build:pre && pnpm build:contracts",
-        "gen:types": "fuels typegen -i ./contracts/**/*-abi.json -o ./types && node scripts/fix-typegen-imports.mjs",
+        "gen:types": "fuels typegen -i ./contracts/**/*-abi.json -o ./types && fuels typegen -i ./fuel-scripts/**/*-abi.json -o ./fuel-script-types --script && node scripts/fix-typegen-imports.mjs",
         "test": "vitest run",
         "test:watch": "vitest",
         "lint:contracts": "forc fmt --check",

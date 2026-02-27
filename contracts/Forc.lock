@@ -1,6 +1,6 @@
 [[package]]
 name = "core_interfaces"
-source = "path+from-root-B13D3383E17FE97A"
+source = "path+from-root-F0DF177E8AD018BE"
 dependencies = [
     "helpers",
     "signed_int",
@@ -8,9 +8,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "eth-faucet-predicate"
+name = "decrease-position-script"
 source = "member"
-dependencies = ["std"]
+dependencies = [
+    "core_interfaces",
+    "std",
+]
 
 [[package]]
 name = "fungible"
@@ -33,8 +36,16 @@ dependencies = [
 
 [[package]]
 name = "helpers"
-source = "path+from-root-A53CDECCD463BB5B"
+source = "path+from-root-F0DF177E8AD018BE"
 dependencies = ["std"]
+
+[[package]]
+name = "increase-position-script"
+source = "member"
+dependencies = [
+    "core_interfaces",
+    "std",
+]
 
 [[package]]
 name = "ownership"
