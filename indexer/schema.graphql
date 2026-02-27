@@ -1,7 +1,8 @@
-type Price @entity @index(fields: ["asset", "timestamp"]) {
+type Price @entity @index(fields: ["asset", "oracleTimestamp"]) {
   id: ID!
   asset: String!
   timestamp: Int!
+  oracleTimestamp: Int!
   price: BigInt!
 }
 

@@ -76,7 +76,33 @@ describe('Verify Prices', () => {
       expect(btcMaxPrice).toBe(toPrice(47360));
     });
 
-    it('should store correct btc timestamp', async () => {
+    it('should store correct btc oracle timestamp', async () => {
+      const btcResult = await client.query(
+        'SELECT min(oracle_timestamp) as min_ts, max(oracle_timestamp) as max_ts FROM price WHERE asset = $1',
+        [BTC_ASSET]
+      );
+      const btcMinTimestamp = btcResult.rows[0].min_ts;
+      const btcMaxTimestamp = btcResult.rows[0].max_ts;
+      const now = Math.floor(Date.now() / 1000);
+      // just to be sure, the timestamps do not deviate too much from the current time
+      expect(btcMinTimestamp).toBeLessThan(now + 1800);
+      expect(btcMinTimestamp).toBeGreaterThan(now - 1800);
+      expect(btcMaxTimestamp).toBeLessThan(now + 1800);
+      expect(btcMaxTimestamp).toBeGreaterThan(now - 1800);
+    });
+
+    it('should store correct btc oracle timestamp spread across events', async () => {
+      const btcResult = await client.query(
+        'SELECT min(oracle_timestamp) as min_ts, max(oracle_timestamp) as max_ts FROM price WHERE asset = $1',
+        [BTC_ASSET]
+      );
+      const btcMinTimestamp = btcResult.rows[0].min_ts;
+      const btcMaxTimestamp = btcResult.rows[0].max_ts;
+      // 205 is the sum of seconds when moving the blockchain time in the populate-events-price.ts script
+      expect(btcMaxTimestamp - btcMinTimestamp).toBeGreaterThanOrEqual(205);
+    });
+
+    it('should store correct btc block timestamp', async () => {
       const btcResult = await client.query(
         'SELECT min(timestamp) as min_ts, max(timestamp) as max_ts FROM price WHERE asset = $1',
         [BTC_ASSET]
@@ -91,7 +117,7 @@ describe('Verify Prices', () => {
       expect(btcMaxTimestamp).toBeGreaterThan(now - 1800);
     });
 
-    it('should store correct btc timestamp spread across events', async () => {
+    it('should store correct btc block timestamp spread across events', async () => {
       const btcResult = await client.query(
         'SELECT min(timestamp) as min_ts, max(timestamp) as max_ts FROM price WHERE asset = $1',
         [BTC_ASSET]
@@ -165,7 +191,43 @@ describe('Verify Prices', () => {
       expect(maxPrice.toString()).toBe(toPrice(47360));
     });
 
-    it('should return correct btc timestamps', async () => {
+    it('should return correct btc oracle timestamps', async () => {
+      const btcData = await graphQLPost(
+        `prices(condition:{asset:"${BTC_ASSET}"}){nodes{oracleTimestamp}}`
+      );
+      expect(btcData.data.prices.nodes.length).toBe(70);
+
+      const timestamps = btcData.data.prices.nodes.map(
+        (p: { oracleTimestamp: number }) => p.oracleTimestamp
+      );
+      const minTimestamp = Math.min(...timestamps);
+      const maxTimestamp = Math.max(...timestamps);
+      const now = Math.floor(Date.now() / 1000);
+
+      // Timestamps should be within reasonable range from current time
+      expect(minTimestamp).toBeLessThan(now + 1800);
+      expect(minTimestamp).toBeGreaterThan(now - 1800);
+      expect(maxTimestamp).toBeLessThan(now + 1800);
+      expect(maxTimestamp).toBeGreaterThan(now - 1800);
+    });
+
+    it('should return correct btc oracle timestamp spread across events', async () => {
+      const btcData = await graphQLPost(
+        `prices(condition:{asset:"${BTC_ASSET}"}){nodes{oracleTimestamp}}`
+      );
+      expect(btcData.data.prices.nodes.length).toBe(70);
+
+      const timestamps = btcData.data.prices.nodes.map(
+        (p: { oracleTimestamp: number }) => p.oracleTimestamp
+      );
+      const minTimestamp = Math.min(...timestamps);
+      const maxTimestamp = Math.max(...timestamps);
+
+      // 205 is the sum of seconds when moving the blockchain time in the populate-events-price.ts script
+      expect(maxTimestamp - minTimestamp).toBeGreaterThanOrEqual(205);
+    });
+
+    it('should return correct btc block timestamps', async () => {
       const btcData = await graphQLPost(
         `prices(condition:{asset:"${BTC_ASSET}"}){nodes{timestamp}}`
       );
@@ -183,7 +245,7 @@ describe('Verify Prices', () => {
       expect(maxTimestamp).toBeGreaterThan(now - 1800);
     });
 
-    it('should return correct btc timestamp spread across events', async () => {
+    it('should return correct btc block timestamp spread across events', async () => {
       const btcData = await graphQLPost(
         `prices(condition:{asset:"${BTC_ASSET}"}){nodes{timestamp}}`
       );

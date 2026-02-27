@@ -152,7 +152,8 @@ async function handlePriceUpdate(
     id: generateId(receipt, block),
     asset,
     price: BigInt(priceValue.toString()),
-    timestamp: timestampSec,
+    oracleTimestamp: timestampSec,
+    timestamp: getUTCBlockTime(block),
   });
   await ctx.store.insert(price);
 }

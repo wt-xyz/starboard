@@ -1,6 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, StringColumn as StringColumn_, IntColumn as IntColumn_, BigIntColumn as BigIntColumn_} from "@subsquid/typeorm-store"
 
-@Index_(["asset", "timestamp"], {unique: false})
+@Index_(["asset", "oracleTimestamp"], {unique: false})
 @Entity_()
 export class Price {
     constructor(props?: Partial<Price>) {
@@ -12,6 +12,9 @@ export class Price {
 
     @StringColumn_({nullable: false})
     asset!: string
+
+    @IntColumn_({nullable: false})
+    oracleTimestamp!: number
 
     @IntColumn_({nullable: false})
     timestamp!: number
