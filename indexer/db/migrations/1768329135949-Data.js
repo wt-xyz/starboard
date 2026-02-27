@@ -4,20 +4,20 @@ export default class Data1768329135949 {
 
   async up(db) {
     await db.query(
-      `CREATE TABLE "current_price" ("asset" text NOT NULL, "timestamp" integer NOT NULL, "price" numeric NOT NULL, PRIMARY KEY ("asset"))`
+      `CREATE TABLE "current_price" ("asset" text NOT NULL, "oracle_timestamp" integer NOT NULL, "timestamp" integer NOT NULL, "price" numeric NOT NULL, PRIMARY KEY ("asset"))`
     );
     await db.query(`
 CREATE OR REPLACE FUNCTION current_price_update() RETURNS TRIGGER AS $$
 DECLARE
    v_cnt integer;
 BEGIN
-   INSERT INTO current_price VALUES(NEW.asset, NEW.timestamp, NEW.price)
+   INSERT INTO current_price (asset, oracle_timestamp, timestamp, price) VALUES(NEW.asset, NEW.oracle_timestamp, NEW.timestamp, NEW.price)
       ON CONFLICT(asset)
-      DO UPDATE SET timestamp = NEW.timestamp, price = NEW.price
-      WHERE current_price.timestamp < NEW.timestamp;
+      DO UPDATE SET oracle_timestamp = NEW.oracle_timestamp, timestamp = NEW.timestamp, price = NEW.price
+      WHERE current_price.oracle_timestamp < NEW.oracle_timestamp;
    GET DIAGNOSTICS v_cnt = ROW_COUNT;
    IF v_cnt > 0 THEN
-      PERFORM pg_notify('starboard:price:'||SUBSTRING(NEW.asset, 1, 42), json_build_object('asset', NEW.asset, 'timestamp', NEW.timestamp, 'price', NEW.price)::text);
+      PERFORM pg_notify('starboard:price:'||SUBSTRING(NEW.asset, 1, 42), json_build_object('asset', NEW.asset, 'oracleTimestamp', NEW.oracle_timestamp, 'timestamp', NEW.timestamp, 'price', NEW.price)::text);
    END IF;
    RETURN NEW;
 END;

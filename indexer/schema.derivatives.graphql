@@ -64,7 +64,8 @@ type CandleD1 @entity {
 type CurrentPrice @entity {
   id: ID!
   asset: String! @index
-  timestamp: Int! @index
+  timestamp: Int!
+  oracleTimestamp: Int! @index
   price: BigInt!
 }
 

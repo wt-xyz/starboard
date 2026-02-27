@@ -83,6 +83,7 @@ export const CurrentPricePlugin: Plugin = makeExtendSchemaPlugin((_build, _optio
     typeDefs: gql`
       type _CurrentPricePayload {
         asset: String!
+        oracleTimestamp: Int!
         timestamp: Int!
         price: BigInt!
       }
