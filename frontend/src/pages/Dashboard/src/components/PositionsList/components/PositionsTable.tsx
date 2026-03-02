@@ -62,7 +62,11 @@ export const ActionsCell = (props: { stableId: PositionStableId }) => {
 
   const handleMarketClose = useCallback(async () => {
     const position = trading.getPositionById(props.stableId);
-    if (!position) return;
+    if (!position) {
+      confirmCloseBoolean.setFalse();
+      toast.error('Position not found');
+      return;
+    }
     confirmCloseBoolean.setFalse();
     setIsClosing(true);
     try {
