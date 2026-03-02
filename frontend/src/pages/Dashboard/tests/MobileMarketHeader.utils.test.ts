@@ -27,9 +27,9 @@ describe('getAssetPriceFormatted', () => {
 
   it('handles a very small price near the recursion limit', () => {
     // 1e-8 rounds to 0 at 0-7 decimals, non-zero at 8 → returns with 10 decimals
-    // But recursion caps at 9, so it should still return a valid string
     const result = getAssetPriceFormatted(1e-8);
     expect(result).not.toContain('NaN');
+    expect(result).not.toEqual(getAssetPriceFormatted(0));
   });
 
   it('caps recursion at 9 decimals and returns formatted zero', () => {
