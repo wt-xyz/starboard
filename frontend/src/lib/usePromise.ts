@@ -57,8 +57,6 @@ export function usePromise<T>(promised: Promise<T>, autorun = false): UsePromise
   };
 }
 
-type InitializeFunc = () => void;
-
 type FulfilledState<T> = {
   status: 'fulfilled';
   data: T;
@@ -79,3 +77,5 @@ type DefaultState<T> = {
   initialize: InitializeFunc;
   error?: Error;
 };
+
+type InitializeFunc = () => void;

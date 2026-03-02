@@ -11,12 +11,6 @@ import {
   MarkPriceStat,
 } from './components';
 
-type DecreasePositionDialogProps = {
-  open: boolean;
-  onOpenChange?: (open: boolean) => void;
-  positionId: PositionStableId;
-};
-
 export const DecreasePositionDialog = memo(
   ({ open, onOpenChange, positionId }: DecreasePositionDialogProps) => {
     const closeDialog = useCallback(() => {
@@ -70,5 +64,11 @@ export const DecreasePositionDialog = memo(
     );
   }
 );
+
+type DecreasePositionDialogProps = {
+  open: boolean;
+  onOpenChange?: (open: boolean) => void;
+  positionId: PositionStableId;
+};
 
 DecreasePositionDialog.displayName = 'DecreasePositionDialog';

@@ -1,13 +1,38 @@
-import { type FC, type PropsWithChildren, useCallback, useState } from 'react';
+import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
 import { lightTheme } from '@/styles/theme.light.css';
 import { starboardTheme } from '@/styles/theme.starboard.css';
+import type { ThemeContextType } from './ThemeContext';
 import { ThemeContext, type ThemePreference } from './ThemeContext';
 
-const STORAGE_KEY = 'starboard-theme';
+export interface ThemeContextProviderProps {
+  children: (value: ThemeContextType) => ReactNode;
+}
 
-const THEME_CLASSES: Record<ThemePreference, string> = {
-  dark: starboardTheme,
-  light: lightTheme,
+export const ThemeContextProvider: FC<ThemeContextProviderProps> = ({ children }) => {
+  const [theme, setTheme] = useState<ThemePreference>(() => {
+    const initial = getInitialTheme();
+    applyThemeClass(initial);
+    return initial;
+  });
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      applyThemeClass(next);
+      localStorage.setItem(STORAGE_KEY, next);
+      return next;
+    });
+  }, []);
+
+  const contextValue = useMemo<ThemeContextType>(
+    () => ({
+      theme,
+      toggleTheme,
+    }),
+    [theme, toggleTheme]
+  );
+
+  return <ThemeContext value={{ theme, toggleTheme }}>{children(contextValue)}</ThemeContext>;
 };
 
 function getInitialTheme(): ThemePreference {
@@ -26,21 +51,9 @@ function applyThemeClass(theme: ThemePreference) {
   root.classList.add(THEME_CLASSES[theme]);
 }
 
-export const ThemeContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [theme, setTheme] = useState<ThemePreference>(() => {
-    const initial = getInitialTheme();
-    applyThemeClass(initial);
-    return initial;
-  });
+const STORAGE_KEY = 'starboard-theme';
 
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next = prev === 'dark' ? 'light' : 'dark';
-      applyThemeClass(next);
-      localStorage.setItem(STORAGE_KEY, next);
-      return next;
-    });
-  }, []);
-
-  return <ThemeContext value={{ theme, toggleTheme }}>{children}</ThemeContext>;
+const THEME_CLASSES: Record<ThemePreference, string> = {
+  dark: starboardTheme,
+  light: lightTheme,
 };

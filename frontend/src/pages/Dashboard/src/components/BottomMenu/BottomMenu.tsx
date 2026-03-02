@@ -6,8 +6,6 @@ import { DashboardOrderEntryForm } from '../DashboardOrderEntryForm';
 import { PositionsList } from '../PositionsList';
 import * as $ from './BottomMenu.css';
 
-type Side = 'long' | 'short';
-
 export function BottomMenu() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [activeSide, setActiveSide] = useState<Side>('long');
@@ -73,6 +71,8 @@ export function BottomMenu() {
     </>
   );
 }
+
+type Side = 'long' | 'short';
 
 const LongButton = propifyEl('button', {
   className: $.barButton,

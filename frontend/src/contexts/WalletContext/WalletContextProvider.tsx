@@ -4,15 +4,15 @@ import { useConnectUI, useDisconnect, useFuel, useIsConnected, useNetwork } from
 import { FuelsProvider } from './@fuels/FuelsProvider';
 import { WalletContext, type WalletContextType } from './WalletContext';
 
-type WalletContextProviderProps = {
-  children: ReactNode;
-};
-
 export const WalletContextProvider = (props: WalletContextProviderProps) => (
   <FuelsProvider>
     <WalletContextProvider_Provided>{props.children}</WalletContextProvider_Provided>
   </FuelsProvider>
 );
+
+type WalletContextProviderProps = {
+  children: ReactNode;
+};
 
 const WalletContextProvider_Provided: FC<WalletContextProviderProps> = ({ children }) => {
   const { fuel } = useFuel();

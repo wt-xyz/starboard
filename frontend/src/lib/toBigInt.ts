@@ -1,5 +1,3 @@
-export {};
-
 function toBigInt(this: string): bigint {
   const trimmed = this.trim();
   if (!/^[+-]?\d+$/.test(trimmed)) {
@@ -15,3 +13,5 @@ declare global {
     toBigInt(this: string): bigint;
   }
 }
+
+export {};

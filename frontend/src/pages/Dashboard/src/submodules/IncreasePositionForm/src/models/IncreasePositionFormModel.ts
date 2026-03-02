@@ -1,7 +1,5 @@
 import { ORDER_SIDES, type OrderSide } from '@/modules/PositionForm';
 
-export { ORDER_SIDES, type OrderSide };
-
 export interface IncreasePositionFormModel {
   orderSide: OrderSide;
   collateralSize: string;
@@ -15,3 +13,5 @@ export const nullIncreasePositionForm: IncreasePositionFormModel = {
   collateralSize: '',
   leverage: '10',
 };
+
+export { ORDER_SIDES, type OrderSide };

@@ -9,22 +9,7 @@ import type { Network } from '@/models/Network';
 import { NETWORKS } from '@/models/Network';
 import * as $ from './NetworkSwitcher.css';
 
-const NETWORK_LABELS: Record<Network, string> = {
-  local: 'Local',
-  testnet: 'Testnet',
-  mainnet: 'Mainnet',
-};
-
 // Filter networks based on environment
-function getAvailableNetworks(): Network[] {
-  // In development, all networks are available
-  if (envs.isDev()) {
-    return [...NETWORKS];
-  }
-
-  // In production, only testnet and mainnet are available (local requires localhost)
-  return NETWORKS.filter((network) => network !== 'local');
-}
 
 export const NetworkSwitcher: FC = () => {
   const networkSwitch = useRequiredContext(NetworkSwitchContext);
@@ -67,4 +52,20 @@ export const NetworkSwitcher: FC = () => {
       </Select.Root>
     </div>
   );
+};
+
+function getAvailableNetworks(): Network[] {
+  // In development, all networks are available
+  if (envs.isDev()) {
+    return [...NETWORKS];
+  }
+
+  // In production, only testnet and mainnet are available (local requires localhost)
+  return NETWORKS.filter((network) => network !== 'local');
+}
+
+const NETWORK_LABELS: Record<Network, string> = {
+  local: 'Local',
+  testnet: 'Testnet',
+  mainnet: 'Mainnet',
 };

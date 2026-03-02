@@ -26,13 +26,6 @@ type WalletModalProps = {
   avatarGradient: string;
 };
 
-function truncateAddress(address: string): string {
-  if (address.length <= 14) return address;
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
-
-const BURNER_WALLET_CONNECTOR_NAME = 'Burner Wallet';
-
 export const WalletModal: FC<WalletModalProps> = ({
   open,
   onOpenChange,
@@ -374,3 +367,10 @@ export const WalletModal: FC<WalletModalProps> = ({
     </Dialog.Root>
   );
 };
+
+const BURNER_WALLET_CONNECTOR_NAME = 'Burner Wallet';
+
+function truncateAddress(address: string): string {
+  if (address.length <= 14) return address;
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}

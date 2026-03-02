@@ -11,48 +11,12 @@
 /**
  * Gets the user's locale from the browser, with fallback to 'en-US'
  */
-function getUserLocale(): string {
-  if (typeof navigator !== 'undefined') {
-    return navigator.language || 'en-US';
-  }
-  return 'en-US';
-}
 
 /**
  * Calculates adaptive decimals for tiny numbers that would round to 0.
  * Returns the original decimals if the value wouldn't be zero, or
  * finds the minimum decimals needed to show significant digits + 2 for precision.
  */
-function getAdaptiveDecimals(value: number, requestedDecimals: number, maxDecimals = 9): number {
-  if (value === 0) return requestedDecimals;
-
-  const wouldBeZero = Math.round(value * 10 ** requestedDecimals) / 10 ** requestedDecimals === 0;
-  if (!wouldBeZero) return requestedDecimals;
-
-  for (let d = requestedDecimals + 1; d <= maxDecimals; d++) {
-    const testValue = Math.round(value * 10 ** d) / 10 ** d;
-    if (testValue !== 0) {
-      return Math.min(d + 2, maxDecimals); // Add 2 for precision
-    }
-  }
-
-  return maxDecimals;
-}
-
-type FormatCurrencyOptions = {
-  /** Number of decimal places (default: 2) */
-  decimals?: number;
-  /** Whether to show the currency symbol (default: true) */
-  showSymbol?: boolean;
-  /** Currency symbol to display (default: '$') */
-  symbol?: string;
-  /** Whether to use compact notation for large numbers (default: false) */
-  compact?: boolean;
-  /** Minimum value to display, below which shows '<min' (default: undefined) */
-  minDisplay?: number;
-  /** Locale override (default: browser locale) */
-  locale?: string;
-};
 
 /**
  * Formats a number as currency with locale-aware thousand separators
@@ -104,53 +68,6 @@ export function formatCurrency(
 /**
  * Formats large numbers in compact notation (K, M, B, T)
  */
-function formatCompactCurrency(
-  value: number,
-  options: { showSymbol: boolean; symbol: string; decimals: number; locale?: string }
-): string {
-  const { showSymbol, symbol, decimals, locale } = options;
-
-  const absValue = Math.abs(value);
-  const sign = value < 0 ? '-' : '';
-
-  let suffix = '';
-  let divisor = 1;
-
-  if (absValue >= 1_000_000_000_000) {
-    suffix = 'T';
-    divisor = 1_000_000_000_000;
-  } else if (absValue >= 1_000_000_000) {
-    suffix = 'B';
-    divisor = 1_000_000_000;
-  } else if (absValue >= 1_000_000) {
-    suffix = 'M';
-    divisor = 1_000_000;
-  } else if (absValue >= 1_000) {
-    suffix = 'K';
-    divisor = 1_000;
-  }
-
-  const compactValue = absValue / divisor;
-  // Use fewer decimals for compact notation, max 2
-  const compactDecimals = Math.min(decimals, 2);
-  const formatted = new Intl.NumberFormat(locale ?? getUserLocale(), {
-    minimumFractionDigits: compactDecimals,
-    maximumFractionDigits: compactDecimals,
-  }).format(compactValue);
-
-  return `${sign}${showSymbol ? symbol : ''}${formatted}${suffix}`;
-}
-
-type FormatNumberOptions = {
-  /** Number of decimal places */
-  decimals?: number;
-  /** Whether to use thousand separators (default: true) */
-  useGrouping?: boolean;
-  /** Sign display: 'auto' | 'always' | 'never' (default: 'auto') */
-  signDisplay?: 'auto' | 'always' | 'never';
-  /** Locale override (default: browser locale) */
-  locale?: string;
-};
 
 /**
  * Formats a number with locale-aware thousand separators
@@ -232,3 +149,89 @@ export function abbreviateAddress(
 
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
 }
+
+type FormatCurrencyOptions = {
+  /** Number of decimal places (default: 2) */
+  decimals?: number;
+  /** Whether to show the currency symbol (default: true) */
+  showSymbol?: boolean;
+  /** Currency symbol to display (default: '$') */
+  symbol?: string;
+  /** Whether to use compact notation for large numbers (default: false) */
+  compact?: boolean;
+  /** Minimum value to display, below which shows '<min' (default: undefined) */
+  minDisplay?: number;
+  /** Locale override (default: browser locale) */
+  locale?: string;
+};
+
+function formatCompactCurrency(
+  value: number,
+  options: { showSymbol: boolean; symbol: string; decimals: number; locale?: string }
+): string {
+  const { showSymbol, symbol, decimals, locale } = options;
+
+  const absValue = Math.abs(value);
+  const sign = value < 0 ? '-' : '';
+
+  let suffix = '';
+  let divisor = 1;
+
+  if (absValue >= 1_000_000_000_000) {
+    suffix = 'T';
+    divisor = 1_000_000_000_000;
+  } else if (absValue >= 1_000_000_000) {
+    suffix = 'B';
+    divisor = 1_000_000_000;
+  } else if (absValue >= 1_000_000) {
+    suffix = 'M';
+    divisor = 1_000_000;
+  } else if (absValue >= 1_000) {
+    suffix = 'K';
+    divisor = 1_000;
+  }
+
+  const compactValue = absValue / divisor;
+  // Use fewer decimals for compact notation, max 2
+  const compactDecimals = Math.min(decimals, 2);
+  const formatted = new Intl.NumberFormat(locale ?? getUserLocale(), {
+    minimumFractionDigits: compactDecimals,
+    maximumFractionDigits: compactDecimals,
+  }).format(compactValue);
+
+  return `${sign}${showSymbol ? symbol : ''}${formatted}${suffix}`;
+}
+
+function getAdaptiveDecimals(value: number, requestedDecimals: number, maxDecimals = 9): number {
+  if (value === 0) return requestedDecimals;
+
+  const wouldBeZero = Math.round(value * 10 ** requestedDecimals) / 10 ** requestedDecimals === 0;
+  if (!wouldBeZero) return requestedDecimals;
+
+  for (let d = requestedDecimals + 1; d <= maxDecimals; d++) {
+    const testValue = Math.round(value * 10 ** d) / 10 ** d;
+    if (testValue !== 0) {
+      return Math.min(d + 2, maxDecimals); // Add 2 for precision
+    }
+  }
+
+  return maxDecimals;
+}
+
+function getUserLocale(): string {
+  if (typeof navigator !== 'undefined') {
+    return navigator.language || 'en-US';
+  }
+  return 'en-US';
+}
+
+type FormatNumberOptions = {
+  /** Number of decimal places */
+  decimals?: number;
+  /** Whether to use thousand separators (default: true) */
+  useGrouping?: boolean;
+  /** Sign display: 'auto' | 'always' | 'never' (default: 'auto') */
+  signDisplay?: 'auto' | 'always' | 'never';
+  /** Locale override (default: browser locale) */
+  locale?: string;
+};
