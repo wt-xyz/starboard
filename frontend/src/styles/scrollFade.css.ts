@@ -1,7 +1,7 @@
 import { createVar, globalStyle, keyframes, style } from '@vanilla-extract/css';
 
 const FADE = '64px';
-const MOBILE = '(max-width: 1024px)';
+const TOUCH = '(pointer: coarse)';
 const SUPPORTS_SCROLL_ANIMATION = '(animation-timeline: scroll(self block))';
 
 // CSS variables driven by scroll-driven animations.
@@ -23,6 +23,13 @@ const fadeAnimY = keyframes({
   '100%': { vars: { [fadeTop]: FADE, [fadeBottom]: '0px' } },
 });
 
+// Vertical bottom-only: no top fade ever; at 100% no bottom fade
+const fadeAnimBottom = keyframes({
+  '0%': { vars: { [fadeBottom]: FADE } },
+  '99%': { vars: { [fadeBottom]: FADE } },
+  '100%': { vars: { [fadeBottom]: '0px' } },
+});
+
 // Horizontal: at 0% scroll no left fade; at 100% no right fade
 const fadeAnimX = keyframes({
   '0%': { vars: { [fadeLeft]: '0px', [fadeRight]: FADE } },
@@ -36,7 +43,7 @@ export const scrollFadeY = style({
   '@supports': {
     [SUPPORTS_SCROLL_ANIMATION]: {
       '@media': {
-        [MOBILE]: {
+        [TOUCH]: {
           ...hideScrollbar,
           maskImage: [
             `linear-gradient(to bottom, transparent, black ${fadeTop}, black calc(100% - ${fadeBottom}), transparent)`,
@@ -57,7 +64,7 @@ const webkitHideScrollbar = {
   '@supports': {
     [SUPPORTS_SCROLL_ANIMATION]: {
       '@media': {
-        [MOBILE]: {
+        [TOUCH]: {
           display: 'none' as const,
         },
       },
@@ -72,7 +79,7 @@ export const scrollFadeX = style({
   '@supports': {
     [SUPPORTS_SCROLL_ANIMATION]: {
       '@media': {
-        [MOBILE]: {
+        [TOUCH]: {
           ...hideScrollbar,
           maskImage: [
             'linear-gradient(black, black)',
@@ -101,7 +108,7 @@ export const scrollFadeXY = style({
   '@supports': {
     [SUPPORTS_SCROLL_ANIMATION]: {
       '@media': {
-        [MOBILE]: {
+        [TOUCH]: {
           ...hideScrollbar,
           maskImage: [
             `linear-gradient(to bottom, transparent, black ${fadeTop}, black calc(100% - ${fadeBottom}), transparent)`,
@@ -119,3 +126,32 @@ export const scrollFadeXY = style({
 });
 
 globalStyle(`${scrollFadeXY}::-webkit-scrollbar`, webkitHideScrollbar);
+
+// Bottom + horizontal: no top fade (preserves sticky headers / tab bars)
+export const scrollFadeBottomX = style({
+  vars: {
+    [fadeBottom]: '0px',
+    [fadeLeft]: '0px',
+    [fadeRight]: '0px',
+  },
+  '@supports': {
+    [SUPPORTS_SCROLL_ANIMATION]: {
+      '@media': {
+        [TOUCH]: {
+          ...hideScrollbar,
+          maskImage: [
+            `linear-gradient(to bottom, black, black calc(100% - ${fadeBottom}), transparent)`,
+            `linear-gradient(to right, transparent, black ${fadeLeft}, black calc(100% - ${fadeRight}), transparent)`,
+          ].join(', '),
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'destination-in',
+          animationName: `${fadeAnimBottom}, ${fadeAnimX}`,
+          animationTimingFunction: 'linear, linear',
+          animationTimeline: 'scroll(self block), scroll(self inline)',
+        },
+      },
+    },
+  },
+});
+
+globalStyle(`${scrollFadeBottomX}::-webkit-scrollbar`, webkitHideScrollbar);

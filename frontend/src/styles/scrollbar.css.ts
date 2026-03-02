@@ -1,5 +1,6 @@
 import { globalStyle } from '@vanilla-extract/css';
-import { colors } from './colors';
+import { alpha } from './alpha';
+import { vars } from './theme.contract.css';
 
 globalStyle('*::-webkit-scrollbar', {
   width: '8px',
@@ -11,6 +12,6 @@ globalStyle('*::-webkit-scrollbar-track', {
 });
 
 globalStyle('*::-webkit-scrollbar-thumb', {
-  background: colors.dustyGreyAlpha[50],
+  background: alpha(vars.color.textSecondary, 50),
   borderRadius: '4px',
 });

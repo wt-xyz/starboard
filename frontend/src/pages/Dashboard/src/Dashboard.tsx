@@ -26,8 +26,6 @@ export function Dashboard() {
         </$$.chartSection>
 
         <$$.orderEntrySection>
-          <h2 css={$.orderEntryTitle}>Order Entry</h2>
-
           <$$.orderEntryFormWrapper>
             <DashboardOrderEntryForm />
           </$$.orderEntryFormWrapper>
