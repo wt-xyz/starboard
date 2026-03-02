@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '../../../../../../styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({
   display: 'flex',
@@ -13,23 +14,24 @@ export const emptyState = style({
   alignItems: 'center',
   justifyContent: 'center',
   padding: '3rem 1rem',
-  color: colors.dustyGrey,
+  minHeight: '8rem',
+  color: vars.color.textSecondary,
   textAlign: 'center',
 });
 
 export const emptyStateText = style({
-  fontSize: '0.875rem',
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.body,
+  color: vars.color.textSecondary,
 });
 
 export const historyCard = style({
-  backgroundColor: colors.slateGrey,
+  backgroundColor: vars.color.inputBg,
   borderRadius: '0.5rem',
   padding: '0.75rem',
   display: 'flex',
   flexDirection: 'column',
   gap: '0.5rem',
-  border: `1px solid ${colors.whiteAlpha[10]}`,
+  border: `1px solid ${vars.color.borderDefault}`,
 });
 
 export const cardHeader = style({
@@ -45,31 +47,31 @@ export const assetInfo = style({
 });
 
 export const assetName = style({
-  fontSize: '0.875rem',
-  fontWeight: '600',
-  color: colors.snow,
+  fontSize: vars.fontSize.body,
+  fontWeight: '500',
+  color: vars.color.textPrimary,
 });
 
 export const sideBadge = style({
   padding: '0.125rem 0.5rem',
   borderRadius: '0.25rem',
-  fontSize: '0.6875rem',
-  fontWeight: '600',
+  fontSize: vars.fontSize.label,
+  fontWeight: '500',
   selectors: {
     '&[data-side="LONG"]': {
-      backgroundColor: colors.whiteAlpha[10],
-      color: colors.success,
+      backgroundColor: alpha(vars.color.textPrimary, 10),
+      color: vars.color.success,
     },
     '&[data-side="SHORT"]': {
-      backgroundColor: colors.whiteAlpha[10],
-      color: colors.error,
+      backgroundColor: alpha(vars.color.textPrimary, 10),
+      color: vars.color.error,
     },
   },
 });
 
 export const timestamp = style({
-  fontSize: '0.6875rem',
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.label,
+  color: vars.color.textSecondary,
 });
 
 export const pnlRow = style({
@@ -77,25 +79,24 @@ export const pnlRow = style({
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: '0.5rem',
-  backgroundColor: colors.whiteAlpha[5],
+  backgroundColor: alpha(vars.color.textPrimary, 5),
   borderRadius: '0.375rem',
 });
 
 export const pnlLabel = style({
-  fontSize: '0.75rem',
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.caption,
+  color: vars.color.textSecondary,
 });
 
 export const pnlValue = style({
-  fontSize: '0.875rem',
-  fontWeight: '600',
-  fontFamily: 'monospace',
+  fontSize: vars.fontSize.body,
+  fontWeight: '500',
   selectors: {
     '&[data-positive="true"]': {
-      color: colors.success,
+      color: vars.color.success,
     },
     '&[data-positive="false"]': {
-      color: colors.error,
+      color: vars.color.error,
     },
   },
 });
@@ -113,28 +114,27 @@ export const statItem = style({
 });
 
 export const statLabel = style({
-  fontSize: '0.6875rem',
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.label,
+  color: vars.color.textSecondary,
 });
 
 export const statValue = style({
-  fontSize: '0.75rem',
-  fontWeight: '600',
-  color: colors.snow,
-  fontFamily: 'monospace',
+  fontSize: vars.fontSize.caption,
+  fontWeight: '500',
+  color: vars.color.textPrimary,
 });
 
 export const closeBadge = style({
   padding: '0.125rem 0.5rem',
   borderRadius: '0.25rem',
-  fontSize: '0.6875rem',
-  fontWeight: '600',
-  backgroundColor: colors.whiteAlpha[10],
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.label,
+  fontWeight: '500',
+  backgroundColor: alpha(vars.color.textPrimary, 10),
+  color: vars.color.textSecondary,
   selectors: {
     '&[data-liquidated="true"]': {
-      backgroundColor: colors.error,
-      color: colors.snow,
+      backgroundColor: vars.color.error,
+      color: vars.color.textPrimary,
     },
   },
 });
