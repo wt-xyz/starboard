@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 // ── Row ─────────────────────────────────────────────────────────────────────
 
@@ -7,39 +8,43 @@ export const row = style({
   cursor: 'pointer',
   transition: 'background-color 0.1s ease',
   ':hover': {
-    backgroundColor: colors.whiteAlpha[5],
+    backgroundColor: vars.color.surfaceHover,
+  },
+  selectors: {
+    '&:nth-child(even)': {
+      backgroundColor: alpha(vars.color.textPrimary, 3),
+    },
+    '&:nth-child(even):hover': {
+      backgroundColor: vars.color.surfaceHover,
+    },
   },
 });
 
-export const rowActive = style({
-  backgroundColor: colors.whiteAlpha[8],
-});
+export const rowActive = style({});
 
 // ── Base Cell ───────────────────────────────────────────────────────────────
 
 export const cell = style({
   padding: '0.5rem 0.75rem',
   fontSize: '0.8125rem',
-  color: colors.snow,
-  fontFamily: 'monospace',
+  color: vars.color.textPrimary,
   fontVariantNumeric: 'tabular-nums',
   textAlign: 'right',
   whiteSpace: 'nowrap',
-  borderBottom: `1px solid ${colors.whiteAlpha[5]}`,
 });
 
 // ── Shared Cell Styles ──────────────────────────────────────────────────────
 
 export const muted = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const positive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const negative = style({
-  color: colors.error,
+  color: vars.color.error,
 });
 
 // ── Dual Value (OI / Liquidity) ─────────────────────────────────────────────
@@ -54,14 +59,14 @@ export const longValue = style({
   display: 'inline-flex',
   alignItems: 'center',
   gap: '0.1875rem',
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const shortValue = style({
   display: 'inline-flex',
   alignItems: 'center',
   gap: '0.1875rem',
-  color: colors.error,
+  color: vars.color.error,
 });
 
 export const dualArrow = style({

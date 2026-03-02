@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const marketCell = style({
   display: 'flex',
@@ -19,16 +19,15 @@ export const assetName = style({
   fontFamily: 'inherit',
   fontWeight: 600,
   fontSize: '0.8125rem',
-  color: colors.snow,
+  color: vars.color.textPrimary,
 });
 
 export const leverageBadge = style({
   fontSize: '0.625rem',
   fontWeight: 500,
-  color: colors.dustyGrey,
-  backgroundColor: colors.whiteAlpha[8],
+  color: vars.color.textSecondary,
+  backgroundColor: vars.color.surfaceHover,
   padding: '0.0625rem 0.3125rem',
   borderRadius: '0.25rem',
   lineHeight: 1.4,
-  fontFamily: 'monospace',
 });

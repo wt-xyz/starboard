@@ -1,11 +1,10 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const header = style({
-  backgroundColor: colors.gluonGrey,
-  borderBottom: `1px solid ${colors.slateGrey}`,
-  padding: '0 2rem',
-  height: '4rem',
+  backgroundColor: vars.color.pageBg,
+  padding: `0 ${vars.space.lg}`,
+  height: '3rem',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -14,7 +13,7 @@ export const header = style({
   zIndex: 100,
   '@media': {
     '(max-width: 1024px)': {
-      padding: '0 1rem',
+      padding: `0 ${vars.space.lg}`,
     },
   },
 });
@@ -22,7 +21,7 @@ export const header = style({
 export const headerLeft = style({
   display: 'flex',
   minWidth: 'fit-content',
-  gap: '2rem',
+  gap: vars.space.lg,
   alignItems: 'center',
 });
 
@@ -31,11 +30,11 @@ export const statsSection = style({
   minWidth: 0,
   display: 'flex',
   alignItems: 'center',
-  gap: '1.5rem',
+  gap: vars.space.lg,
   overflow: 'auto',
-  marginLeft: '1.5rem',
-  paddingLeft: '1.5rem',
-  borderLeft: `1px solid ${colors.slateGrey}`,
+  marginLeft: vars.space.lg,
+  paddingLeft: vars.space.lg,
+  borderLeft: `1px solid ${vars.color.borderDefault}`,
 });
 
 export const logo = style({
@@ -49,7 +48,7 @@ export const headerRight = style({
   width: 'fit-content',
   display: 'flex',
   alignItems: 'center',
-  gap: '0.5rem',
+  gap: vars.space.sm,
 });
 
 export { desktopOnly } from '@/styles/desktopOnly.css';

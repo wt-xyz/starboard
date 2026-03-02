@@ -1,23 +1,23 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const thead = style({
   position: 'sticky',
   top: 0,
   zIndex: 2,
-  backgroundColor: colors.gluonGrey,
+  backgroundColor: vars.color.cardBg,
 });
 
 export const th = style({
   padding: '0.5rem 0.75rem',
   fontSize: '0.625rem',
   fontWeight: 600,
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   textTransform: 'uppercase',
   letterSpacing: '0.04em',
   textAlign: 'right',
   whiteSpace: 'nowrap',
-  borderBottom: `1px solid ${colors.whiteAlpha[8]}`,
+  borderBottom: `1px solid ${vars.color.borderDefault}`,
   userSelect: 'none',
 });
 
@@ -33,7 +33,7 @@ export const thSortable = style({
   cursor: 'pointer',
   transition: 'color 0.15s ease',
   ':hover': {
-    color: colors.snow,
+    color: vars.color.textPrimary,
   },
 });
 

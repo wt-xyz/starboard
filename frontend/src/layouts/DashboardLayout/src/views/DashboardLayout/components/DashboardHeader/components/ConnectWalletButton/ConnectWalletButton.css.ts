@@ -1,15 +1,15 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const walletButton = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: '2.5rem',
+  height: '2.25rem',
   padding: '0 1.25rem',
-  backgroundColor: colors.liquidLava,
-  color: colors.snow,
-  borderRadius: '0.5rem',
+  backgroundColor: vars.color.primary,
+  color: vars.color.textPrimary,
+  borderRadius: vars.radius.button,
   border: 'none',
   fontSize: '0.875rem',
   fontWeight: '600',
@@ -17,7 +17,7 @@ export const walletButton = style({
   transition: 'all 0.15s',
   whiteSpace: 'nowrap',
   ':hover': {
-    backgroundColor: '#E05D0A', // Slightly darker Liquid Lava
+    backgroundColor: vars.color.primaryHover,
   },
 });
 
@@ -26,12 +26,12 @@ export const walletConnected = style({
   alignItems: 'center',
   justifyContent: 'center',
   gap: '0.5rem',
-  height: '2.5rem',
+  height: '2.25rem',
   padding: '0 0.75rem 0 0.5rem',
-  backgroundColor: colors.gluonGrey,
-  color: colors.snow,
-  borderRadius: '9999px',
-  border: `1px solid ${colors.whiteAlpha[20]}`,
+  backgroundColor: vars.color.surfaceElevated,
+  color: vars.color.textPrimary,
+  borderRadius: vars.radius.button,
+  border: 'none',
   fontSize: '0.875rem',
   fontWeight: '500',
   cursor: 'pointer',
@@ -39,8 +39,7 @@ export const walletConnected = style({
   position: 'relative',
   transition: 'all 0.15s',
   ':hover': {
-    backgroundColor: colors.slateGrey,
-    borderColor: colors.whiteAlpha[30],
+    backgroundColor: vars.color.surfaceHover,
   },
 });
 

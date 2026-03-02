@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const stat = style({
   display: 'flex',
@@ -8,26 +8,25 @@ export const stat = style({
 });
 
 export const statLabel = style({
-  fontSize: '0.625rem',
-  color: colors.dustyGrey,
+  fontSize: '0.6875rem',
+  color: vars.color.textSecondary,
   textTransform: 'uppercase',
-  letterSpacing: '0.025em',
+  letterSpacing: '0.08em',
   lineHeight: 1.2,
   whiteSpace: 'nowrap',
 });
 
 export const statValue = style({
   fontSize: '0.75rem',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontWeight: '500',
-  fontFamily: 'monospace',
   lineHeight: 1.2,
 });
 
 export const statValuePositive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const statValueNegative = style({
-  color: colors.error,
+  color: vars.color.error,
 });
