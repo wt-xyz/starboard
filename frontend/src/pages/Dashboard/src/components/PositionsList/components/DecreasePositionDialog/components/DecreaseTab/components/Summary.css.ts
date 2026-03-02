@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const summaryRow = style({
   display: 'flex',
@@ -14,12 +14,11 @@ export const summaryRow = style({
 
 export const summaryLabel = style({
   fontSize: '0.75rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const summaryValue = style({
   fontSize: '0.75rem',
   fontWeight: 500,
-  color: colors.snow,
-  fontFamily: 'monospace',
+  color: vars.color.textPrimary,
 });

@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const positionHeader = style({
   display: 'flex',
@@ -25,20 +26,20 @@ export const assetId = style({
 export const side = style({
   padding: '0.25rem 0.5rem',
   borderRadius: '0.25rem',
-  fontSize: '0.625rem',
+  fontSize: vars.fontSize.label,
   fontWeight: '700',
   letterSpacing: '0.05em',
   textTransform: 'uppercase',
 });
 
 export const sideLong = style({
-  backgroundColor: 'rgba(34, 197, 94, 0.15)',
-  color: colors.success,
+  backgroundColor: alpha(vars.color.success, 15),
+  color: vars.color.success,
 });
 
 export const sideShort = style({
-  backgroundColor: 'rgba(239, 68, 68, 0.15)',
-  color: colors.error,
+  backgroundColor: alpha(vars.color.error, 15),
+  color: vars.color.error,
 });
 
 export const assetInfo = style({
@@ -51,7 +52,7 @@ export const assetInfo = style({
 export const assetSymbol = style({
   fontSize: '0.875rem',
   fontWeight: '600',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   letterSpacing: '-0.01em',
 });
 
@@ -59,19 +60,18 @@ export const iconButton = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: '1.5rem',
-  height: '1.5rem',
-  padding: 0,
-  border: `1px solid ${colors.whiteAlpha[15]}`,
+  minWidth: vars.a11y.minTargetSize,
+  minHeight: vars.a11y.minTargetSize,
+  border: `1px solid ${vars.color.borderDefault}`,
   borderRadius: '0.25rem',
   backgroundColor: 'transparent',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   cursor: 'pointer',
   transition: 'all 0.15s ease',
   ':hover': {
-    backgroundColor: colors.whiteAlpha[10],
-    borderColor: colors.whiteAlpha[30],
-    color: colors.snow,
+    backgroundColor: vars.color.surfaceHover,
+    borderColor: vars.color.borderStrong,
+    color: vars.color.textPrimary,
   },
   ':active': {
     transform: 'scale(0.95)',

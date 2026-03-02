@@ -1,20 +1,31 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '../../../../../styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '0.5rem',
+  gap: vars.space.sm,
   width: '100%',
+  backgroundColor: vars.color.cardBg,
+  borderRadius: vars.radius.card,
+  padding: vars.space.sm,
+  boxSizing: 'border-box',
+});
+
+export const separator = style({
+  height: 0,
+  borderTop: `1px solid ${vars.color.borderDefault}`,
+  marginLeft: `calc(-1 * ${vars.space.sm})`,
+  marginRight: `calc(-1 * ${vars.space.sm})`,
 });
 
 export const connectWalletButton = style({
-  marginTop: '20px',
+  marginTop: vars.space.xs,
   width: '100%',
   padding: '0.5rem 1.25rem',
-  backgroundColor: colors.liquidLava,
-  color: colors.snow,
-  borderRadius: '0.375rem',
+  backgroundColor: vars.color.primary,
+  color: vars.color.textPrimary,
+  borderRadius: '0.5rem',
   border: 'none',
   fontSize: '0.875rem',
   fontWeight: '600',
@@ -23,7 +34,7 @@ export const connectWalletButton = style({
   whiteSpace: 'nowrap',
   boxShadow: 'none',
   ':hover': {
-    backgroundColor: '#E05D0A', // Slightly darker Liquid Lava
+    backgroundColor: vars.color.primaryHover,
   },
 });
 

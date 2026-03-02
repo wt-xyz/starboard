@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const cell = style({
   display: 'flex',
@@ -11,7 +11,7 @@ export const cell = style({
 
 export const label = style({
   fontSize: '0.5625rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   textTransform: 'uppercase',
   letterSpacing: '0.04em',
   lineHeight: 1,
@@ -19,8 +19,7 @@ export const label = style({
 
 export const value = style({
   fontSize: '0.875rem',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontWeight: 600,
-  fontFamily: 'monospace',
   lineHeight: 1.2,
 });

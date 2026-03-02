@@ -1,22 +1,31 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const tableRow = style({
-  backgroundColor: colors.gluonGrey,
-  transition: 'all 0.2s',
+  backgroundColor: vars.color.cardBg,
+  transition: 'background-color 0.1s',
   ':hover': {
-    backgroundColor: colors.slateGrey,
+    backgroundColor: vars.color.surfaceHover,
+  },
+  selectors: {
+    '&:nth-child(even)': {
+      backgroundColor: alpha(vars.color.textPrimary, 3),
+    },
+    '&:nth-child(even):hover': {
+      backgroundColor: vars.color.surfaceHover,
+    },
   },
 });
 
 export const positive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const negative = style({
-  color: colors.error,
+  color: vars.color.error,
 });
 
 export const muted = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });

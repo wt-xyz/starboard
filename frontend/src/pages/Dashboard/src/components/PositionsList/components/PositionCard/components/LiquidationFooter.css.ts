@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const root = style({
   display: 'flex',
@@ -7,10 +8,9 @@ export const root = style({
   justifyContent: 'center',
   gap: '0.5rem',
   padding: '0.5rem',
-  backgroundColor: colors.whiteAlpha[5],
+  backgroundColor: alpha(vars.color.textPrimary, 5),
   borderRadius: '0.375rem',
   fontSize: '0.75rem',
-  fontFamily: 'monospace',
 });
 
 export const icon = style({
@@ -18,23 +18,23 @@ export const icon = style({
 });
 
 export const label = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const value = style({
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontWeight: '500',
 });
 
 export const distance = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   fontSize: '0.6875rem',
 });
 
 export const warning = style({
-  color: colors.error,
+  color: vars.color.error,
 });
 
 export const danger = style({
-  color: colors.error,
+  color: vars.color.error,
 });

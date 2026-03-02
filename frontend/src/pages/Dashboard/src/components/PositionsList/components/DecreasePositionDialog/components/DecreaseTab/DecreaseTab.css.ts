@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const sliderSection = style({
   marginBottom: '1.5rem',
@@ -7,7 +7,7 @@ export const sliderSection = style({
 
 export const summarySection = style({
   padding: '0.75rem',
-  backgroundColor: colors.slateGrey,
+  backgroundColor: vars.color.inputBg,
   borderRadius: '0.5rem',
   marginBottom: '1.5rem',
 });
@@ -21,16 +21,16 @@ export const cancelButton = style({
   flex: 1,
   padding: '0.75rem 1rem',
   backgroundColor: 'transparent',
-  color: colors.dustyGrey,
-  border: `1px solid ${colors.whiteAlpha[20]}`,
+  color: vars.color.textSecondary,
+  border: `1px solid ${vars.color.borderStrong}`,
   borderRadius: '0.5rem',
   fontSize: '0.875rem',
   fontWeight: 500,
   cursor: 'pointer',
   transition: 'all 0.15s',
   ':hover': {
-    color: colors.snow,
-    borderColor: colors.whiteAlpha[30],
-    backgroundColor: colors.whiteAlpha[5],
+    color: vars.color.textPrimary,
+    borderColor: vars.color.borderStrong,
+    backgroundColor: vars.color.surfaceHover,
   },
 });

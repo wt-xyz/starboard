@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({
   display: 'flex',
@@ -15,19 +15,18 @@ export const row = style({
 
 export const label = style({
   fontSize: '0.75rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const value = style({
   fontSize: '0.75rem',
   fontWeight: 500,
-  color: colors.snow,
-  fontFamily: 'monospace',
+  color: vars.color.textPrimary,
   display: 'flex',
   alignItems: 'center',
   gap: '0.5rem',
 });
 
 export const arrow = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
