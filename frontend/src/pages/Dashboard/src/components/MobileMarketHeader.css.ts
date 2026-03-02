@@ -1,11 +1,12 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({
   display: 'flex',
   flexDirection: 'column',
   padding: '0.5rem 0.75rem',
-  backgroundColor: colors.gluonGrey,
+  backgroundColor: vars.color.cardBg,
   borderRadius: '0.5rem',
   marginBottom: '0.5rem',
   gap: '0.375rem',
@@ -23,8 +24,7 @@ export const statsRow = style({
   display: 'flex',
   alignItems: 'center',
   gap: '0.5rem',
-  fontSize: '0.625rem',
-  fontFamily: 'monospace',
+  fontSize: vars.fontSize.micro,
   overflowX: 'auto',
   scrollbarWidth: 'none',
   selectors: {
@@ -40,18 +40,18 @@ export const statItem = style({
   selectors: {
     '& + &::before': {
       content: '"·"',
-      color: colors.dustyGreyAlpha[50],
+      color: alpha(vars.color.textSecondary, 50),
       marginRight: '0.25rem',
     },
   },
 });
 
 export const statLabel = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const statValue = style({
-  color: colors.snow,
+  color: vars.color.textPrimary,
 });
 
 export const assetSection = style({
@@ -69,22 +69,20 @@ export const priceSection = style({
 });
 
 export const price = style({
-  fontSize: '1rem',
-  fontWeight: '600',
-  color: colors.snow,
-  fontFamily: 'monospace',
+  fontSize: vars.fontSize.bodyLg,
+  fontWeight: '500',
+  color: vars.color.textPrimary,
 });
 
 export const priceChange = style({
-  fontSize: '0.75rem',
+  fontSize: vars.fontSize.caption,
   fontWeight: '500',
-  fontFamily: 'monospace',
 });
 
 export const priceChangePositive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const priceChangeNegative = style({
-  color: colors.error,
+  color: vars.color.error,
 });
