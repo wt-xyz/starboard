@@ -1,10 +1,10 @@
-import { type FC, type ReactNode } from 'react';
+import { type FC, type ReactElement, type ReactNode } from 'react';
 import { Tooltip as TooltipPrimitive } from 'radix-ui';
 import * as $ from './Tooltip.css';
 
 type TooltipProps = {
   content: ReactNode;
-  children: ReactNode;
+  children: ReactElement;
   side?: 'top' | 'right' | 'bottom' | 'left';
   align?: 'start' | 'center' | 'end';
   delayDuration?: number;
