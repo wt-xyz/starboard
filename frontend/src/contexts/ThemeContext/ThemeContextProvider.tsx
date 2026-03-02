@@ -1,4 +1,4 @@
-import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
+import { type FC, type ReactNode, useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { lightTheme } from '@/styles/theme.light.css';
 import { starboardTheme } from '@/styles/theme.starboard.css';
 import type { ThemeContextType } from './ThemeContext';
@@ -9,16 +9,15 @@ export interface ThemeContextProviderProps {
 }
 
 export const ThemeContextProvider: FC<ThemeContextProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<ThemePreference>(() => {
-    const initial = getInitialTheme();
-    applyThemeClass(initial);
-    return initial;
-  });
+  const [theme, setTheme] = useState<ThemePreference>(getInitialTheme);
+
+  useLayoutEffect(() => {
+    applyThemeClass(theme);
+  }, [theme]);
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => {
       const next = prev === 'dark' ? 'light' : 'dark';
-      applyThemeClass(next);
       localStorage.setItem(STORAGE_KEY, next);
       return next;
     });
