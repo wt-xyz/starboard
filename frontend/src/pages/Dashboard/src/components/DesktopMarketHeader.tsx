@@ -6,13 +6,12 @@ import {
   createDecimalValueSchema,
 } from 'fuel-ts-sdk';
 import type { FundingInfoEntity } from 'fuel-ts-sdk/trading';
-import { calculatePriceChange } from '@/@starboard/lib/calculatePriceChange';
-import { AssetSelect } from '@/components/AssetSelect';
+import { calculatePriceChange } from '@/lib/calculatePriceChange';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
-import * as styles from './MobileMarketHeader.css';
+import * as $ from './DesktopMarketHeader.css';
 
-export const MobileMarketHeader: FC = () => {
+export const DesktopMarketHeader: FC = () => {
   const trading = useTradingSdk();
   const watchedAsset = useSdkQuery(trading.getWatchedAsset);
   const price = useSdkQuery(trading.getWatchedAssetLatestPrice);
@@ -32,7 +31,6 @@ export const MobileMarketHeader: FC = () => {
   const change24h = useMemo(() => calculatePriceChange(price, candles), [price, candles]);
   const priceValue = price ? $decimalValue(price.value).toFloat() : 0;
 
-  // OI
   const oiFormatted = useMemo(() => {
     if (!marketStats) return null;
     const longValue = $decimalValue(marketStats.openInterestLong).toFloat();
@@ -43,75 +41,58 @@ export const MobileMarketHeader: FC = () => {
     return formatCurrency(total, { compact: true, symbol: '$' });
   }, [marketStats]);
 
-  // Volume
   const volFormatted = useMemo(() => {
     if (!marketStats?.volume24h) return null;
     const value = $decimalValue(marketStats.volume24h).toFloat();
     return formatCurrency(value, { compact: true, symbol: '$' });
   }, [marketStats?.volume24h]);
 
-  // Funding
   const fundingInfo = useSdkQuery((sdk) => sdk.trading.getWatchedAssetFundingInfo());
-  const { fundingFormatted, fundingVariant } = useMobileFunding(fundingInfo);
-
-  const getAssetPriceFormatted = (priceValue: string, currentDecimal = 0) => {
-    if (currentDecimal === 9) return formatCurrency(0);
-    const nextPriceValue = formatCurrency(Number(priceValue), { decimals: currentDecimal });
-    if (Number(nextPriceValue) === 0) return getAssetPriceFormatted(priceValue, currentDecimal + 1);
-
-    return formatCurrency(Number(priceValue), { decimals: currentDecimal + 2 });
-  };
+  const { fundingFormatted, fundingVariant } = useFundingRate(fundingInfo);
 
   return (
-    <div css={styles.container}>
-      <div css={styles.topRow}>
-        <div css={styles.assetSection}>
-          <AssetSelect fullWidth id="mobile-header-asset-select" />
-        </div>
-
-        <div css={styles.priceSection}>
-          <span css={styles.price}>${getAssetPriceFormatted(priceValue.toString())}</span>
-        </div>
-      </div>
-
-      <div css={styles.statsRow}>
+    <div css={$.container}>
+      <div css={$.priceGroup}>
+        <span css={$.price}>${formatPrice(priceValue)}</span>
         {change24h !== null && (
-          <span css={styles.statItem}>
-            <span css={styles.statLabel}>24h</span>
-            <span css={change24h >= 0 ? styles.priceChangePositive : styles.priceChangeNegative}>
-              {formatPercentage(change24h, { decimals: 2, signDisplay: 'always' })}
-            </span>
-          </span>
-        )}
-        {oiFormatted && (
-          <span css={styles.statItem}>
-            <span css={styles.statLabel}>OI</span>
-            <span css={styles.statValue}>{oiFormatted}</span>
-          </span>
-        )}
-        {volFormatted && (
-          <span css={styles.statItem}>
-            <span css={styles.statLabel}>Vol</span>
-            <span css={styles.statValue}>{volFormatted}</span>
-          </span>
-        )}
-        {fundingFormatted && (
-          <span css={styles.statItem}>
-            <span css={styles.statLabel}>Fund</span>
-            <span
-              css={
-                fundingVariant === 'positive'
-                  ? styles.priceChangePositive
-                  : fundingVariant === 'negative'
-                    ? styles.priceChangeNegative
-                    : styles.statValue
-              }
-            >
-              {fundingFormatted}
-            </span>
+          <span css={change24h >= 0 ? $.priceChangePositive : $.priceChangeNegative}>
+            {formatPercentage(change24h, { decimals: 2, signDisplay: 'always' })}
           </span>
         )}
       </div>
+
+      <div css={$.separator} />
+
+      {oiFormatted && (
+        <div css={$.statItem}>
+          <span css={$.statLabel}>Open Interest</span>
+          <span css={$.statValue}>{oiFormatted}</span>
+        </div>
+      )}
+
+      {volFormatted && (
+        <div css={$.statItem}>
+          <span css={$.statLabel}>24h Volume</span>
+          <span css={$.statValue}>{volFormatted}</span>
+        </div>
+      )}
+
+      {fundingFormatted && (
+        <div css={$.statItem}>
+          <span css={$.statLabel}>Funding / hr</span>
+          <span
+            css={
+              fundingVariant === 'positive'
+                ? $.statValuePositive
+                : fundingVariant === 'negative'
+                  ? $.statValueNegative
+                  : $.statValue
+            }
+          >
+            {fundingFormatted}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
@@ -120,7 +101,7 @@ type FundingResult = {
   fundingFormatted: string | null;
   fundingVariant: 'default' | 'positive' | 'negative';
 };
-function useMobileFunding(fundingInfo: FundingInfoEntity | undefined): FundingResult {
+function useFundingRate(fundingInfo: FundingInfoEntity | undefined): FundingResult {
   return useMemo(() => {
     if (!fundingInfo) {
       return { fundingFormatted: null, fundingVariant: 'default' as const };
@@ -165,6 +146,17 @@ function useMobileFunding(fundingInfo: FundingInfoEntity | undefined): FundingRe
 
     return { fundingFormatted: '0.0000%', fundingVariant: 'default' as const };
   }, [fundingInfo]);
+}
+
+function formatPrice(value: number): string {
+  if (value === 0) return '0.00';
+  for (let d = 0; d <= 9; d++) {
+    const formatted = formatCurrency(value, { decimals: d });
+    if (Number(formatted) !== 0) {
+      return formatCurrency(value, { decimals: d + 2 });
+    }
+  }
+  return formatCurrency(0);
 }
 
 const FUNDING_RATE_FACTOR = DecimalValue.fromBigInt(23n);
