@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 // ── Trigger ──────────────────────────────────────────────────────────────────
 
@@ -9,25 +9,25 @@ export const trigger = style({
   display: 'flex',
   alignItems: 'center',
   gap: '0.375rem',
-  padding: '0.375rem 0.625rem',
-  borderRadius: '0.375rem',
-  border: `1px solid transparent`,
-  background: 'transparent',
-  color: colors.snow,
+  height: '2.25rem',
+  padding: '0 0.625rem',
+  borderRadius: vars.radius.button,
+  border: 'none',
+  backgroundColor: vars.color.inputBg,
+  color: vars.color.textPrimary,
   fontSize: '0.875rem',
-  fontWeight: 600,
+  fontWeight: 500,
   cursor: 'pointer',
   transition: 'all 0.15s ease',
   whiteSpace: 'nowrap',
   ':hover': {
-    backgroundColor: colors.whiteAlpha[8],
-    borderColor: colors.whiteAlpha[10],
+    backgroundColor: vars.color.surfaceHover,
   },
 });
 
 export const triggerChevron = style({
   fontSize: '0.625rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   transition: 'transform 0.2s ease',
 });
 
@@ -53,7 +53,7 @@ export const rootStyle = recipe({
     overflow: 'auto',
     '@media': {
       '(max-width: 1024px)': {
-        background: colors.gluonGrey,
+        background: vars.color.cardBg,
         overflow: 'hidden',
       },
     },
@@ -85,13 +85,14 @@ export const popoverScroller = style({
 
 export const popoverContent = recipe({
   base: {
-    backgroundColor: colors.gluonGrey,
-    border: `1px solid ${colors.whiteAlpha[10]}`,
+    backgroundColor: vars.color.cardBg,
+    border: `1px solid ${vars.color.borderDefault}`,
     minWidth: 860,
     width: '80%',
     maxWidth: 1200,
     maxHeight: '520px',
     overflow: 'auto',
+    borderRadius: '0.5rem',
     boxShadow: '0 12px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.2)',
     '@media': {
       '(max-width: 1024px)': {

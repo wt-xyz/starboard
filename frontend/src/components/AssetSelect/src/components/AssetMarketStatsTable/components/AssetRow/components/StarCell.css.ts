@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const starCell = style({
   textAlign: 'center',
@@ -10,15 +10,15 @@ export const starButton = style({
   border: 'none',
   padding: '0.125rem',
   cursor: 'pointer',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   fontSize: '0.875rem',
   lineHeight: 1,
   transition: 'color 0.15s ease',
   ':hover': {
-    color: colors.liquidLava,
+    color: vars.color.primary,
   },
 });
 
 export const starActive = style({
-  color: colors.liquidLava,
+  color: vars.color.primary,
 });

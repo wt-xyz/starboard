@@ -1,20 +1,20 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const mobileMenuButton = style({
   display: 'none',
   alignItems: 'center',
   justifyContent: 'center',
-  width: '2.5rem',
-  height: '2.5rem',
-  borderRadius: '0.5rem',
+  width: '2.25rem',
+  height: '2.25rem',
+  borderRadius: vars.radius.button,
   backgroundColor: 'transparent',
-  border: `1px solid ${colors.whiteAlpha[20]}`,
-  color: colors.snow,
+  border: `1px solid ${vars.color.borderStrong}`,
+  color: vars.color.textPrimary,
   cursor: 'pointer',
   ':hover': {
-    backgroundColor: colors.whiteAlpha[10],
-    borderColor: colors.whiteAlpha[30],
+    backgroundColor: vars.color.surfaceHover,
+    borderColor: vars.color.borderStrong,
   },
   '@media': {
     '(max-width: 1024px)': {
@@ -35,7 +35,7 @@ export const mobileMenuSection = style({
   flexDirection: 'column',
   gap: '0.75rem',
   paddingBottom: '1rem',
-  borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
+  borderBottom: `1px solid ${vars.color.borderDefault}`,
   selectors: {
     '&:last-child': {
       borderBottom: 'none',

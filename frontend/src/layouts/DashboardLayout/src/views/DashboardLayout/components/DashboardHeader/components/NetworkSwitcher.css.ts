@@ -1,6 +1,7 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const networkSwitcherContainer = style({
   display: 'flex',
@@ -9,11 +10,7 @@ export const networkSwitcherContainer = style({
 });
 
 export const networkLabel = style({
-  fontSize: '0.75rem',
-  color: colors.dustyGrey,
-  textTransform: 'uppercase',
-  fontWeight: '600',
-  letterSpacing: '0.05em',
+  display: 'none',
 });
 
 export const selectTrigger = recipe({
@@ -23,32 +20,34 @@ export const selectTrigger = recipe({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: '0.5rem',
-    backgroundColor: colors.slateGrey,
-    color: colors.snow,
-    padding: '0.5rem 0.75rem',
+    backgroundColor: vars.color.inputBg,
+    color: vars.color.textPrimary,
+    height: '2.25rem',
+    padding: '0 0.75rem',
     minWidth: '8rem',
     lineHeight: 1,
-    borderRadius: '0.375rem',
-    border: `1px solid ${colors.whiteAlpha[20]}`,
+    borderRadius: vars.radius.button,
+    border: 'none',
     cursor: 'pointer',
     transition: 'all 0.15s ease',
-    fontWeight: '600',
+    fontWeight: '500',
     fontSize: '0.875rem',
     ':hover': {
-      backgroundColor: colors.gluonGrey,
-      borderColor: colors.whiteAlpha[30],
+      backgroundColor: vars.color.cardBg,
+      borderColor: vars.color.borderStrong,
     },
     ':focus': {
       outline: 'none',
-      borderColor: colors.liquidLava,
-      boxShadow: `0 0 0 2px ${colors.liquidLavaAlpha[20]}`,
+      borderColor: vars.color.primary,
+      boxShadow: `0 0 0 2px ${alpha(vars.color.primary, 20)}`,
     },
     selectors: {
       '&[data-state="open"]': {
-        borderColor: colors.liquidLava,
+        borderColor: vars.color.primary,
       },
       '&[data-disabled]': {
-        opacity: 0.5,
+        color: vars.color.textDisabled,
+        borderColor: vars.color.borderDefault,
         cursor: 'not-allowed',
       },
     },
@@ -56,7 +55,7 @@ export const selectTrigger = recipe({
 });
 
 export const triggerIcon = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   transition: 'transform 0.2s ease',
   selectors: {
     '[data-state="open"] &': {
@@ -66,8 +65,8 @@ export const triggerIcon = style({
 });
 
 export const selectContent = style({
-  backgroundColor: colors.gluonGrey,
-  border: `1px solid ${colors.slateGrey}`,
+  backgroundColor: vars.color.cardBg,
+  border: `1px solid ${vars.color.borderDefault}`,
   borderRadius: '0.5rem',
   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
   maxHeight: 'var(--radix-select-content-available-height)',
@@ -81,10 +80,10 @@ export const selectItem = recipe({
   base: {
     all: 'unset',
     fontSize: '0.875rem',
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 1,
-    color: colors.snow,
-    borderRadius: '0.25rem',
+    color: vars.color.textPrimary,
+    borderRadius: '0.375rem',
     display: 'flex',
     alignItems: 'center',
     height: '2rem',
@@ -95,22 +94,21 @@ export const selectItem = recipe({
     outline: 'none',
     transition: 'all 0.15s ease',
     ':hover': {
-      backgroundColor: colors.slateGrey,
+      backgroundColor: vars.color.surfaceHover,
     },
     ':focus': {
-      backgroundColor: colors.slateGrey,
+      backgroundColor: vars.color.surfaceHover,
     },
     selectors: {
       '&[data-highlighted]': {
-        backgroundColor: colors.slateGrey,
+        backgroundColor: vars.color.surfaceHover,
       },
       '&[data-state="checked"]': {
-        backgroundColor: colors.slateGrey,
+        backgroundColor: vars.color.surfaceHover,
       },
       '&[data-disabled]': {
-        color: colors.dustyGrey,
+        color: vars.color.textDisabled,
         cursor: 'not-allowed',
-        opacity: 0.5,
       },
     },
   },

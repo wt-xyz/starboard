@@ -1,5 +1,6 @@
 import { keyframes, style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const dialogContent = style({
   padding: '1.25rem',
@@ -12,7 +13,7 @@ export const addressRow = style({
   alignItems: 'center',
   gap: '0.75rem',
   padding: '0.75rem',
-  backgroundColor: colors.slateGrey,
+  backgroundColor: vars.color.inputBg,
   borderRadius: '0.75rem',
   marginBottom: '1.5rem',
 });
@@ -28,8 +29,7 @@ export const addressText = style({
   flex: 1,
   fontSize: '0.9375rem',
   fontWeight: 500,
-  color: colors.snow,
-  fontFamily: 'monospace',
+  color: vars.color.textPrimary,
 });
 
 export const copyButton = style({
@@ -41,12 +41,12 @@ export const copyButton = style({
   borderRadius: '0.375rem',
   backgroundColor: 'transparent',
   border: 'none',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   cursor: 'pointer',
   transition: 'all 0.15s',
   ':hover': {
-    backgroundColor: colors.whiteAlpha[10],
-    color: colors.snow,
+    backgroundColor: vars.color.surfaceHover,
+    color: vars.color.textPrimary,
   },
 });
 
@@ -70,25 +70,25 @@ export const balanceRow = style({
 
 export const balanceLabel = style({
   fontSize: '0.875rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const balanceValue = style({
   fontSize: '0.875rem',
   fontWeight: 500,
-  color: colors.snow,
+  color: vars.color.textPrimary,
   display: 'flex',
   alignItems: 'center',
   gap: '0.375rem',
 });
 
 export const balanceSymbol = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const divider = style({
   height: '1px',
-  backgroundColor: colors.whiteAlpha[10],
+  backgroundColor: vars.color.borderDefault,
   margin: '0.5rem 0',
 });
 
@@ -100,15 +100,15 @@ export const disconnectButton = style({
   width: '100%',
   height: '2.75rem',
   backgroundColor: 'transparent',
-  color: colors.error,
+  color: vars.color.error,
   borderRadius: '0.5rem',
-  border: `1px solid ${colors.error}`,
+  border: `1px solid ${vars.color.error}`,
   fontSize: '0.875rem',
   fontWeight: 600,
   cursor: 'pointer',
   transition: 'all 0.15s',
   ':hover': {
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    backgroundColor: alpha(vars.color.error, 10),
   },
 });
 
@@ -120,7 +120,7 @@ const pulseAnimation = keyframes({
 export const skeleton = style({
   height: '1rem',
   width: '4rem',
-  backgroundColor: colors.whiteAlpha[10],
+  backgroundColor: vars.color.surfaceHover,
   borderRadius: '0.25rem',
   animation: `${pulseAnimation} 2s cubic-bezier(0.4, 0, 0.6, 1) infinite`,
 });
@@ -129,14 +129,14 @@ export const skeleton = style({
 export const burnerSection = style({
   marginBottom: '1.5rem',
   padding: '0.75rem',
-  backgroundColor: colors.liquidLavaAlpha[10],
+  backgroundColor: alpha(vars.color.primary, 10),
   borderRadius: '0.75rem',
-  border: `1px solid ${colors.liquidLavaAlpha[30]}`,
+  border: `1px solid ${alpha(vars.color.primary, 30)}`,
 });
 
 export const burnerNotice = style({
   fontSize: '0.8125rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   lineHeight: 1.4,
   marginBottom: '0.75rem',
 });
@@ -148,8 +148,8 @@ export const burnerMintButton = style({
   width: '100%',
   height: '2.5rem',
   padding: '0 1rem',
-  backgroundColor: colors.liquidLava,
-  color: colors.snow,
+  backgroundColor: vars.color.primary,
+  color: vars.color.textPrimary,
   borderRadius: '0.5rem',
   border: 'none',
   fontSize: '0.875rem',
@@ -157,10 +157,11 @@ export const burnerMintButton = style({
   cursor: 'pointer',
   transition: 'all 0.15s',
   ':hover': {
-    backgroundColor: '#E05D0A',
+    backgroundColor: vars.color.primaryHover,
   },
   ':disabled': {
-    opacity: 0.6,
+    backgroundColor: vars.color.surfaceDisabled,
+    color: vars.color.textDisabled,
     cursor: 'not-allowed',
   },
 });
@@ -177,19 +178,20 @@ export const getTestnetEthButton = style({
   height: '2.5rem',
   padding: '0 1rem',
   backgroundColor: 'transparent',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   borderRadius: '0.5rem',
-  border: `1px solid ${colors.whiteAlpha[20]}`,
+  border: `1px solid ${vars.color.borderStrong}`,
   fontSize: '0.875rem',
   fontWeight: '500',
   cursor: 'pointer',
   transition: 'all 0.15s',
   ':hover': {
-    backgroundColor: colors.whiteAlpha[10],
-    borderColor: colors.whiteAlpha[30],
+    backgroundColor: vars.color.surfaceHover,
+    borderColor: vars.color.borderStrong,
   },
   ':disabled': {
-    opacity: 0.6,
+    color: vars.color.textDisabled,
+    borderColor: vars.color.borderDefault,
     cursor: 'not-allowed',
   },
 });
@@ -198,7 +200,7 @@ export const getTestnetEthButton = style({
 export const advancedPanel = style({
   marginBottom: '1.5rem',
   borderRadius: '0.75rem',
-  border: `1px solid ${colors.whiteAlpha[10]}`,
+  border: `1px solid ${vars.color.borderDefault}`,
   overflow: 'hidden',
 });
 
@@ -208,9 +210,9 @@ export const advancedTrigger = style({
   justifyContent: 'space-between',
   width: '100%',
   padding: '0.75rem 1rem',
-  backgroundColor: colors.slateGrey,
+  backgroundColor: vars.color.inputBg,
   border: 'none',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   fontSize: '0.8125rem',
   fontWeight: '600',
   textTransform: 'uppercase',
@@ -218,8 +220,8 @@ export const advancedTrigger = style({
   cursor: 'pointer',
   transition: 'background-color 0.15s',
   ':hover': {
-    backgroundColor: colors.whiteAlpha[10],
-    color: colors.snow,
+    backgroundColor: vars.color.surfaceHover,
+    color: vars.color.textPrimary,
   },
 });
 
@@ -234,14 +236,14 @@ export const advancedChevron = style({
 export const fundFaucetSection = style({
   padding: '0.75rem 1rem',
   paddingTop: 0,
-  backgroundColor: colors.slateGrey,
-  borderTop: `1px solid ${colors.whiteAlpha[10]}`,
+  backgroundColor: vars.color.inputBg,
+  borderTop: `1px solid ${vars.color.borderDefault}`,
 });
 
 export const fundFaucetTitle = style({
   fontSize: '0.8125rem',
   fontWeight: '600',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   marginBottom: '0.5rem',
   textTransform: 'uppercase',
   letterSpacing: '0.03em',
@@ -257,8 +259,7 @@ export const fundFaucetAddressRow = style({
 export const fundFaucetAddressText = style({
   flex: 1,
   fontSize: '0.8125rem',
-  fontFamily: 'monospace',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   wordBreak: 'break-all',
 });
 
@@ -267,14 +268,19 @@ export const fundFaucetAmountInput = style({
   height: '2.25rem',
   padding: '0 0.5rem',
   marginBottom: '0.5rem',
-  backgroundColor: colors.gluonGrey,
-  border: `1px solid ${colors.whiteAlpha[20]}`,
+  backgroundColor: vars.color.inputBg,
+  border: `1px solid ${vars.color.inputBg}`,
   borderRadius: '0.375rem',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontSize: '0.875rem',
+  transition: 'all 0.2s',
+  ':hover': {
+    backgroundColor: vars.color.surfaceHover,
+    borderColor: vars.color.surfaceHover,
+  },
   ':focus': {
     outline: 'none',
-    borderColor: colors.whiteAlpha[30],
+    borderColor: vars.color.focusRing,
   },
 });
 
@@ -284,8 +290,8 @@ export const fundFaucetButton = style({
   justifyContent: 'center',
   width: '100%',
   height: '2.25rem',
-  backgroundColor: colors.liquidLava,
-  color: colors.snow,
+  backgroundColor: vars.color.primary,
+  color: vars.color.textPrimary,
   borderRadius: '0.5rem',
   border: 'none',
   fontSize: '0.875rem',
@@ -293,10 +299,11 @@ export const fundFaucetButton = style({
   cursor: 'pointer',
   transition: 'all 0.15s',
   ':hover': {
-    backgroundColor: '#E05D0A',
+    backgroundColor: vars.color.primaryHover,
   },
   ':disabled': {
-    opacity: 0.6,
+    backgroundColor: vars.color.surfaceDisabled,
+    color: vars.color.textDisabled,
     cursor: 'not-allowed',
   },
 });
