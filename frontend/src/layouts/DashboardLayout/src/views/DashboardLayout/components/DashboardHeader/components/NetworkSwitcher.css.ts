@@ -27,7 +27,7 @@ export const selectTrigger = recipe({
     minWidth: '8rem',
     lineHeight: 1,
     borderRadius: vars.radius.button,
-    border: 'none',
+    border: '1px solid transparent',
     cursor: 'pointer',
     transition: 'all 0.15s ease',
     fontWeight: '500',
@@ -67,13 +67,14 @@ export const triggerIcon = style({
 export const selectContent = style({
   backgroundColor: vars.color.cardBg,
   border: `1px solid ${vars.color.borderDefault}`,
-  borderRadius: '0.5rem',
+  borderRadius: vars.radius.card,
   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
   maxHeight: 'var(--radix-select-content-available-height)',
   minWidth: '8rem',
   overflow: 'hidden',
   padding: '0.25rem',
   zIndex: 50,
+  animation: 'none !important',
 });
 
 export const selectItem = recipe({
@@ -92,7 +93,7 @@ export const selectItem = recipe({
     cursor: 'pointer',
     userSelect: 'none',
     outline: 'none',
-    transition: 'all 0.15s ease',
+    transition: `background-color ${vars.transition.fast}`,
     ':hover': {
       backgroundColor: vars.color.surfaceHover,
     },

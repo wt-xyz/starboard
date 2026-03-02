@@ -40,7 +40,7 @@ export const iconButton = style({
   height: '1.5rem',
   padding: 0,
   backgroundColor: alpha(vars.color.textPrimary, 5),
-  border: 'none',
+  border: '1px solid transparent',
   borderRadius: '0.3125rem',
   color: vars.color.textPrimary,
   cursor: 'pointer',

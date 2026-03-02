@@ -1,5 +1,4 @@
 import { keyframes, style } from '@vanilla-extract/css';
-import { alpha } from '@/styles/alpha';
 import { vars } from '@/styles/theme.contract.css';
 
 export const dialogContent = style({
@@ -35,7 +34,7 @@ export const tabsTrigger = style({
   padding: '0.5rem 1rem',
   fontSize: '0.875rem',
   fontWeight: 500,
-  color: alpha(vars.color.textPrimary, 30),
+  color: vars.color.textSecondary,
   backgroundColor: 'transparent',
   border: 'none',
   borderRadius: '0.375rem',
