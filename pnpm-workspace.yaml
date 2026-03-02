@@ -3,6 +3,7 @@ packages:
   - indexer
   - frontend
   - fuel-ts-sdk
+  - liquidator
 linkWorkspacePackages: true
 overrides:
   follow-redirects: 1.15.3
