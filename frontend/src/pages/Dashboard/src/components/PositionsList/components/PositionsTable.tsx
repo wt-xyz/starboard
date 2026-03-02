@@ -86,6 +86,7 @@ export const ActionsCell = (props: { stableId: PositionStableId }) => {
     <td className={$.actionsCell}>
       <div className={$.actionsRow}>
         <button
+          type="button"
           className={$.closeButton}
           onClick={confirmCloseBoolean.setTrue}
           disabled={isClosing}
@@ -94,6 +95,7 @@ export const ActionsCell = (props: { stableId: PositionStableId }) => {
         </button>
         <Tooltip content="Edit Position">
           <button
+            type="button"
             className={$.iconButton}
             onClick={modalOpenBoolean.setTrue}
             aria-label="Edit position"

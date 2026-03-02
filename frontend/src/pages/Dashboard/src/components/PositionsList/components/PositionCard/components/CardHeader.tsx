@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 import { MinusIcon } from '@radix-ui/react-icons';
-import { Tooltip } from '@/components/ui/Tooltip';
 import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useBoolean } from 'usehooks-ts';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 import { DecreasePositionDialog } from '../../DecreasePositionDialog';
