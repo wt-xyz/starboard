@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, use } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import { Theme } from '@radix-ui/themes';
@@ -8,11 +8,14 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './App.tsx';
 import { NetworkSwitchContextProvider } from './contexts/NetworkSwitchContext/index.ts';
+import { ThemeContext, ThemeContextProvider } from './contexts/ThemeContext';
 import { WalletContextProvider } from './contexts/WalletContext/WalletContextProvider.tsx';
 import { FuelTsSdkProvider } from './lib/fuel-ts-sdk';
 import './lib/pipe';
 import './lib/toBigInt';
+import './styles/global.css';
 import './styles/radix-overrides.css';
+import './styles/reduced-motion.css';
 import './styles/scrollbar.css';
 import './styles/toastify.css';
 
@@ -21,20 +24,27 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <WalletContextProvider>
-        <NetworkSwitchContextProvider>
-          {(networkSwitch) => (
-            <FuelTsSdkProvider key={networkSwitch.getCurrentNetwork()}>
-              <Theme appearance="dark">
-                <BrowserRouter>
-                  <App />
-                </BrowserRouter>
-              </Theme>
-            </FuelTsSdkProvider>
-          )}
-        </NetworkSwitchContextProvider>
-      </WalletContextProvider>
+      <ThemeContextProvider>
+        <WalletContextProvider>
+          <NetworkSwitchContextProvider>
+            {(networkSwitch) => (
+              <FuelTsSdkProvider key={networkSwitch.getCurrentNetwork()}>
+                <RadixThemeWrapper>
+                  <BrowserRouter>
+                    <App />
+                  </BrowserRouter>
+                </RadixThemeWrapper>
+              </FuelTsSdkProvider>
+            )}
+          </NetworkSwitchContextProvider>
+        </WalletContextProvider>
+      </ThemeContextProvider>
     </QueryClientProvider>
     <ToastContainer position="bottom-right" theme="dark" />
   </StrictMode>
 );
+
+function RadixThemeWrapper({ children }: { children: React.ReactNode }) {
+  const { theme } = use(ThemeContext)!;
+  return <Theme appearance={theme}>{children}</Theme>;
+}
