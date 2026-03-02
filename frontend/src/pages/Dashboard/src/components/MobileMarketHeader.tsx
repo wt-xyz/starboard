@@ -11,6 +11,7 @@ import { calculatePriceChange } from '@/lib/calculatePriceChange';
 import { formatCurrency, formatPercentage } from '@/lib/formatCurrency';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import * as styles from './MobileMarketHeader.css';
+import { getAssetPriceFormatted } from './MobileMarketHeader.utils';
 
 export const MobileMarketHeader: FC = () => {
   const trading = useTradingSdk();
@@ -54,14 +55,6 @@ export const MobileMarketHeader: FC = () => {
   const fundingInfo = useSdkQuery((sdk) => sdk.trading.getWatchedAssetFundingInfo());
   const { fundingFormatted, fundingVariant } = useMobileFunding(fundingInfo);
 
-  const getAssetPriceFormatted = (priceValue: string, currentDecimal = 0) => {
-    if (currentDecimal === 9) return formatCurrency(0);
-    const nextPriceValue = formatCurrency(Number(priceValue), { decimals: currentDecimal });
-    if (Number(nextPriceValue) === 0) return getAssetPriceFormatted(priceValue, currentDecimal + 1);
-
-    return formatCurrency(Number(priceValue), { decimals: currentDecimal + 2 });
-  };
-
   return (
     <div css={styles.container}>
       <div css={styles.topRow}>
@@ -70,7 +63,7 @@ export const MobileMarketHeader: FC = () => {
         </div>
 
         <div css={styles.priceSection}>
-          <span css={styles.price}>${getAssetPriceFormatted(priceValue.toString())}</span>
+          <span css={styles.price}>${getAssetPriceFormatted(priceValue)}</span>
         </div>
       </div>
 
