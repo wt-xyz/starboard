@@ -32,7 +32,7 @@ export const NetworkSwitcher: FC = () => {
         onValueChange={handleNetworkChange}
         disabled={isChangingBool.value}
       >
-        <Select.Trigger className={$.selectTrigger()}>
+        <Select.Trigger className={$.selectTrigger()} aria-label="Network">
           <Select.Value>{NETWORK_LABELS[currentNetwork]}</Select.Value>
           <Select.Icon className={$.triggerIcon}>
             <ChevronDownIcon />
