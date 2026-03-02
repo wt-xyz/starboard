@@ -1,5 +1,6 @@
 import { keyframes, style } from '@vanilla-extract/css';
-import { colors } from '../../styles/colors';
+import { alpha } from '../../styles/alpha';
+import { vars } from '../../styles/theme.contract.css';
 
 // Animation keyframes
 const fadeIn = keyframes({
@@ -57,13 +58,13 @@ export const overlay = style({
   position: 'fixed',
   inset: 0,
   zIndex: 50,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: vars.color.overlay,
   selectors: {
     '&[data-state="open"]': {
-      animation: `${fadeIn} 0.5s ease-in-out`,
+      animation: `${fadeIn} 0.2s ease-out`,
     },
     '&[data-state="closed"]': {
-      animation: `${fadeOut} 0.3s ease-in-out`,
+      animation: `${fadeOut} 0.15s ease-in`,
     },
   },
 });
@@ -77,13 +78,13 @@ const contentBase = style({
   gap: '1rem',
   boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
   transition: 'ease-in-out',
-  backgroundColor: colors.gluonGrey,
+  backgroundColor: vars.color.cardBg,
   selectors: {
     '&[data-state="open"]': {
-      animationDuration: '0.5s',
+      animationDuration: '0.2s',
     },
     '&[data-state="closed"]': {
-      animationDuration: '0.3s',
+      animationDuration: '0.15s',
     },
   },
 });
@@ -98,13 +99,13 @@ export const contentRight = style([
     height: '100%',
     width: '75%',
     maxWidth: '24rem',
-    borderLeft: '1px solid #374151',
+    borderLeft: `1px solid ${vars.color.borderDefault}`,
     selectors: {
       '&[data-state="open"]': {
-        animation: `${slideInFromRight} 0.5s ease-in-out`,
+        animation: `${slideInFromRight} 0.2s ease-out`,
       },
       '&[data-state="closed"]': {
-        animation: `${slideOutToRight} 0.3s ease-in-out`,
+        animation: `${slideOutToRight} 0.15s ease-in`,
       },
     },
     '@media': {
@@ -124,13 +125,13 @@ export const contentLeft = style([
     height: '100%',
     width: '75%',
     maxWidth: '24rem',
-    borderRight: '1px solid #374151',
+    borderRight: `1px solid ${vars.color.borderDefault}`,
     selectors: {
       '&[data-state="open"]': {
-        animation: `${slideInFromLeft} 0.5s ease-in-out`,
+        animation: `${slideInFromLeft} 0.2s ease-out`,
       },
       '&[data-state="closed"]': {
-        animation: `${slideOutToLeft} 0.3s ease-in-out`,
+        animation: `${slideOutToLeft} 0.15s ease-in`,
       },
     },
     '@media': {
@@ -148,13 +149,13 @@ export const contentTop = style([
     right: 0,
     top: 0,
     height: 'auto',
-    borderBottom: '1px solid #374151',
+    borderBottom: `1px solid ${vars.color.borderDefault}`,
     selectors: {
       '&[data-state="open"]': {
-        animation: `${slideInFromTop} 0.5s ease-in-out`,
+        animation: `${slideInFromTop} 0.2s ease-out`,
       },
       '&[data-state="closed"]': {
-        animation: `${slideOutToTop} 0.3s ease-in-out`,
+        animation: `${slideOutToTop} 0.15s ease-in`,
       },
     },
   },
@@ -168,13 +169,13 @@ export const contentBottom = style([
     bottom: 0,
     height: '80vh',
     maxHeight: '80vh',
-    borderTop: '1px solid #374151',
+    borderTop: `1px solid ${vars.color.borderDefault}`,
     selectors: {
       '&[data-state="open"]': {
-        animation: `${slideInFromBottom} 0.5s ease-in-out`,
+        animation: `${slideInFromBottom} 0.2s ease-out`,
       },
       '&[data-state="closed"]': {
-        animation: `${slideOutToBottom} 0.3s ease-in-out`,
+        animation: `${slideOutToBottom} 0.15s ease-in`,
       },
     },
   },
@@ -185,7 +186,7 @@ export const close = style({
   position: 'absolute',
   top: '1rem',
   right: '1rem',
-  borderRadius: '0.25rem',
+  borderRadius: '0.5rem',
   opacity: 0.7,
   transition: 'opacity 0.2s',
   backgroundColor: 'transparent',
@@ -200,12 +201,12 @@ export const close = style({
   },
   ':focus': {
     outline: 'none',
-    boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.5)',
-    backgroundColor: '#1f2937',
+    boxShadow: `0 0 0 2px ${alpha(vars.color.focusRing, 50)}`,
+    backgroundColor: vars.color.surfaceHover,
   },
   selectors: {
     '&[data-state="open"]': {
-      backgroundColor: '#1f2937',
+      backgroundColor: vars.color.surfaceHover,
     },
     '&:disabled': {
       pointerEvents: 'none',
@@ -232,13 +233,13 @@ export const footer = style({
 
 // Title styles
 export const title = style({
-  color: '#f9fafb',
+  color: vars.color.textPrimary,
   fontWeight: 600,
 });
 
 // Description styles
 export const description = style({
-  color: '#9ca3af',
+  color: vars.color.textSecondary,
   fontSize: '0.875rem',
 });
 

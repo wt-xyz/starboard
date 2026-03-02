@@ -27,7 +27,11 @@ export const CardHeader: FC = () => {
       </div>
       <div css={$.headerActions}>
         <Tooltip content="Decrease or close position">
-          <button className={$.iconButton} onClick={modalOpenBoolean.setTrue}>
+          <button
+            className={$.iconButton}
+            onClick={modalOpenBoolean.setTrue}
+            aria-label="Decrease or close position"
+          >
             <MinusIcon />
           </button>
         </Tooltip>

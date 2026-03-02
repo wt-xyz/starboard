@@ -1,5 +1,5 @@
 import { globalStyle } from '@vanilla-extract/css';
-import { colors } from './colors';
+import { vars } from './theme.contract.css';
 
 /**
  * Ensure Radix Themes modals always appear above app-level fixed UI
@@ -11,20 +11,20 @@ globalStyle('.rt-DialogOverlay', {
 
 /* Radix Themes applies the overlay background via a ::before pseudo-element */
 globalStyle('.rt-DialogOverlay::before', {
-  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  backgroundColor: vars.color.overlay,
 });
 
 globalStyle('.rt-DialogContent', {
   zIndex: 1001,
-  backgroundColor: colors.gluonGrey,
-  borderRadius: '0.75rem',
-  border: `1px solid ${colors.whiteAlpha[10]}`,
+  backgroundColor: vars.color.cardBg,
+  borderRadius: vars.radius.panel,
+  border: `1px solid ${vars.color.borderDefault}`,
   /* Override Radix Themes' --shadow-6 which includes its own border-like outline */
   boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
 });
 
 globalStyle('.rt-DialogContent .rt-DialogTitle', {
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontSize: '1.125rem',
   fontWeight: 600,
 });

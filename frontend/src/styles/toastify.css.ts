@@ -1,5 +1,5 @@
 import { globalStyle } from '@vanilla-extract/css';
-import { colors } from './colors';
+import { vars } from './theme.contract.css';
 
 // Toast container positioning
 globalStyle('.Toastify__toast-container', {
@@ -8,14 +8,14 @@ globalStyle('.Toastify__toast-container', {
 
 // Base toast styling
 globalStyle('.Toastify__toast', {
-  backgroundColor: colors.gluonGrey,
+  backgroundColor: vars.color.cardBg,
   backdropFilter: 'blur(10px)',
-  borderRadius: '0.75rem',
-  border: `1px solid ${colors.whiteAlpha[10]}`,
+  borderRadius: vars.radius.panel,
+  border: `1px solid ${vars.color.borderDefault}`,
   boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontFamily: 'inherit',
-  fontSize: '0.875rem',
+  fontSize: vars.fontSize.body,
   padding: '0.75rem 1rem',
 });
 
@@ -23,56 +23,56 @@ globalStyle('.Toastify__toast', {
 globalStyle('.Toastify__toast-body', {
   padding: 0,
   margin: 0,
-  color: colors.snow,
+  color: vars.color.textPrimary,
 });
 
 // Progress bar
 globalStyle('.Toastify__progress-bar', {
-  background: colors.liquidLava,
+  background: vars.color.primary,
   height: '3px',
 });
 
 // Success toast
 globalStyle('.Toastify__toast--success', {
-  borderColor: colors.success,
+  borderColor: vars.color.success,
 });
 
 globalStyle('.Toastify__toast--success .Toastify__progress-bar', {
-  background: colors.success,
+  background: vars.color.success,
 });
 
 // Error toast
 globalStyle('.Toastify__toast--error', {
-  borderColor: colors.error,
+  borderColor: vars.color.error,
 });
 
 globalStyle('.Toastify__toast--error .Toastify__progress-bar', {
-  background: colors.error,
+  background: vars.color.error,
 });
 
 // Info toast
 globalStyle('.Toastify__toast--info', {
-  borderColor: colors.liquidLava,
+  borderColor: vars.color.primary,
 });
 
 // Warning toast
 globalStyle('.Toastify__toast--warning', {
-  borderColor: '#f59e0b',
+  borderColor: vars.color.warning,
 });
 
 globalStyle('.Toastify__toast--warning .Toastify__progress-bar', {
-  background: '#f59e0b',
+  background: vars.color.warning,
 });
 
 // Close button
 globalStyle('.Toastify__close-button', {
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   opacity: 1,
   alignSelf: 'center',
 });
 
 globalStyle('.Toastify__close-button:hover', {
-  color: colors.snow,
+  color: vars.color.textPrimary,
 });
 
 // Toast icon

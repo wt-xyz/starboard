@@ -74,17 +74,18 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
   }, []);
 
   return (
-    <div css={$.container}>
-      <IncreasePositionForm.OptionsProvider>
-        <IncreasePositionForm.KernelProvider
-          onSubmitSuccessful={handleOrderSubmission}
-          onSubmitFailure={handleValidationError}
-          defaultOrderSide={defaultOrderSide}
-          {...(!isWalletConnected && { resolver: null })}
-        >
+    <IncreasePositionForm.OptionsProvider>
+      <IncreasePositionForm.KernelProvider
+        onSubmitSuccessful={handleOrderSubmission}
+        onSubmitFailure={handleValidationError}
+        defaultOrderSide={defaultOrderSide}
+        {...(!isWalletConnected && { resolver: null })}
+      >
+        <div css={$.container}>
           {!hideSideSwitch && <IncreasePositionForm.OrderSideSwitch />}
           <IncreasePositionForm.PositionSizeInputs />
           <IncreasePositionForm.LeverageInput />
+          <div css={$.separator} />
           {isWalletConnected ? (
             <IncreasePositionForm.SubmitPositionButton />
           ) : (
@@ -92,9 +93,9 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
               Connect Wallet
             </Button>
           )}
-          <IncreasePositionForm.OrderSummary />
-        </IncreasePositionForm.KernelProvider>
-      </IncreasePositionForm.OptionsProvider>
-    </div>
+        </div>
+        <IncreasePositionForm.OrderSummary />
+      </IncreasePositionForm.KernelProvider>
+    </IncreasePositionForm.OptionsProvider>
   );
 };

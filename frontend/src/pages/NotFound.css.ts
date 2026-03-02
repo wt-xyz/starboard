@@ -1,10 +1,11 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '../styles/colors';
+import { alpha } from '../styles/alpha';
+import { vars } from '../styles/theme.contract.css';
 
 export const page = style({
   width: '100%',
   height: '100vh',
-  backgroundColor: colors.darkVoid,
+  backgroundColor: vars.color.pageBg,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -24,38 +25,38 @@ export const content = style({
 export const errorCode = style({
   fontSize: '8rem',
   fontWeight: 'bold',
-  color: colors.liquidLava,
+  color: vars.color.primary,
   lineHeight: 1,
-  textShadow: `0 0 40px ${colors.liquidLavaAlpha[30]}`,
+  textShadow: `0 0 40px ${alpha(vars.color.primary, 30)}`,
 });
 
 export const title = style({
   fontSize: '2rem',
   fontWeight: '600',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   marginTop: '1rem',
 });
 
 export const text = style({
   fontSize: '1.125rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   lineHeight: 1.6,
 });
 
 export const homeLink = style({
   marginTop: '2rem',
   padding: '0.75rem 2rem',
-  backgroundColor: colors.liquidLavaAlpha[20],
-  border: `1px solid ${colors.liquidLavaAlpha[30]}`,
+  backgroundColor: alpha(vars.color.primary, 20),
+  border: `1px solid ${alpha(vars.color.primary, 30)}`,
   borderRadius: '0.5rem',
-  color: colors.liquidLava,
+  color: vars.color.primary,
   fontSize: '1rem',
   fontWeight: '500',
   textDecoration: 'none',
   transition: 'all 0.2s',
   ':hover': {
-    backgroundColor: colors.liquidLavaAlpha[30],
-    borderColor: colors.liquidLava,
+    backgroundColor: alpha(vars.color.primary, 30),
+    borderColor: vars.color.primary,
     transform: 'translateY(-2px)',
   },
 });
