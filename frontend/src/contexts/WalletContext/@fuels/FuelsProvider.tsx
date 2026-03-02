@@ -28,19 +28,6 @@ export const FuelsProvider = memo((props: PropsWithChildren) => {
 
 FuelsProvider.displayName = 'FuelsProvider';
 
-const supportedNetworks: NetworkConfig[] = Object.entries(envs.getAllRpcUrls()).flatMap(
-  ([_network, url]) => {
-    const network = _network as Network;
-
-    if (!url) return [];
-
-    return {
-      chainId: envs.getChainIdByNetwork(network),
-      url,
-    };
-  }
-);
-
 const fuelConnectors = (() => {
   const defaultNetwork = envs.getDefaultNetwork();
   const chainId = envs.getChainIdByNetwork(defaultNetwork);
@@ -57,3 +44,16 @@ const fuelConnectors = (() => {
 
   return connectors;
 })();
+
+const supportedNetworks: NetworkConfig[] = Object.entries(envs.getAllRpcUrls()).flatMap(
+  ([_network, url]) => {
+    const network = _network as Network;
+
+    if (!url) return [];
+
+    return {
+      chainId: envs.getChainIdByNetwork(network),
+      url,
+    };
+  }
+);

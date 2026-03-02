@@ -1,5 +1,4 @@
 import { style } from '@vanilla-extract/css';
-import { alpha } from '@/styles/alpha';
 import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({

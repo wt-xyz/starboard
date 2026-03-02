@@ -8,24 +8,7 @@ import predicateArtifacts from '@/assets/eth-faucet-predicate.json';
 import { envs } from '@/lib/env';
 import type { Network } from '@/models/Network';
 
-const STORAGE_KEY_PREFIX = 'starboard_eth_faucet_';
-
-type Artifact = {
-  bytecodeHex: string;
-  abi: JsonAbi;
-  pin: string;
-  maxFaucetAmount: number;
-};
-
 export type FaucetConfig = { pin: string; maxFaucetAmount: number };
-
-function getArtifact(): Artifact {
-  return predicateArtifacts as Artifact;
-}
-
-function normalizePin(pin: string): string {
-  return pin.startsWith('0x') ? pin : `0x${pin}`;
-}
 
 /** Load faucet config: env PIN first, then localStorage (legacy), then artifact. */
 export function getFaucetConfig(network: Network): FaucetConfig {
@@ -73,21 +56,6 @@ export function getPredicateAddress(
 }
 
 /** Create predicate instance for request or for transfer (fund). */
-function createPredicate(provider: Provider, config: FaucetConfig) {
-  const art = getArtifact();
-  const bytecode = art.bytecodeHex.startsWith('0x') ? art.bytecodeHex : `0x${art.bytecodeHex}`;
-  const pin = config.pin.startsWith('0x') ? config.pin : `0x${config.pin}`;
-  return new Predicate({
-    bytecode,
-    abi: art.abi,
-    provider,
-    configurableConstants: {
-      PIN: pin,
-      MAX_FAUCET_AMOUNT: config.maxFaucetAmount,
-    },
-    data: [pin],
-  });
-}
 
 /**
  * Request testnet ETH from the faucet predicate.
@@ -137,4 +105,36 @@ export async function requestTestnetEth(
     const message = err instanceof Error ? err.message : String(err);
     return { success: false, error: message };
   }
+}
+
+type Artifact = {
+  bytecodeHex: string;
+  abi: JsonAbi;
+  pin: string;
+  maxFaucetAmount: number;
+};
+function getArtifact(): Artifact {
+  return predicateArtifacts as Artifact;
+}
+
+function normalizePin(pin: string): string {
+  return pin.startsWith('0x') ? pin : `0x${pin}`;
+}
+
+const STORAGE_KEY_PREFIX = 'starboard_eth_faucet_';
+
+function createPredicate(provider: Provider, config: FaucetConfig) {
+  const art = getArtifact();
+  const bytecode = art.bytecodeHex.startsWith('0x') ? art.bytecodeHex : `0x${art.bytecodeHex}`;
+  const pin = config.pin.startsWith('0x') ? config.pin : `0x${config.pin}`;
+  return new Predicate({
+    bytecode,
+    abi: art.abi,
+    provider,
+    configurableConstants: {
+      PIN: pin,
+      MAX_FAUCET_AMOUNT: config.maxFaucetAmount,
+    },
+    data: [pin],
+  });
 }

@@ -1,5 +1,3 @@
-export {};
-
 function pipe<TOut, TIn>(this: TIn, predicate: (value: TIn) => TOut): TOut {
   return predicate(this);
 }
@@ -147,3 +145,5 @@ declare global {
     pipe<TOut>(this: Object, predicate: (value: this) => TOut): TOut;
   }
 }
+
+export {};

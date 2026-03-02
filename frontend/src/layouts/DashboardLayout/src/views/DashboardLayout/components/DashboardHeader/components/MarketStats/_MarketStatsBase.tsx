@@ -1,11 +1,5 @@
 import * as $ from './_MarketStatsBase.css';
 
-type MarketStatProps = {
-  label: string;
-  value: string;
-  variant?: 'default' | 'positive' | 'negative';
-};
-
 export function MarketStat({ label, value, variant = 'default' }: MarketStatProps) {
   const valueStyles = [$.statValue];
   if (variant === 'positive') valueStyles.push($.statValuePositive);
@@ -18,3 +12,9 @@ export function MarketStat({ label, value, variant = 'default' }: MarketStatProp
     </div>
   );
 }
+
+type MarketStatProps = {
+  label: string;
+  value: string;
+  variant?: 'default' | 'positive' | 'negative';
+};

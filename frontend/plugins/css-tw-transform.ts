@@ -16,46 +16,6 @@ import type { Plugin } from 'vite';
  * themselves are kept so structural patterns like `prop={` still match.
  * This prevents matching props inside nested JSX within prop values.
  */
-function maskNestedContent(str: string): string {
-  const chars = Array.from(str);
-  let depth = 0;
-  let inString: string | null = null;
-  let escaped = false;
-
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-
-    if (!escaped && (char === '"' || char === "'" || char === '`')) {
-      if (inString === char) {
-        inString = null;
-      } else if (inString === null) {
-        inString = char;
-      }
-    }
-
-    if (char === '\\' && !escaped) {
-      escaped = true;
-      if (depth >= 1) chars[i] = '\x00';
-      continue;
-    }
-    escaped = false;
-
-    if (inString) {
-      if (depth >= 1) chars[i] = '\x00';
-      continue;
-    }
-
-    if (char === '{') {
-      depth++;
-    } else if (char === '}') {
-      depth--;
-    } else if (depth >= 1) {
-      chars[i] = '\x00';
-    }
-  }
-
-  return chars.join('');
-}
 
 export function cssTwTransformPlugin(): Plugin {
   return {
@@ -359,4 +319,45 @@ export function cssTwTransformPlugin(): Plugin {
       };
     },
   };
+}
+
+function maskNestedContent(str: string): string {
+  const chars = Array.from(str);
+  let depth = 0;
+  let inString: string | null = null;
+  let escaped = false;
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    if (!escaped && (char === '"' || char === "'" || char === '`')) {
+      if (inString === char) {
+        inString = null;
+      } else if (inString === null) {
+        inString = char;
+      }
+    }
+
+    if (char === '\\' && !escaped) {
+      escaped = true;
+      if (depth >= 1) chars[i] = '\x00';
+      continue;
+    }
+    escaped = false;
+
+    if (inString) {
+      if (depth >= 1) chars[i] = '\x00';
+      continue;
+    }
+
+    if (char === '{') {
+      depth++;
+    } else if (char === '}') {
+      depth--;
+    } else if (depth >= 1) {
+      chars[i] = '\x00';
+    }
+  }
+
+  return chars.join('');
 }

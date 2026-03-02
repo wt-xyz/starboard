@@ -2,13 +2,6 @@ import z from 'zod';
 import * as PositionForm from '@/modules/PositionForm';
 import { PositionFormSchema } from '@/modules/PositionForm';
 
-const BaseIncreasePositionFormSchema = PositionFormSchema.pick({
-  orderSide: true,
-  leverage: true,
-  positionSize: true,
-  collateralSize: true,
-});
-
 export const createIncreasePositionFormSchema = (options: PositionForm.OptionsContextType) => {
   return BaseIncreasePositionFormSchema.superRefine(function validateMarketMaxLeverage(data, ctx) {
     if (!options.maxLeverage) return;
@@ -99,3 +92,10 @@ export const createIncreasePositionFormSchema = (options: PositionForm.OptionsCo
       }
     });
 };
+
+const BaseIncreasePositionFormSchema = PositionFormSchema.pick({
+  orderSide: true,
+  leverage: true,
+  positionSize: true,
+  collateralSize: true,
+});

@@ -74,6 +74,13 @@ export const NetworkSwitchContextProvider: FC<NetworkSwitchContextProviderProps>
   );
 };
 
+function getNetworkRpcInfo(network: Network): FuelNetwork {
+  return {
+    chainId: envs.getChainIdByNetwork(network),
+    url: envs.getRpcUrlByNetwork(network),
+  };
+}
+
 function getNetworkByRpcUrl(url: string) {
   const network = Object.entries(envs.getAllRpcUrls())
     .flatMap(([network, networkUrl]) => {
@@ -85,11 +92,4 @@ function getNetworkByRpcUrl(url: string) {
   if (!network) throw new Error(`Unknown network: ${url}.`);
 
   return network as Network;
-}
-
-function getNetworkRpcInfo(network: Network): FuelNetwork {
-  return {
-    chainId: envs.getChainIdByNetwork(network),
-    url: envs.getRpcUrlByNetwork(network),
-  };
 }

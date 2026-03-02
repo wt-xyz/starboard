@@ -13,8 +13,6 @@ import { useSdkQuery } from '../hooks';
 import { useAccountsSdk } from '../hooks/useAccountsSdk';
 import { FuelTsSdkContext } from './FuelTsSdkContext';
 
-interface FuelTsSdkProviderProps extends PropsWithChildren {}
-
 export function FuelTsSdkProvider({ children }: FuelTsSdkProviderProps) {
   const currentNetwork = useRequiredContext(NetworkSwitchContext).getCurrentNetwork();
   const indexerUrl = envs.getIndexerUrlByNetwork(currentNetwork);
@@ -44,6 +42,15 @@ export function FuelTsSdkProvider({ children }: FuelTsSdkProviderProps) {
   );
 }
 
+interface FuelTsSdkProviderProps extends PropsWithChildren {}
+
+function getNetworkAssets(network: Network) {
+  if (network === 'local') return localAssets as AssetEntity[];
+  if (network === 'testnet') return testnetAssets as AssetEntity[];
+  if (network === 'mainnet') return [] as AssetEntity[]; // TODO: Add mainnet assets when available
+  throw new Error(`Unsupported Network:  ${network}`);
+}
+
 function WalletBalancesInitializer() {
   const wallet = useRequiredContext(WalletContext);
   const accountsSdk = useAccountsSdk();
@@ -62,11 +69,4 @@ function WalletBalancesInitializer() {
   }, [accountsSdk, userDataFetchStatus]);
 
   return null;
-}
-
-function getNetworkAssets(network: Network) {
-  if (network === 'local') return localAssets as AssetEntity[];
-  if (network === 'testnet') return testnetAssets as AssetEntity[];
-  if (network === 'mainnet') return [] as AssetEntity[]; // TODO: Add mainnet assets when available
-  throw new Error(`Unsupported Network:  ${network}`);
 }

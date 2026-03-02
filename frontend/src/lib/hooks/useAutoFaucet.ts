@@ -6,8 +6,7 @@ import { WalletContext } from '@/contexts/WalletContext/WalletContext';
 import { requestTestnetEth } from '@/lib/ethFaucet';
 import { useRequiredContext } from '@/lib/useRequiredContext';
 
-const BURNER_WALLET_CONNECTOR_NAME = 'Burner Wallet';
-const MIN_ETH_BALANCE_THRESHOLD = BigInt(100_000); // 0.0001 ETH (base units, 9 decimals)
+// 0.0001 ETH (base units, 9 decimals)
 
 /**
  * Auto-faucet hook for burner wallets.
@@ -88,3 +87,7 @@ export function useAutoFaucet(walletAddress: string | null) {
     }
   }, [walletAddress]);
 }
+
+const BURNER_WALLET_CONNECTOR_NAME = 'Burner Wallet';
+
+const MIN_ETH_BALANCE_THRESHOLD = BigInt(100_000);

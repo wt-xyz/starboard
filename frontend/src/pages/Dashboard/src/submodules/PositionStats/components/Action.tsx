@@ -7,13 +7,6 @@ export interface ActionProps {
   positionId: PositionStableId;
 }
 
-const changeLabels: Record<PositionChange, string> = {
-  [PositionChange.INCREASE]: 'Deposit',
-  [PositionChange.DECREASE]: 'Withdraw',
-  [PositionChange.CLOSE]: 'Close',
-  [PositionChange.LIQUIDATE]: 'Liquidate',
-};
-
 export const Action: FC<ActionProps> = ({ positionId }) => {
   const tradingSdk = useTradingSdk();
   const position = tradingSdk.getPositionById(positionId);
@@ -21,4 +14,11 @@ export const Action: FC<ActionProps> = ({ positionId }) => {
   if (!position) return <>—</>;
 
   return <>{changeLabels[position.change]}</>;
+};
+
+const changeLabels: Record<PositionChange, string> = {
+  [PositionChange.INCREASE]: 'Deposit',
+  [PositionChange.DECREASE]: 'Withdraw',
+  [PositionChange.CLOSE]: 'Close',
+  [PositionChange.LIQUIDATE]: 'Liquidate',
 };
