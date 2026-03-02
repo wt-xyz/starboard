@@ -1,11 +1,12 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '../../../../../../styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const card = style({
-  backgroundColor: colors.gluonGrey,
+  backgroundColor: vars.color.cardBg,
   borderRadius: '0.5rem',
   padding: '0.75rem',
-  border: `1px solid ${colors.whiteAlpha[10]}`,
+  border: `1px solid ${vars.color.borderDefault}`,
   display: 'flex',
   flexDirection: 'column',
   gap: '0.5rem',
@@ -20,41 +21,41 @@ export const header = style({
 export const side = style({
   padding: '0.25rem 0.5rem',
   borderRadius: '0.25rem',
-  fontSize: '0.625rem',
+  fontSize: vars.fontSize.label,
   fontWeight: '700',
   letterSpacing: '0.05em',
   textTransform: 'uppercase',
 });
 
 export const sideLong = style({
-  backgroundColor: 'rgba(34, 197, 94, 0.15)',
-  color: colors.success,
+  backgroundColor: alpha(vars.color.success, 15),
+  color: vars.color.success,
 });
 
 export const sideShort = style({
-  backgroundColor: 'rgba(239, 68, 68, 0.15)',
-  color: colors.error,
+  backgroundColor: alpha(vars.color.error, 15),
+  color: vars.color.error,
 });
 
 export const assetName = style({
-  fontSize: '0.875rem',
-  fontWeight: '600',
-  color: colors.snow,
+  fontSize: vars.fontSize.body,
+  fontWeight: '500',
+  color: vars.color.textPrimary,
 });
 
 export const actionLabel = style({
   marginLeft: 'auto',
   padding: '0.125rem 0.5rem',
   borderRadius: '0.25rem',
-  fontSize: '0.6875rem',
-  fontWeight: '600',
-  backgroundColor: colors.whiteAlpha[10],
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.label,
+  fontWeight: '500',
+  backgroundColor: alpha(vars.color.textPrimary, 10),
+  color: vars.color.textSecondary,
 });
 
 export const timestamp = style({
-  fontSize: '0.6875rem',
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.label,
+  color: vars.color.textSecondary,
 });
 
 export const statsGrid = style({
@@ -62,7 +63,7 @@ export const statsGrid = style({
   gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   gap: '0.5rem',
   padding: '0.625rem',
-  backgroundColor: colors.whiteAlpha[5],
+  backgroundColor: alpha(vars.color.textPrimary, 5),
   borderRadius: '0.375rem',
 });
 
@@ -73,25 +74,24 @@ export const statItem = style({
 });
 
 export const statLabel = style({
-  fontSize: '0.6875rem',
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.label,
+  color: vars.color.textSecondary,
 });
 
 export const statValue = style({
-  fontSize: '0.75rem',
-  fontWeight: '600',
-  color: colors.snow,
-  fontFamily: 'monospace',
+  fontSize: vars.fontSize.caption,
+  fontWeight: '500',
+  color: vars.color.textPrimary,
 });
 
 export const pnlPositive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const pnlNegative = style({
-  color: colors.error,
+  color: vars.color.error,
 });
 
 export const pnlMuted = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });

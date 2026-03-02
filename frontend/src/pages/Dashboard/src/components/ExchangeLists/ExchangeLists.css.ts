@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({
   display: 'flex',
@@ -7,12 +8,13 @@ export const container = style({
   width: '100%',
   height: '100%',
   minHeight: 0,
-  backgroundColor: colors.gluonGrey,
-  borderRadius: '0',
-  overflow: 'visible',
+  backgroundColor: vars.color.cardBg,
+  borderRadius: '0.5rem',
+  overflow: 'hidden',
   '@media': {
     '(max-width: 1023px)': {
       height: 'auto',
+      overflow: 'visible',
     },
   },
 });
@@ -35,8 +37,8 @@ export const tabsBar = style({
   alignItems: 'center',
   justifyContent: 'space-between',
   flexShrink: 0,
-  borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
-  backgroundColor: colors.gluonGrey,
+  borderBottom: `1px solid ${vars.color.borderDefault}`,
+  backgroundColor: vars.color.cardBg,
   padding: '0 0.5rem',
 });
 
@@ -52,19 +54,19 @@ export const tabsList = style({
 });
 
 export const closeAllButton = style({
-  fontSize: '0.75rem',
+  fontSize: vars.fontSize.caption,
   fontWeight: 500,
-  color: colors.error,
+  color: vars.color.error,
   backgroundColor: 'transparent',
   border: 'none',
   padding: '0.25rem 0.5rem',
   cursor: 'pointer',
   transition: 'color 0.15s ease',
   ':hover': {
-    color: '#ff6b6b',
+    color: vars.color.errorHover,
   },
   ':disabled': {
-    opacity: 0.5,
+    color: vars.color.textDisabled,
     cursor: 'not-allowed',
   },
 });
@@ -72,24 +74,24 @@ export const closeAllButton = style({
 export const tabsTrigger = style({
   padding: '0.5rem 0.75rem',
   backgroundColor: 'transparent',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   border: 'none',
   borderBottom: '2px solid transparent',
   marginBottom: '-1px',
   cursor: 'pointer',
-  fontSize: '0.75rem',
+  fontSize: vars.fontSize.body,
   fontWeight: '500',
   whiteSpace: 'nowrap',
   transition: 'all 0.15s ease',
   ':hover': {
-    color: colors.snow,
-    backgroundColor: colors.whiteAlpha[5],
+    color: vars.color.textPrimary,
+    backgroundColor: alpha(vars.color.textPrimary, 5),
   },
   selectors: {
     '&[data-state="active"]': {
-      color: colors.liquidLava,
-      borderBottomColor: colors.liquidLava,
-      fontWeight: '600',
+      color: vars.color.primary,
+      borderBottomColor: vars.color.primary,
+      fontWeight: '500',
     },
   },
   '@media': {
@@ -121,8 +123,9 @@ export const emptyState = style({
   alignItems: 'center',
   justifyContent: 'center',
   padding: '3rem 1rem',
-  color: colors.dustyGrey,
-  fontSize: '0.875rem',
+  minHeight: '8rem',
+  color: vars.color.textSecondary,
+  fontSize: vars.fontSize.body,
   textAlign: 'center',
 });
 
@@ -133,6 +136,6 @@ export const emptyStateIcon = style({
 });
 
 export const emptyStateText = style({
-  fontSize: '0.875rem',
-  color: colors.dustyGrey,
+  fontSize: vars.fontSize.body,
+  color: vars.color.textSecondary,
 });
