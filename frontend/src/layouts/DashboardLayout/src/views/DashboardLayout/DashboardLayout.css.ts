@@ -1,9 +1,9 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '../../../../../styles/colors';
+import { vars } from '../../../../../styles/theme.contract.css';
 
 export const page = style({
   minHeight: '100vh',
-  background: colors.darkVoid,
+  background: vars.color.pageBg,
   display: 'flex',
   flexDirection: 'column',
 });
