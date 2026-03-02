@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { forwardRef, use, useEffect, useImperativeHandle, useRef } from 'react';
 import type { Candle, CandleInterval } from 'fuel-ts-sdk/trading';
 import type {
   ChartingLibraryFeatureset,
@@ -6,8 +6,9 @@ import type {
   IChartingLibraryWidget,
   ResolutionString,
 } from 'public/tradingview/charting_library';
-import { colors } from '@/styles/colors';
+import { ThemeContext } from '@/contexts/ThemeContext';
 import * as styles from './TradingChart.css';
+import { createTradingViewCustomCssUrl, tradingViewThemes } from './TradingChart.theme';
 import { createDatafeed } from './TradingChart.utils';
 
 export interface TradingChartProps {
@@ -26,6 +27,7 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<IChartingLibraryWidget | null>(null);
   const customCssUrlRef = useRef<string | null>(null);
+  const { theme } = use(ThemeContext)!;
 
   useImperativeHandle(
     ref,
@@ -42,7 +44,11 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
 
   useEffect(() => {
     if (!containerRef.current) return;
-    if (!customCssUrlRef.current) customCssUrlRef.current = createTradingViewCustomCssUrl();
+
+    const tv = tradingViewThemes[theme];
+
+    if (customCssUrlRef.current) URL.revokeObjectURL(customCssUrlRef.current);
+    customCssUrlRef.current = createTradingViewCustomCssUrl(tv);
 
     // Detect mobile/touch devices
     const isMobile =
@@ -51,19 +57,26 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
 
     const themeOverrides: ChartingLibraryWidgetOptions['overrides'] = {
       'paneProperties.backgroundType': 'solid',
-      'paneProperties.background': colors.gluonGrey,
-      'paneProperties.backgroundGradientStartColor': colors.gluonGrey,
-      'paneProperties.backgroundGradientEndColor': colors.gluonGrey,
-      'paneProperties.vertGridProperties.color': colors.whiteAlpha[8],
-      'paneProperties.horzGridProperties.color': colors.whiteAlpha[8],
-      'paneProperties.vertGridProperties.style': 0,
-      'paneProperties.horzGridProperties.style': 0,
-      'paneProperties.separatorColor': colors.darkVoidAlpha[20],
-      'scalesProperties.axisHighlightColor': colors.liquidLavaAlpha[15],
-      'scalesProperties.axisLineToolLabelBackgroundColorCommon': colors.liquidLava,
-      'scalesProperties.axisLineToolLabelBackgroundColorActive': colors.liquidLava,
-      // Consistent font sizes: smaller on mobile, normal on desktop
-      'scalesProperties.fontSize': isMobile ? 6 : 11,
+      'paneProperties.background': tv.cardBg,
+      'paneProperties.backgroundGradientStartColor': tv.cardBg,
+      'paneProperties.backgroundGradientEndColor': tv.cardBg,
+      'paneProperties.vertGridProperties.color': tv.borderDefault,
+      'paneProperties.horzGridProperties.color': tv.borderDefault,
+      'paneProperties.vertGridProperties.style': 2,
+      'paneProperties.horzGridProperties.style': 2,
+      'paneProperties.separatorColor': tv.separatorColor,
+      'scalesProperties.axisHighlightColor': tv.highlightColor,
+      'scalesProperties.axisLineToolLabelBackgroundColorCommon': tv.primary,
+      'scalesProperties.axisLineToolLabelBackgroundColorActive': tv.primary,
+      // Consistent font sizes: 9px minimum for readability on mobile
+      'scalesProperties.fontSize': isMobile ? 9 : 11,
+      // Candle colors matching design system
+      'mainSeriesProperties.candleStyle.upColor': tv.candleUp,
+      'mainSeriesProperties.candleStyle.downColor': tv.candleDown,
+      'mainSeriesProperties.candleStyle.wickUpColor': tv.candleUp,
+      'mainSeriesProperties.candleStyle.wickDownColor': tv.candleDown,
+      'mainSeriesProperties.candleStyle.borderUpColor': tv.candleUp,
+      'mainSeriesProperties.candleStyle.borderDownColor': tv.candleDown,
     };
 
     // Compact price formatter for mobile (shows 84.0K instead of 84000)
@@ -95,20 +108,34 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
           }
         : {}),
       loading_screen: {
-        backgroundColor: colors.gluonGrey,
-        foregroundColor: colors.liquidLava,
+        backgroundColor: tv.cardBg,
+        foregroundColor: tv.primary,
       },
       disabled_features: [
         'trading_account_manager' as ChartingLibraryFeatureset,
         'use_localstorage_for_settings' as ChartingLibraryFeatureset,
         'timeframes_toolbar' as ChartingLibraryFeatureset,
+        'header_compare' as ChartingLibraryFeatureset,
+        'header_symbol_search' as ChartingLibraryFeatureset,
+        'symbol_search_hot_key' as ChartingLibraryFeatureset,
+        'header_undo_redo' as ChartingLibraryFeatureset,
+        'header_saveload' as ChartingLibraryFeatureset,
+        'header_quick_search' as ChartingLibraryFeatureset,
+        'display_market_status' as ChartingLibraryFeatureset,
+        'symbol_info' as ChartingLibraryFeatureset,
+        'volume_force_overlay' as ChartingLibraryFeatureset,
+        'create_volume_indicator_by_default' as ChartingLibraryFeatureset,
+        'popup_hints' as ChartingLibraryFeatureset,
+        'edit_buttons_in_legend' as ChartingLibraryFeatureset,
       ],
       enabled_features: [
         'iframe_loading_same_origin' as ChartingLibraryFeatureset,
         'hide_left_toolbar_by_default' as ChartingLibraryFeatureset,
+        'chart_crosshair_menu' as ChartingLibraryFeatureset,
+        'items_favoriting' as ChartingLibraryFeatureset,
       ],
       load_last_chart: false,
-      theme: 'Dark',
+      theme: tv.tvTheme,
       fullscreen: false,
       autosize: true,
       studies_overrides: {},
@@ -141,92 +168,7 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
         customCssUrlRef.current = null;
       }
     };
-  }, [candlesGetter, symbol]);
+  }, [candlesGetter, symbol, theme]);
 
   return <div ref={containerRef} css={styles.container} />;
 });
-
-function createTradingViewCustomCssUrl(): string {
-  const css = `
-@import url("/tradingview/custom-styles.css");
-
-/* Starboard: match dashboard panel grey for the Object Tree panel container. */
-.wrap-ukH4sVzT,
-.wrap-ukH4sVzT .space-ukH4sVzT,
-.wrap-ukH4sVzT .tree-ukH4sVzT {
-  background-color: ${colors.gluonGrey} !important;
-}
-
-/* Starboard: remove blue selection highlight in the Object Tree list. */
-.wrap-IEe5qpW4,
-html.theme-dark .wrap-IEe5qpW4 {
-  background-color: ${colors.gluonGrey} !important;
-}
-
-@media (any-hover:hover) {
-  .wrap-IEe5qpW4:hover,
-  html.theme-dark .wrap-IEe5qpW4:hover {
-    background-color: ${colors.slateGrey} !important;
-  }
-}
-
-.wrap-IEe5qpW4.selected-IEe5qpW4,
-html.theme-dark .wrap-IEe5qpW4.selected-IEe5qpW4,
-.wrap-IEe5qpW4.childOfSelected-IEe5qpW4,
-html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4 {
-  background-color: ${colors.slateGrey} !important;
-}
-
-@media (any-hover:hover) {
-  .wrap-IEe5qpW4.selected-IEe5qpW4:hover,
-  html.theme-dark .wrap-IEe5qpW4.selected-IEe5qpW4:hover,
-  .wrap-IEe5qpW4.childOfSelected-IEe5qpW4:hover,
-  html.theme-dark .wrap-IEe5qpW4.childOfSelected-IEe5qpW4:hover {
-    background-color: ${colors.slateGrey} !important;
-  }
-}
-
-/* Starboard: use Liquid Lava as TradingView active accent. */
-:root, html, body {
-  --color-accent: ${colors.liquidLava} !important;
-  --tv-color-platform-background: ${colors.gluonGrey} !important;
-  --tv-color-pane-background: ${colors.gluonGrey} !important;
-  --tv-color-toolbar-button-background-active: ${colors.liquidLava} !important;
-  --tv-color-toolbar-button-background-active-hover: ${colors.liquidLava} !important;
-  --tv-color-toolbar-button-text-active: ${colors.snow} !important;
-  --tv-color-toolbar-button-text-active-hover: ${colors.snow} !important;
-  --tv-color-popup-element-background-active: ${colors.liquidLava} !important;
-  --tv-color-popup-element-toolbox-background-active-hover: ${colors.liquidLava} !important;
-  --tv-color-item-active-text: ${colors.snow} !important;
-}
-
-/* Remove left padding/margin from chart */
-.chart-markup-table {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-}
-.layout__area--left {
-  display: none !important;
-}
-
-/* Ensure time scale (X-axis) is fully visible */
-.chart-container {
-  padding-bottom: 2px !important;
-}
-.time-axis {
-  overflow: visible !important;
-}
-
-/* Mobile: ensure X-axis labels are fully visible */
-@media (max-width: 1024px) {
-  .chart-container {
-    padding-bottom: 6px !important;
-  }
-  .chart-widget {
-    margin-bottom: 4px !important;
-  }
-}
-`;
-
-  return URL.createObjectURL(new Blob([css], { type: 'text/css' }));
-}
