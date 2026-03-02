@@ -32,7 +32,7 @@ export const distance = style({
 });
 
 export const warning = style({
-  color: vars.color.error,
+  color: vars.color.warning,
 });
 
 export const danger = style({

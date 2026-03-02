@@ -51,7 +51,7 @@ export const PositionsList: FC<PositionsListProps> = ({ side }) => {
         ) : (
           <div css={$.positionCards}>
             {filteredOpenPositions.map((openPosition) => (
-              <PositionCard key={openPosition.revisionId} position={openPosition} />
+              <PositionCard key={openPosition.stableId} position={openPosition} />
             ))}
           </div>
         )}

@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { MinusIcon } from '@radix-ui/react-icons';
-import { Tooltip } from '@radix-ui/themes';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useBoolean } from 'usehooks-ts';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
@@ -28,6 +28,7 @@ export const CardHeader: FC = () => {
       <div css={$.headerActions}>
         <Tooltip content="Decrease or close position">
           <button
+            type="button"
             className={$.iconButton}
             onClick={modalOpenBoolean.setTrue}
             aria-label="Decrease or close position"

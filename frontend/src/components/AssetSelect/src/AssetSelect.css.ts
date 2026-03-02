@@ -92,7 +92,7 @@ export const popoverContent = recipe({
     maxWidth: 1200,
     maxHeight: '520px',
     overflow: 'auto',
-    borderRadius: '0.5rem',
+    borderRadius: vars.radius.card,
     boxShadow: '0 12px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.2)',
     '@media': {
       '(max-width: 1024px)': {

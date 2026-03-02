@@ -1,11 +1,11 @@
 import { type FC, useCallback, useState } from 'react';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { Tooltip } from '@radix-ui/themes';
 import type { PositionStableId } from 'fuel-ts-sdk';
 import type { PositionEntity } from 'fuel-ts-sdk/trading';
 import { toast } from 'react-toastify';
 import { useBoolean } from 'usehooks-ts';
 import { ConfirmationDialog } from '@/components/ui/ConfirmationDialog';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { PositionsTable as PT } from '@/pages/Dashboard/submodules';
 import { DecreasePositionDialog } from './DecreasePositionDialog';

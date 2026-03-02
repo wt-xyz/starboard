@@ -61,7 +61,7 @@ export const DesktopMarketHeader: FC = () => {
         )}
       </div>
 
-      <div css={$.separator} />
+      {(oiFormatted || volFormatted || fundingFormatted) && <div css={$.separator} />}
 
       {oiFormatted && (
         <div css={$.statItem}>
@@ -151,8 +151,7 @@ function useFundingRate(fundingInfo: FundingInfoEntity | undefined): FundingResu
 function formatPrice(value: number): string {
   if (value === 0) return '0.00';
   for (let d = 0; d <= 9; d++) {
-    const formatted = formatCurrency(value, { decimals: d });
-    if (Number(formatted) !== 0) {
+    if (Number(value.toFixed(d)) !== 0) {
       return formatCurrency(value, { decimals: d + 2 });
     }
   }
