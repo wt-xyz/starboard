@@ -18,6 +18,7 @@ export default [
       'fuel-ts-sdk/**',
       'indexer/**',
       'contracts/types/**',
+      'liquidator/**',
     ],
   },
 ];
