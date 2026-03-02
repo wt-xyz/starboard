@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const priceDisplay = style({
   display: 'flex',
@@ -10,20 +10,18 @@ export const priceDisplay = style({
 export const price = style({
   fontSize: '1rem',
   fontWeight: '600',
-  color: colors.snow,
-  fontFamily: 'monospace',
+  color: vars.color.textPrimary,
 });
 
 export const priceChange = style({
   fontSize: '0.75rem',
   fontWeight: '500',
-  fontFamily: 'monospace',
 });
 
 export const priceChangePositive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const priceChangeNegative = style({
-  color: colors.error,
+  color: vars.color.error,
 });
