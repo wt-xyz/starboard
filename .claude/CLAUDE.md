@@ -61,30 +61,27 @@ When exploring indexer GraphQL schema or available queries, read from local file
 
 For contract constants (decimals, precision), check `contracts/contracts/core/vault/src/main.sw`.
 
+## Styling
+
+### Theme Contract
+
+All CSS-in-JS styles (`*.css.ts`) MUST use tokens from the theme contract (`@/styles/theme.contract.css`) instead of hardcoded values. Never use raw `rem`, `px`, or color literals when a token exists.
+
+| Category       | Import                          | Tokens                                                                                               |
+| -------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Colors         | `vars.color.*`                  | `pageBg`, `cardBg`, `inputBg`, `surfaceHover`, `textPrimary`, `textSecondary`, `borderDefault`, etc. |
+| Spacing        | `vars.space.*`                  | `2xs` (2px), `xs` (4px), `sm` (8px), `md` (12px), `lg` (16px), `xl` (24px), `2xl` (32px)             |
+| Radius         | `vars.radius.*`                 | `button`, `input`, `card` (8px), `panel` (12px), `full` (9999px)                                     |
+| Font size      | `vars.fontSize.*`               | `h1`–`h3`, `subtitle`, `bodyLg`, `body`, `bodySm`, `caption`, `label`, `micro`                       |
+| Font weight    | `vars.fontWeight.*`             | `normal`, `medium`, `semibold`                                                                       |
+| Line height    | `vars.lineHeight.*`             | `tight`, `normal`, `relaxed`                                                                         |
+| Letter spacing | `vars.letterSpacing.*`          | `tight`, `normal`, `wide`                                                                            |
+| Transitions    | `vars.transition.*`             | `fast` (100ms), `normal` (150ms), `slow` (300ms)                                                     |
+| Opacity        | `alpha()` from `@/styles/alpha` | `alpha(color, percent)` for transparent overlays                                                     |
+
+**Acceptable hardcoded values:** viewport calcs (`calc(100vh - ...)`), component-specific fixed dimensions (e.g., sidebar width `420px`, header height `4rem`), `0`, `none`, `auto`, `100%`.
+
 ## Code Organization
-
-### Working with Forked/Legacy Code
-
-**Create isolated space for new features:**
-
-- New root: `@starboard/` directory (mirror of inherited root)
-- ALL new features MUST go in `@starboard/`, NEVER in legacy directories
-- Clone App root file (e.g., App.tsx) into `@starboard/` and update imports
-- Add path alias for new root
-
-**Altering legacy code:**
-
-- NEVER directly modify legacy files for compositions (views, large functions, components)
-- Clone entire component tree into `@starboard/` including all middlemen
-- For composites (utils, constants): Create continuation file in `@starboard/` and reference from there
-- To replace legacy methods: Mark old util as deprecated, point to successor
-
-**Fixing legacy bugs:**
-
-- Widespread method: Fix in original repo, upgrade via migration
-- Limited scope method: Create replacement in `@starboard/`, clone affected locations
-
-**Benefits:** Frozen inherited root = easy migration to newer versions, no merge conflicts
 
 ### Module Design Principles
 
