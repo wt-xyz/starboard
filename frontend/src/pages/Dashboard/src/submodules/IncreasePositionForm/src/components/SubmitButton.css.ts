@@ -1,13 +1,13 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const button = style({
   width: '100%',
-  padding: '12px 16px',
+  padding: '16px 24px',
   border: 'none',
-  borderRadius: '4px',
-  fontSize: '0.875rem',
-  fontWeight: '600',
+  borderRadius: '0.5rem',
+  fontSize: '1rem',
+  fontWeight: '500',
   cursor: 'pointer',
   transition: 'all 0.2s',
   marginTop: '0.5rem',
@@ -16,28 +16,39 @@ export const button = style({
 });
 
 export const disabledButton = style({
-  opacity: 0.5,
   cursor: 'not-allowed',
+  selectors: {
+    '&&': {
+      backgroundColor: vars.color.surfaceDisabled,
+      color: vars.color.textDisabled,
+    },
+    '&&:hover': {
+      backgroundColor: vars.color.surfaceDisabled,
+    },
+    '&&:active': {
+      backgroundColor: vars.color.surfaceDisabled,
+    },
+  },
 });
 
 export const buyButton = style({
-  backgroundColor: colors.liquidLava,
-  color: colors.snow,
+  backgroundColor: vars.color.success,
+  color: vars.color.textPrimary,
   ':hover': {
-    backgroundColor: '#E05D0A', // Slightly darker Liquid Lava
+    backgroundColor: vars.color.successHover,
   },
   ':active': {
-    backgroundColor: '#CC5209', // Even darker for active state
+    backgroundColor: vars.color.successHover,
   },
 });
 
 export const sellButton = style({
-  backgroundColor: colors.liquidLava,
-  color: colors.snow,
+  backgroundColor: vars.color.error,
+  color: vars.color.textPrimary,
   ':hover': {
-    backgroundColor: '#E05D0A', // Slightly darker Liquid Lava
+    backgroundColor: vars.color.errorHover,
   },
   ':active': {
-    backgroundColor: '#CC5209', // Even darker for active state
+    backgroundColor: vars.color.errorHover,
   },
 });

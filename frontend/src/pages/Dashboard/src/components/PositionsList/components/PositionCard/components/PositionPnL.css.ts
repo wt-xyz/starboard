@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const root = style({
   textAlign: 'center',
@@ -10,26 +10,24 @@ export const root = style({
 export const amount = style({
   fontSize: '1.5rem',
   fontWeight: '700',
-  fontFamily: 'monospace',
   lineHeight: 1.2,
 });
 
 export const percentage = style({
   fontSize: '0.875rem',
   fontWeight: '500',
-  fontFamily: 'monospace',
   opacity: 0.8,
   marginTop: '0.25rem',
 });
 
 export const positive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const negative = style({
-  color: colors.error,
+  color: vars.color.error,
 });
 
 export const muted = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });

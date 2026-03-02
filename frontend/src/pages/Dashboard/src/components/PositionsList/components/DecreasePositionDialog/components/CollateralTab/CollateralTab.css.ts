@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({
   display: 'flex',
@@ -16,7 +17,7 @@ export const inputSection = style({});
 
 export const summarySection = style({
   padding: '1rem',
-  backgroundColor: colors.whiteAlpha[5],
+  backgroundColor: alpha(vars.color.textPrimary, 5),
   borderRadius: '0.5rem',
 });
 
@@ -29,16 +30,16 @@ export const cancelButton = style({
   flex: 1,
   padding: '0.75rem 1rem',
   backgroundColor: 'transparent',
-  color: colors.dustyGrey,
-  border: `1px solid ${colors.whiteAlpha[20]}`,
+  color: vars.color.textSecondary,
+  border: `1px solid ${vars.color.borderStrong}`,
   borderRadius: '0.5rem',
   fontSize: '0.875rem',
   fontWeight: 500,
   cursor: 'pointer',
   transition: 'all 0.15s',
   ':hover': {
-    color: colors.snow,
-    borderColor: colors.whiteAlpha[30],
-    backgroundColor: colors.whiteAlpha[5],
+    color: vars.color.textPrimary,
+    borderColor: vars.color.borderStrong,
+    backgroundColor: vars.color.surfaceHover,
   },
 });

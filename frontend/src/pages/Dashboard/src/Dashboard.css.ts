@@ -1,14 +1,17 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '../../../styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const page = style({
   width: '100%',
-  backgroundColor: colors.darkVoid,
+  height: 'calc(100vh - 6rem)',
+  backgroundColor: vars.color.pageBg,
   display: 'grid',
-  gridTemplateColumns: 'minmax(0, 1fr) 400px',
-  gridTemplateRows: 'auto minmax(0, 1fr)',
-  gap: '0.5rem',
-  padding: '1rem 1rem 0.5rem 1rem',
+  gridTemplateColumns: 'minmax(0, 1fr) 420px',
+  gridTemplateRows: 'auto 1fr',
+  gap: vars.space.sm,
+  padding: vars.space.sm,
+  boxSizing: 'border-box',
+  overflow: 'hidden',
   '@media': {
     '(max-width: 1024px)': {
       gridTemplateColumns: '1fr',
@@ -32,13 +35,13 @@ export const mobileHeader = style({
 
 export const chartSection = style({
   minWidth: 0,
-  minHeight: '460px',
-  maxHeight: 'calc(100vh - 5rem - 150px)',
-  height: 'calc(100vh - 5rem - 280px)',
+  minHeight: '360px',
+  maxHeight: 'calc(100vh - 6.5rem - 280px)',
+  height: 'calc(100vh - 6.5rem - 440px)',
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: colors.gluonGrey,
-  borderRadius: '0.5rem',
+  backgroundColor: vars.color.cardBg,
+  borderRadius: vars.radius.card,
   overflow: 'auto',
   position: 'relative',
   resize: 'vertical',
@@ -49,19 +52,24 @@ export const chartSection = style({
       minHeight: '460px',
       maxHeight: 'none',
     },
+    '(min-height: 1080px)': {
+      minHeight: '420px',
+    },
+    '(min-height: 1440px)': {
+      minHeight: '540px',
+    },
   },
 });
 
 export const orderEntrySection = style({
+  gridRow: '1 / -1',
+  gridColumn: 2,
   contain: 'size',
   minWidth: 0,
   minHeight: 0,
   display: 'flex',
   flexDirection: 'column',
   overflow: 'auto',
-  backgroundColor: colors.gluonGrey,
-  borderRadius: '0',
-  padding: '0.75rem',
   boxSizing: 'border-box',
   '@media': {
     '(max-width: 1024px)': {
@@ -71,12 +79,11 @@ export const orderEntrySection = style({
 });
 
 export const bottomSection = style({
-  gridColumn: '1 / -1',
   minWidth: 0,
   minHeight: 0,
   display: 'flex',
   flexDirection: 'column',
-  overflow: 'auto',
+  overflow: 'hidden',
   '@media': {
     '(max-width: 1024px)': {
       overflow: 'visible',
@@ -87,14 +94,5 @@ export const bottomSection = style({
 export const orderEntryFormWrapper = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '0.375rem',
-});
-
-export const orderEntryTitle = style({
-  fontSize: '0.875rem',
-  fontWeight: 600,
-  color: colors.snow,
-  marginBottom: '0.5rem',
-  textTransform: 'none',
-  letterSpacing: '0.01em',
+  gap: vars.space.sm,
 });

@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const button = style({
   flex: 1,
@@ -10,20 +10,21 @@ export const button = style({
   fontWeight: 500,
   cursor: 'pointer',
   transition: 'all 0.15s',
-  backgroundColor: colors.liquidLava,
-  color: colors.snow,
+  backgroundColor: vars.color.primary,
+  color: vars.color.textPrimary,
   ':hover': {
-    backgroundColor: '#E05D0A',
+    backgroundColor: vars.color.primaryHover,
   },
   ':active': {
-    backgroundColor: '#CC5209',
+    backgroundColor: vars.color.primaryActive,
   },
 });
 
 export const disabled = style({
-  opacity: 0.5,
+  backgroundColor: vars.color.surfaceDisabled,
+  color: vars.color.textDisabled,
   cursor: 'not-allowed',
   ':hover': {
-    backgroundColor: colors.liquidLava,
+    backgroundColor: vars.color.surfaceDisabled,
   },
 });

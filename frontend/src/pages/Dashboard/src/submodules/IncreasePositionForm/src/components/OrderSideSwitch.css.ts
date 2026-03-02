@@ -1,38 +1,37 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const tabsList = style({
   display: 'flex',
-  borderBottom: `1px solid ${colors.slateGrey}`,
+  borderRadius: vars.radius.input,
+  overflow: 'hidden',
+  borderBottom: `1px solid ${vars.color.borderDefault}`,
 });
 
 export const tabsTrigger = style({
   flex: 1,
-  padding: '12px 16px',
-  backgroundColor: 'transparent',
-  color: colors.dustyGrey,
+  padding: `${vars.space.sm} ${vars.space.lg}`,
+  backgroundColor: vars.color.inputBg,
+  color: vars.color.textSecondary,
   border: 'none',
-  borderBottom: '2px solid transparent',
-  marginBottom: '-1px',
   cursor: 'pointer',
-  fontSize: '0.875rem',
-  fontWeight: '500',
-  transition: 'all 0.15s ease',
+  fontSize: vars.fontSize.body,
+  fontWeight: vars.fontWeight.medium,
+  transition: `all ${vars.transition.fast}`,
   ':hover': {
-    color: colors.snow,
+    color: vars.color.textPrimary,
   },
   selectors: {
     '&[data-state="active"][data-side="long"]': {
-      color: colors.success,
-      backgroundColor: 'rgba(34, 197, 94, 0.2)',
-      borderBottomColor: colors.success,
-      fontWeight: '600',
+      color: vars.color.textPrimary,
+      backgroundColor: alpha(vars.color.success, 20),
+      boxShadow: `inset 0 -2px 0 ${vars.color.success}`,
     },
     '&[data-state="active"][data-side="short"]': {
-      color: colors.error,
-      backgroundColor: 'rgba(239, 68, 68, 0.2)',
-      borderBottomColor: colors.error,
-      fontWeight: '600',
+      color: vars.color.textPrimary,
+      backgroundColor: alpha(vars.color.error, 20),
+      boxShadow: `inset 0 -2px 0 ${vars.color.error}`,
     },
   },
 });

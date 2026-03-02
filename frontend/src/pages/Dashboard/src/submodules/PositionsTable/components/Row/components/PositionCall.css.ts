@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const assetInfo = style({
   display: 'flex',
@@ -10,7 +11,7 @@ export const assetInfo = style({
 export const assetSymbol = style({
   fontSize: '0.75rem',
   fontWeight: '600',
-  color: colors.snow,
+  color: vars.color.textPrimary,
 });
 
 export const side = style({
@@ -24,11 +25,11 @@ export const side = style({
 });
 
 export const sideLong = style({
-  backgroundColor: colors.whiteAlpha[10],
-  color: colors.success,
+  backgroundColor: alpha(vars.color.textPrimary, 10),
+  color: vars.color.success,
 });
 
 export const sideShort = style({
-  backgroundColor: colors.whiteAlpha[10],
-  color: colors.error,
+  backgroundColor: alpha(vars.color.textPrimary, 10),
+  color: vars.color.error,
 });

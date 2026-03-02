@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const bar = style({
   position: 'fixed',
@@ -8,8 +9,8 @@ export const bar = style({
   right: 0,
   zIndex: 40,
   display: 'none',
-  backgroundColor: colors.gluonGrey,
-  borderTop: `1px solid ${colors.whiteAlpha[10]}`,
+  backgroundColor: vars.color.cardBg,
+  borderTop: `1px solid ${vars.color.borderDefault}`,
   padding: 0,
   paddingBottom: 'env(safe-area-inset-bottom)',
   boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.3)',
@@ -29,7 +30,7 @@ export const barButton = style({
   padding: '0.875rem 1rem',
   backgroundColor: 'transparent',
   border: 'none',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   fontSize: '0.875rem',
   fontWeight: 500,
   cursor: 'pointer',
@@ -41,16 +42,16 @@ export const barButton = style({
   gap: '0.25rem',
   position: 'relative',
   ':hover': {
-    color: colors.snow,
-    backgroundColor: colors.whiteAlpha[5],
+    color: vars.color.textPrimary,
+    backgroundColor: vars.color.surfaceHover,
   },
   ':active': {
     transform: 'scale(0.95)',
   },
   selectors: {
     '&[data-active="true"]': {
-      color: colors.liquidLava,
-      backgroundColor: colors.liquidLavaAlpha[15],
+      color: vars.color.primary,
+      backgroundColor: alpha(vars.color.primary, 15),
       fontWeight: 600,
     },
   },
@@ -59,7 +60,7 @@ export const barButton = style({
 export const barSeparator = style({
   width: '1px',
   height: '2rem',
-  backgroundColor: colors.whiteAlpha[15],
+  backgroundColor: vars.color.borderDefault,
   flexShrink: 0,
   alignSelf: 'center',
 });
@@ -77,7 +78,7 @@ export const sheetContent = style({
 export const tabsList = style({
   display: 'flex',
   gap: 0,
-  backgroundColor: colors.gluonGrey,
+  backgroundColor: vars.color.cardBg,
   borderRadius: 0,
   padding: 0,
 });
@@ -89,29 +90,29 @@ export const tabsTrigger = style({
   backgroundColor: 'transparent',
   border: 'none',
   borderRadius: 0,
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   fontSize: '0.875rem',
   fontWeight: 500,
   cursor: 'pointer',
   transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
   textAlign: 'center',
   ':hover': {
-    color: colors.snow,
+    color: vars.color.textPrimary,
   },
   ':active': {
     transform: 'scale(0.98)',
   },
   selectors: {
     '&[data-state="active"][data-tab="long"]': {
-      color: colors.success,
-      backgroundColor: 'rgba(34, 197, 94, 0.2)',
-      borderBottom: `2px solid ${colors.success}`,
+      color: vars.color.success,
+      backgroundColor: alpha(vars.color.success, 20),
+      borderBottom: `2px solid ${vars.color.success}`,
       fontWeight: 600,
     },
     '&[data-state="active"][data-tab="short"]': {
-      color: colors.error,
-      backgroundColor: 'rgba(239, 68, 68, 0.2)',
-      borderBottom: `2px solid ${colors.error}`,
+      color: vars.color.error,
+      backgroundColor: alpha(vars.color.error, 20),
+      borderBottom: `2px solid ${vars.color.error}`,
       fontWeight: 600,
     },
   },

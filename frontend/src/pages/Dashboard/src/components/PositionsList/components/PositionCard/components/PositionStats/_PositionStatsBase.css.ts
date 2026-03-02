@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const statCell = style({
   display: 'flex',
@@ -11,7 +11,7 @@ export const statCell = style({
 
 export const statLabel = style({
   fontSize: '0.5625rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   textTransform: 'uppercase',
   letterSpacing: '0.04em',
   lineHeight: 1,
@@ -19,9 +19,8 @@ export const statLabel = style({
 
 export const statValue = style({
   fontSize: '0.875rem',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontWeight: '600',
-  fontFamily: 'monospace',
   lineHeight: 1.2,
   maxWidth: '100%',
   overflow: 'hidden',
@@ -31,19 +30,18 @@ export const statValue = style({
 
 export const statValueSecondary = style({
   fontSize: '0.6875rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   fontWeight: '500',
-  fontFamily: 'monospace',
 });
 
 export const statValueMuted = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const statValuePositive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const statValueNegative = style({
-  color: colors.error,
+  color: vars.color.error,
 });

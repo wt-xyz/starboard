@@ -1,8 +1,9 @@
 import { keyframes, style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const dialogContent = style({
-  padding: '1.5rem',
+  padding: '1.25rem',
   maxWidth: '420px',
   width: '100%',
 });
@@ -15,7 +16,7 @@ export const statsRow = style({
   display: 'flex',
   justifyContent: 'space-around',
   padding: '0.75rem',
-  backgroundColor: colors.slateGrey,
+  backgroundColor: vars.color.inputBg,
   borderRadius: '0.5rem',
   marginBottom: '1rem',
 });
@@ -25,7 +26,7 @@ export const tabsList = style({
   gap: '0.25rem',
   marginBottom: '1.5rem',
   padding: '0.25rem',
-  backgroundColor: colors.slateGrey,
+  backgroundColor: vars.color.inputBg,
   borderRadius: '0.5rem',
 });
 
@@ -34,7 +35,7 @@ export const tabsTrigger = style({
   padding: '0.5rem 1rem',
   fontSize: '0.875rem',
   fontWeight: 500,
-  color: colors.whiteAlpha[30],
+  color: alpha(vars.color.textPrimary, 30),
   backgroundColor: 'transparent',
   border: 'none',
   borderRadius: '0.375rem',
@@ -43,11 +44,11 @@ export const tabsTrigger = style({
 
   selectors: {
     '&[data-state="active"]': {
-      backgroundColor: colors.gluonGrey,
-      color: colors.snow,
+      backgroundColor: vars.color.cardBg,
+      color: vars.color.textPrimary,
     },
     '&:hover:not([data-state="active"])': {
-      color: colors.snow,
+      color: vars.color.textPrimary,
     },
   },
 });
@@ -83,6 +84,6 @@ export const limitPlaceholder = style({
   justifyContent: 'center',
   padding: '2rem 1rem',
   fontSize: '0.875rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   textAlign: 'center',
 });

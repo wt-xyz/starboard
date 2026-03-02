@@ -1,32 +1,18 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 
 export const cell = recipe({
   base: {
     padding: '0.5rem 0.625rem',
-    fontSize: '0.75rem',
-    color: colors.snow,
-    borderTop: `1px solid ${colors.whiteAlpha[10]}`,
-    borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
+    fontSize: '0.8125rem',
+    color: vars.color.textPrimary,
     verticalAlign: 'middle',
-    selectors: {
-      '&:first-child': {
-        borderLeft: `1px solid ${colors.whiteAlpha[10]}`,
-        borderTopLeftRadius: '0.5rem',
-        borderBottomLeftRadius: '0.5rem',
-      },
-      '&:last-child': {
-        borderRight: `1px solid ${colors.whiteAlpha[10]}`,
-        borderTopRightRadius: '0.5rem',
-        borderBottomRightRadius: '0.5rem',
-      },
-    },
   },
   variants: {
     variant: {
       standard: {},
-      error: { color: colors.error },
+      error: { color: vars.color.error },
     },
   },
   defaultVariants: {
@@ -41,12 +27,10 @@ export const cellContent = style({
 });
 
 export const cellValue = style({
-  fontFamily: 'monospace',
   fontWeight: '500',
 });
 
 export const cellSecondary = style({
-  fontSize: '0.625rem',
-  color: colors.dustyGrey,
-  fontFamily: 'monospace',
+  fontSize: '0.75rem',
+  color: vars.color.textSecondary,
 });

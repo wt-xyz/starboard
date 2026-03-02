@@ -1,17 +1,17 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { vars } from '@/styles/theme.contract.css';
 import * as $base from './common/Cell.css';
 
 export const cellSecondary = $base.cellSecondary;
 
 export const positive = style({
-  color: colors.success,
+  color: vars.color.success,
 });
 
 export const negative = style({
-  color: colors.error,
+  color: vars.color.error,
 });
 
 export const muted = style({
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });

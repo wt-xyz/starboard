@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const sliderHeader = style({
   display: 'flex',
@@ -11,13 +12,13 @@ export const sliderHeader = style({
 export const sliderLabel = style({
   fontSize: '0.75rem',
   fontWeight: 500,
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
 });
 
 export const sliderValue = style({
   fontSize: '0.875rem',
   fontWeight: 600,
-  color: colors.liquidLava,
+  color: vars.color.primary,
 });
 
 export const sliderRoot = style({
@@ -35,14 +36,14 @@ export const sliderTrack = style({
   position: 'relative',
   flexGrow: 1,
   height: '6px',
-  backgroundColor: colors.slateGrey,
+  backgroundColor: vars.color.inputBg,
   borderRadius: '3px',
 });
 
 export const sliderRange = style({
   position: 'absolute',
   height: '100%',
-  backgroundColor: colors.liquidLava,
+  backgroundColor: vars.color.primary,
   borderRadius: '3px',
 });
 
@@ -50,7 +51,7 @@ export const sliderThumb = style({
   display: 'block',
   width: '18px',
   height: '18px',
-  backgroundColor: colors.snow,
+  backgroundColor: vars.color.textPrimary,
   borderRadius: '50%',
   cursor: 'pointer',
   boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
@@ -60,7 +61,7 @@ export const sliderThumb = style({
   },
   ':focus': {
     outline: 'none',
-    boxShadow: `0 0 0 4px ${colors.liquidLavaAlpha[30]}`,
+    boxShadow: `0 0 0 4px ${alpha(vars.color.primary, 30)}`,
   },
 });
 
@@ -72,26 +73,26 @@ export const percentageMarks = style({
 
 export const percentageMark = style({
   padding: '0.25rem 0.5rem',
-  backgroundColor: 'transparent',
-  color: colors.dustyGrey,
-  border: `1px solid ${colors.whiteAlpha[10]}`,
+  backgroundColor: vars.color.inputBg,
+  color: vars.color.textSecondary,
+  border: `1px solid ${vars.color.inputBg}`,
   borderRadius: '0.25rem',
   fontSize: '0.625rem',
   cursor: 'pointer',
   transition: 'all 0.15s',
   ':hover': {
-    color: colors.snow,
-    borderColor: colors.whiteAlpha[20],
-    backgroundColor: colors.whiteAlpha[5],
+    color: vars.color.textPrimary,
+    backgroundColor: vars.color.surfaceHover,
+    borderColor: vars.color.surfaceHover,
   },
   ':active': {
-    color: colors.liquidLava,
-    borderColor: colors.liquidLava,
+    color: vars.color.primary,
+    borderColor: vars.color.primary,
   },
 });
 
 export const percentageMarkActive = style({
-  color: colors.liquidLava,
-  borderColor: colors.liquidLava,
-  backgroundColor: colors.liquidLavaAlpha[10],
+  color: vars.color.primary,
+  borderColor: vars.color.primary,
+  backgroundColor: alpha(vars.color.primary, 10),
 });

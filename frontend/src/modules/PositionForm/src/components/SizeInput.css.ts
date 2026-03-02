@@ -1,28 +1,28 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: colors.gluonGrey,
-  border: `1px solid ${colors.whiteAlpha[10]}`,
-  borderRadius: '6px',
+  backgroundColor: vars.color.inputBg,
+  border: `1px solid ${vars.color.inputBg}`,
+  borderRadius: '0.5rem',
   padding: '8px 10px',
   gap: '2px',
   transition: 'all 0.2s',
   ':hover': {
-    borderColor: colors.whiteAlpha[20],
+    backgroundColor: vars.color.surfaceHover,
+    borderColor: vars.color.surfaceHover,
   },
   ':focus-within': {
-    backgroundColor: colors.slateGrey,
-    borderColor: colors.liquidLava,
-    boxShadow: `0 0 0 3px ${colors.liquidLavaAlpha[15]}`,
+    borderColor: vars.color.focusRing,
   },
 });
 
 export const label = style({
   fontSize: '0.688rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   marginBottom: '2px',
   fontWeight: '400',
   letterSpacing: '0.01em',
@@ -40,14 +40,13 @@ export const input = style({
   flex: 1,
   backgroundColor: 'transparent',
   border: 'none',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontSize: '1rem',
-  fontFamily: 'monospace',
   fontWeight: '400',
   outline: 'none',
   padding: 0,
   '::placeholder': {
-    color: colors.dustyGreyAlpha[50],
+    color: alpha(vars.color.textSecondary, 50),
   },
 });
 
@@ -56,9 +55,9 @@ export const assetBadge = style({
   alignItems: 'center',
   gap: '6px',
   padding: '2px 6px',
-  backgroundColor: colors.whiteAlpha[5],
+  backgroundColor: alpha(vars.color.textPrimary, 5),
   borderRadius: '4px',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   fontSize: '0.813rem',
   fontWeight: '500',
   whiteSpace: 'nowrap',
@@ -68,24 +67,22 @@ export const footer = style({
   display: 'flex',
   alignItems: 'center',
   fontSize: '0.688rem',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   marginTop: '2px',
   gap: '0.5rem',
 });
 
 export const usdValue = style({
-  fontFamily: 'monospace',
   fontWeight: '400',
   marginRight: 'auto',
 });
 
 export const leverage = style({
-  fontFamily: 'monospace',
   fontWeight: '400',
 });
 
 export const error = style({
-  color: '#ff4444',
+  color: vars.color.error,
   fontSize: '0.75rem',
   marginTop: '0.25rem',
   fontWeight: '400',
@@ -93,8 +90,7 @@ export const error = style({
 
 export const availableBalance = style({
   fontSize: '0.625rem',
-  color: colors.dustyGrey,
-  fontFamily: 'monospace',
+  color: vars.color.textSecondary,
 });
 
 export const quickActions = style({
@@ -103,21 +99,18 @@ export const quickActions = style({
 });
 
 export const quickButton = style({
-  padding: '0.125rem 0.5rem',
-  fontSize: '0.625rem',
-  fontWeight: '600',
-  color: colors.dustyGrey,
-  backgroundColor: 'transparent',
-  border: `1px solid ${colors.whiteAlpha[10]}`,
-  borderRadius: '0.25rem',
+  padding: '0.25rem 0.625rem',
+  fontSize: '0.75rem',
+  fontWeight: '500',
+  color: vars.color.textSecondary,
+  backgroundColor: vars.color.surfaceHover,
+  border: 'none',
+  borderRadius: '9999px',
   cursor: 'pointer',
   transition: 'all 0.15s ease',
-  textTransform: 'uppercase',
-  letterSpacing: '0.02em',
   ':hover': {
-    color: colors.snow,
-    borderColor: colors.whiteAlpha[30],
-    backgroundColor: colors.whiteAlpha[5],
+    color: vars.color.textPrimary,
+    backgroundColor: vars.color.inputBg,
   },
   ':active': {
     transform: 'scale(0.95)',
