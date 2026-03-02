@@ -43,4 +43,22 @@ describe('getAssetPriceFormatted', () => {
     const result = getAssetPriceFormatted(-42.5);
     expect(result).not.toContain('NaN');
   });
+
+  it('returns formatted zero for NaN input', () => {
+    const result = getAssetPriceFormatted(NaN);
+    expect(result).toContain('0');
+    expect(result).not.toContain('NaN');
+  });
+
+  it('returns formatted zero for Infinity input', () => {
+    const result = getAssetPriceFormatted(Infinity);
+    expect(result).toContain('0');
+    expect(result).not.toContain('Infinity');
+  });
+
+  it('returns formatted zero for -Infinity input', () => {
+    const result = getAssetPriceFormatted(-Infinity);
+    expect(result).toContain('0');
+    expect(result).not.toContain('Infinity');
+  });
 });
