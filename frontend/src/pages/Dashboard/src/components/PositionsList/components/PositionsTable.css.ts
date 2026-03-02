@@ -1,13 +1,9 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const actionsCell = style({
   padding: '0.5rem 0.625rem',
-  borderTop: `1px solid ${colors.whiteAlpha[10]}`,
-  borderBottom: `1px solid ${colors.whiteAlpha[10]}`,
-  borderRight: `1px solid ${colors.whiteAlpha[10]}`,
-  borderTopRightRadius: '0.5rem',
-  borderBottomRightRadius: '0.5rem',
   verticalAlign: 'middle',
 });
 
@@ -19,19 +15,19 @@ export const actionsRow = style({
 });
 
 export const closeButton = style({
-  fontSize: '0.75rem',
+  fontSize: vars.fontSize.caption,
   fontWeight: 500,
-  color: colors.error,
+  color: vars.color.error,
   backgroundColor: 'transparent',
   border: 'none',
   padding: '0.25rem 0.5rem',
   cursor: 'pointer',
   transition: 'color 0.15s ease',
   ':hover': {
-    color: '#ff6b6b',
+    color: vars.color.errorHover,
   },
   ':disabled': {
-    opacity: 0.5,
+    color: vars.color.textDisabled,
     cursor: 'not-allowed',
   },
 });
@@ -43,14 +39,14 @@ export const iconButton = style({
   width: '1.5rem',
   height: '1.5rem',
   padding: 0,
-  backgroundColor: colors.whiteAlpha[5],
-  border: `1px solid ${colors.whiteAlpha[10]}`,
+  backgroundColor: alpha(vars.color.textPrimary, 5),
+  border: 'none',
   borderRadius: '0.3125rem',
-  color: colors.snow,
+  color: vars.color.textPrimary,
   cursor: 'pointer',
   transition: 'all 0.2s',
   ':hover': {
-    backgroundColor: colors.whiteAlpha[10],
-    borderColor: colors.whiteAlpha[20],
+    backgroundColor: alpha(vars.color.textPrimary, 10),
+    borderColor: vars.color.borderStrong,
   },
 });

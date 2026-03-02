@@ -1,14 +1,8 @@
 import { type FC, use, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { formatCurrency } from '@/lib/formatCurrency';
-import { KernelContext } from '@/pages/Dashboard/src/submodules/IncreasePositionForm/src/contexts/KernelContext';
-import { OptionsContext } from '@/pages/Dashboard/src/submodules/IncreasePositionForm/src/contexts/OptionsContext';
+import { KernelContext, OptionsContext } from '../../contexts';
 import * as $ from './OrderSummary.css';
-
-const SLIPPAGE_PRESETS = ['0.1', '0.3', '0.5', '1.0'] as const;
-// TODO: Import MAX_LEVERAGE and FEE_RATE from SDK/contract constants
-const MAX_LEVERAGE = 50;
-const FEE_RATE = 0.004;
 
 export const OrderSummary: FC = () => {
   const { control } = use(KernelContext)!;
@@ -29,15 +23,21 @@ export const OrderSummary: FC = () => {
 
   const currentPrice = currentQuoteAssetPrice.value;
 
-  if (!collateral || !lev || collateral <= 0 || lev <= 0 || !currentPrice || currentPrice <= 0)
-    return null;
-  const positionNotional = collateral * lev;
-  const minCollateral = positionNotional / MAX_LEVERAGE;
-  const availableForLoss = collateral - minCollateral;
-  const priceChange =
-    availableForLoss > 0 ? (availableForLoss / positionNotional) * currentPrice : 0;
-  const liqPrice = orderSide === 'long' ? currentPrice - priceChange : currentPrice + priceChange;
-  const fee = positionNotional * FEE_RATE;
+  const hasValidInputs = collateral > 0 && lev > 0 && currentPrice != null && currentPrice > 0;
+
+  let positionNotional = 0;
+  let liqPrice = 0;
+  let fee = 0;
+
+  if (hasValidInputs) {
+    positionNotional = collateral * lev;
+    const minCollateral = positionNotional / MAX_LEVERAGE;
+    const availableForLoss = collateral - minCollateral;
+    const priceChange =
+      availableForLoss > 0 ? (availableForLoss / positionNotional) * currentPrice : 0;
+    liqPrice = orderSide === 'long' ? currentPrice - priceChange : currentPrice + priceChange;
+    fee = positionNotional * FEE_RATE;
+  }
 
   const handlePresetClick = (preset: string) => {
     setSlippage(preset);
@@ -103,23 +103,37 @@ export const OrderSummary: FC = () => {
 
       <div className={$.row}>
         <span className={$.label}>Total Order Value</span>
-        <span className={$.value}>{formatCurrency(positionNotional, { symbol: '$' })}</span>
+        <span className={$.value}>
+          {hasValidInputs ? formatCurrency(positionNotional, { symbol: '$' }) : '—'}
+        </span>
       </div>
 
       <div className={$.row}>
         <span className={$.label}>Margin</span>
-        <span className={$.value}>{formatCurrency(collateral, { symbol: '$' })}</span>
+        <span className={$.value}>
+          {hasValidInputs ? formatCurrency(collateral, { symbol: '$' }) : '—'}
+        </span>
       </div>
 
       <div className={$.row}>
         <span className={$.label}>Liq. Price</span>
-        <span className={$.value}>{formatCurrency(liqPrice, { symbol: '$' })}</span>
+        <span className={$.value}>
+          {hasValidInputs ? formatCurrency(liqPrice, { symbol: '$' }) : '—'}
+        </span>
       </div>
 
       <div className={$.row}>
         <span className={$.label}>Est. Fee</span>
-        <span className={$.value}>~{formatCurrency(fee, { symbol: '$' })}</span>
+        <span className={$.value}>
+          {hasValidInputs ? `~${formatCurrency(fee, { symbol: '$' })}` : '—'}
+        </span>
       </div>
     </div>
   );
 };
+
+const MAX_LEVERAGE = 50;
+
+const FEE_RATE = 0.004;
+
+const SLIPPAGE_PRESETS = ['0.1', '0.3', '0.5', '1.0'] as const;
