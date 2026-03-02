@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colors } from '@/styles/colors';
+import { alpha } from '@/styles/alpha';
+import { vars } from '@/styles/theme.contract.css';
 
 export const sliderContainer = style({
   marginTop: '0.25rem',
@@ -39,14 +40,14 @@ const trackDotBase = {
 
 export const trackDotActive = style({
   ...trackDotBase,
-  backgroundColor: colors.gluonGrey,
-  border: `2px solid ${colors.liquidLava}`,
+  backgroundColor: vars.color.cardBg,
+  border: `2px solid ${vars.color.primary}`,
 });
 
 export const trackDotInactive = style({
   ...trackDotBase,
-  backgroundColor: colors.gluonGrey,
-  border: `2px solid ${colors.slateGrey}`,
+  backgroundColor: vars.color.cardBg,
+  border: `2px solid ${vars.color.borderDefault}`,
 });
 
 export const sliderRoot = style({
@@ -63,33 +64,33 @@ export const sliderRoot = style({
 export const sliderTrack = style({
   position: 'relative',
   flexGrow: 1,
-  height: '4px',
-  backgroundColor: colors.slateGrey,
-  borderRadius: '2px',
+  height: '6px',
+  backgroundColor: vars.color.inputBg,
+  borderRadius: '3px',
 });
 
 export const sliderRange = style({
   position: 'absolute',
   height: '100%',
-  backgroundColor: colors.liquidLava,
-  borderRadius: '2px',
+  backgroundColor: vars.color.primary,
+  borderRadius: '3px',
 });
 
 export const sliderThumb = style({
   display: 'block',
   width: '18px',
   height: '18px',
-  backgroundColor: colors.snow,
+  backgroundColor: vars.color.textPrimary,
   borderRadius: '50%',
-  border: `3px solid ${colors.liquidLava}`,
-  boxShadow: `0 0 0 2px ${colors.liquidLavaAlpha[30]}`,
+  border: `2px solid ${vars.color.primary}`,
+  boxShadow: `0 0 0 1px ${alpha(vars.color.primary, 20)}`,
   cursor: 'pointer',
   ':hover': {
-    backgroundColor: colors.dustyGrey,
+    backgroundColor: vars.color.textSecondary,
   },
   ':focus': {
     outline: 'none',
-    boxShadow: `0 0 0 4px ${colors.liquidLavaAlpha[30]}`,
+    boxShadow: `0 0 0 2px ${alpha(vars.color.primary, 25)}`,
   },
 });
 
@@ -104,18 +105,18 @@ export const labelButton = style({
   position: 'absolute',
   padding: 0,
   backgroundColor: 'transparent',
-  color: colors.dustyGrey,
+  color: vars.color.textSecondary,
   border: 'none',
-  fontSize: '0.625rem',
+  fontSize: vars.fontSize.label,
   cursor: 'pointer',
   transition: 'color 0.15s',
   whiteSpace: 'nowrap',
   transform: 'translateX(-50%)',
   ':hover': {
-    color: colors.snow,
+    color: vars.color.textPrimary,
   },
   ':active': {
-    color: colors.liquidLava,
+    color: vars.color.primary,
   },
 });
 
@@ -132,13 +133,18 @@ export const leverageInputWrapper = style({
   alignItems: 'center',
   gap: '1px',
   flexShrink: 0,
-  backgroundColor: colors.slateGrey,
-  border: `1px solid ${colors.whiteAlpha[20]}`,
-  borderRadius: '6px',
+  backgroundColor: vars.color.inputBg,
+  border: `1px solid ${vars.color.inputBg}`,
+  borderRadius: '0.5rem',
   padding: '6px 8px',
+  transition: 'all 0.2s',
   selectors: {
+    '&:hover': {
+      backgroundColor: vars.color.surfaceHover,
+      borderColor: vars.color.surfaceHover,
+    },
     '&:focus-within': {
-      borderColor: colors.liquidLava,
+      borderColor: vars.color.focusRing,
     },
   },
 });
@@ -148,21 +154,20 @@ export const leverageInput = style({
   backgroundColor: 'transparent',
   border: 'none',
   outline: 'none',
-  color: colors.snow,
-  fontFamily: 'monospace',
-  fontSize: '0.875rem',
-  fontWeight: 600,
+  color: vars.color.textPrimary,
+  fontSize: vars.fontSize.body,
+  fontWeight: 500,
   textAlign: 'right',
 });
 
 export const leverageSuffix = style({
-  color: colors.dustyGrey,
-  fontSize: '0.875rem',
+  color: vars.color.textSecondary,
+  fontSize: vars.fontSize.body,
   fontWeight: 500,
 });
 
 export const error = style({
-  color: colors.error,
-  fontSize: '0.75rem',
+  color: vars.color.error,
+  fontSize: vars.fontSize.caption,
   marginBottom: '0.25rem',
 });
