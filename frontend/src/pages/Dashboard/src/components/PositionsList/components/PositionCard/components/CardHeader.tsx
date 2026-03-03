@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { MinusIcon } from '@radix-ui/react-icons';
 import { PositionSide } from 'fuel-ts-sdk/trading';
 import { useBoolean } from 'usehooks-ts';
+import { ASSET_ICONS, formatSymbol } from '@/components/AssetSelect/src/AssetSelect.utils';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
@@ -16,14 +17,16 @@ export const CardHeader: FC = () => {
   const asset = useSdkQuery(() => tradingSdk.getAssetById(position.assetId));
 
   const isLong = position.side === PositionSide.LONG;
+  const symbol = asset?.symbol ?? '';
 
   return (
     <div css={$.positionHeader}>
       <div css={$.assetId}>
-        <span css={[$.side, isLong ? $.sideLong : $.sideShort]}>{isLong ? 'LONG' : 'SHORT'}</span>
+        {ASSET_ICONS[symbol] && <img src={ASSET_ICONS[symbol]} alt="" css={$.assetIcon} />}
         <div css={$.assetInfo}>
-          <span css={$.assetSymbol}>{asset?.name}</span>
+          <span css={$.assetSymbol}>{symbol ? formatSymbol(symbol) : asset?.name}</span>
         </div>
+        <span css={[$.side, isLong ? $.sideLong : $.sideShort]}>{isLong ? 'LONG' : 'SHORT'}</span>
       </div>
       <div css={$.headerActions}>
         <Tooltip content="Decrease or close position">

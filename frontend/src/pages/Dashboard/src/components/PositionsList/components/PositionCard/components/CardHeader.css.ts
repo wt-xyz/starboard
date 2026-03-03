@@ -42,6 +42,14 @@ export const sideShort = style({
   color: vars.color.error,
 });
 
+export const assetIcon = style({
+  width: '1.5rem',
+  height: '1.5rem',
+  borderRadius: '50%',
+  flexShrink: 0,
+  objectFit: 'cover',
+});
+
 export const assetInfo = style({
   display: 'flex',
   alignItems: 'baseline',
