@@ -1,4 +1,5 @@
-import { style } from '@vanilla-extract/css';
+import { assignVars, style } from '@vanilla-extract/css';
+import { connectWalletThemeVars } from '@/components/ConnectWalletButton/vars.css';
 import { vars } from '@/styles/theme.contract.css';
 
 export const container = style({
@@ -19,26 +20,11 @@ export const separator = style({
   marginRight: `calc(-1 * ${vars.space.sm})`,
 });
 
-export const connectWalletButton = style({
-  marginTop: vars.space.xs,
-  width: '100%',
-  padding: '0.5rem 1.25rem',
-  backgroundColor: vars.color.primary,
-  color: vars.color.textPrimary,
-  borderRadius: vars.radius.button,
-  border: 'none',
-  fontSize: vars.fontSize.body,
-  fontWeight: '600',
-  cursor: 'pointer',
-  transition: 'all 0.15s',
-  whiteSpace: 'nowrap',
-  boxShadow: 'none',
-  ':hover': {
-    backgroundColor: vars.color.primaryHover,
-  },
-});
-
-export const connectWalletMessage = style({
-  marginTop: '0.75rem',
-  display: 'block',
+export const formConnectWalletWrapper = style({
+  vars: assignVars(connectWalletThemeVars, {
+    width: '100%',
+    marginTop: vars.space.xs,
+    height: '3.4375rem',
+    iconDisplay: 'none',
+  }),
 });
