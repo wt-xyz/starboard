@@ -12,7 +12,7 @@ export const lightTheme = createTheme(vars, {
     textPrimary: 'oklch(15% 0 0)',
     textSecondary: 'oklch(40% 0 0)',
     textMuted: 'oklch(55% 0 0)',
-    textDisabled: 'oklch(72% 0 0)',
+    textDisabled: 'oklch(58% 0 0)',
 
     primary: 'oklch(55% 0.22 35)',
     primaryHover: 'oklch(48% 0.22 35)',
