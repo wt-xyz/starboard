@@ -1,7 +1,7 @@
 import { type FC, useCallback } from 'react';
-import { Button } from '@radix-ui/themes';
 import { CollateralAmount, DecimalValue } from 'fuel-ts-sdk';
 import { toast } from 'react-toastify';
+import { ConnectWalletButton } from '@/components/ConnectWalletButton';
 import { WalletContext } from '@/contexts/WalletContext';
 import { useSdkQuery, useTradingSdk } from '@/lib/fuel-ts-sdk';
 import { useRequiredContext } from '@/lib/useRequiredContext';
@@ -89,9 +89,9 @@ export const DashboardOrderEntryForm: FC<DashboardOrderEntryFormProps> = ({
           {isWalletConnected ? (
             <IncreasePositionForm.SubmitPositionButton />
           ) : (
-            <Button size="3" onClick={wallet.establishConnection} css={$.connectWalletButton}>
-              Connect Wallet
-            </Button>
+            <div className={$.formConnectWalletWrapper}>
+              <ConnectWalletButton />
+            </div>
           )}
         </div>
         <IncreasePositionForm.OrderSummary />
