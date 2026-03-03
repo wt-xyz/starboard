@@ -16,10 +16,28 @@ export const assetIcon = style({
   objectFit: 'cover',
 });
 
+export const assetMeta = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: vars.space.xs,
+});
+
+export const assetSubRow = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: vars.space.xs,
+});
+
 export const assetSymbol = style({
   fontSize: '0.75rem',
   fontWeight: '600',
   color: vars.color.textPrimary,
+});
+
+export const assetLeverage = style({
+  fontSize: vars.fontSize.body,
+  fontWeight: vars.fontWeight.medium,
+  color: vars.color.textSecondary,
 });
 
 export const side = style({
