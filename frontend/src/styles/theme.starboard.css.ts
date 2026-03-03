@@ -21,7 +21,7 @@ export const starboardTheme = createTheme(vars, {
     textPrimary: base.text,
     textSecondary: 'oklch(62.3% 0 0)',
     textMuted: 'oklch(50% 0 0)',
-    textDisabled: 'oklch(38% 0 0)',
+    textDisabled: 'oklch(50% 0 0)',
 
     primary: base.primary,
     primaryHover: 'oklch(58% 0.22 35)',
