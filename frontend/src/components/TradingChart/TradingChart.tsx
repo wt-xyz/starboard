@@ -134,7 +134,6 @@ export const TradingChart = forwardRef<TradingChartHandle, TradingChartProps>(fu
         'chart_crosshair_menu' as ChartingLibraryFeatureset,
         'items_favoriting' as ChartingLibraryFeatureset,
       ],
-      custom_font_family: 'Manrope',
       load_last_chart: false,
       theme: tv.tvTheme,
       fullscreen: false,
