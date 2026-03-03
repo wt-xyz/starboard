@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ConnectWalletButton } from '../../src/views/DashboardLayout/components/DashboardHeader/components/ConnectWalletButton';
+import { ConnectWalletButton } from '@/components/ConnectWalletButton';
 
 const mockEstablishConnection = vi.fn();
 let mockAccount: string | null = null;
@@ -26,12 +26,9 @@ vi.mock('@/lib/hooks/useAutoFaucet', () => ({
   useAutoFaucet: vi.fn(),
 }));
 
-vi.mock(
-  '../../src/views/DashboardLayout/components/DashboardHeader/components/ConnectWalletButton/components/WalletModal',
-  () => ({
-    WalletModal: () => null,
-  })
-);
+vi.mock('@/components/ConnectWalletButton/components/WalletModal', () => ({
+  WalletModal: () => null,
+}));
 
 describe('ConnectWalletButton', () => {
   beforeEach(() => {

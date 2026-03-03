@@ -11,12 +11,9 @@ vi.mock('@/components/ui/sheet', () => ({
   SheetTitle: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock(
-  '../../src/views/DashboardLayout/components/DashboardHeader/components/ConnectWalletButton',
-  () => ({
-    ConnectWalletButton: () => <button>Connect Wallet</button>,
-  })
-);
+vi.mock('@/components/ConnectWalletButton', () => ({
+  ConnectWalletButton: () => <button>Connect Wallet</button>,
+}));
 
 vi.mock(
   '../../src/views/DashboardLayout/components/DashboardHeader/components/NetworkSwitcher',
