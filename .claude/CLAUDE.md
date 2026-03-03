@@ -63,6 +63,15 @@ For contract constants (decimals, precision), check `contracts/contracts/core/va
 
 ## Styling
 
+### Typography
+
+**Font roles:**
+
+- **Primary (`vars.font.body`):** `Manrope` — use for all body text, labels, numbers, buttons, inputs, and data-dense UI. Loaded from Google Fonts. Always tabular numerics (`fontVariantNumeric: 'tabular-nums'`).
+- **Secondary (`vars.font.display`):** `Neurial Grotesk` — use for headings (H1–H3), page/section titles, empty-state headlines, and large display stats. Self-hosted from `/public/fonts/NeurialGrotesk-Regular.woff2` (Regular weight only). Applied globally to `h1, h2, h3` via `global.css.ts`.
+
+Do not use the display font for interactive controls or numeric data.
+
 ### Theme Contract
 
 All CSS-in-JS styles (`*.css.ts`) MUST use tokens from the theme contract (`@/styles/theme.contract.css`) instead of hardcoded values. Never use raw `rem`, `px`, or color literals when a token exists.
