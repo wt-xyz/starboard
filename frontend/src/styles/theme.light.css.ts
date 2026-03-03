@@ -3,21 +3,21 @@ import { vars } from './theme.contract.css';
 
 export const lightTheme = createTheme(vars, {
   color: {
-    pageBg: 'oklch(96% 0.005 280)',
-    cardBg: 'oklch(99% 0.002 280)',
-    surfaceElevated: 'oklch(94% 0.003 280)',
-    inputBg: 'oklch(92% 0 0)',
-    surfaceHover: 'oklch(89% 0 0)',
+    pageBg: '#ECECEC',
+    cardBg: '#FFFFFF',
+    surfaceElevated: '#F5F5F5',
+    inputBg: '#EBEBEB',
+    surfaceHover: '#E0E0E0',
 
-    textPrimary: 'oklch(15% 0 0)',
-    textSecondary: 'oklch(40% 0 0)',
-    textMuted: 'oklch(55% 0 0)',
-    textDisabled: 'oklch(58% 0 0)',
+    textPrimary: '#1C1C1C',
+    textSecondary: '#525252',
+    textMuted: '#737373',
+    textDisabled: '#9E9E9E',
 
-    primary: 'oklch(55% 0.22 35)',
-    primaryHover: 'oklch(48% 0.22 35)',
-    primaryActive: 'oklch(42% 0.22 35)',
-    primarySubtle: 'oklch(92% 0.04 35)',
+    primary: 'oklch(55% 0.197 46)',
+    primaryHover: 'oklch(48% 0.197 46)',
+    primaryActive: 'oklch(42% 0.197 46)',
+    primarySubtle: 'oklch(92% 0.04 46)',
 
     success: 'oklch(50% 0.17 155)',
     successHover: 'oklch(44% 0.17 155)',
@@ -28,14 +28,14 @@ export const lightTheme = createTheme(vars, {
     warning: 'oklch(60% 0.16 85)',
     warningSubtle: 'oklch(92% 0.04 85)',
 
-    surfaceDisabled: 'oklch(92% 0 0)',
+    surfaceDisabled: '#E8E8E8',
 
     borderSubtle: 'color-mix(in oklch, black 5%, transparent)',
     borderDefault: 'color-mix(in oklch, black 10%, transparent)',
     borderStrong: 'color-mix(in oklch, black 20%, transparent)',
 
     overlay: 'oklch(0% 0 0 / 40%)',
-    focusRing: 'oklch(55% 0.20 260)',
+    focusRing: 'oklch(55% 0.197 46)',
   },
 
   focus: {
@@ -56,7 +56,8 @@ export const lightTheme = createTheme(vars, {
   },
 
   font: {
-    body: 'system-ui, -apple-system, sans-serif',
+    body: "Manrope, 'Neurial Grotesk', sans-serif",
+    display: "'Neurial Grotesk', Manrope, sans-serif",
   },
 
   fontSize: {

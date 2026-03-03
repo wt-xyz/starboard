@@ -2,31 +2,31 @@ import { createTheme } from '@vanilla-extract/css';
 import { vars } from './theme.contract.css';
 
 const base = {
-  primary: 'oklch(65% 0.22 35)',
+  primary: '#FF6B0F',
+  dark: '#1C1C1C',
+  white: '#FFFFFF',
   success: 'oklch(64% 0.17 155)',
   error: 'oklch(58% 0.22 25)',
   warning: 'oklch(78% 0.16 85)',
-  surface: 'oklch(22% 0.006 286)',
-  text: 'oklch(99% 0 0)',
 } as const;
 
 export const starboardTheme = createTheme(vars, {
   color: {
-    pageBg: 'oklch(19.5% 0.01 295)',
-    cardBg: 'oklch(22.3% 0.006 286)',
-    surfaceElevated: 'oklch(24.5% 0.003 288)',
-    inputBg: 'oklch(26.9% 0 0)',
-    surfaceHover: 'oklch(29.5% 0 0)',
+    pageBg: '#111111',
+    cardBg: base.dark,
+    surfaceElevated: '#252525',
+    inputBg: '#2C2C2C',
+    surfaceHover: '#333333',
 
-    textPrimary: base.text,
-    textSecondary: 'oklch(62.3% 0 0)',
-    textMuted: 'oklch(50% 0 0)',
-    textDisabled: 'oklch(50% 0 0)',
+    textPrimary: base.white,
+    textSecondary: '#9E9E9E',
+    textMuted: '#737373',
+    textDisabled: '#737373',
 
     primary: base.primary,
-    primaryHover: 'oklch(58% 0.22 35)',
-    primaryActive: 'oklch(52% 0.22 35)',
-    primarySubtle: 'oklch(20% 0.04 35)',
+    primaryHover: 'oklch(64% 0.197 46)',
+    primaryActive: 'oklch(57% 0.197 46)',
+    primarySubtle: 'oklch(20% 0.04 46)',
 
     success: base.success,
     successHover: 'oklch(58% 0.17 155)',
@@ -37,14 +37,14 @@ export const starboardTheme = createTheme(vars, {
     warning: base.warning,
     warningSubtle: 'oklch(25% 0.04 85)',
 
-    surfaceDisabled: 'oklch(26.9% 0 0)',
+    surfaceDisabled: '#2C2C2C',
 
     borderSubtle: 'color-mix(in oklch, white 5%, transparent)',
     borderDefault: 'color-mix(in oklch, white 10%, transparent)',
     borderStrong: 'color-mix(in oklch, white 20%, transparent)',
 
     overlay: 'oklch(0% 0 0 / 70%)',
-    focusRing: 'oklch(65% 0.20 260)',
+    focusRing: base.primary,
   },
 
   focus: {
@@ -65,7 +65,8 @@ export const starboardTheme = createTheme(vars, {
   },
 
   font: {
-    body: 'system-ui, -apple-system, sans-serif',
+    body: "Manrope, 'Neurial Grotesk', sans-serif",
+    display: "'Neurial Grotesk', Manrope, sans-serif",
   },
 
   fontSize: {
