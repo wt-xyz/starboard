@@ -69,6 +69,7 @@ export const vars = createThemeContract({
   // Font
   font: {
     body: '',
+    display: '',
   },
 
   // Type scale

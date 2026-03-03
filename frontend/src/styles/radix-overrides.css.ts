@@ -1,6 +1,14 @@
 import { globalStyle } from '@vanilla-extract/css';
 import { vars } from './theme.contract.css';
 
+globalStyle('.radix-themes', {
+  vars: {
+    '--default-font-family': vars.font.body,
+    '--heading-font-family': vars.font.body,
+    '--strong-font-family': vars.font.body,
+  },
+});
+
 /**
  * Ensure Radix Themes modals always appear above app-level fixed UI
  * like the mobile bottom menu and sheet.
