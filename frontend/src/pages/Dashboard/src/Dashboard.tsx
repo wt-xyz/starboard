@@ -21,19 +21,21 @@ export function Dashboard() {
           </$$.mobileHeader>
         )}
 
-        <$$.chartSection>
-          <DashboardTradingChart />
-        </$$.chartSection>
+        <$$.leftColumn>
+          <$$.chartSection>
+            <DashboardTradingChart />
+          </$$.chartSection>
+
+          <$$.bottomSection>
+            <ExchangeLists />
+          </$$.bottomSection>
+        </$$.leftColumn>
 
         <$$.orderEntrySection>
           <$$.orderEntryFormWrapper>
             <DashboardOrderEntryForm />
           </$$.orderEntryFormWrapper>
         </$$.orderEntrySection>
-
-        <$$.bottomSection>
-          <ExchangeLists />
-        </$$.bottomSection>
       </$$.page>
 
       {isCompactLayout && <BottomMenu />}
