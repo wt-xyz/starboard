@@ -1,8 +1,8 @@
 import { type FC, useState } from 'react';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
+import { ConnectWalletButton } from '@/components/ConnectWalletButton';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { componentize } from '@/lib/componentize';
-import { ConnectWalletButton } from './ConnectWalletButton';
 import * as $ from './HamburgerMenu.css';
 import { NetworkSwitcher } from './NetworkSwitcher';
 
