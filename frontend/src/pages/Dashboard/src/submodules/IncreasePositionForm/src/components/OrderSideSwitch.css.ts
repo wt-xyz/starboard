@@ -11,7 +11,7 @@ export const tabsList = style({
 
 export const tabsTrigger = style({
   flex: 1,
-  padding: `${vars.space.sm} ${vars.space.lg}`,
+  padding: `${vars.space.md} ${vars.space.xl}`,
   backgroundColor: vars.color.inputBg,
   color: vars.color.textSecondary,
   border: 'none',
