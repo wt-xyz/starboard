@@ -8,6 +8,14 @@ export const assetInfo = style({
   gap: '0.5rem',
 });
 
+export const assetIcon = style({
+  width: '1.25rem',
+  height: '1.25rem',
+  borderRadius: '50%',
+  flexShrink: 0,
+  objectFit: 'cover',
+});
+
 export const assetSymbol = style({
   fontSize: '0.75rem',
   fontWeight: '600',
