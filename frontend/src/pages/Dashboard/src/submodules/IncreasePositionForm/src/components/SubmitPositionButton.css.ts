@@ -32,13 +32,13 @@ export const disabledButton = style({
 });
 
 export const buyButton = style({
-  backgroundColor: vars.color.success,
+  backgroundColor: vars.color.primary,
   color: vars.color.textPrimary,
   ':hover': {
-    backgroundColor: vars.color.successHover,
+    backgroundColor: vars.color.primaryHover,
   },
   ':active': {
-    backgroundColor: vars.color.successHover,
+    backgroundColor: vars.color.primaryActive,
   },
 });
 
