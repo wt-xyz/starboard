@@ -59,8 +59,7 @@ export const chartSection = style({
     },
     '(max-width: 1024px)': {
       resize: 'none',
-      height: 'auto',
-      minHeight: '460px',
+      height: '460px',
     },
   },
 });
