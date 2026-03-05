@@ -9,12 +9,12 @@ export const container = style({
   height: '100%',
   minHeight: 0,
   backgroundColor: vars.color.cardBg,
-  borderRadius: '0.5rem',
+  borderRadius: vars.radius.card,
   overflow: 'hidden',
   '@media': {
     '(max-width: 1023px)': {
       height: 'auto',
-      overflow: 'visible',
+      overflow: 'clip',
     },
   },
 });

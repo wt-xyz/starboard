@@ -13,7 +13,9 @@ export const header = style({
   zIndex: 100,
   '@media': {
     '(max-width: 1024px)': {
-      padding: `0 ${vars.space.lg}`,
+      padding: `0 ${vars.space.sm}`,
+      height: '49px',
+      borderBottom: `1px solid ${vars.color.borderDefault}`,
     },
   },
 });

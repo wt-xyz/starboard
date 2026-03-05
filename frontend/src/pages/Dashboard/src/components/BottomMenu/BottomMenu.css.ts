@@ -11,58 +11,91 @@ export const bar = style({
   display: 'none',
   backgroundColor: vars.color.cardBg,
   borderTop: `1px solid ${vars.color.borderDefault}`,
-  padding: 0,
-  paddingBottom: 'env(safe-area-inset-bottom)',
+  padding: `7px ${vars.space.sm}`,
+  paddingBottom: `calc(7px + env(safe-area-inset-bottom))`,
   boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.3)',
   '@media': {
     '(max-width: 1024px)': {
       display: 'flex',
-      gap: 0,
-      justifyContent: 'center',
       alignItems: 'center',
+      gap: vars.space.sm,
     },
   },
 });
 
-export const barButton = style({
-  flex: '1 1 50%',
-  width: '50%',
-  padding: '0.875rem 1rem',
-  backgroundColor: 'transparent',
-  border: 'none',
-  color: vars.color.textSecondary,
-  fontSize: '0.875rem',
-  fontWeight: 500,
-  cursor: 'pointer',
-  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+export const buttonGroup = style({
   display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '0.25rem',
-  position: 'relative',
+  flex: 1,
+  borderRadius: vars.radius.button,
+  overflow: 'hidden',
+});
+
+export const sideButton = style({
+  flex: 1,
+  height: '32px',
+  padding: '0 1rem',
+  fontSize: '13px',
+  backgroundColor: vars.color.inputBg,
+  border: 'none',
+  borderBottom: '2px solid transparent',
+  color: vars.color.textSecondary,
+  fontWeight: vars.fontWeight.semibold,
+  cursor: 'pointer',
+  transition: `all ${vars.transition.fast}`,
   ':hover': {
     color: vars.color.textPrimary,
     backgroundColor: vars.color.surfaceHover,
   },
   ':active': {
-    transform: 'scale(0.95)',
+    backgroundColor: vars.color.surfaceHover,
   },
   selectors: {
-    '&[data-active="true"]': {
-      color: vars.color.primary,
-      backgroundColor: alpha(vars.color.primary, 15),
-      fontWeight: 600,
+    '&[data-active="true"][data-side="long"]': {
+      backgroundColor: alpha(vars.color.success, 20),
+      color: vars.color.success,
+      borderBottomColor: vars.color.success,
+    },
+    '&[data-active="true"][data-side="short"]': {
+      backgroundColor: alpha(vars.color.error, 20),
+      color: vars.color.error,
+      borderBottomColor: vars.color.error,
     },
   },
 });
 
-export const barSeparator = style({
-  width: '1px',
+export const chevronButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '2rem',
   height: '2rem',
-  backgroundColor: vars.color.borderDefault,
   flexShrink: 0,
-  alignSelf: 'center',
+  borderRadius: vars.radius.button,
+  backgroundColor: 'transparent',
+  border: `1px solid ${vars.color.borderStrong}`,
+  color: vars.color.textSecondary,
+  cursor: 'pointer',
+  transition: `all ${vars.transition.fast}`,
+  ':hover': {
+    backgroundColor: vars.color.surfaceHover,
+    color: vars.color.textPrimary,
+  },
+});
+
+export const sheetTabsRoot = style({
+  display: 'flex',
+  flexDirection: 'column',
+  flex: 1,
+  minHeight: 0,
+  overflow: 'hidden',
+});
+
+export const sheetHeader = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: vars.space.sm,
+  padding: `7px ${vars.space.sm}`,
+  flexShrink: 0,
 });
 
 export const sheetContent = style({
@@ -70,52 +103,8 @@ export const sheetContent = style({
   overflow: 'auto',
   display: 'flex',
   flexDirection: 'column',
-  gap: '1.5rem',
   minHeight: 0,
-  position: 'relative',
-});
-
-export const tabsList = style({
-  display: 'flex',
-  gap: 0,
-  backgroundColor: vars.color.cardBg,
-  borderRadius: 0,
-  padding: 0,
-});
-
-export const tabsTrigger = style({
-  flex: '1 1 50%',
-  width: '50%',
-  padding: '0.625rem 1rem',
-  backgroundColor: 'transparent',
-  border: 'none',
-  borderRadius: 0,
-  color: vars.color.textSecondary,
-  fontSize: '0.875rem',
-  fontWeight: 500,
-  cursor: 'pointer',
-  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-  textAlign: 'center',
-  ':hover': {
-    color: vars.color.textPrimary,
-  },
-  ':active': {
-    transform: 'scale(0.98)',
-  },
-  selectors: {
-    '&[data-state="active"][data-tab="long"]': {
-      color: vars.color.success,
-      backgroundColor: alpha(vars.color.success, 20),
-      borderBottom: `2px solid ${vars.color.success}`,
-      fontWeight: 600,
-    },
-    '&[data-state="active"][data-tab="short"]': {
-      color: vars.color.error,
-      backgroundColor: alpha(vars.color.error, 20),
-      borderBottom: `2px solid ${vars.color.error}`,
-      fontWeight: 600,
-    },
-  },
+  WebkitOverflowScrolling: 'touch',
 });
 
 export const tabsBody = style({

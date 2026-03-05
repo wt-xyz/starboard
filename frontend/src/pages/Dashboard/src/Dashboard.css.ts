@@ -14,8 +14,7 @@ export const page = style({
   '@media': {
     '(max-width: 1024px)': {
       flexDirection: 'column',
-      padding: '0',
-      paddingBottom: '80px',
+      padding: `${vars.space.sm} 0 80px`,
       overflowY: 'auto',
       overflowX: 'hidden',
     },
@@ -37,6 +36,11 @@ export const leftColumn = style({
   display: 'flex',
   flexDirection: 'column',
   gap: vars.space.sm,
+  '@media': {
+    '(max-width: 1024px)': {
+      padding: `0 ${vars.space.sm}`,
+    },
+  },
 });
 
 export const chartSection = style({
@@ -59,7 +63,12 @@ export const chartSection = style({
     },
     '(max-width: 1024px)': {
       resize: 'none',
-      height: '460px',
+      height: 'min(536px, 60svh)',
+      minHeight: '320px',
+    },
+    '(max-width: 1024px) and (max-height: 600px)': {
+      height: 'calc(100svh - 200px)',
+      minHeight: '320px',
     },
   },
 });
